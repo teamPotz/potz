@@ -56,11 +56,12 @@ function FetchTest() {
         <button onClick={getData}>get posts</button>
         <div>
           <ul>
-            {result.map((item) => (
-              <li key={item.id}>
-                {item.title} / {item.content}
-              </li>
-            ))}
+            {result.length > 0 &&
+              result.map((item) => (
+                <li key={item.id}>
+                  {item.title} / {item.content}
+                </li>
+              ))}
           </ul>
         </div>
       </div>
