@@ -16,7 +16,7 @@ const ButtonBg = (props) => {
         border : none;
         border-radius: 12px;
         display: flex;
-        width: 364px;
+        width: 100%;
         height: 46.667px;
         padding: 9.333px 18.667px;
         justify-content: center;
