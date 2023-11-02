@@ -1,12 +1,9 @@
 import './App.css';
-import NavSample from './components/NavSample';
+import Template from './uiTemplate';
 
 function App() {
   return (
-    <>
-      <p>hello, POTZ!</p>
-      <NavSample />
-    </>
+    <Template></Template>
   );
 }
 
