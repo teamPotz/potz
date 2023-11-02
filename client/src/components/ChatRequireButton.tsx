@@ -2,7 +2,12 @@ import React from "react";
 import COLOR from "../utility/Color";
 import styled from "styled-components";
 
-const ChatRequireButton = props => {
+type props = {
+    imageURL: string;
+    text: string;
+}
+
+const ChatRequireButton = ({imageURL, text }: props) => {
     const Wrapper = styled.div`
         display: flex;
         flex-direction: column;
@@ -38,7 +43,7 @@ const ChatRequireButton = props => {
     `;
 
     const Coin = styled.img.attrs({
-        src: props.image,
+        src: imageURL,
         alt: "icon",
     })`
         /* icon-coin-mono */
@@ -69,7 +74,7 @@ const ChatRequireButton = props => {
                 <Icon>
                     <Coin/>
                 </Icon>
-                <Text>{props.text}</Text>
+                <Text>{text}</Text>
             </Wrapper>
         </>
     )
