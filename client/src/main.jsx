@@ -5,6 +5,7 @@ import './index.css';
 import App from './App.jsx';
 import AboutSample from './pages/AboutSample';
 import FetchTest from './pages/FetchTest';
+import ComponentsTest from './components/ComponentsTest';
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: '/fetch',
     element: <FetchTest />,
+  },
+  {
+    path: '/components',
+    element: <ComponentsTest />,
   },
 ]);
 
