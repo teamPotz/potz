@@ -6,6 +6,7 @@ import App from './App.jsx';
 import AboutSample from './pages/AboutSample';
 import FetchTest from './pages/FetchTest';
 import ComponentsTest from './components/ComponentsTest';
+import Chat from './pages/Chat';
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: '/components',
     element: <ComponentsTest />,
+  },
+  {
+    path: '/chat',
+    element: <Chat />,
   },
 ]);
 

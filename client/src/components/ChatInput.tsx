@@ -1,17 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import COLOR from "../utility/Color";
 import styled from "styled-components";
 
 const ChatInput = () => {
+    const [message, setMessage] = useState([]);
+    const [opponentMessage, setOpponentMessage] = useState([]);
+    const [temp, setTemp] = useState('');
+
     const Wrapper = styled.div`
         display: flex;
         flex-direction: row;
         align-items: center;
-        padding: 9.33333px 16.3333px 9.33333px 18.6667px;
         gap: 18.67px;
         position: relative;
-        width: 419px;
+        width: 420px;
         height: 62.33px;
+        margin: 28px;
+        margin-top: 0px;
     `;
 
     const DeleteButton = styled.img.attrs({
@@ -47,13 +52,7 @@ const ChatInput = () => {
             outline: none;
             background: ${COLOR.GRAY_200};
         }
-        /* Inside auto layout */
-        flex: none;
-        order: 1;
-        flex-grow: 0;
-        
-        /* 메시지를 입력하세요 */
-        
+
         width: 262.667px;
         height: 25px;
         
@@ -67,12 +66,6 @@ const ChatInput = () => {
         align-items: center;
         
         color: ${COLOR.GRAY_500};
-        
-        
-        /* Inside auto layout */
-        flex: none;
-        order: 0;
-        flex-grow: 0;
     `;
 
     const SendButton = styled.img.attrs({
