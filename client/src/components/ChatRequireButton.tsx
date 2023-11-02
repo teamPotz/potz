@@ -1,3 +1,8 @@
+{/* 사용 방법
+<ChatRequireButton imageURL={"images/components/icon-coin-mono.png"} text={'정산 요청'}></ChatRequireButton>
+<ChatRequireButton imageURL={"images/components/Union.png"} text={'메뉴 요청'}></ChatRequireButton>
+<ChatRequireButton imageURL={"images/components/Arrow - Right Square.png"} text={'수령 요청'}></ChatRequireButton> */}
+
 import React from "react";
 import COLOR from "../utility/Color";
 import styled from "styled-components";
