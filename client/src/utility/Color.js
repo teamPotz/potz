@@ -17,6 +17,7 @@ const COLOR = {
 
     GREEN : "#00E741",
     YELLOW : "#FFB571",
+    YELLOW_100 : "#EB9D55",
     BLUE : "#0075FF"
 }
 export default COLOR;
