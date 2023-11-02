@@ -2,7 +2,6 @@
 
 import styled from "styled-components"
 import COLOR from "../utility/Color"
-import FontKOR from "../utility/FontKor"
 
 
 //nav bar icons
