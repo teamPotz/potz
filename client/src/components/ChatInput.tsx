@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import COLOR from "../utility/Color";
 import styled from "styled-components";
 
 const ChatInput = () => {
+    const [message, setMessage] = useState([]);
+    const [opponentMessage, setOpponentMessage] = useState([]);
+    const [temp, setTemp] = useState('');
+
     const Wrapper = styled.div`
         display: flex;
         flex-direction: row;
