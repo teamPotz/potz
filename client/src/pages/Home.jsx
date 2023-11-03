@@ -1,12 +1,30 @@
 import '../App.css';
+import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
+import { Nav, Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import NavBarHomePage from '../components/NavBarHomePage';
 import HomeContents from '../components/HomeContentsComp';
+import { NavBar1, NavBar2, NavBar3, NavBar4 } from '../components/NavBars';
 //contents_container 안에 UI 구현 하시면 됩니다!
 
 function Home() {
+  // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
+  const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const ReSizeHandler = () => {
+      setdisplayWidth(window.innerWidth);
+    };
+
+    //윈도우 리사이즈가 일어나면 콜백 호출
+    window.addEventListener('resize', ReSizeHandler);
+
+    return () => {
+      window.removeEventListener('resize', ReSizeHandler);
+    };
+  }, []);
+
   //테스트용 데이터
   const testDatas = [
     {
@@ -77,6 +95,19 @@ function Home() {
     },
   ];
 
+  const potzContainerStyle = {
+    position: 'relative', // potz_container를 relative로 설정합니다.
+    minHeight: '100vh', // 최소 높이를 화면 높이(100vh)로 설정합니다.
+    width: '100%',
+  };
+
+  const navbarStyle = {
+    position: 'fixed',
+    bottom: 0,
+    maxWidth: '420px',
+    width: displayWidth ? displayWidth : '420px',
+  };
+
   return (
     <Container className='background'>
       <Row className='row1'>
@@ -85,13 +116,21 @@ function Home() {
         </Col>
         <Col className='col2'>
           <div className='potz_container'>
-            <NavBarHomePage></NavBarHomePage>
-            <div>
-              {testDatas.map((testData, index) => {
-                return (
-                  <HomeContents key={index} testData={testData}></HomeContents>
-                );
-              })}
+            <div style={potzContainerStyle}>
+              <NavBarHomePage></NavBarHomePage>
+              <div>
+                {testDatas.map((testData, index) => {
+                  return (
+                    <HomeContents
+                      key={index}
+                      testData={testData}
+                    ></HomeContents>
+                  );
+                })}
+              </div>
+              <div style={navbarStyle}>
+                <NavBar1></NavBar1>
+              </div>
             </div>
           </div>
         </Col>
