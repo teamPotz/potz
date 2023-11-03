@@ -1,11 +1,9 @@
-import './App.css';
+import '../App.css';
 import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
-import COLOR from './utility/Color';
-import ButtonBg from './components/ButtonBG';
-import ButtonSm from './components/ButtonSM';
-
+import COLOR from '../utility/Color';
+import ButtonBg from '../components/ButtonBG';
 //contents_container 안에 UI 구현 하시면 됩니다!
 
 function Login() {
