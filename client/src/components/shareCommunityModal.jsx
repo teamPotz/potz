@@ -26,7 +26,7 @@ const ShareCommunityModal = () => {
 
   const fontStyle = {
     fontFamily: Font.FontKor,
-    fontSize: '22px',
+    fontSize: '24px',
     fontWeight: '700',
     color: COLOR.GRAY_500,
   };
