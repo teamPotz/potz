@@ -7,6 +7,8 @@ import NavBarHomePage from '../components/NavBarHomePage';
 import HomeContents from '../components/HomeContentsComp';
 import { NavBar1, NavBar2, NavBar3, NavBar4 } from '../components/NavBars';
 import ButtonWrite from '../components/ButtonWrite';
+import COLOR from '../utility/Color';
+import ShareCommunityModal from '../components/shareCommunityModal';
 
 function Home() {
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
@@ -27,96 +29,96 @@ function Home() {
 
   //테스트용 데이터
   const testDatas = [
-    {
-      store: '디저트123 송도점',
-      price: 230,
-      link: '쿠팡이츠.link',
-      imgSrc: '../../public/images/graphicImg/testImg.png',
-      memNum: 8,
-      limitNum: 10,
-      meetPlace: '아파트 정문',
-      category: '# 카페 디저트',
-      sale: [1],
-      crown: true,
-      heart: false,
-    },
-    {
-      store: '커플케이크 하버뷰점',
-      price: 600,
-      link: '배달의 민족.link',
-      imgSrc: '../../public/images/graphicImg/testImg2.png',
-      memNum: 10,
-      limitNum: 15,
-      meetPlace: '아파트 정문',
-      category: '# 카페 디저트',
-      sale: [],
-      crown: true,
-      heart: false,
-    },
-    {
-      store: '프루츠 후르츠',
-      price: 900,
-      link: '배달의 민족.link',
-      imgSrc: '../../public/images/graphicImg/testImg3.png',
-      memNum: 10,
-      limitNum: 15,
-      meetPlace: '아파트 정문',
-      category: '# 카페 디저트',
-      sale: [1],
-      crown: false,
-      heart: false,
-    },
-    {
-      store: '샐러디 연세대점',
-      price: 420,
-      link: '배달의 민족.link',
-      imgSrc: '../../public/images/graphicImg/testImg4.png',
-      memNum: 10,
-      limitNum: 15,
-      meetPlace: '아파트 정문',
-      category: '# 샐러드',
-      sale: [],
-      crown: true,
-      heart: false,
-    },
-    {
-      store: '연어와 육회',
-      price: 600,
-      link: '배달의 민족.link',
-      imgSrc: '../../public/images/graphicImg/testImg5.png',
-      memNum: 10,
-      limitNum: 15,
-      meetPlace: '아파트 정문',
-      category: '# 일식 초밥',
-      crown: false,
-      sale: [],
-    },
-    {
-      store: '디저트123 송도점',
-      price: 230,
-      link: '쿠팡이츠.link',
-      imgSrc: '../../public/images/graphicImg/testImg.png',
-      memNum: 8,
-      limitNum: 10,
-      meetPlace: '아파트 정문',
-      category: '# 카페 디저트',
-      sale: [1],
-      crown: true,
-      heart: false,
-    },
-    {
-      store: '프루츠 후르츠',
-      price: 900,
-      link: '배달의 민족.link',
-      imgSrc: '../../public/images/graphicImg/testImg3.png',
-      memNum: 10,
-      limitNum: 15,
-      meetPlace: '아파트 정문',
-      category: '# 카페 디저트',
-      sale: [1],
-      crown: false,
-      heart: false,
-    },
+    // {
+    //   store: '디저트123 송도점',
+    //   price: 230,
+    //   link: '쿠팡이츠.link',
+    //   imgSrc: '../../public/images/graphicImg/testImg.png',
+    //   memNum: 8,
+    //   limitNum: 10,
+    //   meetPlace: '아파트 정문',
+    //   category: '# 카페 디저트',
+    //   sale: [1],
+    //   crown: true,
+    //   heart: false,
+    // },
+    // {
+    //   store: '커플케이크 하버뷰점',
+    //   price: 600,
+    //   link: '배달의 민족.link',
+    //   imgSrc: '../../public/images/graphicImg/testImg2.png',
+    //   memNum: 10,
+    //   limitNum: 15,
+    //   meetPlace: '아파트 정문',
+    //   category: '# 카페 디저트',
+    //   sale: [],
+    //   crown: true,
+    //   heart: false,
+    // },
+    // {
+    //   store: '프루츠 후르츠',
+    //   price: 900,
+    //   link: '배달의 민족.link',
+    //   imgSrc: '../../public/images/graphicImg/testImg3.png',
+    //   memNum: 10,
+    //   limitNum: 15,
+    //   meetPlace: '아파트 정문',
+    //   category: '# 카페 디저트',
+    //   sale: [1],
+    //   crown: false,
+    //   heart: false,
+    // },
+    // {
+    //   store: '샐러디 연세대점',
+    //   price: 420,
+    //   link: '배달의 민족.link',
+    //   imgSrc: '../../public/images/graphicImg/testImg4.png',
+    //   memNum: 10,
+    //   limitNum: 15,
+    //   meetPlace: '아파트 정문',
+    //   category: '# 샐러드',
+    //   sale: [],
+    //   crown: true,
+    //   heart: false,
+    // },
+    // {
+    //   store: '연어와 육회',
+    //   price: 600,
+    //   link: '배달의 민족.link',
+    //   imgSrc: '../../public/images/graphicImg/testImg5.png',
+    //   memNum: 10,
+    //   limitNum: 15,
+    //   meetPlace: '아파트 정문',
+    //   category: '# 일식 초밥',
+    //   crown: false,
+    //   sale: [],
+    // },
+    // {
+    //   store: '디저트123 송도점',
+    //   price: 230,
+    //   link: '쿠팡이츠.link',
+    //   imgSrc: '../../public/images/graphicImg/testImg.png',
+    //   memNum: 8,
+    //   limitNum: 10,
+    //   meetPlace: '아파트 정문',
+    //   category: '# 카페 디저트',
+    //   sale: [1],
+    //   crown: true,
+    //   heart: false,
+    // },
+    // {
+    //   store: '프루츠 후르츠',
+    //   price: 900,
+    //   link: '배달의 민족.link',
+    //   imgSrc: '../../public/images/graphicImg/testImg3.png',
+    //   memNum: 10,
+    //   limitNum: 15,
+    //   meetPlace: '아파트 정문',
+    //   category: '# 카페 디저트',
+    //   sale: [1],
+    //   crown: false,
+    //   heart: false,
+    // },
   ];
 
   const potzContainerStyle = {
@@ -145,6 +147,10 @@ function Home() {
     marginBottom: '50px',
   };
 
+  const backgroundStyle = {
+    backgroundColor: COLOR.POTZ_PINK_100,
+  };
+
   return (
     <Container className='background'>
       <Row className='row1'>
@@ -152,10 +158,14 @@ function Home() {
           <div className='side_container'></div>
         </Col>
         <Col className='col2'>
-          <div className='potz_container'>
+          <div className='potz_container' style={backgroundStyle}>
             <div style={potzContainerStyle}>
               <NavBarHomePage></NavBarHomePage>
               <div style={homeContentesContainer}>
+                {/* 만약 컨텐츠 데이터 개수가 1개도 없을 경우 공동체 공유 모달창 띄우기 */}
+                {testDatas.length < 1 ? (
+                  <ShareCommunityModal></ShareCommunityModal>
+                ) : null}
                 {testDatas.map((testData, index) => {
                   return (
                     <HomeContents
