@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col';
 import NavBarHomePage from '../components/NavBarHomePage';
 import HomeContents from '../components/HomeContentsComp';
 import { NavBar1, NavBar2, NavBar3, NavBar4 } from '../components/NavBars';
-//contents_container 안에 UI 구현 하시면 됩니다!
+import ButtonWrite from '../components/ButtonWrite';
 
 function Home() {
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
@@ -37,6 +37,8 @@ function Home() {
       meetPlace: '아파트 정문',
       category: '# 카페 디저트',
       sale: [1],
+      crown: true,
+      heart: false,
     },
     {
       store: '커플케이크 하버뷰점',
@@ -48,6 +50,8 @@ function Home() {
       meetPlace: '아파트 정문',
       category: '# 카페 디저트',
       sale: [],
+      crown: true,
+      heart: false,
     },
     {
       store: '프루츠 후르츠',
@@ -59,6 +63,8 @@ function Home() {
       meetPlace: '아파트 정문',
       category: '# 카페 디저트',
       sale: [1],
+      crown: false,
+      heart: false,
     },
     {
       store: '샐러디 연세대점',
@@ -70,6 +76,8 @@ function Home() {
       meetPlace: '아파트 정문',
       category: '# 샐러드',
       sale: [],
+      crown: true,
+      heart: false,
     },
     {
       store: '연어와 육회',
@@ -80,6 +88,7 @@ function Home() {
       limitNum: 15,
       meetPlace: '아파트 정문',
       category: '# 일식 초밥',
+      crown: false,
       sale: [],
     },
     {
@@ -92,6 +101,21 @@ function Home() {
       meetPlace: '아파트 정문',
       category: '# 카페 디저트',
       sale: [1],
+      crown: true,
+      heart: false,
+    },
+    {
+      store: '프루츠 후르츠',
+      price: 900,
+      link: '배달의 민족.link',
+      imgSrc: '../../public/images/graphicImg/testImg3.png',
+      memNum: 10,
+      limitNum: 15,
+      meetPlace: '아파트 정문',
+      category: '# 카페 디저트',
+      sale: [1],
+      crown: false,
+      heart: false,
     },
   ];
 
@@ -102,10 +126,23 @@ function Home() {
   };
 
   const navbarStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '28px',
+    alignItems: 'end',
     position: 'fixed',
     bottom: 0,
     maxWidth: '420px',
     width: displayWidth ? displayWidth : '420px',
+  };
+
+  const btnStyle = {
+    marginRight: '28px',
+    zIndex: '100',
+  };
+
+  const homeContentesContainer = {
+    marginBottom: '50px',
   };
 
   return (
@@ -118,7 +155,7 @@ function Home() {
           <div className='potz_container'>
             <div style={potzContainerStyle}>
               <NavBarHomePage></NavBarHomePage>
-              <div>
+              <div style={homeContentesContainer}>
                 {testDatas.map((testData, index) => {
                   return (
                     <HomeContents
@@ -129,6 +166,9 @@ function Home() {
                 })}
               </div>
               <div style={navbarStyle}>
+                <div style={btnStyle}>
+                  <ButtonWrite></ButtonWrite>
+                </div>
                 <NavBar1></NavBar1>
               </div>
             </div>

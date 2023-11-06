@@ -2,10 +2,21 @@ import styled from 'styled-components';
 import Font from '../utility/Font';
 import COLOR from '../utility/Color';
 import TagPlaceSM from './TagPlaceSM';
+import { useEffect, useState } from 'react';
 
 const HomeContents = (props) => {
   //테스트용 데이터
   let { testData } = props;
+  let [count, setCount] = useState(testData.heart);
+
+  const clickhandler = () => {
+    //나중에 하트 클릭 유무 서버에 전송하기
+    if (count) {
+      setCount(false);
+    } else {
+      setCount(true);
+    }
+  };
 
   const HomeContentsWrapper = styled.div`
     height: 150px;
@@ -13,6 +24,14 @@ const HomeContents = (props) => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: grab;
+    background: ${COLOR.WHITE};
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: scale(1.04);
+      border-color: ${COLOR.POTZ_PINK_100};
+    }
   `;
 
   const ButtonContainer = styled.button`
@@ -25,9 +44,10 @@ const HomeContents = (props) => {
     background-color: ${COLOR.WHITE};
     cursor: grab;
     &:hover {
-      background-color: ${COLOR.GRAY_100};
+      background: ${COLOR.POTZ_PINK_100};
     }
   `;
+
   const HeartIcon = () => {
     return (
       <svg
@@ -42,6 +62,25 @@ const HomeContents = (props) => {
           clipRule='evenodd'
           d='M12.7213 25.1148C13.4983 25.6281 14.5005 25.6281 15.2763 25.1148C17.7438 23.4861 23.1163 19.593 25.431 15.2366C28.4818 9.48965 24.899 3.75781 20.1623 3.75781C17.4626 3.75781 15.8386 5.16831 14.9403 6.38048C14.8324 6.52894 14.6909 6.64976 14.5274 6.73307C14.3638 6.81638 14.1829 6.85981 13.9994 6.85981C13.8158 6.85981 13.6349 6.81638 13.4714 6.73307C13.3079 6.64976 13.1664 6.52894 13.0585 6.38048C12.1601 5.16831 10.5361 3.75781 7.83646 3.75781C3.09979 3.75781 -0.483041 9.48965 2.56896 15.2366C4.88129 19.593 10.2561 23.4861 12.7213 25.1148'
           fill='#EDEDED'
+        />
+      </svg>
+    );
+  };
+
+  const HeartIconClicked = () => {
+    return (
+      <svg
+        width='28'
+        height='28'
+        viewBox='0 0 28 28'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <path
+          fillRule='evenodd'
+          clipRule='evenodd'
+          d='M12.7213 25.1148C13.4983 25.6281 14.5005 25.6281 15.2763 25.1148C17.7438 23.4861 23.1163 19.593 25.431 15.2366C28.4818 9.48965 24.899 3.75781 20.1623 3.75781C17.4626 3.75781 15.8386 5.16831 14.9403 6.38048C14.8324 6.52894 14.6909 6.64976 14.5274 6.73307C14.3638 6.81638 14.1829 6.85981 13.9994 6.85981C13.8158 6.85981 13.6349 6.81638 13.4714 6.73307C13.3079 6.64976 13.1664 6.52894 13.0585 6.38048C12.1601 5.16831 10.5361 3.75781 7.83646 3.75781C3.09979 3.75781 -0.483041 9.48965 2.56896 15.2366C4.88129 19.593 10.2561 23.4861 12.7213 25.1148Z'
+          fill='#FF7971'
         />
       </svg>
     );
@@ -186,8 +225,12 @@ const HomeContents = (props) => {
         </div>
       </div>
       <div style={buttonContainer}>
-        <ButtonContainer>
-          <HeartIcon></HeartIcon>
+        <ButtonContainer onClick={clickhandler}>
+          {count ? (
+            <HeartIconClicked></HeartIconClicked>
+          ) : (
+            <HeartIcon></HeartIcon>
+          )}
         </ButtonContainer>
         {testData.sale.length > 0 ? (
           <ButtonContainer>
