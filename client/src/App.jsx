@@ -1,9 +1,8 @@
 import './App.css';
 import Template from './uiTemplate';
-import CategoryPage from './pages/Category';
 
 function App() {
-  return <CategoryPage></CategoryPage>;
+  return <Template></Template>;
 }
 
 export default App;
