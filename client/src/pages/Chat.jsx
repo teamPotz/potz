@@ -5,23 +5,61 @@ import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
 import ChatRequireButton from '../components/ChatRequireButton';
 import ChatInput from '../components/ChatInput';
+import styled from 'styled-components';
 
-const Chat = () => {
-  const style1={
-    position: 'absolute',
-    display: "inline-flex",
-    flexDirection: "column",
-    justifyContent: "space-around",
-    width: '420px',
-    height : "100vh",
-  };
+//contents_container 안에 UI 구현 하시면 됩니다!
+
+function Chat() {
+  const GoBack = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    width: 420px;
+    height: 70px;
+    justify-content: space-between;
+    box-shadow: 0px 1.16667px 2.33333px rgba(0, 0, 0, 0.08);
+    background-color: ${COLOR.WHITE};
+    position: fixed;
+    top: 0;
+    & div {
+      margin: 28px;
+    }
+  `;
+  const MyMessageBox = styled.div`
+    background-color: ${COLOR.POTZ_PINK_500};
+    border-radius: 14px 14px 14px 14px;
+    width: auto;
+    max-width: 276.5px;
+    padding: 4.66667px 14px;
+    margin-left: auto;
+    & > div {
+      margin-right: auto;
+    }
+  `;
+  const OpponentMessageBox = styled.div`
+    background-color: ${COLOR.WHITE};
+    border-radius: 14px 14px 14px 14px;
+    max-width: 276.5px;
+    padding: 4.66667px 14px;
+    margin-right: auto;
+    & > div {
+      display: flex;
+      justify-content: flex-end;
+    }
+  `;
 
   const styles = {
     Wrapper: {
-      position: 'relative',
-      background: `${COLOR.POTZ_PINK_200}`,
-      width: '100%',
-      height: '100%',
+      position: 'fixed',
+      bottom: 0,
+      width: '420px',
+      height: '190.17px',
+    },
+    background: {
+      backgroundColor: `${COLOR.POTZ_PINK_200}`,
+      width: '420px',
+      height: '100vh',
     },
     ChatBox: {
       display: 'flex',
@@ -57,58 +95,86 @@ const Chat = () => {
       bottom: '0px',
       background: `${COLOR.WHITE}`,
     },
+    Content: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '9.33px',
+      marginTop: '70px',
+      marginBottom: '190.17px',
+    },
   };
 
   return (
-    <>
-      <Container className='background'>
-        <Row className='row1'>
-          <Col className='col1'>
-            <div className='side_container'></div>
-          </Col>
-          <Col className='col2'>
-            <div className='potz_container'>
-              <div className='contents_container' style={style1}>
+    <Container className='background'>
+      <Row className='row1'>
+        <Col className='col1'>
+          <div className='side_container'></div>
+        </Col>
+        <Col className='col2'>
+          <div className='potz_container' style={styles.background}>
+            <GoBack>
+              <div style={{ width: '214.67px' }}>
+                <svg width='29'height='28'
+                  viewBox='0 0 29 28'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='M18.7495 22.1673L10.5828 14.0007L18.7495 5.83398'
+                    stroke='black'
+                    strokeWidth='1.75'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  />
+                </svg>
+                버거킹 하버뷰점
+              </div>
+              <div>마감</div>
+            </GoBack>
 
-                <div style={styles.Wrapper}>
-                  <div style={styles.ChatBox}>
-                    <div style={styles.RequireButtonBox}>
-                      <ChatRequireButton
-                        imageURL={'images/components/icon-coin-mono.png'}
-                        text={'정산 요청'}
-                      ></ChatRequireButton>
-                    </div>
+            {/* 받아온 데이터는 contents-container에 구현합니다. */}
+            <div className='contents_container' style={styles.Content}>
+              <MyMessageBox>
+                안녕하세요.<div>11:51</div>
+              </MyMessageBox>
+              <OpponentMessageBox>반가워요</OpponentMessageBox>
+            </div>
 
-                    <div style={styles.RequireButtonBox}>
-                      <ChatRequireButton
-                        imageURL={'images/components/Union.png'}
-                        text={'메뉴 요청'}
-                      ></ChatRequireButton>
-                    </div>
-
-                    <div style={styles.RequireButtonBox}>
-                      <ChatRequireButton
-                        imageURL={'images/components/Arrow - Right Square.png'}
-                        text={'수령 요청'}
-                      ></ChatRequireButton>
-                    </div>
-                  </div>
-
-                  <div style={styles.ChatInputBox}>
-                    <ChatInput />
-                  </div>
+            <div style={styles.Wrapper}>
+              <div style={styles.ChatBox}>
+                <div style={styles.RequireButtonBox}>
+                  <ChatRequireButton
+                    imageURL={'images/components/icon-coin-mono.png'}
+                    text={'정산 요청'}
+                  ></ChatRequireButton>
                 </div>
 
+                <div style={styles.RequireButtonBox}>
+                  <ChatRequireButton
+                    imageURL={'images/components/Union.png'}
+                    text={'메뉴 요청'}
+                  ></ChatRequireButton>
+                </div>
+
+                <div style={styles.RequireButtonBox}>
+                  <ChatRequireButton
+                    imageURL={'images/components/Arrow - Right Square.png'}
+                    text={'수령 요청'}
+                  ></ChatRequireButton>
+                </div>
+              </div>
+              <div style={styles.ChatInputBox}>
+                <ChatInput />
               </div>
             </div>
-          </Col>
-          <Col className='col3'>
-            <div className='side_container'></div>
-          </Col>
-        </Row>
-      </Container>
-    </>
+          </div>
+        </Col>
+        <Col className='col3'>
+          <div className='side_container'></div>
+        </Col>
+      </Row>
+    </Container>
   );
-};
+}
 
 export default Chat;
