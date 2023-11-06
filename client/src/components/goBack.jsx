@@ -3,6 +3,7 @@ import COLOR from "../utility/Color";
 import Font from "../utility/Font";
 
 // 사용법 <GoBack text={'뒤로 가기'}></GoBack>
+
 function GoBack(props){
     const GoBackButtonStyle = styled.div`
     display: flex;

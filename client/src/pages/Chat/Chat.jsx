@@ -1,15 +1,17 @@
-import '../App.css';
+import '../../App.css';
 import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
-import COLOR from '../utility/Color';
-import ChatRequireButton from '../components/ChatRequireButton';
-import ChatInput from '../components/ChatInput';
+import COLOR from '../../utility/Color';
+import ChatRequireButton from '../../components/ChatRequireButton';
+import ChatInput from '../../components/ChatInput';
 import styled from 'styled-components';
 
 //contents_container 안에 UI 구현 하시면 됩니다!
 
 function Chat() {
+  const BangJang = false;    //props로 방장인지 아닌지 결정 이건 임시
+
   const GoBack = styled.div`
     display: flex;
     flex-direction: row;
@@ -114,7 +116,9 @@ function Chat() {
           <div className='potz_container' style={styles.background}>
             <GoBack>
               <div style={{ width: '214.67px' }}>
-                <svg width='29'height='28'
+                <svg
+                  width='29'
+                  height='28'
                   viewBox='0 0 29 28'
                   fill='none'
                   xmlns='http://www.w3.org/2000/svg'
@@ -140,33 +144,49 @@ function Chat() {
               <OpponentMessageBox>반가워요</OpponentMessageBox>
             </div>
 
-            <div style={styles.Wrapper}>
-              <div style={styles.ChatBox}>
-                <div style={styles.RequireButtonBox}>
-                  <ChatRequireButton
-                    imageURL={'images/components/icon-coin-mono.png'}
-                    text={'정산 요청'}
-                  ></ChatRequireButton>
-                </div>
+            {BangJang ? (
+              <div style={styles.Wrapper}>
+                <div style={styles.ChatBox}>
+                  <div style={styles.RequireButtonBox}>
+                    <ChatRequireButton
+                      imageURL={'images/components/icon-coin-mono.png'}
+                      text={'정산 요청'}
+                    ></ChatRequireButton>
+                  </div>
 
-                <div style={styles.RequireButtonBox}>
-                  <ChatRequireButton
-                    imageURL={'images/components/Union.png'}
-                    text={'메뉴 요청'}
-                  ></ChatRequireButton>
-                </div>
+                  <div style={styles.RequireButtonBox}>
+                    <ChatRequireButton
+                      imageURL={'images/components/Union.png'}
+                      text={'메뉴 요청'}
+                    ></ChatRequireButton>
+                  </div>
 
-                <div style={styles.RequireButtonBox}>
-                  <ChatRequireButton
-                    imageURL={'images/components/Arrow - Right Square.png'}
-                    text={'수령 요청'}
-                  ></ChatRequireButton>
+                  <div style={styles.RequireButtonBox}>
+                    <ChatRequireButton
+                      imageURL={'images/components/Arrow - Right Square.png'}
+                      text={'수령 요청'}
+                    ></ChatRequireButton>
+                  </div>
+                </div>
+                <div style={styles.ChatInputBox}>
+                  <ChatInput />
                 </div>
               </div>
-              <div style={styles.ChatInputBox}>
-                <ChatInput />
+            ) : (
+              <div style={styles.Wrapper}>
+                <div style={styles.ChatBox}>
+                  <div style={styles.RequireButtonBox}>
+                    <ChatRequireButton
+                      imageURL={'images/components/Union.png'}
+                      text={'메뉴 전송'}
+                    ></ChatRequireButton>
+                  </div>
+                </div>
+                <div style={styles.ChatInputBox}>
+                  <ChatInput />
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </Col>
         <Col className='col3'>
