@@ -14,7 +14,7 @@ import ChickenImg from '../../public/images/graphicImg/CategoryChicken.png';
 //import { Burger, Cafe, KoreanFood, Sushi, Pizza, Salad, Chicken, ChineseFood} from '../components/Category_Food';
 
 const FoodWrapper = styled.div`
-  padding-bottom: 10px;
+  padding-bottom: 18px;
   width: 48%;
   height: 100%;
   cursor: grab;
