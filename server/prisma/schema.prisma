@@ -35,7 +35,7 @@ model User {
   likedPosts                 PostLike[]
   createdDeliveryPots        DeliveryPot[]
   participatedDeliveryPots   DeliveryPot[]        @relation(name: "ParticipantsRelation")
-  orders                     Order[]
+  orders                     DeliveryOrder[]
   deliveryPotHistoryAsMaster DeliveryPotHistory[]
   deliveryPotHistoryAsMember DeliveryPotHistory[] @relation(name: "ParticipantsRelationHistory")
   createdAt                  DateTime             @default(now())
@@ -141,14 +141,14 @@ model DeliveryPot {
   participants       User[]              @relation(name: "ParticipantsRelation")
   post               Post                @relation(fields: [postId], references: [id])
   postId             Int                 @unique
-  orders             Order[]
+  orders             DeliveryOrder[]
   deliveryPotHistory DeliveryPotHistory?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
 }
 
-// 주문
-model Order {
+// 배달 주문
+model DeliveryOrder {
   id               Int         @id @default(autoincrement())
   deliveryPot      DeliveryPot @relation(fields: [deliveryPotId], references: [id])
   deliveryPotId    Int
