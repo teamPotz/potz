@@ -3,8 +3,7 @@ import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
-import TopNav from '../components/TopNav';
-import { useState, useEffect } from 'react';
+import GoBack from '../components/goBack';
 import {
   Burger,
   Cafe,
@@ -19,23 +18,6 @@ import {
 //contents_container 안에 UI 구현 하시면 됩니다!
 
 function CategoryPage() {
-  const [displayHeight, setdisplayHeight] = useState(window.innerHeight);
-
-  useEffect(() => {
-    const ReSizeHandler = () => {
-      setdisplayHeight(window.innerHeight);
-    };
-
-    //윈도우 리사이즈가 일어나면 콜백 호출
-    window.addEventListener('resize', ReSizeHandler);
-
-    return () => {
-      window.removeEventListener('resize', ReSizeHandler);
-    };
-  }, []);
-
-  let [userName, setUserName] = useState('수현');
-
   const backgroundStyle = {
     backgroundColor: COLOR.POTZ_PINK_100,
   };
@@ -44,7 +26,7 @@ function CategoryPage() {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-around',
-    marginTop: '40px',
+    marginTop: '100px',
     height: 'auto',
     marginBottom: '0px',
   };
@@ -71,7 +53,7 @@ function CategoryPage() {
         <Col className='col2'>
           <div className='potz_container' style={backgroundStyle}>
             <nav>
-              <TopNav>카테고리 모아보기</TopNav>
+              <GoBack text={'카테고리'}></GoBack>
             </nav>
             <div className='contents_container' style={style1}>
               <div style={categoryContainer}>

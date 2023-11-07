@@ -13,9 +13,10 @@ function UserProfile() {
     display: flex;
     flex-direction: column;
     background-color: ${COLOR.WHITE};
-    height: 171.33px;
+    height: 199.33px;
     & > div{
-      margin: 14px;
+      margin: 28px;
+      margin-top: 14px;
     }
     & > div:first-child{
       display: flex;
@@ -94,6 +95,11 @@ function UserProfile() {
       justifyContent: 'space-between',
       backgroundColor: `${COLOR.WHITE}`,
     },
+    navBar: {
+      position: 'fixed',
+      bottom: 0,
+      width: '420px',
+    }
   };
 
   const gap = {
@@ -140,8 +146,10 @@ function UserProfile() {
                 </div>
             <Profile>
               <div>
+              <div>
                 <img src='/images/graphicImg/testProfile.png'/>
-              <div>김기성<svg
+              김기성</div>
+              <svg
                         width='29'
                         height='29'
                         viewBox='0 0 29 29'
@@ -155,11 +163,11 @@ function UserProfile() {
                           strokeLinecap='round'
                           strokeLinejoin='round'
                         />
-                      </svg></div>
+                      </svg>
                       
               </div>
-              <div>
-                김기성님!<br></br>이번 달 팟즈로 배달비 100000000원을 절약했어요.
+              <div style={{padding: '14px 35px 14px 16.3333px', height: '78px'}}>
+                김기성님!<br></br>이번 달 팟즈로 배달비 100원을 절약했어요.
               </div>
             </Profile>
             <MyBigData>
@@ -232,8 +240,11 @@ function UserProfile() {
               })}
             </div>
 
-            <div style={styles.myBigData}></div>
-            <NavBar4 style={styles.navBar} />
+            <MyBigData></MyBigData>
+            <div style={styles.navBar}>
+              <NavBar4/>
+            </div>
+
           </div>
         </Col>
         <Col className='col3'>
