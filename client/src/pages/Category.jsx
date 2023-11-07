@@ -3,7 +3,8 @@ import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
-import TopNav from '../components/TopNav';
+import GoBack from '../components/goBack';
+
 import { useState, useEffect } from 'react';
 import {
   Burger,
@@ -44,7 +45,7 @@ function CategoryPage() {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-around',
-    marginTop: '40px',
+    marginTop: '100px',
     height: 'auto',
     marginBottom: '0px',
   };
@@ -71,7 +72,7 @@ function CategoryPage() {
         <Col className='col2'>
           <div className='potz_container' style={backgroundStyle}>
             <nav>
-              <TopNav>카테고리 모아보기</TopNav>
+              <GoBack text={'카테고리'}></GoBack>
             </nav>
             <div className='contents_container' style={style1}>
               <div style={categoryContainer}>
