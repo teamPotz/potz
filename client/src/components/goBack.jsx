@@ -1,8 +1,12 @@
-import styled from 'styled-components';
-import COLOR from '../utility/Color';
-import Font from '../utility/Font';
+
+import styled from "styled-components";
+import COLOR from "../utility/Color";
+import Font from "../utility/Font";
+import { useNavigate } from "react-router-dom";
+
 
 // 사용법 <GoBack text={'뒤로 가기'}></GoBack>
+//페이지 상단에 fixed속성 포함되어 있습니다. contents_container 밖 potz_container에서 사용해 주세요.
 
 function GoBack(props) {
   const GoBackButtonStyle = styled.div`
@@ -38,28 +42,34 @@ function GoBack(props) {
       align-self: center;
     }
   `;
-  return (
-    <>
-      <GoBackButtonStyle>
-        <svg
-          width='29'
-          height='28'
-          viewBox='0 0 29 28'
-          fill='none'
-          xmlns='http://www.w3.org/2000/svg'
-        >
-          <path
-            d='M18.7495 22.1673L10.5828 14.0007L18.7495 5.83398'
-            stroke='black'
-            strokeWidth='1.75'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          />
-        </svg>
-        <div>{props.text}</div>
-      </GoBackButtonStyle>
-    </>
-  );
+
+    let navigate = useNavigate();
+
+    return(
+        <>
+            <GoBackButtonStyle onClick={navigate(-1)}>
+                    <svg
+                    width='29'
+                    height='28'
+                    viewBox='0 0 29 28'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
+                    >
+                    <path
+                        d='M18.7495 22.1673L10.5828 14.0007L18.7495 5.83398'
+                        stroke='black'
+                        strokeWidth='1.75'
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                    />
+                    </svg>
+                    <div>
+                    {props.text}
+                    </div>
+            </GoBackButtonStyle>
+        </>
+    )
+
 }
 
 export default GoBack;
