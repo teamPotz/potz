@@ -42,7 +42,7 @@ function SendMenu() {
       marginTop: '70px',
     },
     bottomButton: {
-      
+
     }
   };
   return (
@@ -129,7 +129,7 @@ function SendMenu() {
               </div>
               <ButtonBg
                 backgroundColor={COLOR.POTZ_PINK_DEFAULT}
-                hoverColor={COLOR.POTZ_PINK_100}
+                hoverColor={COLOR.POTZ_PINK_600}
                 fontColor={COLOR.WHITE}
               >
                 전송하기

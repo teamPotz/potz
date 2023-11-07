@@ -6,11 +6,12 @@ import COLOR from '../../utility/Color';
 import ChatRequireButton from '../../components/ChatRequireButton';
 import ChatInput from '../../components/ChatInput';
 import styled from 'styled-components';
+import SelectMenu from '../../components/selectMenu';
 
 //contents_container 안에 UI 구현 하시면 됩니다!
 
 function Chat() {
-  const BangJang = false;    //props로 방장인지 아닌지 결정 이건 임시
+  const BangJang = false; //props로 방장인지 아닌지 결정 이건 임시
 
   const GoBack = styled.div`
     display: flex;
@@ -142,6 +143,7 @@ function Chat() {
                 안녕하세요.<div>11:51</div>
               </MyMessageBox>
               <OpponentMessageBox>반가워요</OpponentMessageBox>
+              <SelectMenu></SelectMenu>
             </div>
 
             {BangJang ? (
