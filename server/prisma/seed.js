@@ -213,7 +213,7 @@ const postLikes = [
   { postId: 3, userId: 1, liked: true },
 ];
 
-const orders = [
+const deliveryOrders = [
   {
     deliveryPotId: 1,
     userId: 1,
@@ -373,9 +373,9 @@ async function main() {
     });
   }
 
-  // create orders
-  for (const order of orders) {
-    await prisma.order.create({
+  // create deliveryOrders
+  for (const order of deliveryOrders) {
+    await prisma.deliveryOrder.create({
       data: {
         deliveryPotId: order.deliveryPotId,
         userId: order.userId,
