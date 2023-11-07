@@ -10,13 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
-}
-
+// 연습용 테이블
 model PostTemp {
   id        Int      @id @default(autoincrement())
   title     String   @db.VarChar(255)
@@ -25,12 +19,157 @@ model PostTemp {
   updatedAt DateTime @updatedAt
 }
 
+// 사용자
+model User {
+  id                         Int                  @id @default(autoincrement())
+  email                      String               @unique
+  password                   String
+  name                       String
+  imageUrl                   String?
+  address                    String
+  latitude                   Float
+  longitude                  Float
+  accountNumber              String?
+  posts                      Post[]
+  communities                Community[]
+  likedPosts                 PostLike[]
+  createdDeliveryPots        DeliveryPot[]
+  participatedDeliveryPots   DeliveryPot[]        @relation(name: "ParticipantsRelation")
+  orders                     Order[]
+  deliveryPotHistoryAsMaster DeliveryPotHistory[]
+  deliveryPotHistoryAsMember DeliveryPotHistory[] @relation(name: "ParticipantsRelationHistory")
+  createdAt                  DateTime             @default(now())
+  updatedAt                  DateTime             @updatedAt
+}
+
+// 공동체
+model Community {
+  id             Int             @id @default(autoincrement())
+  name           String
+  latitude       Float
+  longitude      Float
+  imageUrl       String?
+  members        User[]
+  communityTypes CommunityType[]
+  posts          Post[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+// 공동체 특징(주택가, 교내시설, 학원, 기숙사, 지하철역 ...)
+model CommunityType {
+  id          Int         @id @default(autoincrement())
+  name        String      @unique
+  communities Community[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+// 게시글
 model Post {
+  id                Int                @id @default(autoincrement())
+  storeName         String
+  storeAddress      String
+  imageUrl          String?
+  orderLink         String?
+  category          Category           @relation(fields: [categoryId], references: [id])
+  categoryId        Int
+  recruitment       Int
+  meetingLocation   String
+  deliveryFees      DeliveryFee[]
+  deliveryDiscounts DeliveryDiscount[]
+  likedByUsers      PostLike[]
+  community         Community          @relation(fields: [communityId], references: [id])
+  communityId       Int
+  deliveryPot       DeliveryPot?
+  author            User               @relation(fields: [authorId], references: [id])
+  authorId          Int
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+// 카테고리(버거·샌드위치, 카페·디저트, 한식, 초밥·회, 중식·아시안, 피자, 치킨, 샐러드 ... )
+model Category {
   id        Int      @id @default(autoincrement())
-  title     String   @db.VarChar(255)
-  content   String?
+  name      String   @unique @db.VarChar(255)
+  posts     Post[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
+}
+
+// 배달비 정보
+model DeliveryFee {
+  id        Int  @id @default(autoincrement())
+  minAmount Int
+  maxAmount Int?
+  fee       Int
+  post      Post @relation(fields: [postId], references: [id])
+  postId    Int
+}
+
+// 배달비 할인 정보
+model DeliveryDiscount {
+  id                Int    @id @default(autoincrement())
+  minAmount         Int
+  discount          Int? // 할인금액 쿠폰인 경우
+  discountRate      Float? //할인율 쿠폰인 경우(e.g. 0.1 : 10% 할인)
+  maxDiscountAmount Int?
+  post              Post   @relation(fields: [postId], references: [id])
+  postId            Int
+}
+
+// 게시글 찜 정보
+model PostLike {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+  liked     Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, postId])
+}
+
+// 배달팟
+// todo : add status column : 정산 요청(정산해요), 메뉴선정 요청(메뉴 골라주세요), 수령 요청(배달 왔어요)
+model DeliveryPot {
+  id                 Int                 @id @default(autoincrement())
+  potMaster          User                @relation(fields: [potMasterId], references: [id])
+  potMasterId        Int
+  participants       User[]              @relation(name: "ParticipantsRelation")
+  post               Post                @relation(fields: [postId], references: [id])
+  postId             Int                 @unique
+  orders             Order[]
+  deliveryPotHistory DeliveryPotHistory?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+}
+
+// 주문
+model Order {
+  id               Int         @id @default(autoincrement())
+  deliveryPot      DeliveryPot @relation(fields: [deliveryPotId], references: [id])
+  deliveryPotId    Int
+  user             User        @relation(fields: [userId], references: [id])
+  userId           Int
+  menuName         String
+  quantity         Int
+  price            Int
+  imageUrl         String?
+  depositConfirmed Boolean     @default(false)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+// 배달팟 완료 이력
+model DeliveryPotHistory {
+  id            Int         @id @default(autoincrement())
+  potMaster     User        @relation(fields: [potMasterId], references: [id])
+  potMasterId   Int
+  participants  User[]      @relation(name: "ParticipantsRelationHistory") // 정산완료한 참가자만 넣기
+  deliveryPot   DeliveryPot @relation(fields: [deliveryPotId], references: [id])
+  deliveryPotId Int         @unique
+  orderedAt     DateTime    @default(now())
 }
