@@ -1,13 +1,15 @@
+
 import styled from "styled-components";
 import COLOR from "../utility/Color";
 import Font from "../utility/Font";
 import { useNavigate } from "react-router-dom";
 
+
 // 사용법 <GoBack text={'뒤로 가기'}></GoBack>
 //페이지 상단에 fixed속성 포함되어 있습니다. contents_container 밖 potz_container에서 사용해 주세요.
 
-function GoBack(props){
-    const GoBackButtonStyle = styled.div`
+function GoBack(props) {
+  const GoBackButtonStyle = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -25,10 +27,18 @@ function GoBack(props){
     line-height: 150%;
     font-color: ${COLOR.BLACK};
     & svg {
-        margin: 28px;
-        margin-right: 14px;
+      cursor: grab;
+      margin: 28px;
+      margin-right: 14px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: scale(1.18);
+        border-radius: 4px;
+      }
     }
     & div {
+      margin-top: 3px;
       align-self: center;
     }
   `;
@@ -59,6 +69,7 @@ function GoBack(props){
             </GoBackButtonStyle>
         </>
     )
+
 }
 
 export default GoBack;
