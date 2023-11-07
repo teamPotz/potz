@@ -4,8 +4,6 @@ import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
 import GoBack from '../components/goBack';
-
-import { useState, useEffect } from 'react';
 import {
   Burger,
   Cafe,
@@ -20,23 +18,6 @@ import {
 //contents_container 안에 UI 구현 하시면 됩니다!
 
 function CategoryPage() {
-  const [displayHeight, setdisplayHeight] = useState(window.innerHeight);
-
-  useEffect(() => {
-    const ReSizeHandler = () => {
-      setdisplayHeight(window.innerHeight);
-    };
-
-    //윈도우 리사이즈가 일어나면 콜백 호출
-    window.addEventListener('resize', ReSizeHandler);
-
-    return () => {
-      window.removeEventListener('resize', ReSizeHandler);
-    };
-  }, []);
-
-  let [userName, setUserName] = useState('수현');
-
   const backgroundStyle = {
     backgroundColor: COLOR.POTZ_PINK_100,
   };
