@@ -1,11 +1,11 @@
-import styled from "styled-components";
-import COLOR from "../utility/Color";
-import Font from "../utility/Font";
+import styled from 'styled-components';
+import COLOR from '../utility/Color';
+import Font from '../utility/Font';
 
 // 사용법 <GoBack text={'뒤로 가기'}></GoBack>
 
-function GoBack(props){
-    const GoBackButtonStyle = styled.div`
+function GoBack(props) {
+  const GoBackButtonStyle = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -23,37 +23,43 @@ function GoBack(props){
     line-height: 150%;
     font-color: ${COLOR.BLACK};
     & svg {
-        margin: 28px;
-        margin-right: 14px;
+      cursor: grab;
+      margin: 28px;
+      margin-right: 14px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: scale(1.18);
+        border-radius: 4px;
+      }
     }
     & div {
+      margin-top: 3px;
       align-self: center;
     }
   `;
-    return(
-        <>
-            <GoBackButtonStyle>
-                    <svg
-                    width='29'
-                    height='28'
-                    viewBox='0 0 29 28'
-                    fill='none'
-                    xmlns='http://www.w3.org/2000/svg'
-                    >
-                    <path
-                        d='M18.7495 22.1673L10.5828 14.0007L18.7495 5.83398'
-                        stroke='black'
-                        strokeWidth='1.75'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                    />
-                    </svg>
-                    <div>
-                    {props.text}
-                    </div>
-            </GoBackButtonStyle>
-        </>
-    )
+  return (
+    <>
+      <GoBackButtonStyle>
+        <svg
+          width='29'
+          height='28'
+          viewBox='0 0 29 28'
+          fill='none'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          <path
+            d='M18.7495 22.1673L10.5828 14.0007L18.7495 5.83398'
+            stroke='black'
+            strokeWidth='1.75'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+          />
+        </svg>
+        <div>{props.text}</div>
+      </GoBackButtonStyle>
+    </>
+  );
 }
 
 export default GoBack;
