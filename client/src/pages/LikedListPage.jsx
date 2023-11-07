@@ -3,17 +3,16 @@ import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
-import NavBarHomePage from '../components/NavBarHomePage';
-import HomeContents from '../components/HomeContentsComp';
-import { NavBar1 } from '../components/NavBars';
-import ButtonWrite from '../components/ButtonWrite';
+import LikedComp from '../components/LikedComp';
+import { NavBar2 } from '../components/NavBars';
 import COLOR from '../utility/Color';
-import ShareCommunityModal from '../components/shareCommunityModal';
+import Font from '../utility/Font';
 
-function Home() {
+function LikedList() {
+  let [likedNum, setLikedNum] = useState(30);
+
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
-
   useEffect(() => {
     const ReSizeHandler = () => {
       setdisplayWidth(window.innerWidth);
@@ -30,7 +29,7 @@ function Home() {
   //테스트용 데이터
   const testDatas = [
     {
-      store: '디저트123 송도점',
+      store: '디저트123 송도점 ',
       price: 230,
       link: '쿠팡이츠.link',
       imgSrc: '../../public/images/graphicImg/testImg.png',
@@ -56,7 +55,7 @@ function Home() {
       heart: false,
     },
     {
-      store: '프루츠 후르츠 프루츠 후르츠',
+      store: '프루츠 후르츠',
       price: 900,
       link: '배달의 민족.link',
       imgSrc: '../../public/images/graphicImg/testImg3.png',
@@ -138,17 +137,34 @@ function Home() {
     width: displayWidth ? displayWidth : '420px',
   };
 
-  const btnStyle = {
-    marginRight: '28px',
-    zIndex: '100',
+  const TopNav = {
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    height: '70px',
+    boxShadow: '0px 1.16px 2.3px 0px rgba(0, 0, 0, 0.06)',
   };
 
   const homeContentesContainer = {
-    marginBottom: '50px',
+    marginLeft: '28px',
+    display: 'grid',
+    gridTemplateColumns: ' repeat( auto-fit, minmax(160px, 1fr))',
+    marginBottom: '90px',
   };
 
   const backgroundStyle = {
-    backgroundColor: COLOR.POTZ_PINK_100,
+    backgroundColor: COLOR.WHITE,
+  };
+
+  const fontStyle = {
+    display: 'flex',
+    gap: '16px',
+    marginTop: '14px',
+    marginLeft: '28px',
+    fontFamily: Font.FontKor,
+    fontSize: '14px',
+    fontWeight: '700',
+    color: COLOR.GRAY_400,
   };
 
   return (
@@ -160,26 +176,53 @@ function Home() {
         <Col className='col2'>
           <div className='potz_container' style={backgroundStyle}>
             <div style={potzContainerStyle}>
-              <NavBarHomePage></NavBarHomePage>
+              <nav style={TopNav}>
+                <span
+                  style={{
+                    fontFamily: Font.FontKor,
+                    fontSize: '18px',
+                    fontWeight: '700',
+                    marginLeft: '28px',
+                  }}
+                >
+                  찜해둔 배달팟
+                </span>
+              </nav>
+              <div style={fontStyle}>
+                <div>
+                  <span>찜한 배달팟</span>
+                  <span style={{ marginLeft: '4px' }}>{likedNum}</span>
+                </div>
+                <span>카테고리별 보기</span>
+                <span>편집</span>
+              </div>
               <div style={homeContentesContainer}>
-                {/* 만약 컨텐츠 데이터 개수가 1개도 없을 경우 공동체 공유 모달창 띄우기 */}
+                {/* 찜 한 가게 데이터가 없는 경우 */}
                 {testDatas.length < 1 ? (
-                  <ShareCommunityModal></ShareCommunityModal>
+                  <div
+                    style={{
+                      marginTop: '40px',
+                      fontFamily: Font.FontKor,
+                      fontWeight: '700',
+                      color: COLOR.POTZ_PINK_DEFAULT,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      padding: '20px',
+                      background: COLOR.WHITE,
+                    }}
+                  >
+                    🍣 아직 찜 하신 가게가 없어요 🍣
+                  </div>
                 ) : null}
+                {/* 찜 한 가게 데이터가 있는 경우 */}
                 {testDatas.map((testData, index) => {
                   return (
-                    <HomeContents
-                      key={index}
-                      testData={testData}
-                    ></HomeContents>
+                    <LikedComp key={index} testData={testData}></LikedComp>
                   );
                 })}
               </div>
               <div style={navbarStyle}>
-                <div style={btnStyle}>
-                  <ButtonWrite></ButtonWrite>
-                </div>
-                <NavBar1></NavBar1>
+                <NavBar2></NavBar2>
               </div>
             </div>
           </div>
@@ -192,4 +235,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default LikedList;

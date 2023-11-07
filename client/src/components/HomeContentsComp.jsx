@@ -123,6 +123,13 @@ const HomeContents = (props) => {
     );
   };
 
+  const textOverflow = {
+    width: '124px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  };
+
   const imgStyle = {
     marginLeft: '28px',
   };
@@ -201,8 +208,8 @@ const HomeContents = (props) => {
       </div>
       <div style={fontWrapper}>
         <div style={fontContainer}>
-          <div style={fontStyle1}>
-            <span>{testData.store}</span>
+          <div style={textOverflow}>
+            <span style={fontStyle1}>{testData.store}</span>
           </div>
           <div style={fontStyle2}>
             <span style={coloredfont}>{testData.price}</span>
