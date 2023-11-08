@@ -11,7 +11,7 @@
 - FE : React,
 - BE : Express, MySQL, Prisma
 
-## how to run
+## How to Run
 
 ### 프로젝트 처음 세팅하는 경우
 
@@ -64,6 +64,10 @@
     npm install
     npm run dev
     ```
+
+## ERD
+
+![erd](./server/prisma/ERD.svg)
 
 ## prisma 모델 schema를 변경한 경우
 
