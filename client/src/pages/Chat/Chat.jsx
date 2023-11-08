@@ -124,49 +124,6 @@ function Chat() {
           {
             BangJang ? <ChatNavBar isBangJang={true}/> : <ChatNavBar isBangJang={false}/>
           }
-            {/* {BangJang ? (
-              <div style={styles.Wrapper}>
-                <div style={styles.ChatBox}>
-                  <div style={styles.RequireButtonBox}>
-                    <ChatRequireButton
-                      imageURL={'images/components/icon-coin-mono.png'}
-                      text={'정산 요청'}
-                    ></ChatRequireButton>
-                  </div>
-
-                  <div style={styles.RequireButtonBox}>
-                    <ChatRequireButton
-                      imageURL={'images/components/Union.png'}
-                      text={'메뉴 요청'}
-                    ></ChatRequireButton>
-                  </div>
-
-                  <div style={styles.RequireButtonBox}>
-                    <ChatRequireButton
-                      imageURL={'images/components/Arrow - Right Square.png'}
-                      text={'수령 요청'}
-                    ></ChatRequireButton>
-                  </div>
-                </div>
-                <div style={styles.ChatInputBox}>
-                  <ChatInput />
-                </div>
-              </div>
-            ) : (
-              <div style={styles.Wrapper}>
-                <div style={styles.ChatBox}>
-                  <div style={styles.RequireButtonBox}>
-                    <ChatRequireButton
-                      imageURL={'images/components/Union.png'}
-                      text={'메뉴 전송'}
-                    ></ChatRequireButton>
-                  </div>
-                </div>
-                <div style={styles.ChatInputBox}>
-                  <ChatInput />
-                </div>
-              </div>
-            )} */}
           </div>
         </Col>
         <Col className='col3'>

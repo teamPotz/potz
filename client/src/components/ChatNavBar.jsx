@@ -38,20 +38,19 @@ function ChatNavBar(props) {
       justifyContent: 'center',
       alignItems: 'center',
       position: 'absolute',
-      width: '100%',
+      width: '420px',
       height: '61.83px',
-      left: '0px',
-      bottom: '0px',
+      bottom: '0',
       background: `${COLOR.WHITE}`,
     },
   };
 
   return (
     <>
-      <div style={styles.Wrapper}>
-        <div style={styles.ChatBox}>
+
           {props.isBangJang ? (
-            <div>
+                 <div style={styles.Wrapper}>
+                 <div style={styles.ChatBox}>
               <div style={styles.RequireButtonBox}>
                 <ChatRequireButton
                   imageURL={'images/components/icon-coin-mono.png'}
@@ -73,19 +72,23 @@ function ChatNavBar(props) {
                 ></ChatRequireButton>
               </div>
             </div>
+            </div>
           ) : (
+            <div style={styles.Wrapper}>
+            <div style={styles.ChatBox}>
             <div style={styles.RequireButtonBox}>
               <ChatRequireButton
                 imageURL={'images/components/Union.png'}
                 text={'메뉴 요청'}
               ></ChatRequireButton>
             </div>
+            </div>
+            </div>
           )}
-        </div>
         <div style={styles.ChatInputBox}>
           <ChatInput />
         </div>
-      </div>
+ 
     </>
   );
 }
