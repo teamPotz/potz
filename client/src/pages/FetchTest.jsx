@@ -11,14 +11,14 @@ function FetchTest() {
   }, []);
 
   async function getData() {
-    const res = await fetch(`${BASE_URL}/post`);
+    const res = await fetch(`${BASE_URL}/posts/sample`);
     const data = await res.json();
     console.log(data);
     setResult(data);
   }
 
   async function createPost() {
-    const res = await fetch(`${BASE_URL}/post`, {
+    const res = await fetch(`${BASE_URL}/posts/sample`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

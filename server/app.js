@@ -4,7 +4,9 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
 import authRouter from './routes/auth.js';
-import postRouter from './routes/post.js';
+import communitiesRouter from './routes/communities.js';
+import postsRouter from './routes/posts.js';
+import ordersRouter from './routes/orders.js';
 
 const app = express();
 dotenv.config();
@@ -17,11 +19,14 @@ app.use(
     credentials: true,
   })
 );
+app.use(express.static('public'));
 app.use(express.json());
 app.use(cookieParser());
 
 app.use('/auth', authRouter);
-app.use('/post', postRouter);
+app.use('/communities', communitiesRouter);
+app.use('/posts', postsRouter);
+app.use('/orders', ordersRouter);
 
 app.listen(port, () =>
   console.log('> Server is up and running on port : ' + port)
