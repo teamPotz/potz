@@ -6,6 +6,7 @@
 import React from "react";
 import COLOR from "../utility/Color";
 import styled from "styled-components";
+import Font from "../utility/Font";
 
 const ChatRequireButton = (props) => {
     const Wrapper = styled.div`
@@ -49,7 +50,7 @@ const ChatRequireButton = (props) => {
     const Text = styled.div`
         width: 54.83px;
         height: 21px;
-        font-family: 'Noto Sans CJK KR';   //수정예정
+        font-family: ${Font.FontKor};
         font-style: normal;
         font-weight: 400;
         font-size: 13px;

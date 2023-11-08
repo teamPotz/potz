@@ -3,32 +3,8 @@ import COLOR from '../utility/Color';
 import styled from 'styled-components';
 import Font from '../utility/Font';
 
-function SelectMenu(props) {
-  const Button = styled.button`
-  font-family: ${Font.FontKor};
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 500;
-  border: none;
-  border-radius: 12px;
-  display: flex;
-  width: 240.33px;
-  height: 47px;
-  padding: 9.333px 18.667px;
-  justify-content: center;
-  align-items: center;
-  gap: 11px;
-  background-color: ${props => props.backgroundColor};
-  color: ${props => props.fontColor};
-  cursor: grab;
-
-  // 호버 상태 스타일
-  &:hover {
-    background-color: ${props => props.hoverColor};
-  }
-`;
-
-const FontBig = styled.p`
+function CheckMenu(props) {
+  const FontBig = styled.p`
 font-family: ${Font.FontKor};
 font-style: normal;
 font-weight: 550;
@@ -39,8 +15,8 @@ margin: 0;
 
   const styles = {
     background: {
-      width: '277.67px',
-      height: '308px',
+      width: '275.33px',
+      height: '221px',
       padding: '11.6667px 18.6667px 18.6667px',
       backgroundColor: `${COLOR.WHITE}`,
       borderRadius: '14px',
@@ -59,15 +35,17 @@ margin: 0;
       height: '28px',
       display: 'flex',
       flexDirection: 'row',
-      gap: '11.67px',
       alignItems: 'center',
+      gap: '11.67px',
     },
     content: {
       width: '240.33px',
       height: '148.17px',
       boxSizing: 'border-box',
-      border: `1.16667px solid #EDEDED`,
-      borderRadius: '9.33333px',
+      display: 'flex',  
+      justifyContent: 'center',
+      // border: `1.16667px solid #EDEDED`,
+      // borderRadius: '9.33333px',
     },
   };
   return (
@@ -88,22 +66,15 @@ margin: 0;
               fill='#FFAAA5'
             />
           </svg>
-          <FontBig>메뉴 선정</FontBig>
+          <FontBig>메뉴 확인</FontBig>
         </div>
-        <div style={styles.content}></div>
-        <div>총 금액 8500원</div>
-        <div>
-          <Button
-            backgroundColor={COLOR.POTZ_PINK_DEFAULT}
-            hoverColor={COLOR.POTZ_PINK_600}
-            fontColor={COLOR.WHITE}
-          >
-            메뉴 확인
-          </Button>
+        <div style={styles.content}>
+          <img src='/images/graphicImg/CategoryBurger.png'></img>
         </div>
+        <div>김수민님의 배달 메뉴 확인 완료!</div>
       </div>
     </div>
   );
 }
 
-export default SelectMenu;
+export default CheckMenu;
