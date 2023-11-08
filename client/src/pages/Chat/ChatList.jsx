@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import COLOR from '../../utility/Color';
 import Font from '../../utility/Font';
 import { NavBar3 } from '../../components/NavBars';
-import ChatSvg from '../Chat/ChatSvg';
 
 //contents_container 안에 UI 구현 하시면 됩니다!
 
