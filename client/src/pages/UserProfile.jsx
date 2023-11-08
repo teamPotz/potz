@@ -5,68 +5,82 @@ import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
 import styled from 'styled-components';
 import { NavBar4 } from '../components/NavBars';
+import Font from '../utility/Font';
 
 //contents_container 안에 UI 구현 하시면 됩니다!
 
 function UserProfile() {
-  const Profile = styled.div`
+  const Box = styled.div`
     display: flex;
-    flex-direction: column;
-    background-color: ${COLOR.WHITE};
-    height: 199.33px;
-    & > div{
-      margin: 28px;
-      margin-top: 14px;
-    }
-    & > div:first-child{
-      display: flex;
-      flex-direction: row;
-      height: 70px;
-      & > img{
-        width: 70px;
-        height: 70px;
-        borderRadius: '50%',
-      }
-      & > div:last-child{
-        display: flex;
-        flex-direction: row;
-        width: 276.5px;
-        justify-content: space-between;
-        
-      }
-    }
-    & > div:last-child{
-      height: 78px;
-      background-color: ${COLOR.GRAY_100};
-      border-radius: 9.33333px;
-
-    }
-  `;
-  const MyBigData = styled.div`
-    display: flex;
-    flex-direction: row;
-    alignitems: center;
-    width: 100%;
-    height: 74.67px;
-    justify-content: space-between;
-    background-color: ${COLOR.WHITE};
-    & div {
-      display: flex;
-      flex-direction: row;
-      margin: 28px;
-    }
-  `;
-  const MySetting = styled.div`
-    display: flex;
-    flex-direction: row;
+    flex-direction: ${(props) => props.align};
     align-items: center;
     width: 100%;
-    height: 61.83px;
+    height: ${(props) => props.height};
     justify-content: space-between;
     background-color: ${COLOR.WHITE};
-    & div {
+    gap: 21px;
+    div {
       margin: 28px;
     }
+    p {
+      margin: 0px;
+    }
+  `;
+  const Profile1 = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 21px;
+    align-items: center;
+    height: 70px;
+    margin: 28px;
+    div {
+      margin: 0;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 276.5px;
+    }
+  `;
+  const Profile2 = styled.div`
+    display: flex;
+    width: 363.33px;
+    height: 78px;
+    transform: translateY(-46px);
+    background-color: ${COLOR.GRAY_100};
+    border-radius: 9.33333px;
+    div {
+      margin: 0px;
+      padding: 14px 35px 14px 16.3333px;
+    }
+  `;
+
+  const FontBig = styled.p`
+    font-family: ${Font.FontKor};
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18.6667px;
+    color: ${COLOR.BLACK};
+    margin: 0;
+    white-space: nowrap;
+  `;
+  const FontMd = styled.span`
+    font-family: ${Font.FontKor};
+    font-style: normal;
+    font-weight: ${(props) => props.weight};
+    font-size: 16.3333px;
+    color: ${(props) => props.color};
+    margin: 0;
+    white-space: nowrap;
+  `;
+  const FontSm = styled.span`
+    font-family: ${Font.FontKor};
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    color: ${COLOR.GRAY_500};
+    margin: 0;
+    white-space: nowrap;
   `;
 
   const styles = {
@@ -76,34 +90,25 @@ function UserProfile() {
       flexDirection: 'column',
       gap: '9.33px',
     },
-    profileTitle: {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      width: '100%',
-      height: '70px',
-      justifyContent: 'space-between',
-      backgroundColor: `${COLOR.WHITE}`
+    topBar: {
+      width: '420px',
+      position: 'fixed',
+      top: 0,
+      boxShadow: '0px 1.16667px 2.33333px rgba(0, 0, 0, 0.08)',
     },
-    myBankAccount: {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      padding: '0px',
-      width: '100%',
-      height: '91px',
-      justifyContent: 'space-between',
-      backgroundColor: `${COLOR.WHITE}`,
+    content: {
+      marginTop: '60.67px',
     },
     navBar: {
       position: 'fixed',
       bottom: 0,
       width: '420px',
-    }
-  };
-
-  const gap = {
-    gapSm: {
+    },
+    verticalAlign: {
+      display: 'flex',
+      alignItems: 'center',
+    },
+    contentBox: {
       display: 'flex',
       flexDirection: 'column',
       gap: '1.5px',
@@ -127,8 +132,13 @@ function UserProfile() {
         <Col className='col2'>
           <div className='potz_container' style={styles.background}>
             <div className='contents_container'></div>
-            <div style={styles.profileTitle}>
-                  <div>마이 팟즈</div>
+            <div style={styles.topBar}>
+              <Box height={'70px'}>
+                <div>
+                  <FontBig>마이 팟즈</FontBig>
+                </div>
+                <div>
+                  {' '}
                   <svg
                     width='29'
                     height='28'
@@ -144,39 +154,60 @@ function UserProfile() {
                     />
                   </svg>
                 </div>
-            <Profile>
-              <div>
-              <div>
-                <img src='/images/graphicImg/testProfile.png'/>
-              김기성</div>
-              <svg
-                        width='29'
-                        height='29'
-                        viewBox='0 0 29 29'
-                        fill='none'
-                        xmlns='http://www.w3.org/2000/svg'
-                      >
-                        <path
-                          d='M10.249 6.08463L18.4157 14.2513L10.249 22.418'
-                          stroke='#A8A8A8'
-                          strokeWidth='1.75'
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                        />
-                      </svg>
-                      
-              </div>
-              <div style={{padding: '14px 35px 14px 16.3333px', height: '78px'}}>
-                김기성님!<br></br>이번 달 팟즈로 배달비 100원을 절약했어요.
-              </div>
-            </Profile>
-            <MyBigData>
-              <div>
+              </Box>
+            </div>
+            <div style={styles.content}>
+              <Box height={'227.33px'} align={'column'}>
+                <Profile1>
+                  <img
+                    src='./images/graphicImg/testProfile.png'
+                    style={{ width: '70px' }}
+                  />
+                  <div>
+                    <span>
+                      <FontBig>김기성</FontBig>
+                      <FontSm color={`${COLOR.GRAY_500}`}>인천 연수구</FontSm>
+                    </span>
+                    <svg
+                      width='29'
+                      height='29'
+                      viewBox='0 0 29 29'
+                      fill='none'
+                      xmlns='http://www.w3.org/2000/svg'
+                    >
+                      <path
+                        d='M10.25 6.16764L18.4167 14.3343L10.25 22.501'
+                        stroke='#373737'
+                        strokeWidth='1.75'
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                      />
+                    </svg>
+                  </div>
+                </Profile1>
+                <Profile2>
+                  <div>
+                    <FontMd weight={500} color={`${COLOR.GRAY_400}`}>
+                      김기성님! <p></p>이번 달 팟즈로{' '}
+                      <FontMd weight={500} color={`${COLOR.POTZ_PINK_DEFAULT}`}>
+                        배달비 26000원
+                      </FontMd>
+                      을 절약했어요.
+                    </FontMd>
+                  </div>
+                </Profile2>
+              </Box>
+            </div>
+            <Box height={'74.67px'}>
+              <div style={styles.verticalAlign}>
+                {' '}
                 <img
                   style={{ width: '60.67px', height: '60.67px' }}
                   src='/images/graphicImg/heart1.png'
                 ></img>
-                내 맛집 빅데이터
+                <FontMd weight={700} color={`${COLOR.BLACK}`}>
+                  내 맛집 빅데이터
+                </FontMd>
               </div>
               <div>
                 <svg
@@ -195,28 +226,35 @@ function UserProfile() {
                   />
                 </svg>
               </div>
-            </MyBigData>
+            </Box>
 
-            <div style={gap.gapSm}>
-              <div style={styles.myBankAccount}>
-                <div style={{ margin: '28px' }}>
-                  <div>간편 입력 계좌 번호</div>
-                  <div>1234-12345-1234-1234 김기성</div>
+            <div style={styles.contentBox}>
+              <Box height={'91px'}>
+                <div>
+                  <FontMd color={COLOR.BLACK} weight={400}>
+                    간편 입력 계좌 번호
+                  </FontMd>
+                  <FontMd color={COLOR.GRAY_400} weight={400}>
+                    1234-12345-1234-1234 김기성
+                  </FontMd>
                 </div>
-
-                <div style={{ margin: '28px' }}>
+                <div>
                   <img
                     src='/images/graphicImg/toggleButton.png'
                     style={{ width: '46.67px' }}
                   ></img>
                 </div>
-              </div>
+              </Box>
 
               {text.map((text) => {
                 return (
                   <>
-                    <MySetting>
-                      <div>{text}</div>
+                    <Box height={'61.83px'}>
+                      <div>
+                        <FontMd weight={400} color={COLOR.BLACK}>
+                          {text}
+                        </FontMd>
+                      </div>
                       <div>
                         <svg
                           width='29'
@@ -234,17 +272,16 @@ function UserProfile() {
                           />
                         </svg>
                       </div>
-                    </MySetting>
+                    </Box>
                   </>
                 );
               })}
             </div>
 
-            <MyBigData></MyBigData>
+            <Box height={'200px'}></Box>
             <div style={styles.navBar}>
-              <NavBar4/>
+              <NavBar4 />
             </div>
-
           </div>
         </Col>
         <Col className='col3'>
