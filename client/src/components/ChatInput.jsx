@@ -88,7 +88,7 @@ const ChatInput = () => {
     <>
       <Wrapper>
         <DeleteButton />
-        <Input onChange={Message} />
+        <Input placeholder={'메시지를 입력하세요'} onChange={Message} />
         <SendButton />
       </Wrapper>
     </>

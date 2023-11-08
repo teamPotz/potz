@@ -10,7 +10,7 @@ import TagFood from '../components/TagFood';
 
 //contents_container 안에 UI 구현 하시면 됩니다!
 
-function Post(props) {
+function Post() {
   const Button = styled.div`
     width: 100%;
     height: ${(props) => props.height};
