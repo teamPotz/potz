@@ -7,10 +7,13 @@ import GoBack from '../components/goBack';
 import styled from 'styled-components';
 import ButtonBg from '../components/ButtonBG';
 import TagFood from '../components/TagFood';
+import Font from '../utility/Font';
 
 //contents_container 안에 UI 구현 하시면 됩니다!
 
 function Post() {
+  const screenHeight = window.innerHeight - 98;
+
   const Button = styled.div`
     width: 100%;
     height: ${(props) => props.height};
@@ -22,6 +25,70 @@ function Post() {
     justify-content: ${(props) => props.space};
   `;
 
+  const Input = styled.input`
+    border: none;
+    height: 30px;
+    width: ${(props) => props.width};
+    placeholder: ${(props) => props.placeholder};
+    &::placeholder {
+      color: ${COLOR.POTZ_PINK_300};
+    }
+    font-family: ${Font.FontKor};
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16.33px;
+    color: ${COLOR.POTZ_PINK_400};
+    &:focus {
+      outline: none;
+      &::placeholder {
+        color: ${COLOR.POTZ_PINK_400};
+      }
+    }
+  `;
+  const LinkInput = styled.input`
+    border: none;
+    height: 30px;
+    width: 364px;
+    placeholder: ${(props) => props.placeholder};
+    &::placeholder {
+      color: ${COLOR.GRAY_300};
+    }
+    font-family: ${Font.FontKor};
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16.33px;
+    color: ${COLOR.GRAY_400};
+    &:focus {
+      outline: none;
+      &::placeholder {
+        color: ${COLOR.GRAY_400};
+      }
+    }
+  `;
+
+  const FontBig = styled.span`
+    font-family: ${Font.FontKor};
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18.67px;
+    color: ${COLOR.GRAY_500};
+  `;
+
+  const FontMd = styled.span`
+    font-family: ${Font.FontKor};
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16.33px;
+    color: ${COLOR.GRAY_500};
+  `;
+  const FontSm = styled.span`
+    font-family: ${Font.FontKor};
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: ${COLOR.GRAY_400};
+  `;
+
   const styles = {
     background: {
       backgroundColor: `${COLOR.WHITE}`,
@@ -29,6 +96,7 @@ function Post() {
     },
     container: {
       marginTop: '70px',
+      height: screenHeight,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
@@ -78,7 +146,7 @@ function Post() {
                     </svg>
                   </div>
                   <div>
-                    <div>가게 이름</div>
+                    <FontBig>가게 이름</FontBig>
                     <div>
                       <svg
                         width='15'
@@ -94,15 +162,12 @@ function Post() {
                           fill='#808080'
                         />
                       </svg>
-                      지도로 가게 검색하기
+                      <FontSm>지도로 가게 검색하기</FontSm>
                     </div>
                   </div>
                 </Button>
                 <Button height={'74.67px'}>
-                  <input
-                    placeholder='관련 링크 붙여넣기'
-                    style={{ border: 'none' }}
-                  ></input>
+                  <LinkInput placeholder='관련 링크 붙여넣기'></LinkInput>
                 </Button>
                 <Button space={'space-between'} height={'74.67px'}>
                   <TagFood>카테고리</TagFood>
@@ -138,7 +203,7 @@ function Post() {
                       fill='#A8A8A8'
                     />
                   </svg>
-                  <div>마감 인원 수</div> <div></div>
+                  <Input width='320px' placeholder='마감 인원 수'></Input>
                 </Button>
                 <Button height={'74.67px'}>
                   <svg
@@ -156,7 +221,7 @@ function Post() {
                     />
                   </svg>
 
-                  <div>만날 장소</div>
+                  <Input width='320px' placeholder='만날 장소'></Input>
                 </Button>
                 <Button height={'74.67px'}>
                   <svg
@@ -174,7 +239,9 @@ function Post() {
                     />
                   </svg>
 
-                  <div>얼마 이상 주문 시 배달비 얼마</div>
+                  <Input width='31px' placeholder='얼마'></Input>
+                  <FontMd>이상 주문 시 배달비</FontMd>
+                  <Input width='31px' placeholder='얼마'></Input>
                 </Button>
                 <Button height={'74.67px'}>
                   <svg
@@ -191,12 +258,14 @@ function Post() {
                       fill='#A8A8A8'
                     />
                   </svg>
-
-                  <div>얼마 이상 주문 시 얼마 할인</div>
+                  <Input width='31px' placeholder='얼마'></Input>{' '}
+                  <FontMd>이상 주문 시</FontMd>
+                  <Input width='31px' placeholder='얼마'></Input>{' '}
+                  <FontMd>할인</FontMd>
                 </Button>
               </div>
 
-              <div className='btn_container'>
+              <div>
                 <ButtonBg
                   backgroundColor={COLOR.POTZ_PINK_DEFAULT}
                   hoverColor={COLOR.POTZ_PINK_600}

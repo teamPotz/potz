@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import COLOR from '../utility/Color';
 import styled from 'styled-components';
+import Font from '../utility/Font';
 
 const ChatInput = () => {
   const [message, setMessage] = useState([]);
@@ -52,12 +53,11 @@ const ChatInput = () => {
 
     width: 262.667px;
     height: 25px;
-    font-family: 'Noto Sans CJK KR'; //수정예정
+    font-family: ${Font.FontKor};
     font-style: normal;
     font-weight: 400;
     font-size: 16.3333px;
     line-height: 150%;
-    /* identical to box height, or 25px */
     display: flex;
     align-items: center;
     color: ${COLOR.GRAY_500};
