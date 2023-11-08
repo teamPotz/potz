@@ -10,10 +10,18 @@ import SelectMenu from '../../components/selectMenu';
 import GoBack from '../../components/goBack';
 import Font from '../../utility/Font';
 import CheckMenu from '../../components/ckeckMenu';
+import { useEffect } from 'react';
+import ChatNavBar from '../../components/ChatNavBar';
 //contents_container 안에 UI 구현 하시면 됩니다!
 
 function Chat() {
   const BangJang = true; //props로 방장인지 아닌지 결정 이건 임시
+
+  useEffect(() => {
+    const contentsContainer = document.querySelector('.contents_container');
+    console.log(contentsContainer.scrollHeight);
+    contentsContainer.scrollTop = contentsContainer.scrollHeight;
+  },[]);
 
   const MessageBox = styled.div`
     background-color: ${props => props.isMyMessage ? `${COLOR.POTZ_PINK_500}` : `${COLOR.WHITE}`};
@@ -103,7 +111,7 @@ function Chat() {
             <GoBack text={'버거킹 하버뷰점'}></GoBack>
 
             {/* 받아온 데이터는 contents-container에 구현합니다. */}
-            <div className='contents_container' style={styles.Content}>
+            <div className='contents_container' id='contents_container' style={styles.Content}>
               <MessageBox isMyMessage={true}>안녕하세요<div>11:51<svg width="13" height="10" viewBox="0 0 13 10" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M4.61751 7.95284L2.03616 5.37149C1.9078 5.24752 1.73589 5.17892 1.55745 5.18047C1.37901 5.18202 1.20832 5.2536 1.08214 5.37978C0.955962 5.50596 0.884389 5.67665 0.882838 5.85509C0.881288 6.03353 0.949884 6.20544 1.07385 6.33379L4.13635 9.39629C4.26398 9.52388 4.43705 9.59555 4.61751 9.59555C4.79796 9.59555 4.97104 9.52388 5.09866 9.39629L12.5848 1.91018C12.7087 1.78183 12.7773 1.60992 12.7758 1.43148C12.7742 1.25304 12.7027 1.08235 12.5765 0.956166C12.4503 0.829986 12.2796 0.758412 12.1012 0.756862C11.9227 0.755311 11.7508 0.823908 11.6225 0.947876L4.61751 7.95284Z" fill="white"/>
 </svg>
@@ -113,8 +121,10 @@ function Chat() {
               <MessageBox isMyMessage={false}>2000원 더 모이면 3000원 할인 쿠폰을 사용할 수 있다는데 어떻게 하실래요?<div>12:15</div></MessageBox>
               <CheckMenu isMyMessage={false}></CheckMenu>
             </div>
-
-            {BangJang ? (
+          {
+            BangJang ? <ChatNavBar isBangJang={true}/> : <ChatNavBar isBangJang={false}/>
+          }
+            {/* {BangJang ? (
               <div style={styles.Wrapper}>
                 <div style={styles.ChatBox}>
                   <div style={styles.RequireButtonBox}>
@@ -156,7 +166,7 @@ function Chat() {
                   <ChatInput />
                 </div>
               </div>
-            )}
+            )} */}
           </div>
         </Col>
         <Col className='col3'>
