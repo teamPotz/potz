@@ -253,11 +253,15 @@ async function main() {
         email: user.email,
         password: user.password,
         name: user.name,
-        address: user.address,
-        imageUrl: user.imageUrl,
-        latitude: user.latitude,
-        longitude: user.longitude,
-        accountNumber: user.accountNumber,
+        profile: {
+          create: {
+            imageUrl: user.imageUrl,
+            address: user.address,
+            latitude: user.latitude,
+            longitude: user.longitude,
+            accountNumber: user.accountNumber,
+          },
+        },
       },
     });
   }
