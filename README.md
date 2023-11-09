@@ -67,7 +67,157 @@
 
 ## ERD
 
-![erd](./server/prisma/ERD.svg)
+```mermaid
+erDiagram
+
+
+  "User" {
+    Int id "🗝️"
+    String email
+    String password
+    String name
+    DateTime createdAt
+    DateTime updatedAt
+    }
+
+
+  "UserProfile" {
+    Int id "🗝️"
+    String imageUrl "❓"
+    String address "❓"
+    Float latitude "❓"
+    Float longitude "❓"
+    String accountNumber "❓"
+    DateTime updatedAt
+    }
+
+
+  "Community" {
+    Int id "🗝️"
+    String name
+    Float latitude
+    Float longitude
+    String imageUrl "❓"
+    DateTime createdAt
+    DateTime updatedAt
+    }
+
+
+  "CommunityType" {
+    Int id "🗝️"
+    String name
+    DateTime createdAt
+    DateTime updatedAt
+    }
+
+
+  "Post" {
+    Int id "🗝️"
+    String storeName
+    String storeAddress
+    String imageUrl "❓"
+    String orderLink "❓"
+    Int recruitment
+    String meetingLocation
+    DateTime createdAt
+    DateTime updatedAt
+    }
+
+
+  "Category" {
+    Int id "🗝️"
+    String name
+    DateTime createdAt
+    DateTime updatedAt
+    }
+
+
+  "DeliveryFee" {
+    Int id "🗝️"
+    Int minAmount
+    Int maxAmount "❓"
+    Int fee
+    }
+
+
+  "DeliveryDiscount" {
+    Int id "🗝️"
+    Int minAmount
+    Int discount "❓"
+    Float discountRate "❓"
+    Int maxDiscountAmount "❓"
+    }
+
+
+  "PostLike" {
+    Int id "🗝️"
+    Boolean liked
+    DateTime createdAt
+    DateTime updatedAt
+    }
+
+
+  "DeliveryPot" {
+    Int id "🗝️"
+    DateTime createdAt
+    DateTime updatedAt
+    }
+
+
+  "DeliveryOrder" {
+    Int id "🗝️"
+    String menuName
+    Int quantity
+    Int price
+    String imageUrl "❓"
+    Boolean depositConfirmed
+    DateTime createdAt
+    DateTime updatedAt
+    }
+
+
+  "DeliveryPotHistory" {
+    Int id "🗝️"
+    DateTime orderedAt
+    }
+
+    "User" o{--}o "UserProfile" : "profile"
+    "User" o{--}o "Post" : "posts"
+    "User" o{--}o "Community" : "communities"
+    "User" o{--}o "PostLike" : "likedPosts"
+    "User" o{--}o "DeliveryPot" : "createdDeliveryPots"
+    "User" o{--}o "DeliveryPot" : "participatedDeliveryPots"
+    "User" o{--}o "DeliveryOrder" : "orders"
+    "User" o{--}o "DeliveryPotHistory" : "deliveryPotHistoryAsMaster"
+    "User" o{--}o "DeliveryPotHistory" : "deliveryPotHistoryAsMember"
+    "UserProfile" o|--|| "User" : "user"
+    "Community" o{--}o "User" : "members"
+    "Community" o{--}o "CommunityType" : "communityTypes"
+    "Community" o{--}o "Post" : "posts"
+    "CommunityType" o{--}o "Community" : "communities"
+    "Post" o|--|| "Category" : "category"
+    "Post" o{--}o "DeliveryFee" : "deliveryFees"
+    "Post" o{--}o "DeliveryDiscount" : "deliveryDiscounts"
+    "Post" o{--}o "PostLike" : "likedByUsers"
+    "Post" o|--|| "Community" : "community"
+    "Post" o{--}o "DeliveryPot" : "deliveryPot"
+    "Post" o|--|| "User" : "author"
+    "Category" o{--}o "Post" : "posts"
+    "DeliveryFee" o|--|| "Post" : "post"
+    "DeliveryDiscount" o|--|| "Post" : "post"
+    "PostLike" o|--|| "User" : "user"
+    "PostLike" o|--|| "Post" : "post"
+    "DeliveryPot" o|--|| "User" : "potMaster"
+    "DeliveryPot" o{--}o "User" : "participants"
+    "DeliveryPot" o|--|| "Post" : "post"
+    "DeliveryPot" o{--}o "DeliveryOrder" : "orders"
+    "DeliveryPot" o{--}o "DeliveryPotHistory" : "deliveryPotHistory"
+    "DeliveryOrder" o|--|| "DeliveryPot" : "deliveryPot"
+    "DeliveryOrder" o|--|| "User" : "user"
+    "DeliveryPotHistory" o|--|| "User" : "potMaster"
+    "DeliveryPotHistory" o{--}o "User" : "participants"
+    "DeliveryPotHistory" o|--|| "DeliveryPot" : "deliveryPot"
+```
 
 ## prisma 모델 schema를 변경한 경우
 
