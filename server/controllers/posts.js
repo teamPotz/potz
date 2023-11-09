@@ -181,7 +181,6 @@ export async function getPosts(req, res) {
         appliedDeliveryFeeInfo,
         totalOrderPrice
       );
-      console.log(nextDeliveryFeeInfo);
 
       // 적용된 할인 정보
       const appliedDiscountInfo = getAppliedDiscountInfo(
@@ -250,7 +249,8 @@ export async function getPostById(req, res) {
           select: { name: true },
         },
         author: {
-          select: { imageUrl: true },
+          // select: { imageUrl: true },
+          select: { profile: { select: { imageUrl: true } } },
         },
         deliveryPot: {
           select: {
@@ -303,7 +303,7 @@ export async function getPostById(req, res) {
       imageUrl: post.imageUrl,
       orderLink: post.orderLink,
       category: post.category.name,
-      potMasterProfileImg: post.author.imageUrl,
+      potMasterProfileImg: post.author.profile.imageUrl,
       participantsCount: post.deliveryPot._count.participants,
       recruitment: post.recruitment,
       meetingLocation: post.meetingLocation,
@@ -317,7 +317,6 @@ export async function getPostById(req, res) {
     };
 
     res.status(200).send(transformedPost);
-    // res.status(200).send(post);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'get posts error' });
