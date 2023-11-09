@@ -462,6 +462,55 @@ function Detail() {
     fontFamily: Font.FontKor,
   };
 
+  const marginLeftStyle = {
+    marginLeft: '20px',
+  };
+
+  const marginRightStyle = {
+    marginRight: '20px',
+  };
+
+  const marginBottomStyle = {
+    marginBottom: '20px',
+  };
+
+  const paddingStyle = {
+    padding: '12px',
+  };
+
+  const storeFont = {
+    fontWeight: '700',
+    fontSize: '24px',
+    marginBottom: '12px',
+  };
+
+  const fontStyle1 = {
+    fontFamily: Font.FontKor,
+    fontSize: '16px',
+    color: COLOR.GRAY_400,
+  };
+
+  const fontStyle2 = {
+    marginLeft: '8px',
+    color: COLOR.GRAY_500,
+  };
+
+  const fontStyle3 = {
+    fontSize: '19px',
+    fontWeight: '700',
+  };
+
+  const fontStyle4 = {
+    display: 'flex',
+    gap: '8px',
+    fontSize: '14px',
+    color: COLOR.GRAY_400,
+  };
+
+  const coloredFont = {
+    color: COLOR.POTZ_PINK_DEFAULT,
+  };
+
   return (
     <Container className='background'>
       <Row className='row1'>
@@ -473,14 +522,14 @@ function Detail() {
             <div style={imgContainer}>
               <img src={testData1.imgSrc}></img>
               <div style={TopStyle}>
-                <ButtonWrap style={{ marginLeft: '20px' }}>
+                <ButtonWrap style={marginLeftStyle}>
                   <BackIcon></BackIcon>
                 </ButtonWrap>
                 <div style={{ display: 'flex' }}>
                   <ButtonWrap>
                     <SaleIcon></SaleIcon>
                   </ButtonWrap>
-                  <ButtonWrap style={{ marginRight: '20px' }}>
+                  <ButtonWrap style={marginRightStyle}>
                     <BurgerIcon></BurgerIcon>
                   </ButtonWrap>
                 </div>
@@ -492,16 +541,10 @@ function Detail() {
             </div>
             <div>
               <div className='contents_container'>
-                <div
-                  style={{
-                    fontWeight: '700',
-                    fontSize: '24px',
-                    marginBottom: '12px',
-                  }}
-                >
+                <div style={storeFont}>
                   <span>{testData1.store}</span>
                 </div>
-                <div style={{ marginBottom: '40px' }}>
+                <div style={marginBottomStyle}>
                   <div style={fontStyleLink2}>
                     <span>{testData1.category}</span>
                   </div>
@@ -519,7 +562,7 @@ function Detail() {
                 </div>
 
                 <Particiate>
-                  <img src={ProfilePic} style={{ padding: '12px' }}></img>
+                  <img src={ProfilePic} style={paddingStyle}></img>
                   <div>
                     <span style={fontColored}>11/15</span>
                     <span>명 참여중</span>
@@ -530,42 +573,20 @@ function Detail() {
                 <hr></hr>
               </Divider>
               <div className='contents_container'>
-                <div
-                  style={{
-                    fontFamily: Font.FontKor,
-                    fontSize: '16px',
-                    color: COLOR.GRAY_400,
-                  }}
-                >
+                <div style={fontStyle1}>
                   <span>지금 모집중인</span>
-                  <span
-                    style={{
-                      marginLeft: '8px',
-                      color: COLOR.GRAY_500,
-                    }}
-                  >
-                    {testData1.category}
-                  </span>
+                  <span style={fontStyle2}>{testData1.category}</span>
                 </div>
               </div>
               <CategorySearch></CategorySearch>
               <div style={navbarStyle}>
                 <nav style={navStyles}>
                   <div style={navFontContainer}>
-                    <div style={{ fontSize: '19px', fontWeight: '700' }}>
-                      <span style={{ color: COLOR.POTZ_PINK_600 }}>
-                        {testData1.price}
-                      </span>
+                    <div style={fontStyle3}>
+                      <span style={coloredFont}>{testData1.price}</span>
                       <span>원씩 배달비</span>
                     </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        gap: '8px',
-                        fontSize: '14px',
-                        color: COLOR.GRAY_400,
-                      }}
-                    >
+                    <div style={fontStyle4}>
                       <span>현재 배달비</span>
                       <span>{testData1.totalDeliveryPrice}</span>
                     </div>
