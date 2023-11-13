@@ -3,8 +3,6 @@ import '../App.css';
 import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import COLOR from '../utility/Color';
 
-//contents_container 안에 UI 구현 하시면 됩니다!
-
 function PostMap(props) {
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
@@ -14,6 +12,7 @@ function PostMap(props) {
     const ps = new window.kakao.maps.services.Places();
 
     ps.keywordSearch(props.searchKeyword, (data, status) => {
+      console.log(data);
       if (status === window.kakao.maps.services.Status.OK) {
         const bounds = new window.kakao.maps.LatLngBounds();
         let marker = [];
@@ -25,6 +24,7 @@ function PostMap(props) {
               lng: data[i].x,
             },
             content: data[i].place_name,
+            storeAddress: data[i].road_address_name,
           });
           bounds.extend(new window.kakao.maps.LatLng(data[i].y, data[i].x));
         }
@@ -49,7 +49,7 @@ function PostMap(props) {
             onClick={() => setInfo(marker)}
           >
             {info && info.content === marker.content && (
-              <div style={{ color: `${COLOR.BLACK}`}}>{marker.content}</div>
+              <div style={{ color: `${COLOR.BLACK}`}}>{marker.content}<button onClick={() => {console.log(marker.storeAddress)}}>선택</button></div>
             )}
           </MapMarker>
         ))}
