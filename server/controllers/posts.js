@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+//const multer = require('multer');
 
 // 현재 주문 신청한 메뉴의 총 가격
 function getTotalOrderPrice(orders) {
@@ -324,7 +325,37 @@ export async function getPostById(req, res) {
 }
 
 export async function createPost(req, res) {
-  // ...
+  const { storeName, orderLink, recruitment, meetingLocation } = req.body;
+  // const storage = multer.diskStorage({
+  //   destination: function(req, file, cb){
+  //     cb(null, 'public/post-images');
+  //   },
+  //   filename: function(req, file, cb){
+  //     cb(null, Date.now() + '-' + file.originalname);
+  //   }
+  // });
+
+  
+  try {
+    console.log(req.body);
+    const post = await prisma.post.create({
+      data: {
+        storeName,
+        storeAddress: '경북 포항시 남구',
+        imageUrl: '/sample-images/pot-1',
+        orderLink,
+        categoryId: 1,
+        recruitment: parseInt(recruitment),
+        meetingLocation,
+        communityId: 1,
+        authorId: 1,
+      },
+    });
+    res.status(201).json({ post });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'create post error' });
+  }
 }
 
 export async function updatePost(req, res) {
