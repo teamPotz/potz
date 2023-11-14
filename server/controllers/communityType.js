@@ -9,7 +9,6 @@ async function getCommunityType(req, res) {
         id: true,
         name: true,
         displayOrder: true,
-        communities: true,
       },
     });
     // const transformedCommunityType = communityTypes.map((communityType) => ({

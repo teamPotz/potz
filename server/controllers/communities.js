@@ -77,47 +77,22 @@ export async function saveCommunityImg(req, res) {
 }
 
 export async function createCommunity(req, res) {
-  let { communityTypes, members, longitude, latitude, posts, name } = req.body;
+  const { communityTypes, members, longitude, latitude, posts, name } =
+    req.body;
 
-  // console.log(
-  //   communityPhoto,
-  //   communityTypes,
-  //   members,
-  //   longitude,
-  //   latitude,
-  //   posts,
-  //   name
-  // );
+  console.log(communityTypes);
 
   try {
-    //받아온 커뮤니티 타입 DB에서 찾기
-    const findExistingCommunityType = await prisma.communityType.findFirst({
-      where: {
-        name: communityTypes.name,
-      },
-    });
-
-    //받아온 유저 데이터 DB에서 찾기
-    const findExistingUserDatas = await prisma.user.findFirst({
-      where: {
-        name: members[0].name,
-      },
-    });
+    //todo: 로그인 유저 데이터 id 넣기
 
     const newCommunityData = await prisma.community.create({
       data: {
         communityTypes: {
-          connect: {
-            name: findExistingCommunityType.name,
-            displayOrder: findExistingCommunityType.displayOrder,
-          },
+          connect: { id: communityTypes.id },
         },
         members: {
           connect: {
-            name: findExistingUserDatas.name,
-            email: findExistingUserDatas.email,
-            password: findExistingUserDatas.password,
-            profile: findExistingUserDatas.profile,
+            id: 1,
           },
         },
         longitude,
