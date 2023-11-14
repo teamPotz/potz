@@ -80,9 +80,9 @@ function ChooseFeature() {
               </div>
               <div style={TgaWrappers}>
                 <div style={TagContainer}>
-                  {communityTypes.map((communityType, index) => {
+                  {communityTypes.map((communityType) => {
                     return (
-                      <div key={index}>
+                      <div key={communityType.id}>
                         <TagPlace userDatas={userDatas}>
                           {communityType}
                         </TagPlace>
