@@ -11,10 +11,6 @@ async function getCommunityType(req, res) {
         displayOrder: true,
       },
     });
-    // const transformedCommunityType = communityTypes.map((communityType) => ({
-    //   id: communityType.id,
-    //   name: communityType.name,
-    // }));
     res.status(200).send(communityTypes);
   } catch (error) {
     console.error(error);

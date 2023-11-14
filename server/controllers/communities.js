@@ -83,8 +83,7 @@ export async function createCommunity(req, res) {
   console.log(communityTypes);
 
   try {
-    //todo: 로그인 유저 데이터 id 넣기
-
+    //todo: id 1 대신 로그인 유저 데이터 id 넣기
     const newCommunityData = await prisma.community.create({
       data: {
         communityTypes: {
