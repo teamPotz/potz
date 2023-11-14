@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import fileUpload from '../multer/community.js';
+import fileUpload from '../middlewares/multer.js';
 import {
   getCommunities,
   createCommunity,
