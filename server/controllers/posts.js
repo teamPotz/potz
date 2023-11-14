@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
-//const multer = require('multer');
 
 // 현재 주문 신청한 메뉴의 총 가격
 function getTotalOrderPrice(orders) {
@@ -326,16 +325,20 @@ export async function getPostById(req, res) {
 
 export async function createPost(req, res) {
   const { storeName, orderLink, recruitment, meetingLocation } = req.body;
-  // const storage = multer.diskStorage({
-  //   destination: function(req, file, cb){
-  //     cb(null, 'public/post-images');
+
+  // const multer = require('multer');
+
+  // let storage = multer.diskStorage({
+  //   destination: function(req, file, done){
+  //     done(null, './public/post-images');
   //   },
-  //   filename: function(req, file, cb){
-  //     cb(null, Date.now() + '-' + file.originalname);
+  //   filename: function(req, file, done){
+  //     done(null, Date.now() + '-' + file.originalname);
   //   }
   // });
 
-  
+  // let upload = multer({storage: storage});
+
   try {
     console.log(req.body);
     const post = await prisma.post.create({

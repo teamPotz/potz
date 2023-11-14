@@ -201,9 +201,10 @@ function Post() {
               >
                 <div>
                   <Button height={'112px'}>
-                    <ImgInput type='file'>
-
-                    </ImgInput>
+                    <ImgInput
+                      type='file'
+                      enctype='multipart/form-data'
+                    ></ImgInput>
                     <div style={styles.img}>
                       <svg
                         width='21'
