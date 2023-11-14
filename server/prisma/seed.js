@@ -25,25 +25,57 @@ const users = [
 ];
 
 const categories = [
-  { name: '버거·샌드위치' },
-  { name: '카페·디저트' },
-  { name: '한식' },
-  { name: '초밥·회' },
-  { name: '중식·아시안' },
-  { name: '피자' },
-  { name: '치킨' },
-  { name: '샐러드' },
+  {
+    name: '버거·샌드위치',
+    displayOrder: 1,
+    imageUrl: '/sample-images/category/category-burger.png',
+  },
+  {
+    name: '카페·디저트',
+    displayOrder: 2,
+    imageUrl: '/sample-images/category/category-cafe.png',
+  },
+  {
+    name: '한식',
+    displayOrder: 4,
+    imageUrl: '/sample-images/category/category-koreanFood.png',
+  },
+  {
+    name: '초밥·회',
+    displayOrder: 3,
+    imageUrl: '/sample-images/category/category-sushi.png',
+  },
+  {
+    name: '중식·아시안',
+    displayOrder: 6,
+    imageUrl: '/sample-images/category/category-chineseFood.png',
+  },
+  {
+    name: '피자',
+    displayOrder: 5,
+    imageUrl: '/sample-images/category/category-pizza.png',
+  },
+  {
+    name: '치킨',
+    displayOrder: 7,
+    imageUrl: '/sample-images/category/category-pizza.png',
+  },
+  {
+    name: '샐러드',
+    displayOrder: 8,
+    imageUrl: '/sample-images/category/category-salad.png',
+  },
 ];
 
 const communityTypes = [
-  { name: '주택가' },
-  { name: '학원' },
-  { name: '교내 시설' },
-  { name: '아파트' },
-  { name: '기숙사' },
-  { name: '지하철 역' },
-  { name: '상가' },
-  { name: '직장' },
+  { name: '주택가', displayOrder: 1 },
+  { name: '학원', displayOrder: 3 },
+  { name: '교내 시설', displayOrder: 2 },
+  { name: '아파트', displayOrder: 5 },
+  { name: '기숙사', displayOrder: 4 },
+  { name: '지하철 역', displayOrder: 6 },
+  { name: '상가', displayOrder: 7 },
+  { name: '직장', displayOrder: 8 },
 ];
 
 const communities = [
@@ -269,9 +301,15 @@ async function main() {
   // create categories
   for (const category of categories) {
     await prisma.category.upsert({
-      where: { name: category.name },
+      where: {
+        name: category.name,
+      },
       update: {},
-      create: { name: category.name },
+      create: {
+        name: category.name,
+        displayOrder: category.displayOrder,
+        imageUrl: category.imageUrl,
+      },
     });
   }
 
@@ -280,7 +318,7 @@ async function main() {
     await prisma.communityType.upsert({
       where: { name: item.name },
       update: {},
-      create: { name: item.name },
+      create: { name: item.name, displayOrder: item.displayOrder },
     });
   }
 

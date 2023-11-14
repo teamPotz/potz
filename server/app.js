@@ -7,6 +7,8 @@ import authRouter from './routes/auth.js';
 import communitiesRouter from './routes/communities.js';
 import postsRouter from './routes/posts.js';
 import ordersRouter from './routes/orders.js';
+import communityTypeRouter from './routes/communityType.js';
+import userRouter from './routes/user.js';
 
 const app = express();
 dotenv.config();
@@ -27,6 +29,8 @@ app.use('/auth', authRouter);
 app.use('/communities', communitiesRouter);
 app.use('/posts', postsRouter);
 app.use('/orders', ordersRouter);
+app.use('/community-types', communityTypeRouter);
+app.use('/user', userRouter);
 
 app.listen(port, () =>
   console.log('> Server is up and running on port : ' + port)

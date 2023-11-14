@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
+let communityPhoto = '';
 const prisma = new PrismaClient();
 
 export async function getCommunities(req, res) {
@@ -70,8 +71,43 @@ export async function getCommunityById(req, res) {
   }
 }
 
+export async function saveCommunityImg(req, res) {
+  console.log(req.file.path);
+  communityPhoto = req.file.path;
+}
+
 export async function createCommunity(req, res) {
-  // ...
+  const { communityTypes, members, longitude, latitude, posts, name } =
+    req.body;
+
+  console.log(communityTypes);
+
+  try {
+    //todo: 로그인 유저 데이터 id 넣기
+
+    const newCommunityData = await prisma.community.create({
+      data: {
+        communityTypes: {
+          connect: { id: communityTypes.id },
+        },
+        members: {
+          connect: {
+            id: 1,
+          },
+        },
+        longitude,
+        latitude,
+        imageUrl: communityPhoto,
+        name,
+      },
+    });
+
+    res.status(201).send(newCommunityData);
+    console.log('데이터 저장 완료');
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'get communities error' });
+  }
 }
 
 export async function updateCommunity(req, res) {
