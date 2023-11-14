@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import multer from 'multer';
 
 const prisma = new PrismaClient();
 
@@ -323,29 +324,30 @@ export async function getPostById(req, res) {
   }
 }
 
+let storage = multer.diskStorage({
+  destination: function (req, file, done) {
+    done(null, 'public/post-images/');
+  },
+  filename: function (req, file, done) {
+    done(null, Date.now() + '-' + file.originalname);
+  },
+});
+
+let upload = multer({ storage: storage });
+
 export async function createPost(req, res) {
-  const { storeName, orderLink, recruitment, meetingLocation } = req.body;
+  upload.single('image');
+  const { storeName, storeAddress, orderLink, recruitment, meetingLocation } =
+    req.body;
 
-  // const multer = require('multer');
-
-  // let storage = multer.diskStorage({
-  //   destination: function(req, file, done){
-  //     done(null, './public/post-images');
-  //   },
-  //   filename: function(req, file, done){
-  //     done(null, Date.now() + '-' + file.originalname);
-  //   }
-  // });
-
-  // let upload = multer({storage: storage});
 
   try {
     console.log(req.body);
     const post = await prisma.post.create({
       data: {
         storeName,
-        storeAddress: '경북 포항시 남구',
-        imageUrl: '/sample-images/pot-1',
+        storeAddress,
+        imageUrl: '',
         orderLink,
         categoryId: 1,
         recruitment: parseInt(recruitment),
@@ -360,6 +362,7 @@ export async function createPost(req, res) {
     res.status(500).json({ message: 'create post error' });
   }
 }
+
 
 export async function updatePost(req, res) {
   // ...

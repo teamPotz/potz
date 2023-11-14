@@ -8,15 +8,24 @@ import styled from 'styled-components';
 import ButtonBg from '../components/ButtonBG';
 import TagFood from '../components/TagFood';
 import Font from '../utility/Font';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 //contents_container 안에 UI 구현 하시면 됩니다!
 
 function Post() {
   const BASE_URL = 'http://localhost:5000';
   const screenHeight = window.innerHeight - 98;
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  let Address = false;
+  if (location.state !== null) {
+    Address = location.state.address;
+  }
 
   async function createPost(
     storeName,
+    storeAddress,
     orderLink,
     recruitment,
     meetingLocation
@@ -29,6 +38,7 @@ function Post() {
         },
         body: JSON.stringify({
           storeName,
+          storeAddress,
           orderLink,
           recruitment,
           meetingLocation,
@@ -142,6 +152,11 @@ function Post() {
     font-weight: 400;
     font-size: 14px;
     color: ${COLOR.GRAY_400};
+    &:hover {
+      font-size: 14.3px;
+      color: ${COLOR.GRAY_500};
+      cursor: pointer;
+    }
   `;
 
   const styles = {
@@ -162,9 +177,9 @@ function Post() {
       height: '65.33px',
       background: `${COLOR.POTZ_PINK_100}`,
       borderRadius: '9.33333px',
-      display: 'flex' /* Flex 컨테이너로 설정 */,
-      alignItems: 'center' /* 수직 가운데 정렬 */,
-      justifyContent: 'center' /* 수평 가운데 정렬 */,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
       transition: '0.2s',
       '&:hover': {
         backgroundColor: `${COLOR.POTZ_PINK_200}`,
@@ -184,27 +199,35 @@ function Post() {
             <div className='contents_container'>
               <form
                 style={styles.container}
+                encType="multipart/form-data"
                 onSubmit={(e) => {
+                  const imageData = new FormData();
+                  imageData.append('image');
+                  
                   e.preventDefault();
                   const storeName = e.target.storeName.value;
+                  const storeAddress = Address;
                   const orderLink = e.target.orderLink.value;
                   const recruitment = e.target.recruitment.value;
                   const meetingLocation = e.target.meetingLocation.value;
+                  const image = imageData;
 
                   createPost(
                     storeName,
+                    storeAddress,
                     orderLink,
                     recruitment,
-                    meetingLocation
+                    meetingLocation,
+                    image,
                   );
                 }}
               >
                 <div>
                   <Button height={'112px'}>
-                    <ImgInput
-                      type='file'
-                      enctype='multipart/form-data'
-                    ></ImgInput>
+                    
+                    <input name="image" type="file" accept="image/*"></input>
+                
+                    
                     <div style={styles.img}>
                       <svg
                         width='21'
@@ -241,7 +264,9 @@ function Post() {
                             fill='#808080'
                           />
                         </svg>
-                        <FontSm>지도로 가게 검색하기</FontSm>
+                        <FontSm onClick={() => navigate('/getaddress')}>
+                          {Address ? Address : '지도로 주소 검색하기'}
+                        </FontSm>
                       </div>
                     </div>
                   </Button>

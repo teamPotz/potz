@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import '../App.css';
 import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import COLOR from '../utility/Color';
+import { useNavigate } from 'react-router-dom';
 
 //contents_container 안에 UI 구현 하시면 됩니다!
 
@@ -9,29 +10,30 @@ function PostMap(props) {
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
-  const coordinateRef = useRef({
-    lat: 33.5563,
-    lon: 126.79581,
-  });
+  const navigate = useNavigate();
+  // const coordinateRef = useRef({
+  //   lat: 33.5563,
+  //   lon: 126.79581,
+  // });
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const bounds = new window.kakao.maps.LatLngBounds();
-        coordinateRef.current = {
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        };
-        console.log(coordinateRef.current);
-        bounds.extend(new window.kakao.maps.LatLng(...coordinateRef.current));
-        map.setBounds(bounds);
-      });
-      //setMap(coordinateRef.current);
-      // setMap(new window.kakao.maps.Map(document.getElementById('map'), {
-      //   center: coordinateRef.current, // 현재 위치를 center로 설정
-      // }));
-    }
-  }, [map]);
+  // useEffect(() => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition((position) => {
+  //       const bounds = new window.kakao.maps.LatLngBounds();
+  //       coordinateRef.current = {
+  //         lat: position.coords.latitude,
+  //         lon: position.coords.longitude,
+  //       };
+  //       console.log(coordinateRef.current);
+  //       bounds.extend(new window.kakao.maps.LatLng(...coordinateRef.current));
+  //       map.setBounds(bounds);
+  //     });
+  //     //setMap(coordinateRef.current);
+  //     // setMap(new window.kakao.maps.Map(document.getElementById('map'), {
+  //     //   center: coordinateRef.current, // 현재 위치를 center로 설정
+  //     // }));
+  //   }
+  // }, [map]);
 
   useEffect(() => {
     const ps = new window.kakao.maps.services.Places();
@@ -77,7 +79,7 @@ function PostMap(props) {
             {info && info.content === marker.content && (
               <div style={{ color: `${COLOR.BLACK}` }}>
                 {marker.content}
-                <button onClick={() => console.log(marker.storeAddress)}>
+                <button onClick={() => navigate('/post', {state: {address: marker.storeAddress}}) }>
                   선택
                 </button>
               </div>
