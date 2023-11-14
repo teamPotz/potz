@@ -1,14 +1,125 @@
 import '../App.css';
 import styled from 'styled-components';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
-import ButtonBg from '../components/ButtonBG';
+import Font from '../utility/Font';
 
-//contents_container 안에 UI 구현 하시면 됩니다!
+const InputField = styled.input`
+  border: 2px ${COLOR.POTZ_PINK_DEFAULT} solid;
+  background-color: ${COLOR.POTZ_PINK_100};
+  width: calc(100% - 30px);
+  font-size: 16px;
+  height: 46px;
+  padding-left: 20px;
+  border-radius: 50px;
+`;
 
-function NamingCommunity() {
+const ButtonSubmitStyle = styled.input`
+  font-family: ${Font.FontKor};
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  border: none;
+  border-radius: 12px;
+  display: flex;
+  width: 100%;
+  height: 46.667px;
+  padding: 9.333px 18.667px;
+  justify-content: center;
+  align-items: center;
+  gap: 11.667px;
+  background-color: ${COLOR.POTZ_PINK_DEFAULT};
+  color: ${COLOR.WHITE};
+  cursor: grab;
+
+  // 호버 상태 스타일
+  &:hover {
+    background-color: ${COLOR.POTZ_PINK_600};
+  }
+`;
+
+function NamingCommunity(props) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  console.log('state', location.state.data);
+
+  const [file, setFile] = useState('');
+  const [imgUrl, setImgUrl] = useState();
+
+  let [count, setCount] = useState(0);
+
+  let { communityType, user1 } = props;
+
+  let userDatas = [user1];
+  let communityTypes = [communityType];
+
+  const [formDatas, setFormDatas] = useState({
+    name: '',
+    communityTypes: location.state.data,
+    members: userDatas,
+    longitude: 137.554454,
+    latitude: 137.554454,
+    posts: 0,
+    imageUrl: null,
+  });
+
+  useEffect(() => {
+    async function fetchUserDatas() {
+      try {
+        const response = await fetch('http://localhost:5000/user');
+        const data = await response.json();
+        console.log(data);
+        setFormDatas({
+          ...formDatas,
+          members: data,
+        });
+        console.log('폼데이터', formDatas);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchUserDatas();
+  }, []);
+
+  console.log(communityTypes);
+
+  const inputChangeHandler = (e) => {
+    setFormDatas((formData) => ({
+      ...formData,
+      name: e.target.value,
+    }));
+  };
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    if (count < 1) {
+      alert('먼저 이미지 저장 버튼을 눌러서 이미지를 업로드해주세요.');
+    } else {
+      console.log(formDatas);
+      try {
+        const response = await fetch('http://localhost:5000/communities', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formDatas),
+        });
+
+        if (response.ok) {
+          navigate('/home');
+          console.log('폼 데이터 및 파일 전송 완료🚀');
+        }
+      } catch (error) {
+        console.error('에러:', error);
+      }
+    }
+  };
+
   const InputFile = () => {
     const InputFileStyle = styled.div`
       background-color: ${COLOR.POTZ_PINK_200};
@@ -20,6 +131,7 @@ function NamingCommunity() {
       justify-content: center;
       align-items: center;
     `;
+
     const ImgIcon = () => {
       return (
         <svg
@@ -43,40 +155,121 @@ function NamingCommunity() {
       display: 'none',
     };
 
+    const InputStyle = styled.input`
+      background-color: ${COLOR.WHITE};
+      border: ${COLOR.POTZ_PINK_DEFAULT} 2px solid;
+      border-radius: 50px;
+      color: ${COLOR.POTZ_PINK_DEFAULT};
+      font-family: ${Font.FontKor};
+      font-weight: 700;
+      cursor: grab;
+      padding: 6px;
+      &:hover {
+        background-color: ${COLOR.POTZ_PINK_300};
+      }
+    `;
+
+    const onChange = (e) => {
+      const selectedFile = e.target.files[0];
+
+      if (selectedFile) {
+        const imageUrl = URL.createObjectURL(selectedFile);
+        setFile(selectedFile);
+        setImgUrl(imageUrl);
+      }
+    };
+
+    const onSubmit = async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+
+      //FormData 객체에 새로운 필드 추가 //multer에서 다룰
+      formData.append('image', file);
+
+      if (!file) {
+        alert('먼저 이미지 파일을 선택해주세요.');
+      } else {
+        try {
+          setCount(count + 1);
+          const response = await fetch(
+            'http://localhost:5000/communities/photo',
+            {
+              method: 'POST',
+              body: formData,
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+          } else {
+            console.log('서버 응답 오류:', response.statusText);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    };
+
     return (
-      <form>
+      <form style={formStyle2} onSubmit={onSubmit}>
         <label>
           <InputFileStyle>
-            <ImgIcon></ImgIcon>
-            <input type='file' style={filestyle}></input>
+            {imgUrl ? (
+              <img
+                src={imgUrl}
+                alt='Preview'
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                }}
+              />
+            ) : (
+              <ImgIcon />
+            )}
+
+            <input
+              type='file'
+              style={filestyle}
+              name='image'
+              accept='image/*'
+              onChange={onChange}
+            ></input>
           </InputFileStyle>
         </label>
+        <InputStyle type='submit' value={'이미지 저장'}></InputStyle>
       </form>
     );
   };
 
-  const InputFiled = styled.input`
-    border: 2px ${COLOR.POTZ_PINK_DEFAULT} solid;
-    background-color: ${COLOR.POTZ_PINK_100};
-    width: calc(100% - 30px);
-    font-size: 16px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    padding-left: 20px;
-    border-radius: 50px;
-  `;
   const style1 = {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-around',
-    height: '100%',
-  };
-  const styles2 = {
-    display: 'flex',
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: '50%',
+    gap: '60px',
+    height: '100vh',
   };
+
+  const formStyle = {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '24px',
+  };
+
+  const formStyle2 = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+  };
+
+  const inputStyles = {
+    position: 'relative',
+    bottom: '430px',
+  };
+
   return (
     <Container className='background'>
       <Row className='row1'>
@@ -85,21 +278,19 @@ function NamingCommunity() {
         </Col>
         <Col className='col2'>
           <div className='potz_container'>
-            <div className='contents_container' style={style1}>
-              <div className='text_container'>
-                <InputFiled placeholder='공동체 이름 입력'></InputFiled>
-              </div>
-              <div className='img_container' style={styles2}>
+            <div className='contents_container'>
+              <div style={style1}>
                 <InputFile></InputFile>
-              </div>
-              <div className='btn_container'>
-                <ButtonBg
-                  backgroundColor={COLOR.POTZ_PINK_DEFAULT}
-                  hoverColor={COLOR.POTZ_PINK_600}
-                  fontColor={COLOR.WHITE}
-                >
-                  공동체 만들기
-                </ButtonBg>
+                <form onSubmit={submitHandler} style={formStyle}>
+                  <InputField
+                    style={inputStyles}
+                    onChange={inputChangeHandler}
+                    placeholder='공동체 이름 입력'
+                    value={formDatas.name}
+                  ></InputField>
+                  {/* 수정된 부분: ButtonSubmitStyle을 <input>으로 변경 */}
+                  <ButtonSubmitStyle type='submit' value='공동체 만들기' />
+                </form>
               </div>
             </div>
           </div>

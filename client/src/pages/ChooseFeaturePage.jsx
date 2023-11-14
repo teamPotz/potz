@@ -1,4 +1,5 @@
 import '../App.css';
+import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
@@ -7,9 +8,24 @@ import Font from '../utility/Font';
 import TagPlace from '../components/TagPlace';
 import PlacesImg from '../../public/images/graphicImg/Places.png';
 
-//contents_container 안에 UI 구현 하시면 됩니다!
-
 function ChooseFeature() {
+  const [communityTypes, setCommunityTypes] = useState([]);
+  const [userDatas, setUserDatas] = useState();
+
+  useEffect(() => {
+    async function fetchCommunityTypes() {
+      try {
+        const response = await fetch('http://localhost:5000/community-types');
+        const data = await response.json();
+        setCommunityTypes(data);
+        console.log(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchCommunityTypes();
+  }, []);
+
   const style1 = {
     display: 'flex',
     flexDirection: 'column',
@@ -30,21 +46,13 @@ function ChooseFeature() {
     padding: '0',
     color: COLOR.GRAY_500,
   };
-  const buttonStyle = {
-    backgroundColor: COLOR.WHITE,
-    border: 'none',
-    color: COLOR.POTZ_PINK_DEFAULT,
-    fontSize: '20px',
-    fontWeight: '700',
-    marginTop: '4px',
-    cursor: 'grab',
-  };
   const TgaWrappers = {
     marginBottom: '80px',
   };
   const TagContainer = {
-    display: 'flex',
-    gridGap: '16px',
+    display: 'grid',
+    gridTemplateColumns: 'repeat( 3, minmax(100px, 1fr))',
+    gap: '16px',
     marginBottom: '18px',
   };
   const imgStyle = {
@@ -52,6 +60,7 @@ function ChooseFeature() {
     bottom: '20px',
     right: '28px',
   };
+
   return (
     <Container className='background'>
       <Row className='row1'>
@@ -68,24 +77,18 @@ function ChooseFeature() {
                   <span>하나 이상 선택해주세요.</span>
                   <br></br>
                 </div>
-                <div>
-                  <button style={buttonStyle}>Next</button>
-                </div>
               </div>
               <div style={TgaWrappers}>
                 <div style={TagContainer}>
-                  <TagPlace>주택가</TagPlace>
-                  <TagPlace>학원</TagPlace>
-                  <TagPlace>교내 시설</TagPlace>
-                </div>
-                <div style={TagContainer}>
-                  <TagPlace>아파트</TagPlace>
-                  <TagPlace>기숙사</TagPlace>
-                  <TagPlace>지하철 역</TagPlace>
-                </div>
-                <div style={TagContainer}>
-                  <TagPlace>상가</TagPlace>
-                  <TagPlace>직장</TagPlace>
+                  {communityTypes.map((communityType, index) => {
+                    return (
+                      <div key={index}>
+                        <TagPlace userDatas={userDatas}>
+                          {communityType}
+                        </TagPlace>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
               <div style={imgStyle}>

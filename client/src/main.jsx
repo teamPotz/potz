@@ -5,6 +5,10 @@ import './index.css';
 import App from './App.jsx';
 import AboutSample from './pages/AboutSample';
 import FetchTest from './pages/FetchTest';
+import MakeCommunity from './pages/MakeCommunityPage.jsx';
+import ChooseFeature from './pages/ChooseFeaturePage.jsx';
+import NamingCommunity from './pages/NamingCommunity.jsx';
+import Home from './pages/Home.jsx';
 
 const router = createBrowserRouter([
   {
@@ -18,6 +22,22 @@ const router = createBrowserRouter([
   {
     path: '/fetch',
     element: <FetchTest />,
+  },
+  {
+    path: '/create-community',
+    element: <MakeCommunity />,
+  },
+  {
+    path: '/community-types',
+    element: <ChooseFeature />,
+  },
+  {
+    path: '/name-community',
+    element: <NamingCommunity />,
+  },
+  {
+    path: '/home',
+    element: <Home />,
   },
 ]);
 
