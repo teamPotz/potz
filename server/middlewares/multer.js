@@ -1,4 +1,5 @@
 import multer from 'multer';
+import fs from 'fs';
 import { v1 as uuidv1 } from 'uuid';
 
 const MIME_TYPE_MAP = {
@@ -7,11 +8,16 @@ const MIME_TYPE_MAP = {
   'image/jpg': 'jpg',
 };
 
+const UPLOAD_PATH = 'uploads/images';
+
+if (!fs.existsSync(UPLOAD_PATH)) {
+  fs.mkdirSync(UPLOAD_PATH, { recursive: true });
+}
+
 const fileUpload = multer({
-  limits: 500000,
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, 'uploads/images');
+      cb(null, UPLOAD_PATH);
     },
     filename: (req, file, cb) => {
       const ext = MIME_TYPE_MAP[file.mimetype];
@@ -20,9 +26,10 @@ const fileUpload = multer({
   }),
   fileFilter: (req, file, cb) => {
     const isValid = !!MIME_TYPE_MAP[file.mimetype];
-    let error = isValid ? null : new Error('mime 유형이 잘못됨💥');
+    const error = isValid ? null : new Error('mime 유형이 잘못됨💥');
     cb(error, isValid);
   },
+  limits: { fileSize: 50 * 1024 * 1024 },
 });
 
 export default fileUpload;
