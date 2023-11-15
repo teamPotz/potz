@@ -7,6 +7,10 @@ import AboutSample from './pages/AboutSample';
 import FetchTest from './pages/FetchTest';
 import Post from './pages/Post';
 import LandingMap from './pages/LandingMap';
+import MakeCommunity from './pages/MakeCommunityPage.jsx';
+import ChooseFeature from './pages/ChooseFeaturePage.jsx';
+import NamingCommunity from './pages/NamingCommunity.jsx';
+import Home from './pages/Home.jsx';
 
 const router = createBrowserRouter([
   {
@@ -28,6 +32,22 @@ const router = createBrowserRouter([
   {
     path: '/getaddress',
     element: <LandingMap/>,
+  },
+  {
+    path: '/create-community',
+    element: <MakeCommunity />,
+  },
+  {
+    path: '/community-types',
+    element: <ChooseFeature />,
+  },
+  {
+    path: '/name-community',
+    element: <NamingCommunity />,
+  },
+  {
+    path: '/home',
+    element: <Home />,
   },
 ]);
 
