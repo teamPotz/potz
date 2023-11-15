@@ -1,4 +1,5 @@
 import '../App.css';
+import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
@@ -10,6 +11,8 @@ import HeartHandsImg from '../../public/images/graphicImg/heartHands.png';
 //contents_container 안에 UI 구현 하시면 됩니다!
 
 function MakeCommunity() {
+  const navigate = useNavigate();
+
   const style1 = {
     display: 'flex',
     flexDirection: 'column',
@@ -66,19 +69,25 @@ function MakeCommunity() {
                 <img style={styles2} width={300} src={HeartHandsImg} />
               </div>
               <div className='btn_container' style={style3}>
-                <ButtonBg
-                  backgroundColor={COLOR.POTZ_PINK_DEFAULT}
-                  hoverColor={COLOR.POTZ_PINK_600}
-                  fontColor={COLOR.WHITE}
+                <div
+                  onClick={() => {
+                    navigate('/community-types');
+                  }}
                 >
-                  내 위치 검색
-                </ButtonBg>
+                  <ButtonBg
+                    backgroundColor={COLOR.POTZ_PINK_DEFAULT}
+                    hoverColor={COLOR.POTZ_PINK_600}
+                    fontColor={COLOR.WHITE}
+                  >
+                    직접 공동체 만들기
+                  </ButtonBg>
+                </div>
                 <ButtonBg
                   backgroundColor={COLOR.POTZ_PINK_200}
                   hoverColor={COLOR.POTZ_PINK_300}
                   fontColor={COLOR.POTZ_PINK_DEFAULT}
                 >
-                  내 위치 검색
+                  다시 검색해 보기
                 </ButtonBg>
               </div>
             </div>

@@ -9,6 +9,7 @@ import ButtonBg from '../components/ButtonBG';
 import TagFood from '../components/TagFood';
 import Font from '../utility/Font';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 //contents_container 안에 UI 구현 하시면 됩니다!
 
@@ -17,18 +18,49 @@ function Post() {
   const screenHeight = window.innerHeight - 98;
   const navigate = useNavigate();
   const location = useLocation();
+  let imgUrl = '';
 
   let Address = false;
   if (location.state !== null) {
     Address = location.state.address;
   }
 
+  const onChange = (e) => {
+    e.preventDefault();
+    const selectedFile = e.target.files[0];
+
+    if (selectedFile) {
+      UploadImg(selectedFile);
+    }
+  };
+
+  async function UploadImg(selectedFile) {
+    const imgData = new FormData();
+    imgData.append('image', selectedFile);
+    try {
+      const res = await fetch(`${BASE_URL}/posts/photo`, {
+        method: 'POST',
+        body: imgData,
+      });
+      if (res.ok) {
+        const imagePath = await res.json();
+        imgUrl = imagePath.postPhoto;
+        console.log(imgUrl);
+        //setImgUrl(imgUrl);
+        //console.log(imgUrl);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async function createPost(
     storeName,
     storeAddress,
+    imageUrl,
     orderLink,
     recruitment,
-    meetingLocation
+    meetingLocation,
   ) {
     try {
       const res = await fetch(`${BASE_URL}/posts`, {
@@ -39,6 +71,7 @@ function Post() {
         body: JSON.stringify({
           storeName,
           storeAddress,
+          imageUrl,
           orderLink,
           recruitment,
           meetingLocation,
@@ -199,35 +232,36 @@ function Post() {
             <div className='contents_container'>
               <form
                 style={styles.container}
-                encType="multipart/form-data"
                 onSubmit={(e) => {
-                  const imageData = new FormData();
-                  imageData.append('image');
-                  
                   e.preventDefault();
                   const storeName = e.target.storeName.value;
                   const storeAddress = Address;
+                  const imageUrl = imgUrl;
                   const orderLink = e.target.orderLink.value;
                   const recruitment = e.target.recruitment.value;
                   const meetingLocation = e.target.meetingLocation.value;
-                  const image = imageData;
 
                   createPost(
                     storeName,
                     storeAddress,
+                    imageUrl,
                     orderLink,
                     recruitment,
-                    meetingLocation,
-                    image,
+                    meetingLocation
                   );
                 }}
               >
                 <div>
                   <Button height={'112px'}>
-                    
-                    <input name="image" type="file" accept="image/*"></input>
-                
-                    
+                    {/* <input name="image" type="file" accept="image/*"></input> */}
+
+                    <input
+                      name='image'
+                      type='file'
+                      accept='image/*'
+                      onChange={onChange}
+                    ></input>
+
                     <div style={styles.img}>
                       <svg
                         width='21'

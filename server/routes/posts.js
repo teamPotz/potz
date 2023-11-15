@@ -1,10 +1,13 @@
 import { Router } from 'express';
+import fileUpload from '../middlewares/multer.js';
+
 import {
   getPosts,
   getPostById,
   updatePost,
   deletePost,
   createPost,
+  savePostImg,
   toggleLike,
   getSamplePosts,
   createSamplePost,
@@ -18,6 +21,7 @@ router.post('/sample', createSamplePost);
 
 router.get('/', getPosts);
 router.post('/', createPost);
+router.post('/photo', fileUpload.single('image'), savePostImg);
 router.route('/:id').get(getPostById).patch(updatePost).delete(deletePost);
 router.patch('/:id/like', toggleLike);
 

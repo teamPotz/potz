@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import multer from 'multer';
 
 const prisma = new PrismaClient();
 
@@ -324,20 +323,14 @@ export async function getPostById(req, res) {
   }
 }
 
-let storage = multer.diskStorage({
-  destination: function (req, file, done) {
-    done(null, 'public/post-images/');
-  },
-  filename: function (req, file, done) {
-    done(null, Date.now() + '-' + file.originalname);
-  },
-});
-
-let upload = multer({ storage: storage });
+export async function savePostImg(req, res) {
+  console.log(req.file.path);
+  let postPhoto = req.file.path;
+  res.json({ postPhoto });
+}
 
 export async function createPost(req, res) {
-  upload.single('image');
-  const { storeName, storeAddress, orderLink, recruitment, meetingLocation } =
+  const { storeName, storeAddress, imageUrl, orderLink, recruitment, meetingLocation } =
     req.body;
 
 
@@ -347,7 +340,7 @@ export async function createPost(req, res) {
       data: {
         storeName,
         storeAddress,
-        imageUrl: '',
+        imageUrl,
         orderLink,
         categoryId: 1,
         recruitment: parseInt(recruitment),
