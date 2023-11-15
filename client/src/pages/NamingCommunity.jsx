@@ -111,7 +111,11 @@ function NamingCommunity(props) {
         });
 
         if (response.ok) {
-          navigate('/home');
+          //새로 생성된 커뮤니티 데이터 받아서 넘겨주기
+          const responseData = await response.json();
+          console.log('새로 생성된 커뮤니티의 ID:', responseData);
+
+          navigate('/home', { state: { communityDataID: responseData.id } });
           console.log('폼 데이터 및 파일 전송 완료🚀');
         }
       } catch (error) {

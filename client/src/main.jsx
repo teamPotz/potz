@@ -2,18 +2,26 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './index.css';
-import App from './App.jsx';
+// import App from './App.jsx';
 import AboutSample from './pages/AboutSample';
 import FetchTest from './pages/FetchTest';
 import MakeCommunity from './pages/MakeCommunityPage.jsx';
 import ChooseFeature from './pages/ChooseFeaturePage.jsx';
 import NamingCommunity from './pages/NamingCommunity.jsx';
 import Home from './pages/Home.jsx';
+import ChooseInterest from './pages/ChooseInterest.jsx';
+import Login from './pages/loginPage.jsx';
+import FindLocation from './pages/FindLocationPage.jsx';
+import Detail from './pages/Detail.jsx';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <Login />,
+  },
+  {
+    path: '/user-interests',
+    element: <ChooseInterest />,
   },
   {
     path: '/about',
@@ -22,6 +30,10 @@ const router = createBrowserRouter([
   {
     path: '/fetch',
     element: <FetchTest />,
+  },
+  {
+    path: '/find-community',
+    element: <FindLocation />,
   },
   {
     path: '/create-community',
@@ -38,6 +50,10 @@ const router = createBrowserRouter([
   {
     path: '/home',
     element: <Home />,
+  },
+  {
+    path: '/detail',
+    element: <Detail />,
   },
 ]);
 
