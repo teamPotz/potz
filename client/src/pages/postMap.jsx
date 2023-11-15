@@ -79,7 +79,7 @@ function PostMap(props) {
             {info && info.content === marker.content && (
               <div style={{ color: `${COLOR.BLACK}` }}>
                 {marker.content}
-                <button onClick={() => navigate('/post', {state: {address: marker.storeAddress}}) }>
+                <button onClick={() => navigate('/post', {state: {name: marker.content, address: marker.storeAddress}}) }>
                   선택
                 </button>
               </div>

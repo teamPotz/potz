@@ -323,16 +323,10 @@ export async function getPostById(req, res) {
   }
 }
 
-export async function savePostImg(req, res) {
-  console.log(req.file.path);
-  let postPhoto = req.file.path;
-  res.json({ postPhoto });
-}
-
 export async function createPost(req, res) {
-  const { storeName, storeAddress, imageUrl, orderLink, recruitment, meetingLocation } =
+  let imageUrl = req.file.path;
+  const { storeName, storeAddress, orderLink, recruitment, meetingLocation } =
     req.body;
-
 
   try {
     console.log(req.body);
@@ -340,7 +334,7 @@ export async function createPost(req, res) {
       data: {
         storeName,
         storeAddress,
-        imageUrl,
+        imageUrl: imageUrl,
         orderLink,
         categoryId: 1,
         recruitment: parseInt(recruitment),

@@ -7,7 +7,6 @@ import {
   updatePost,
   deletePost,
   createPost,
-  savePostImg,
   toggleLike,
   getSamplePosts,
   createSamplePost,
@@ -20,8 +19,7 @@ router.get('/sample', getSamplePosts);
 router.post('/sample', createSamplePost);
 
 router.get('/', getPosts);
-router.post('/', createPost);
-router.post('/photo', fileUpload.single('image'), savePostImg);
+router.post('/', fileUpload.single('image'), createPost);
 router.route('/:id').get(getPostById).patch(updatePost).delete(deletePost);
 router.patch('/:id/like', toggleLike);
 

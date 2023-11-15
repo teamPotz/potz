@@ -9,73 +9,50 @@ import ButtonBg from '../components/ButtonBG';
 import TagFood from '../components/TagFood';
 import Font from '../utility/Font';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-
-//contents_container 안에 UI 구현 하시면 됩니다!
+import { useEffect, useRef, useState } from 'react';
 
 function Post() {
   const BASE_URL = 'http://localhost:5000';
   const screenHeight = window.innerHeight - 98;
   const navigate = useNavigate();
   const location = useLocation();
-  let imgUrl = '';
+  const myInputRef = useRef(null);
+  const [selectImg, setSelectImg] = useState('');
+  const [numbers, setNumbers] = useState([1]);
+  let selectedImg = '';
 
+  useEffect(() => {
+
+  })
+  
   let Address = false;
+  let name = false;
+
   if (location.state !== null) {
+    name = location.state.name;
     Address = location.state.address;
-  }
-
-  const onChange = (e) => {
-    e.preventDefault();
-    const selectedFile = e.target.files[0];
-
-    if (selectedFile) {
-      UploadImg(selectedFile);
-    }
-  };
-
-  async function UploadImg(selectedFile) {
-    const imgData = new FormData();
-    imgData.append('image', selectedFile);
-    try {
-      const res = await fetch(`${BASE_URL}/posts/photo`, {
-        method: 'POST',
-        body: imgData,
-      });
-      if (res.ok) {
-        const imagePath = await res.json();
-        imgUrl = imagePath.postPhoto;
-        console.log(imgUrl);
-        //setImgUrl(imgUrl);
-        //console.log(imgUrl);
-      }
-    } catch (error) {
-      console.log(error);
-    }
   }
 
   async function createPost(
     storeName,
     storeAddress,
-    imageUrl,
     orderLink,
     recruitment,
     meetingLocation,
+    file
   ) {
+    const formData = new FormData();
+    formData.append('storeName', storeName);
+    formData.append('storeAddress', storeAddress);
+    formData.append('orderLink', orderLink);
+    formData.append('recruitment', recruitment);
+    formData.append('meetingLocation', meetingLocation);
+    formData.append('image', file);
+
     try {
       const res = await fetch(`${BASE_URL}/posts`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          storeName,
-          storeAddress,
-          imageUrl,
-          orderLink,
-          recruitment,
-          meetingLocation,
-        }),
+        body: formData,
       });
       const data = await res.json();
       console.log(data);
@@ -156,20 +133,20 @@ function Post() {
     }
   `;
 
-  const ImgInput = styled.input`
+  const ImgInput = styled.div`
     border: none;
     width: 65.33px;
     height: 65.33px;
-    background: ${COLOR.POTZ_PINK_100};
+    background: ${(props) =>
+      props.selectedImg ? `url(${props.selectedImg})` : `${COLOR.POTZ_PINK_100}`};
     border-radius: 9.33333px;
     display: flex;
     align-items: center;
     justify-content: center;
     &:hover {
       background-color: ${COLOR.POTZ_PINK_200};
+      cursor: pointer;
     }
-    &::file-selector-button {
-      display: none;
   `;
 
   const FontMd = styled.span`
@@ -208,7 +185,7 @@ function Post() {
     img: {
       width: '65.33px',
       height: '65.33px',
-      background: `${COLOR.POTZ_PINK_100}`,
+      background: selectImg ? selectImg : `${COLOR.POTZ_PINK_100}`,
       borderRadius: '9.33333px',
       display: 'flex',
       alignItems: 'center',
@@ -232,37 +209,73 @@ function Post() {
             <div className='contents_container'>
               <form
                 style={styles.container}
+                encType='multipart/form-data'
                 onSubmit={(e) => {
                   e.preventDefault();
-                  const storeName = e.target.storeName.value;
+                  const storeName = name ? name : e.target.storeName.value;
                   const storeAddress = Address;
-                  const imageUrl = imgUrl;
                   const orderLink = e.target.orderLink.value;
                   const recruitment = e.target.recruitment.value;
                   const meetingLocation = e.target.meetingLocation.value;
+                  const file = e.target.image.files[0];
 
                   createPost(
                     storeName,
                     storeAddress,
-                    imageUrl,
                     orderLink,
                     recruitment,
-                    meetingLocation
+                    meetingLocation,
+                    file
                   );
                 }}
               >
                 <div>
                   <Button height={'112px'}>
-                    {/* <input name="image" type="file" accept="image/*"></input> */}
-
                     <input
+                      ref={myInputRef}
+                      style={{ display: 'none' }}
                       name='image'
                       type='file'
                       accept='image/*'
-                      onChange={onChange}
+                      onChange={(e) => {
+                        e.preventDefault();
+                        let image = e.target.files[0];
+                        if (image) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            //setSelectImg(reader.result);
+                            selectedImg = reader.result;
+                            console.log(selectedImg);
+                          };
+                          reader.readAsDataURL(image);
+                        }
+                      }}
                     ></input>
-
-                    <div style={styles.img}>
+                    {/* <div style={styles.img}
+                      onClick={() => {
+                        myInputRef.current.click();
+                      }}>
+                    <svg
+                        width='21'
+                        height='20'
+                        viewBox='0 0 21 20'
+                        fill='none'
+                        xmlns='http://www.w3.org/2000/svg'
+                      >
+                        <path
+                          fillRule='evenodd'
+                          clipRule='evenodd'
+                          d='M6.41858 19.7992H14.9119C18.2344 19.7992 20.4657 17.4687 20.4657 14.0008V5.99761C20.4657 2.52977 18.2344 0.199219 14.9129 0.199219H6.41858C3.09708 0.199219 0.865723 2.52977 0.865723 5.99761V14.0008C0.865723 17.4687 3.09708 19.7992 6.41858 19.7992ZM7.23355 9.01979C5.88248 9.01979 4.78467 7.9205 4.78467 6.56979C4.78467 5.21909 5.88248 4.11979 7.23355 4.11979C8.58364 4.11979 9.68243 5.21909 9.68243 6.56979C9.68243 7.9205 8.58364 9.01979 7.23355 9.01979ZM18.3293 12.8753C18.6574 13.7168 18.4869 14.7281 18.1361 15.5615C17.7202 16.5526 16.924 17.303 15.9208 17.6307C15.4753 17.7763 15.0082 17.84 14.5421 17.84H6.28292C5.46104 17.84 4.73377 17.6428 4.13756 17.2757C3.76407 17.0451 3.69805 16.5131 3.97496 16.1683C4.43813 15.5918 4.89539 15.0133 5.35659 14.4298C6.23562 13.3132 6.82788 12.9896 7.48618 13.2738C7.75324 13.3911 8.02128 13.5671 8.29721 13.7532C9.03237 14.2528 10.0543 14.9395 11.4004 14.1941C12.3216 13.6782 12.8559 12.7932 13.3212 12.0225L13.329 12.0096C13.362 11.9555 13.3946 11.9015 13.4272 11.8475C13.5836 11.5888 13.7379 11.3336 13.9124 11.0984C14.1312 10.8041 14.9422 9.88374 15.9927 10.5391C16.6618 10.9517 17.2245 11.51 17.8267 12.1077C18.0563 12.3363 18.2199 12.5962 18.3293 12.8753Z'
+                          fill='#FF7971'
+                        />
+                      </svg>
+                    </div> */}
+                    <ImgInput
+                      selectedImg={selectedImg}
+                      onClick={() => {
+                        myInputRef.current.click();
+                      }}
+                    >
                       <svg
                         width='21'
                         height='20'
@@ -277,11 +290,11 @@ function Post() {
                           fill='#FF7971'
                         />
                       </svg>
-                    </div>
+                    </ImgInput>
                     <div>
                       <ShopInput
                         name='storeName'
-                        placeholder='가게 이름'
+                        placeholder={name ? name : '가게 이름'}
                       ></ShopInput>
                       <div>
                         <svg
@@ -387,10 +400,23 @@ function Post() {
                         fill='#A8A8A8'
                       />
                     </svg>
-
-                    <Input width='31px' placeholder='얼마'></Input>
-                    <FontMd>이상 주문 시 배달비</FontMd>
-                    <Input width='31px' placeholder='얼마'></Input>
+                      <div style={{display: 'flex', flexDirection: 'column'}}>
+                        {
+                          numbers.map(number => {
+                            <div key={number}>
+                            <Input name={`deliveryFeeHeader${number}`} width='31px' placeholder='얼마'></Input>
+                              <FontMd>이상 주문 시 배달비</FontMd>
+                            <Input name={`deliveryFeeFooter${number}`} width='31px' placeholder='얼마'></Input>
+                          </div>
+                          })
+                        }
+                        <div>
+                          <Input width='31px' placeholder='얼마'></Input>
+                            <FontMd>이상 주문 시 배달비</FontMd>
+                          <Input width='31px' placeholder='얼마'></Input>
+                        </div>
+                      </div>
+     
                   </Button>
                   <Button height={'74.67px'}>
                     <svg
@@ -407,9 +433,9 @@ function Post() {
                         fill='#A8A8A8'
                       />
                     </svg>
-                    <Input width='31px' placeholder='얼마'></Input>{' '}
+                    <Input name='deliveryDiscounts1' width='31px' placeholder='얼마'></Input>{' '}
                     <FontMd>이상 주문 시</FontMd>
-                    <Input width='31px' placeholder='얼마'></Input>{' '}
+                    <Input name='deliveryDiscounts2' width='31px' placeholder='얼마'></Input>{' '}
                     <FontMd>할인</FontMd>
                   </Button>
                 </div>
