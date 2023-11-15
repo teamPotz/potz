@@ -4,7 +4,10 @@ import Font from '../utility/Font';
 import styled from 'styled-components';
 import TagPlaceSM from './TagPlaceSM';
 
-const NavBarHomePage = () => {
+const NavBarHomePage = (props) => {
+  let { communityDatas } = props;
+  console.log('네비게이션바 데이터', communityDatas);
+
   let [Name, setName] = useState('더샵 하버뷰 1동 주민 모임');
   let [Members, setMembers] = useState(120);
 
@@ -199,12 +202,12 @@ const NavBarHomePage = () => {
       <div style={style1}>
         <div>
           <div style={style2}>
-            <span style={fontStyle}>{Name}</span>
+            <span style={fontStyle}>{communityDatas.name}</span>
           </div>
           <div style={fontStyle2}>
             <span>멤버 수</span>
-            <span style={fontColored}>{Members}</span>
-            <TagPlaceSM>아파트</TagPlaceSM>
+            <span style={fontColored}>{communityDatas._count.members}</span>
+            <TagPlaceSM>{communityDatas.communityTypes[0].name}</TagPlaceSM>
           </div>
         </div>
         <div style={buttonContainer}>

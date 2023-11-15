@@ -30,72 +30,88 @@ const FoodWrapper = styled.div`
   }
 `;
 
-export const Burger = () => {
+export const Burger = (props) => {
+  let { navigateHandler } = props;
+
   return (
-    <FoodWrapper>
+    <FoodWrapper onClick={navigateHandler}>
       <img width={108} height={108} src={BurgerImg}></img>
       <TagFood>버거 • 샌드위치</TagFood>
     </FoodWrapper>
   );
 };
 
-export const Cafe = () => {
+export const Cafe = (props) => {
+  let { navigateHandler } = props;
+
   return (
-    <FoodWrapper>
+    <FoodWrapper onClick={navigateHandler}>
       <img width={108} height={108} src={CafeImg}></img>
       <TagFood>카페 • 디저트</TagFood>
     </FoodWrapper>
   );
 };
 
-export const KoreanFood = () => {
+export const KoreanFood = (props) => {
+  let { navigateHandler } = props;
+
   return (
-    <FoodWrapper>
+    <FoodWrapper onClick={navigateHandler}>
       <img width={108} height={108} src={KoreanFoodImg}></img>
       <TagFood>한식</TagFood>
     </FoodWrapper>
   );
 };
 
-export const Sushi = () => {
+export const Sushi = (props) => {
+  let { navigateHandler } = props;
+
   return (
-    <FoodWrapper>
+    <FoodWrapper onClick={navigateHandler}>
       <img width={108} height={108} src={SushiImg}></img>
       <TagFood>초밥 • 회</TagFood>
     </FoodWrapper>
   );
 };
 
-export const Pizza = () => {
+export const Pizza = (props) => {
+  let { navigateHandler } = props;
+
   return (
-    <FoodWrapper>
+    <FoodWrapper onClick={navigateHandler}>
       <img width={108} height={108} src={PizzaImg}></img>
       <TagFood>피자</TagFood>
     </FoodWrapper>
   );
 };
 
-export const Salad = () => {
+export const Salad = (props) => {
+  let { navigateHandler } = props;
+
   return (
-    <FoodWrapper>
+    <FoodWrapper onClick={navigateHandler}>
       <img width={108} height={108} src={SaladImg}></img>
       <TagFood>샐러드</TagFood>
     </FoodWrapper>
   );
 };
 
-export const Chicken = () => {
+export const Chicken = (props) => {
+  let { navigateHandler } = props;
+
   return (
-    <FoodWrapper>
+    <FoodWrapper onClick={navigateHandler}>
       <img width={108} height={108} src={ChickenImg}></img>
       <TagFood>치킨</TagFood>
     </FoodWrapper>
   );
 };
 
-export const ChineseFood = () => {
+export const ChineseFood = (props) => {
+  let { navigateHandler } = props;
+
   return (
-    <FoodWrapper>
+    <FoodWrapper onClick={navigateHandler}>
       <img width={108} height={108} src={ChineseFoodImg}></img>
       <TagFood>중식 • 아시안</TagFood>
     </FoodWrapper>
