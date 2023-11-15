@@ -18,12 +18,12 @@ function Post() {
   const location = useLocation();
   const myInputRef = useRef(null);
   const [selectImg, setSelectImg] = useState('');
-  const [numbers, setNumbers] = useState([1]);
+  let numbers = [1, 2];
   let selectedImg = '';
 
   useEffect(() => {
 
-  })
+  },[numbers])
   
   let Address = false;
   let name = false;
@@ -59,6 +59,10 @@ function Post() {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  const handleInputChange = (e, number) => {
+    console.log(e.target);
   }
 
   const Button = styled.div`
@@ -403,18 +407,16 @@ function Post() {
                       <div style={{display: 'flex', flexDirection: 'column'}}>
                         {
                           numbers.map(number => {
-                            <div key={number}>
-                            <Input name={`deliveryFeeHeader${number}`} width='31px' placeholder='얼마'></Input>
-                              <FontMd>이상 주문 시 배달비</FontMd>
-                            <Input name={`deliveryFeeFooter${number}`} width='31px' placeholder='얼마'></Input>
-                          </div>
+                            return(
+                              <div key={number}>
+                              <Input name={`deliveryFeeHeader${number}`} onChange={e => {handleInputChange(e, number)}} width='31px' placeholder='얼마'></Input>
+                                <FontMd>이상 주문 시 배달비</FontMd>
+                              <Input name={`deliveryFeeFooter${number}`} onChange={e => {handleInputChange(e, number)}} width='31px' placeholder='얼마'></Input>
+                            </div>
+                            )
+   
                           })
                         }
-                        <div>
-                          <Input width='31px' placeholder='얼마'></Input>
-                            <FontMd>이상 주문 시 배달비</FontMd>
-                          <Input width='31px' placeholder='얼마'></Input>
-                        </div>
                       </div>
      
                   </Button>
