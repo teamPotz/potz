@@ -82,7 +82,7 @@ const AlarmContent = () => {
     height: 21px;
 
     /* 본문/14_Medium */
-    font-family: ${FontKOR};
+    font-family: ${Font.FontKor};
     font-size: 14px;
     font-style: normal;
     font-weight: 500;
@@ -96,7 +96,7 @@ const AlarmContent = () => {
     height: 18px;
 
     /* 제목/설명/12_Medium */
-    font-family: ${FontKOR};
+    font-family: ${Font.FontKor};
     font-style: normal;
     font-weight: 500;
     font-size: 12px;
