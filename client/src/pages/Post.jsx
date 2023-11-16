@@ -11,20 +11,122 @@ import Font from '../utility/Font';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 
+const Button = styled.div`
+  width: 100%;
+  height: ${(props) => props.height};
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 9px;
+  border-bottom: 0.58px solid ${COLOR.GRAY_200};
+  justify-content: ${(props) => props.spacebetween};
+`;
+
+const ShopInput = styled.input`
+  border: none;
+  height: 30px;
+  width: ${(props) => props.width};
+  placeholder: ${(props) => props.placeholder};
+  &::placeholder {
+    color: ${COLOR.GRAY_500};
+  }
+  font-family: ${Font.FontKor};
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18.67px;
+  color: ${COLOR.GRAY_500};
+  &:focus {
+    outline: none;
+    &::placeholder {
+      color: ${COLOR.BLACK};
+    }
+  }
+`;
+const Input = styled.input`
+  border: none;
+  height: 30px;
+  width: ${(props) => props.width};
+  placeholder: ${(props) => props.placeholder};
+  &::placeholder {
+    color: ${COLOR.POTZ_PINK_300};
+  }
+  font-family: ${Font.FontKor};
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16.33px;
+  color: ${COLOR.POTZ_PINK_400};
+  &:focus {
+    outline: none;
+    &::placeholder {
+      color: ${COLOR.POTZ_PINK_400};
+    }
+  }
+`;
+const LinkInput = styled.input`
+  border: none;
+  height: 30px;
+  width: 364px;
+  placeholder: ${(props) => props.placeholder};
+  &::placeholder {
+    color: ${COLOR.GRAY_300};
+  }
+  font-family: ${Font.FontKor};
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16.33px;
+  color: ${COLOR.GRAY_400};
+  &:focus {
+    outline: none;
+    &::placeholder {
+      color: ${COLOR.GRAY_400};
+    }
+  }
+`;
+
+const ImgInput = styled.div`
+  border: none;
+  width: 65.33px;
+  height: 65.33px;
+  background: ${COLOR.POTZ_PINK_100};
+  border-radius: 9.33333px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    background-color: ${COLOR.POTZ_PINK_200};
+    cursor: pointer;
+  }
+`;
+
+const FontMd = styled.span`
+  font-family: ${Font.FontKor};
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16.33px;
+  color: ${COLOR.GRAY_500};
+`;
+const FontSm = styled.span`
+  font-family: ${Font.FontKor};
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  color: ${COLOR.GRAY_400};
+  &:hover {
+    font-size: 14.3px;
+    color: ${COLOR.GRAY_500};
+    cursor: pointer;
+  }
+`;
+
 function Post() {
+  const [counts1, setCounts1] = useState([0]);
+  //const [selectImg, setSelectImg] = useState('');
   const BASE_URL = 'http://localhost:5000';
   const screenHeight = window.innerHeight - 98;
   const navigate = useNavigate();
   const location = useLocation();
   const myInputRef = useRef(null);
-  const [selectImg, setSelectImg] = useState('');
-  const [numbers, setNumbers] = useState([1]);
-  let selectedImg = '';
 
-  useEffect(() => {
-
-  })
-  
   let Address = false;
   let name = false;
 
@@ -33,12 +135,14 @@ function Post() {
     Address = location.state.address;
   }
 
+  //create를 해주는 함수
   async function createPost(
     storeName,
     storeAddress,
     orderLink,
     recruitment,
     meetingLocation,
+    deliveryFee,
     file
   ) {
     const formData = new FormData();
@@ -47,6 +151,7 @@ function Post() {
     formData.append('orderLink', orderLink);
     formData.append('recruitment', recruitment);
     formData.append('meetingLocation', meetingLocation);
+    formData.append('deliveryFee', deliveryFee);
     formData.append('image', file);
 
     try {
@@ -61,113 +166,25 @@ function Post() {
     }
   }
 
-  const Button = styled.div`
-    width: 100%;
-    height: ${(props) => props.height};
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 9px;
-    border-bottom: 0.58px solid ${COLOR.GRAY_200};
-    justify-content: ${(props) => props.space};
-  `;
+  const [values, setValues] = useState([]);
+  const [deliveryFee, setDeliveryFee] = useState([]);
 
-  const ShopInput = styled.input`
-    border: none;
-    height: 30px;
-    width: ${(props) => props.width};
-    placeholder: ${(props) => props.placeholder};
-    &::placeholder {
-      color: ${COLOR.GRAY_500};
+  const deliveryFeeChange = (e, number) => {
+    e.preventDefault();
+
+    if (e.target.name === `deliveryFeeHeader${number}`) {
+      setValues((prevValues) => [e.target.value, prevValues[1]]);
     }
-    font-family: ${Font.FontKor};
-    font-style: normal;
-    font-weight: 700;
-    font-size: 18.67px;
-    color: ${COLOR.GRAY_500};
-    &:focus {
-      outline: none;
-      &::placeholder {
-        color: ${COLOR.BLACK};
+    if (e.target.name === `deliveryFeeFooter${number}`) {
+      setValues((prevValues) => [prevValues[0], e.target.value]);
+
+      if(values[0] && values[1]){
+        setValues([]);
+        setCounts1([...counts1, counts1.length]);
+        console.log(counts1);
       }
     }
-  `;
-  const Input = styled.input`
-    border: none;
-    height: 30px;
-    width: ${(props) => props.width};
-    placeholder: ${(props) => props.placeholder};
-    &::placeholder {
-      color: ${COLOR.POTZ_PINK_300};
-    }
-    font-family: ${Font.FontKor};
-    font-style: normal;
-    font-weight: 700;
-    font-size: 16.33px;
-    color: ${COLOR.POTZ_PINK_400};
-    &:focus {
-      outline: none;
-      &::placeholder {
-        color: ${COLOR.POTZ_PINK_400};
-      }
-    }
-  `;
-  const LinkInput = styled.input`
-    border: none;
-    height: 30px;
-    width: 364px;
-    placeholder: ${(props) => props.placeholder};
-    &::placeholder {
-      color: ${COLOR.GRAY_300};
-    }
-    font-family: ${Font.FontKor};
-    font-style: normal;
-    font-weight: 700;
-    font-size: 16.33px;
-    color: ${COLOR.GRAY_400};
-    &:focus {
-      outline: none;
-      &::placeholder {
-        color: ${COLOR.GRAY_400};
-      }
-    }
-  `;
-
-  const ImgInput = styled.div`
-    border: none;
-    width: 65.33px;
-    height: 65.33px;
-    background: ${(props) =>
-      props.selectedImg ? `url(${props.selectedImg})` : `${COLOR.POTZ_PINK_100}`};
-    border-radius: 9.33333px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    &:hover {
-      background-color: ${COLOR.POTZ_PINK_200};
-      cursor: pointer;
-    }
-  `;
-
-  const FontMd = styled.span`
-    font-family: ${Font.FontKor};
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16.33px;
-    color: ${COLOR.GRAY_500};
-  `;
-  const FontSm = styled.span`
-    font-family: ${Font.FontKor};
-    font-style: normal;
-    font-weight: 400;
-    font-size: 14px;
-    color: ${COLOR.GRAY_400};
-    &:hover {
-      font-size: 14.3px;
-      color: ${COLOR.GRAY_500};
-      cursor: pointer;
-    }
-  `;
+  };
 
   const styles = {
     background: {
@@ -185,7 +202,7 @@ function Post() {
     img: {
       width: '65.33px',
       height: '65.33px',
-      background: selectImg ? selectImg : `${COLOR.POTZ_PINK_100}`,
+      background: `${COLOR.POTZ_PINK_100}`,
       borderRadius: '9.33333px',
       display: 'flex',
       alignItems: 'center',
@@ -196,6 +213,7 @@ function Post() {
       },
     },
   };
+
   return (
     <Container className='background'>
       <Row className='row1'>
@@ -217,6 +235,11 @@ function Post() {
                   const orderLink = e.target.orderLink.value;
                   const recruitment = e.target.recruitment.value;
                   const meetingLocation = e.target.meetingLocation.value;
+                  let deliveryFee;
+                  for (let i = 0; i < counts1.length; i++) {
+                    deliveryFee = {minAmount: e.target[`deliveryFeeHeader${i}`].value, fee: e.target[`deliveryFeeFooter${i}`].value};
+                    
+                  }
                   const file = e.target.image.files[0];
 
                   createPost(
@@ -225,6 +248,7 @@ function Post() {
                     orderLink,
                     recruitment,
                     meetingLocation,
+                    deliveryFee,
                     file
                   );
                 }}
@@ -237,19 +261,20 @@ function Post() {
                       name='image'
                       type='file'
                       accept='image/*'
-                      onChange={(e) => {
-                        e.preventDefault();
-                        let image = e.target.files[0];
-                        if (image) {
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            //setSelectImg(reader.result);
-                            selectedImg = reader.result;
-                            console.log(selectedImg);
-                          };
-                          reader.readAsDataURL(image);
-                        }
-                      }}
+                      //   onChange={(e) => {
+                      //     e.preventDefault();
+                      //     let image = e.target.files[0];
+                      //     if (image) {
+                      //       const reader = new FileReader();
+                      //       reader.onloadend = () => {
+                      //         //setSelectImg(reader.result);
+                      //         selectedImg = reader.result;
+                      //         console.log(selectedImg);
+                      //       };
+                      //       reader.readAsDataURL(image);
+                      //     }
+                      //   }
+                      // }
                     ></input>
                     {/* <div style={styles.img}
                       onClick={() => {
@@ -271,7 +296,6 @@ function Post() {
                       </svg>
                     </div> */}
                     <ImgInput
-                      selectedImg={selectedImg}
                       onClick={() => {
                         myInputRef.current.click();
                       }}
@@ -323,7 +347,7 @@ function Post() {
                       placeholder='관련 링크 붙여넣기'
                     ></LinkInput>
                   </Button>
-                  <Button space={'space-between'} height={'74.67px'}>
+                  <Button spacebetween={'space-between'} height={'74.67px'}>
                     <TagFood>카테고리</TagFood>
                     <svg
                       width='29'
@@ -385,7 +409,7 @@ function Post() {
                       placeholder='만날 장소'
                     ></Input>
                   </Button>
-                  <Button height={'74.67px'}>
+                  <Button height={`${74.67 + 34.33 * (counts1.length - 1)}px`}>
                     <svg
                       width='28'
                       height='29'
@@ -400,23 +424,28 @@ function Post() {
                         fill='#A8A8A8'
                       />
                     </svg>
-                      <div style={{display: 'flex', flexDirection: 'column'}}>
-                        {
-                          numbers.map(number => {
-                            <div key={number}>
-                            <Input name={`deliveryFeeHeader${number}`} width='31px' placeholder='얼마'></Input>
-                              <FontMd>이상 주문 시 배달비</FontMd>
-                            <Input name={`deliveryFeeFooter${number}`} width='31px' placeholder='얼마'></Input>
-                          </div>
-                          })
-                        }
-                        <div>
-                          <Input width='31px' placeholder='얼마'></Input>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+
+                      {counts1.map((count) => {
+                        return (
+                          <div key={count}>
+                            <Input
+                              name={`deliveryFeeHeader${count}`}
+                              width='31px'
+                              placeholder='얼마'
+                              onChange={(e) => deliveryFeeChange(e, count)}
+                            ></Input>
                             <FontMd>이상 주문 시 배달비</FontMd>
-                          <Input width='31px' placeholder='얼마'></Input>
-                        </div>
-                      </div>
-     
+                            <Input
+                              name={`deliveryFeeFooter${count}`}
+                              width='31px'
+                              placeholder='얼마'
+                              onChange={(e) => deliveryFeeChange(e, count)}
+                            ></Input>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </Button>
                   <Button height={'74.67px'}>
                     <svg
@@ -433,9 +462,17 @@ function Post() {
                         fill='#A8A8A8'
                       />
                     </svg>
-                    <Input name='deliveryDiscounts1' width='31px' placeholder='얼마'></Input>{' '}
+                    <Input
+                      name='deliveryDiscounts1'
+                      width='31px'
+                      placeholder='얼마'
+                    ></Input>{' '}
                     <FontMd>이상 주문 시</FontMd>
-                    <Input name='deliveryDiscounts2' width='31px' placeholder='얼마'></Input>{' '}
+                    <Input
+                      name='deliveryDiscounts2'
+                      width='31px'
+                      placeholder='얼마'
+                    ></Input>{' '}
                     <FontMd>할인</FontMd>
                   </Button>
                 </div>
