@@ -1,9 +1,11 @@
 import '../App.css';
+import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
 import GoBack from '../components/goBack';
+import CategoryBtn from '../components/CategoryBtn';
 import {
   Burger,
   Cafe,
@@ -18,6 +20,26 @@ import {
 //contents_container 안에 UI 구현 하시면 됩니다!
 
 function CategoryPage() {
+  let [categoryData, setCategoryData] = useState();
+
+  useEffect(() => {
+    async function fetchCategoryData() {
+      try {
+        const response = await fetch('http://localhost:5000/categories', {
+          method: 'GET',
+        });
+        const data = await response.json();
+        console.log('카테고리 전체 데이터', data);
+        setCategoryData(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // 비동기 함수를 useEffect 내부에서 직접 호출
+    fetchCategoryData();
+  }, []);
+
   const backgroundStyle = {
     backgroundColor: COLOR.POTZ_PINK_100,
   };
@@ -32,16 +54,13 @@ function CategoryPage() {
   };
 
   const categoryContainer = {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(40%, auto))',
+    gap: '12px',
   };
 
-  const category = {
-    marginBottom: '28px',
-    display: 'flex',
-    width: '100%',
-    justifyContent: 'space-between',
+  const marginstyle = {
+    marginBottom: '20px',
   };
 
   return (
@@ -57,22 +76,13 @@ function CategoryPage() {
             </nav>
             <div className='contents_container' style={style1}>
               <div style={categoryContainer}>
-                <div style={category}>
-                  <Burger></Burger>
-                  <Cafe></Cafe>
-                </div>
-                <div style={category}>
-                  <KoreanFood> </KoreanFood>
-                  <Sushi></Sushi>
-                </div>
-                <div style={category}>
-                  <ChineseFood></ChineseFood>
-                  <Pizza></Pizza>
-                </div>
-                <div style={category}>
-                  <Chicken></Chicken>
-                  <Salad></Salad>
-                </div>
+                {categoryData
+                  ? categoryData.map((category) => (
+                      <div key={category.id} style={marginstyle}>
+                        <CategoryBtn category={category}></CategoryBtn>
+                      </div>
+                    ))
+                  : null}
               </div>
             </div>
           </div>
