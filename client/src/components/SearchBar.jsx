@@ -1,22 +1,46 @@
 import styled from 'styled-components';
 import COLOR from '../utility/Color';
 import Font from '../utility/Font';
+import { useState } from 'react';
 
-const SearchBar = () => {
-  const InputWrapper = styled.div`
-    display: flex;
-    background-color: ${COLOR.POTZ_PINK_100};
-    border: none;
-    width: 88%;
-    height: 46px;
-    flex-shrink: 0;
-    border-radius: 12px;
-    align-items: center;
-  `;
-  const SearchIconWrapper = styled.div`
-    margin-left: 20px;
-    margin-top: 4px;
-  `;
+const InputSearch = styled.input`
+  font-family: ${Font.FontKor};
+  font-size: 14px;
+  font-weight: 400;
+  margin-left: 18px;
+  width: 75%;
+  border: none;
+  background-color: ${COLOR.POTZ_PINK_100};
+  color: ${COLOR.GRAY_400};
+  &:focus {
+    outline: none;
+  }
+`;
+const InputWrapper = styled.div`
+  display: flex;
+  background-color: ${COLOR.POTZ_PINK_100};
+  border: none;
+  width: 88%;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  align-items: center;
+`;
+
+const SearchIconWrapper = styled.div`
+  margin-left: 20px;
+  margin-top: 4px;
+`;
+
+const SearchBar = (props) => {
+  let { getSearchResult } = props;
+  let [searchVal, setSearchVal] = useState();
+
+  const onChangeHandler = (e) => {
+    setSearchVal(e.target.value);
+    getSearchResult(e.target.value);
+  };
+
   const SearchIcon = () => {
     return (
       <svg
@@ -41,26 +65,17 @@ const SearchBar = () => {
       </svg>
     );
   };
-  const InputSearch = styled.input`
-    font-family: ${Font.FontKor};
-    font-size: 14px;
-    font-weight: 400;
-    margin-left: 18px;
-    width: 75%;
-    border: none;
-    background-color: ${COLOR.POTZ_PINK_100};
-    color: ${COLOR.GRAY_400};
-    &:focus {
-      outline: none;
-    }
-  `;
 
   return (
     <InputWrapper>
       <SearchIconWrapper>
         <SearchIcon></SearchIcon>
       </SearchIconWrapper>
-      <InputSearch placeholder='맛있는 키워드로 검색해보세요.'></InputSearch>
+      <InputSearch
+        value={searchVal}
+        onChange={onChangeHandler}
+        placeholder='맛있는 키워드로 검색해보세요.'
+      ></InputSearch>
     </InputWrapper>
   );
 };

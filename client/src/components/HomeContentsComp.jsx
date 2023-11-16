@@ -5,6 +5,36 @@ import TagPlaceSM from './TagPlaceSM';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const HomeContentsWrapper = styled.div`
+  height: 150px;
+  border: 1px solid ${COLOR.GRAY_100};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: grab;
+  background: ${COLOR.WHITE};
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.04);
+    border-color: ${COLOR.POTZ_PINK_100};
+  }
+`;
+
+const ButtonContainer = styled.button`
+  display: flex;
+  width: 36px;
+  height: 36px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: ${COLOR.WHITE};
+  cursor: grab;
+  &:hover {
+    background: ${COLOR.POTZ_PINK_100};
+  }
+`;
+
 const HomeContents = (props) => {
   let navigate = useNavigate();
 
@@ -20,36 +50,6 @@ const HomeContents = (props) => {
     console.log('좋아요 클릭에 따라 true false 상태 저장', like);
     setLike(like);
   }, [like]);
-
-  const HomeContentsWrapper = styled.div`
-    height: 150px;
-    border: 1px solid ${COLOR.GRAY_100};
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: grab;
-    background: ${COLOR.WHITE};
-    transition: all 0.3s ease;
-
-    &:hover {
-      transform: scale(1.04);
-      border-color: ${COLOR.POTZ_PINK_100};
-    }
-  `;
-
-  const ButtonContainer = styled.button`
-    display: flex;
-    width: 36px;
-    height: 36px;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    background-color: ${COLOR.WHITE};
-    cursor: grab;
-    &:hover {
-      background: ${COLOR.POTZ_PINK_100};
-    }
-  `;
 
   const HeartIcon = () => {
     return (
