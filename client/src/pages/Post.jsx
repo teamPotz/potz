@@ -126,7 +126,6 @@ function Post() {
   const navigate = useNavigate();
   const location = useLocation();
   const myInputRef = useRef(null);
-
   let Address = false;
   let name = false;
 
