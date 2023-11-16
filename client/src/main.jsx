@@ -16,7 +16,7 @@ import Detail from './pages/Detail.jsx';
 import SearchPage from './pages/Search.jsx';
 import Alarm from './pages/Alarm.jsx';
 import CategoryPage from './pages/Category.jsx';
-
+import CategorySearch from './pages/CategorySearchPage.jsx';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -69,6 +69,10 @@ const router = createBrowserRouter([
   {
     path: '/category',
     element: <CategoryPage />,
+  },
+  {
+    path: '/category-search',
+    element: <CategorySearch />,
   },
 ]);
 

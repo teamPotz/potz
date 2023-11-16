@@ -1,7 +1,7 @@
 import TagFood from './TagFood';
 import styled from 'styled-components';
 import COLOR from '../utility/Color';
-import BurgerImg from '../../public/images/graphicImg/CategoryBurger.png';
+import { useNavigate } from 'react-router-dom';
 
 const FoodWrapper = styled.div`
   padding-bottom: 18px;
@@ -21,11 +21,18 @@ const FoodWrapper = styled.div`
 `;
 
 const CategoryBtn = (props) => {
-  let { navigateHandler, category } = props;
+  let navigate = useNavigate();
+  let { category } = props;
   console.log('카테고리 별 데이터', category);
 
   return (
-    <FoodWrapper onClick={navigateHandler}>
+    <FoodWrapper
+      onClick={() => {
+        navigate('/category-search', {
+          state: { category: category },
+        });
+      }}
+    >
       <img
         width={108}
         height={108}

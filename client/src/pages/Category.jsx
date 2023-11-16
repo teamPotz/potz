@@ -6,18 +6,6 @@ import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
 import GoBack from '../components/goBack';
 import CategoryBtn from '../components/CategoryBtn';
-import {
-  Burger,
-  Cafe,
-  KoreanFood,
-  Sushi,
-  Pizza,
-  Salad,
-  Chicken,
-  ChineseFood,
-} from '../components/Category_Food';
-
-//contents_container 안에 UI 구현 하시면 됩니다!
 
 function CategoryPage() {
   let [categoryData, setCategoryData] = useState();
