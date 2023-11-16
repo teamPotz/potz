@@ -2,13 +2,16 @@ import styled from 'styled-components';
 import Font from '../utility/Font';
 import COLOR from '../utility/Color';
 import TagPlaceSM from './TagPlaceSM';
+import { useNavigate } from 'react-router-dom';
 
 const LikedComp = (props) => {
-  //테스트용 데이터
-  let { testData } = props;
+  let navigate = useNavigate();
+
+  let { postData } = props;
+  console.log('해당 카테고리의 포스트 데이터', postData);
 
   const LikedCompWrapper = styled.div`
-    height: 256px;
+    height: 100%;
     width: 150px;
     display: flex;
     flex-direction: column;
@@ -77,42 +80,61 @@ const LikedComp = (props) => {
   const imgStyle = {
     display: 'flex',
     marginBottom: '4px',
+    borderRadius: '12px',
   };
 
   return (
-    <LikedCompWrapper>
+    <LikedCompWrapper
+      onClick={() => {
+        navigate('/detail/', {
+          state: { postDatas: postData },
+        });
+      }}
+    >
       <div>
-        <div style={linkStyle}>
-          <span>{testData.link}</span>
-        </div>
+        <a style={linkStyle} href={postData.orderLink}>
+          <span>배달앱 바로가기</span>
+        </a>
+
         <div style={tagStyle}>
-          <TagPlaceSM>{testData.category}</TagPlaceSM>
+          <TagPlaceSM>{postData.category.name}</TagPlaceSM>
         </div>
         <img
           width={150}
           height={150}
           style={imgStyle}
-          src={testData.imgSrc}
+          src={'http://localhost:5000/' + postData.imageUrl + '.png'}
         ></img>
       </div>
       <div>
         <div style={textOverflow}>
-          <span style={fontStyle1}>{testData.store}</span>
+          <span style={fontStyle1}>{postData.storeName}</span>
         </div>
         <div style={fontStyle3}>
           <div>
-            <span>{testData.memNum}</span>
+            <span>{postData.recruitment}</span>
             <span>/</span>
-            <span>{testData.limitNum}</span>
+            <span>{postData.deliveryPot.participants.length}</span>
             <span>명</span>
           </div>
           <div>
-            <span>{testData.meetPlace}</span>
+            <span>{postData.meetingLocation}</span>
           </div>
         </div>
         <div style={fontStyle2}>
-          <span style={coloredfont}>{testData.price}</span>
-          <span>원씩 배달</span>
+          <span style={coloredfont}>
+            {postData.deliveryFees?.[0]?.fee ? (
+              postData.deliveryFees[0].fee /
+              postData.deliveryPot.participants.length
+            ) : (
+              <span>무료</span>
+            )}
+          </span>
+          {postData.deliveryFees?.[0]?.fee ? (
+            <span>원씩 배달</span>
+          ) : (
+            <span>배달</span>
+          )}
         </div>
       </div>
     </LikedCompWrapper>

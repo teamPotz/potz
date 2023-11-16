@@ -76,10 +76,21 @@ export async function getCommunityById(req, res) {
             deliveryPot: {
               select: {
                 participants: true,
+                orders: {
+                  select: {
+                    price: true,
+                    quantity: true,
+                  },
+                },
               },
             },
             author: {
               select: {
+                profile: {
+                  select: {
+                    imageUrl: true,
+                  },
+                },
                 createdDeliveryPots: true,
               },
             },

@@ -148,9 +148,14 @@ export async function getPosts(req, res) {
         },
         deliveryPot: {
           select: {
-            orders: true,
+            orders: {
+              select: {
+                price: true,
+                quantity: true,
+              },
+            },
             _count: {
-              select: { participants: true },
+              select: { quantity: true },
             },
           },
         },

@@ -13,6 +13,9 @@ import ChooseInterest from './pages/ChooseInterest.jsx';
 import Login from './pages/loginPage.jsx';
 import FindLocation from './pages/FindLocationPage.jsx';
 import Detail from './pages/Detail.jsx';
+import SearchPage from './pages/Search.jsx';
+import Alarm from './pages/Alarm.jsx';
+import CategoryPage from './pages/Category.jsx';
 
 const router = createBrowserRouter([
   {
@@ -54,6 +57,18 @@ const router = createBrowserRouter([
   {
     path: '/detail',
     element: <Detail />,
+  },
+  {
+    path: '/search',
+    element: <SearchPage />,
+  },
+  {
+    path: '/alarm',
+    element: <Alarm />,
+  },
+  {
+    path: '/category',
+    element: <CategoryPage />,
   },
 ]);
 

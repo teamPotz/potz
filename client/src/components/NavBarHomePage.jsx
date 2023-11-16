@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import COLOR from '../utility/Color';
 import Font from '../utility/Font';
 import styled from 'styled-components';
@@ -10,6 +11,19 @@ const NavBarHomePage = (props) => {
 
   let [Name, setName] = useState('더샵 하버뷰 1동 주민 모임');
   let [Members, setMembers] = useState(120);
+  let navigate = useNavigate();
+
+  let clickHandler1 = () => {
+    navigate('/category');
+  };
+
+  let clickHandler2 = () => {
+    navigate('/alarm');
+  };
+
+  let clickHandler3 = () => {
+    navigate('/search');
+  };
 
   const NavBarWrapper = styled.div`
     width: 100%;
@@ -211,13 +225,13 @@ const NavBarHomePage = (props) => {
           </div>
         </div>
         <div style={buttonContainer}>
-          <ButtonMenu>
+          <ButtonMenu onClick={clickHandler1}>
             <MenuIcon></MenuIcon>
           </ButtonMenu>
-          <ButtonAlert>
+          <ButtonAlert onClick={clickHandler2}>
             <AlertIcon></AlertIcon>
           </ButtonAlert>
-          <ButtonSearch>
+          <ButtonSearch onClick={clickHandler3}>
             <SearchIcon></SearchIcon>
           </ButtonSearch>
         </div>
