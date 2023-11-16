@@ -8,9 +8,10 @@ import { useNavigate } from 'react-router-dom';
 const HomeContents = (props) => {
   let navigate = useNavigate();
 
-  //테스트용 데이터
   let { communityDatas } = props;
+
   console.log('홈 컨텐츠 데이터', communityDatas);
+  console.log('포스트 데이터', communityDatas.posts);
 
   let [like, setLike] = useState(null);
 
@@ -20,9 +21,6 @@ const HomeContents = (props) => {
     setLike(like);
   }, [like]);
 
-  const clickHandler = () => {
-    navigate('/detail');
-  };
   const HomeContentsWrapper = styled.div`
     height: 150px;
     border: 1px solid ${COLOR.GRAY_100};
@@ -137,6 +135,7 @@ const HomeContents = (props) => {
 
   const imgStyle = {
     marginLeft: '28px',
+    borderRadius: '12px',
   };
 
   const fontWrapper = {
@@ -209,7 +208,14 @@ const HomeContents = (props) => {
     <div style={homeContentesContainer}>
       {communityDatas.posts.map((post) => {
         return (
-          <HomeContentsWrapper onClick={clickHandler} key={post.id}>
+          <HomeContentsWrapper
+            onClick={() => {
+              navigate('/detail/', {
+                state: { postDatas: post },
+              });
+            }}
+            key={post.id}
+          >
             <div>
               <div style={tagStyle}>
                 <TagPlaceSM>{post.category.name}</TagPlaceSM>
@@ -280,12 +286,20 @@ const HomeContents = (props) => {
                 )}
               </ButtonContainer>
               {post.deliveryDiscounts.length > 0 ? (
-                <ButtonContainer>
+                <ButtonContainer
+                  onClick={(event) => {
+                    event.stopPropagation();
+                  }}
+                >
                   <SaleIcon></SaleIcon>
                 </ButtonContainer>
               ) : null}
               {/* 우선은 2회 이상 만든 사람에게 왕관 붙여줌 */}
-              <ButtonContainer>
+              <ButtonContainer
+                onClick={(event) => {
+                  event.stopPropagation();
+                }}
+              >
                 {post.author.createdDeliveryPots.length >= 2 ? (
                   <CrownIcon></CrownIcon>
                 ) : null}

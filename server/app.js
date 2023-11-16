@@ -9,6 +9,7 @@ import postsRouter from './routes/posts.js';
 import ordersRouter from './routes/orders.js';
 import communityTypeRouter from './routes/communityType.js';
 import userRouter from './routes/users.js';
+import categoryRouter from './routes/categories.js';
 
 import { notFound, errorHandler } from './middlewares/error.js';
 
@@ -33,6 +34,7 @@ app.use('/posts', postsRouter);
 app.use('/orders', ordersRouter);
 app.use('/community-types', communityTypeRouter);
 app.use('/users', userRouter);
+app.use('/categories', categoryRouter);
 
 app.use(notFound);
 app.use(errorHandler);
