@@ -79,23 +79,6 @@ function Detail() {
     };
   }, []);
 
-  //12개까지 검색한 키워드 저장
-  const testData1 = {
-    store: '스타벅스 송도점',
-    totalDeliveryPrice: 2000,
-    totalPrice: 450000,
-    price: 230,
-    link: '쿠팡이츠.link',
-    imgSrc: '../../public/images/graphicImg/TestImgBack.png',
-    memNum: 8,
-    limitNum: 10,
-    meetPlace: '아파트 정문',
-    category: '# 카페 디저트',
-    sale: [1],
-    crown: true,
-    heart: false,
-  };
-
   const Divider = styled.div`
     margin-top: 40px;
     margin-bottom: 18px;
