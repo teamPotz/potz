@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './index.css';
 // import App from './App.jsx';
-import AboutSample from './pages/AboutSample';
-import FetchTest from './pages/FetchTest';
 import MakeCommunity from './pages/MakeCommunityPage.jsx';
 import ChooseFeature from './pages/ChooseFeaturePage.jsx';
 import NamingCommunity from './pages/NamingCommunity.jsx';
@@ -25,14 +23,6 @@ const router = createBrowserRouter([
   {
     path: '/user-interests',
     element: <ChooseInterest />,
-  },
-  {
-    path: '/about',
-    element: <AboutSample />,
-  },
-  {
-    path: '/fetch',
-    element: <FetchTest />,
   },
   {
     path: '/find-community',
