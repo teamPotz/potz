@@ -9,6 +9,60 @@ import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
 import CategorySearch from '../components/categorySearch';
 
+const Divider = styled.div`
+  margin-top: 40px;
+  margin-bottom: 18px;
+  background-color: ${COLOR.POTZ_PINK_100};
+  height: 10px;
+  width: 100%;
+  & hr {
+    background: ${COLOR.GRAY_200};
+    height: 1px;
+    border: 0;
+  }
+`;
+
+const Particiate = styled.div`
+  background-color: ${COLOR.POTZ_PINK_100};
+  height: 60px;
+  width: 100%;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  font-family: ${Font.FontKor};
+  font-weight: 700;
+  color: ${COLOR.GRAY_400};
+`;
+
+const ButtonWrap = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  transition: all 0.2s ease;
+  cursor: grab;
+
+  &:hover {
+    transform: scale(1.18);
+    border-radius: 4px;
+  }
+`;
+
+const EnterStyle = styled.div`
+  marginright: 28px;
+  cursor: grab;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.04);
+    border-color: ${COLOR.POTZ_PINK_100};
+  }
+`;
+
 function Detail() {
   let location = useLocation();
   let navigate = useNavigate();
@@ -78,49 +132,6 @@ function Detail() {
       window.removeEventListener('resize', ReSizeHandler);
     };
   }, []);
-
-  const Divider = styled.div`
-    margin-top: 40px;
-    margin-bottom: 18px;
-    background-color: ${COLOR.POTZ_PINK_100};
-    height: 10px;
-    width: 100%;
-    & hr {
-      background: ${COLOR.GRAY_200};
-      height: 1px;
-      border: 0;
-    }
-  `;
-
-  const Particiate = styled.div`
-    background-color: ${COLOR.POTZ_PINK_100};
-    height: 60px;
-    width: 100%;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    gap: 80px;
-    font-family: ${Font.FontKor};
-    font-weight: 700;
-    color: ${COLOR.GRAY_400};
-  `;
-
-  const ButtonWrap = styled.button`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: none;
-    border: none;
-    transition: all 0.2s ease;
-    cursor: grab;
-
-    &:hover {
-      transform: scale(1.18);
-      border-radius: 4px;
-    }
-  `;
 
   const backgroundStyle = {
     fontFamily: Font.FontKor,
@@ -229,16 +240,6 @@ function Detail() {
   };
 
   const ButtonEnter = () => {
-    const EnterStyle = styled.div`
-      marginright: 28px;
-      cursor: grab;
-      transition: all 0.3s ease;
-
-      &:hover {
-        transform: scale(1.04);
-        border-color: ${COLOR.POTZ_PINK_100};
-      }
-    `;
     const EnterIcon = () => {
       return (
         <svg

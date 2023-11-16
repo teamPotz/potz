@@ -4,28 +4,28 @@ import COLOR from '../utility/Color';
 import TagPlaceSM from './TagPlaceSM';
 import { useNavigate } from 'react-router-dom';
 
+const LikedCompWrapper = styled.div`
+  height: 100%;
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  cursor: grab;
+  transition: all 0.3s ease;
+  margin-bottom: 14px;
+  font-family: ${Font.FontKor};
+
+  &:hover {
+    transform: scale(1.04);
+  }
+`;
+
 const LikedComp = (props) => {
   let navigate = useNavigate();
 
   let { postData } = props;
   console.log('해당 카테고리의 포스트 데이터', postData);
-
-  const LikedCompWrapper = styled.div`
-    height: 100%;
-    width: 150px;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: start;
-    cursor: grab;
-    transition: all 0.3s ease;
-    margin-bottom: 14px;
-    font-family: ${Font.FontKor};
-
-    &:hover {
-      transform: scale(1.04);
-    }
-  `;
 
   const textOverflow = {
     width: '124px',

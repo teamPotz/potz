@@ -15,6 +15,9 @@ import SearchPage from './pages/Search.jsx';
 import Alarm from './pages/Alarm.jsx';
 import CategoryPage from './pages/Category.jsx';
 import CategorySearch from './pages/CategorySearchPage.jsx';
+import ChooseCommunity from './pages/ChooseCommunityPage.jsx';
+import LikedList from './pages/LikedListPage.jsx';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -41,6 +44,10 @@ const router = createBrowserRouter([
     element: <NamingCommunity />,
   },
   {
+    path: '/community-lists',
+    element: <ChooseCommunity />,
+  },
+  {
     path: '/home',
     element: <Home />,
   },
@@ -63,6 +70,10 @@ const router = createBrowserRouter([
   {
     path: '/category-search',
     element: <CategorySearch />,
+  },
+  {
+    path: '/liked-list',
+    element: <LikedList />,
   },
 ]);
 
