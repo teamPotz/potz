@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  getPostByName,
   getPosts,
   getPostById,
   updatePost,
@@ -11,6 +12,7 @@ import {
 const router = Router();
 router.get('/', getPosts);
 router.post('/', createPost);
+router.route('/search').get(getPostByName);
 router.route('/:id').get(getPostById).patch(updatePost).delete(deletePost);
 router.patch('/:id/like', toggleLike);
 

@@ -10,6 +10,7 @@ import ordersRouter from './routes/orders.js';
 import communityTypeRouter from './routes/communityType.js';
 import userRouter from './routes/users.js';
 import categoryRouter from './routes/categories.js';
+import searchHistoryRouter from './routes/searchHistory.js';
 
 import { notFound, errorHandler } from './middlewares/error.js';
 
@@ -35,6 +36,7 @@ app.use('/orders', ordersRouter);
 app.use('/community-types', communityTypeRouter);
 app.use('/users', userRouter);
 app.use('/categories', categoryRouter);
+app.use('/search-history', searchHistoryRouter);
 
 app.use(notFound);
 app.use(errorHandler);

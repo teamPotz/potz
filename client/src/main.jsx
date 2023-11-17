@@ -17,6 +17,7 @@ import CategoryPage from './pages/Category.jsx';
 import CategorySearch from './pages/CategorySearchPage.jsx';
 import ChooseCommunity from './pages/ChooseCommunityPage.jsx';
 import LikedList from './pages/LikedListPage.jsx';
+import SearchResult from './pages/SearchResult.jsx';
 
 const router = createBrowserRouter([
   {
@@ -70,6 +71,10 @@ const router = createBrowserRouter([
   {
     path: '/category-search',
     element: <CategorySearch />,
+  },
+  {
+    path: '/result',
+    element: <SearchResult />,
   },
   {
     path: '/liked-list',

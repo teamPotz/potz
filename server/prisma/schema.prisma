@@ -42,6 +42,7 @@ model User {
   deliveryPotHistoryAsMember DeliveryPotHistory[] @relation(name: "ParticipantsRelationHistory")
   createdAt                  DateTime             @default(now())
   updatedAt                  DateTime             @updatedAt
+  SearchResult               SearchResult[]
 }
 
 model UserProfile {
@@ -189,4 +190,12 @@ model DeliveryPotHistory {
   deliveryPot   DeliveryPot @relation(fields: [deliveryPotId], references: [id])
   deliveryPotId Int         @unique
   orderedAt     DateTime    @default(now())
+}
+
+// 검색어 이력
+model SearchResult {
+  id      Int    @id @default(autoincrement())
+  keyword String
+  user    User   @relation(fields: [userId], references: [id])
+  userId  Int
 }
