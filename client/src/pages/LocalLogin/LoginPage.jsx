@@ -1,42 +1,71 @@
-import '../App.css';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
-import COLOR from '../utility/Color';
-import ButtonBg from '../components/ButtonBG';
+import '../../App.css';
+import { useState, useEffect } from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
+import COLOR from '../../utility/Color';
 import { useNavigate } from 'react-router-dom';
+import ButtonBg from '../../components/ButtonBG';
+import { useAuth } from '../../contexts/AuthContext';
 
-function Login() {
+const style3 = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '13px',
+};
+
+const styles2 = {
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: '100px',
+  marginBottom: '10px',
+};
+
+const style1 = {
+  display: 'inline-flex',
+  flexDirection: 'column',
+  justifyContent: 'space-around',
+  height: '100%',
+};
+
+function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [signUpEmail, setSignUpEmail] = useState('');
+  const [signUpPassword, setSignUpPassword] = useState('');
+  const [signUpName, setSignUpName] = useState('');
+
   const navigate = useNavigate();
+  const { isAuthenticated, signUp, login, getUserInfo } = useAuth();
 
-  const handleNavigate = () => {
-    navigate('/user-interests');
-  };
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
-  const style3 = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '13px',
-  };
+  useEffect(() => {
+    if (isAuthenticated) navigate('/link', { replace: true });
+  }, [isAuthenticated, navigate]);
 
-  const styles2 = {
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: '100px',
-    marginBottom: '10px',
-  };
+  async function handleSignUp() {
+    if (!signUpEmail || !signUpPassword || !signUpName) {
+      alert('please fill the all fields');
+      return;
+    }
+    signUp(signUpEmail, signUpPassword, signUpName);
+  }
 
-  const style1 = {
-    display: 'inline-flex',
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    height: '100%',
-  };
+  async function handleLogin() {
+    if (!email || !password) {
+      alert('please fill the all fields');
+      return;
+    }
+
+    login(email, password);
+  }
 
   return (
     <Container className='background'>
+      {/* <button onClick={getUserInfo}>auth</button> */}
       <Row className='row1'>
         <Col className='col1'>
           <div className='side_container'></div>
@@ -91,31 +120,49 @@ function Login() {
                 </svg>
               </div>
               <div className='btn_container' style={style3}>
-                <div onClick={handleNavigate}>
-                  <ButtonBg
-                    backgroundColor={COLOR.YELLOW}
-                    hoverColor={COLOR.YELLOW_100}
-                    fontColor={COLOR.WHITE}
-                  >
-                    카카오톡으로 시작
-                  </ButtonBg>
-                </div>
-                <div onClick={handleNavigate}>
-                  <ButtonBg
-                    backgroundColor={COLOR.POTZ_PINK_500}
-                    hoverColor={COLOR.POTZ_PINK_DEFAULT}
-                    fontColor={COLOR.WHITE}
-                  >
-                    구글 계정으로 시작
-                  </ButtonBg>
-                </div>
-                <div onClick={handleNavigate}>
+                <input
+                  type='email'
+                  placeholder='email'
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <input
+                  type='password'
+                  placeholder='password'
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <div onClick={handleLogin}>
                   <ButtonBg
                     backgroundColor={COLOR.POTZ_PINK_200}
                     hoverColor={COLOR.POTZ_PINK_300}
                     fontColor={COLOR.BLACK}
                   >
-                    비회원으로 둘러보기
+                    로그인
+                  </ButtonBg>
+                </div>
+              </div>
+              <div className='btn_container' style={style3}>
+                <input
+                  type='email'
+                  placeholder='email'
+                  onChange={(e) => setSignUpEmail(e.target.value)}
+                />
+                <input
+                  type='password'
+                  placeholder='password'
+                  onChange={(e) => setSignUpPassword(e.target.value)}
+                />
+                <input
+                  type='text'
+                  placeholder='name'
+                  onChange={(e) => setSignUpName(e.target.value)}
+                />
+                <div onClick={handleSignUp}>
+                  <ButtonBg
+                    backgroundColor={COLOR.POTZ_PINK_200}
+                    hoverColor={COLOR.POTZ_PINK_300}
+                    fontColor={COLOR.BLACK}
+                  >
+                    회원가입
                   </ButtonBg>
                 </div>
               </div>
@@ -130,4 +177,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default LoginPage;

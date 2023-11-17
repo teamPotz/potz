@@ -148,9 +148,14 @@ export async function getPosts(req, res) {
         },
         deliveryPot: {
           select: {
-            orders: true,
+            orders: {
+              select: {
+                price: true,
+                quantity: true,
+              },
+            },
             _count: {
-              select: { participants: true },
+              select: { quantity: true },
             },
           },
         },
@@ -384,32 +389,4 @@ export async function deletePost(req, res) {
 // 찜하기, 찜 취소하기
 export async function toggleLike(req, res) {
   // ...
-}
-
-// TODO : remove samples
-export async function getSamplePosts(req, res) {
-  try {
-    const posts = await prisma.postTemp.findMany();
-    res.status(200).send(posts);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'get posts error' });
-  }
-}
-
-export async function createSamplePost(req, res) {
-  const { title, content } = req.body;
-
-  try {
-    const post = await prisma.postTemp.create({
-      data: {
-        title,
-        content,
-      },
-    });
-    res.status(201).json({ post });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'create post error' });
-  }
 }

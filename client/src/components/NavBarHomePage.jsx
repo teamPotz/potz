@@ -1,62 +1,80 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import COLOR from '../utility/Color';
 import Font from '../utility/Font';
 import styled from 'styled-components';
 import TagPlaceSM from './TagPlaceSM';
 
-const NavBarHomePage = () => {
+const NavBarWrapper = styled.div`
+  width: 100%;
+  background-color: ${COLOR.WHITE};
+  height: 70px;
+  box-shadow: 0px 1.5px 2.7px 0px rgba(0, 0, 0, 0.09);
+  display: flex;
+`;
+
+const ButtonMenu = styled.button`
+  display: flex;
+  width: 36px;
+  height: 36px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: ${COLOR.WHITE};
+  cursor: grab;
+  &:hover {
+    background-color: ${COLOR.GRAY_100};
+  }
+`;
+
+const ButtonAlert = styled.button`
+  display: flex;
+  width: 36px;
+  height: 36px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: ${COLOR.WHITE};
+  cursor: grab;
+  &:hover {
+    background-color: ${COLOR.GRAY_100};
+  }
+`;
+
+const ButtonSearch = styled.button`
+  display: flex;
+  width: 36px;
+  height: 36px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: ${COLOR.WHITE};
+  cursor: grab;
+  &:hover {
+    background-color: ${COLOR.GRAY_100};
+  }
+`;
+
+const NavBarHomePage = (props) => {
+  let { communityDatas } = props;
+  console.log('네비게이션바 데이터', communityDatas);
+
   let [Name, setName] = useState('더샵 하버뷰 1동 주민 모임');
   let [Members, setMembers] = useState(120);
+  let navigate = useNavigate();
 
-  const NavBarWrapper = styled.div`
-    width: 100%;
-    background-color: ${COLOR.WHITE};
-    height: 70px;
-    box-shadow: 0px 1.5px 2.7px 0px rgba(0, 0, 0, 0.09);
-    display: flex;
-  `;
+  let clickHandler1 = () => {
+    navigate('/category');
+  };
 
-  const ButtonMenu = styled.button`
-    display: flex;
-    width: 36px;
-    height: 36px;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    background-color: ${COLOR.WHITE};
-    cursor: grab;
-    &:hover {
-      background-color: ${COLOR.GRAY_100};
-    }
-  `;
+  let clickHandler2 = () => {
+    navigate('/alarm');
+  };
 
-  const ButtonAlert = styled.button`
-    display: flex;
-    width: 36px;
-    height: 36px;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    background-color: ${COLOR.WHITE};
-    cursor: grab;
-    &:hover {
-      background-color: ${COLOR.GRAY_100};
-    }
-  `;
+  let clickHandler3 = () => {
+    navigate('/search');
+  };
 
-  const ButtonSearch = styled.button`
-    display: flex;
-    width: 36px;
-    height: 36px;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    background-color: ${COLOR.WHITE};
-    cursor: grab;
-    &:hover {
-      background-color: ${COLOR.GRAY_100};
-    }
-  `;
   const MenuIcon = () => {
     return (
       <svg
@@ -199,22 +217,22 @@ const NavBarHomePage = () => {
       <div style={style1}>
         <div>
           <div style={style2}>
-            <span style={fontStyle}>{Name}</span>
+            <span style={fontStyle}>{communityDatas.name}</span>
           </div>
           <div style={fontStyle2}>
             <span>멤버 수</span>
-            <span style={fontColored}>{Members}</span>
-            <TagPlaceSM>아파트</TagPlaceSM>
+            <span style={fontColored}>{communityDatas._count.members}</span>
+            <TagPlaceSM>{communityDatas.communityTypes[0].name}</TagPlaceSM>
           </div>
         </div>
         <div style={buttonContainer}>
-          <ButtonMenu>
+          <ButtonMenu onClick={clickHandler1}>
             <MenuIcon></MenuIcon>
           </ButtonMenu>
-          <ButtonAlert>
+          <ButtonAlert onClick={clickHandler2}>
             <AlertIcon></AlertIcon>
           </ButtonAlert>
-          <ButtonSearch>
+          <ButtonSearch onClick={clickHandler3}>
             <SearchIcon></SearchIcon>
           </ButtonSearch>
         </div>

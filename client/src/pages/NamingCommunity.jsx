@@ -42,6 +42,31 @@ const ButtonSubmitStyle = styled.input`
   }
 `;
 
+const InputFileStyle = styled.div`
+  background-color: ${COLOR.POTZ_PINK_200};
+  width: 175px;
+  height: 175px;
+  border-radius: 14px;
+  cursor: grab;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const InputStyle = styled.input`
+  background-color: ${COLOR.WHITE};
+  border: ${COLOR.POTZ_PINK_DEFAULT} 2px solid;
+  border-radius: 50px;
+  color: ${COLOR.POTZ_PINK_DEFAULT};
+  font-family: ${Font.FontKor};
+  font-weight: 700;
+  cursor: grab;
+  padding: 6px;
+  &:hover {
+    background-color: ${COLOR.POTZ_PINK_300};
+  }
+`;
+
 function NamingCommunity(props) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -50,7 +75,6 @@ function NamingCommunity(props) {
 
   const [file, setFile] = useState('');
   const [imgUrl, setImgUrl] = useState();
-
   let [count, setCount] = useState(0);
 
   let { communityType, user1 } = props;
@@ -111,7 +135,11 @@ function NamingCommunity(props) {
         });
 
         if (response.ok) {
-          navigate('/home');
+          //새로 생성된 커뮤니티 데이터 받아서 넘겨주기
+          const responseData = await response.json();
+          console.log('새로 생성된 커뮤니티의 ID:', responseData);
+
+          navigate('/home', { state: { communityDataID: responseData.id } });
           console.log('폼 데이터 및 파일 전송 완료🚀');
         }
       } catch (error) {
@@ -121,17 +149,6 @@ function NamingCommunity(props) {
   };
 
   const InputFile = () => {
-    const InputFileStyle = styled.div`
-      background-color: ${COLOR.POTZ_PINK_200};
-      width: 175px;
-      height: 175px;
-      border-radius: 14px;
-      cursor: grab;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    `;
-
     const ImgIcon = () => {
       return (
         <svg
@@ -154,20 +171,6 @@ function NamingCommunity(props) {
     const filestyle = {
       display: 'none',
     };
-
-    const InputStyle = styled.input`
-      background-color: ${COLOR.WHITE};
-      border: ${COLOR.POTZ_PINK_DEFAULT} 2px solid;
-      border-radius: 50px;
-      color: ${COLOR.POTZ_PINK_DEFAULT};
-      font-family: ${Font.FontKor};
-      font-weight: 700;
-      cursor: grab;
-      padding: 6px;
-      &:hover {
-        background-color: ${COLOR.POTZ_PINK_300};
-      }
-    `;
 
     const onChange = (e) => {
       const selectedFile = e.target.files[0];

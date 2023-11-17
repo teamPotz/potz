@@ -2,51 +2,54 @@ import styled from 'styled-components';
 import Font from '../utility/Font';
 import COLOR from '../utility/Color';
 import TagPlaceSM from './TagPlaceSM';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const HomeContentsWrapper = styled.div`
+  height: 150px;
+  border: 1px solid ${COLOR.GRAY_100};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: grab;
+  background: ${COLOR.WHITE};
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.04);
+    border-color: ${COLOR.POTZ_PINK_100};
+  }
+`;
+
+const ButtonContainer = styled.button`
+  display: flex;
+  width: 36px;
+  height: 36px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: ${COLOR.WHITE};
+  cursor: grab;
+  &:hover {
+    background: ${COLOR.POTZ_PINK_100};
+  }
+`;
 
 const HomeContents = (props) => {
-  //테스트용 데이터
-  let { testData } = props;
-  let [count, setCount] = useState(testData.heart);
+  let navigate = useNavigate();
 
-  const clickhandler = () => {
-    //나중에 하트 클릭 유무 서버에 전송하기
-    if (count) {
-      setCount(false);
-    } else {
-      setCount(true);
-    }
-  };
+  let { communityDatas } = props;
 
-  const HomeContentsWrapper = styled.div`
-    height: 150px;
-    border: 1px solid ${COLOR.GRAY_100};
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: grab;
-    background: ${COLOR.WHITE};
-    transition: all 0.3s ease;
+  console.log('홈 컨텐츠 데이터', communityDatas);
+  console.log('포스트 데이터', communityDatas.posts);
 
-    &:hover {
-      transform: scale(1.04);
-      border-color: ${COLOR.POTZ_PINK_100};
-    }
-  `;
+  let [like, setLike] = useState(null);
 
-  const ButtonContainer = styled.button`
-    display: flex;
-    width: 36px;
-    height: 36px;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    background-color: ${COLOR.WHITE};
-    cursor: grab;
-    &:hover {
-      background: ${COLOR.POTZ_PINK_100};
-    }
-  `;
+  useEffect(() => {
+    //클릭에 따라 서버에 업데이트
+    console.log('좋아요 클릭에 따라 true false 상태 저장', like);
+    setLike(like);
+  }, [like]);
 
   const HeartIcon = () => {
     return (
@@ -132,6 +135,7 @@ const HomeContents = (props) => {
 
   const imgStyle = {
     marginLeft: '28px',
+    borderRadius: '12px',
   };
 
   const fontWrapper = {
@@ -155,7 +159,6 @@ const HomeContents = (props) => {
     fontSize: '14px',
     fontWeight: '400',
     textDecoration: 'underline',
-    color: COLOR.GRAY_300,
   };
 
   const fontstyle4 = {
@@ -193,62 +196,119 @@ const HomeContents = (props) => {
     left: '36px',
   };
 
+  const homeContentesContainer = {
+    marginBottom: '50px',
+  };
+
+  const linkStyle = {
+    color: COLOR.GRAY_300,
+  };
+
   return (
-    <HomeContentsWrapper>
-      <div>
-        <div style={tagStyle}>
-          <TagPlaceSM>{testData.category}</TagPlaceSM>
-        </div>
-        <img
-          width={112}
-          height={112}
-          style={imgStyle}
-          src={testData.imgSrc}
-        ></img>
-      </div>
-      <div style={fontWrapper}>
-        <div style={fontContainer}>
-          <div style={textOverflow}>
-            <span style={fontStyle1}>{testData.store}</span>
-          </div>
-          <div style={fontStyle2}>
-            <span style={coloredfont}>{testData.price}</span>
-            <span>원씩 배달</span>
-          </div>
-          <div style={fontStyle3}>
-            <span>{testData.link}</span>
-          </div>
-        </div>
-        <div style={fontstyle4}>
-          <div>
-            <span>{testData.memNum}</span>
-            <span>/</span>
-            <span>{testData.limitNum}</span>
-            <span>명</span>
-          </div>
-          <div>
-            <span>{testData.meetPlace}</span>
-          </div>
-        </div>
-      </div>
-      <div style={buttonContainer}>
-        <ButtonContainer onClick={clickhandler}>
-          {count ? (
-            <HeartIconClicked></HeartIconClicked>
-          ) : (
-            <HeartIcon></HeartIcon>
-          )}
-        </ButtonContainer>
-        {testData.sale.length > 0 ? (
-          <ButtonContainer>
-            <SaleIcon></SaleIcon>
-          </ButtonContainer>
-        ) : null}
-        <ButtonContainer>
-          <CrownIcon></CrownIcon>
-        </ButtonContainer>
-      </div>
-    </HomeContentsWrapper>
+    <div style={homeContentesContainer}>
+      {communityDatas.posts.map((post) => {
+        return (
+          <HomeContentsWrapper
+            onClick={() => {
+              navigate('/detail/', {
+                state: { postDatas: post },
+              });
+            }}
+            key={post.id}
+          >
+            <div>
+              <div style={tagStyle}>
+                <TagPlaceSM>{post.category.name}</TagPlaceSM>
+              </div>
+              <img
+                width={112}
+                height={112}
+                style={imgStyle}
+                src={'http://localhost:5000/' + post.imageUrl + '.png'}
+              ></img>
+            </div>
+            <div style={fontWrapper}>
+              <div style={fontContainer}>
+                <div style={textOverflow}>
+                  <span style={fontStyle1}>{post.storeName}</span>
+                </div>
+                <div style={fontStyle2}>
+                  <span style={coloredfont}>
+                    {post.deliveryFees?.[0]?.fee ? (
+                      post.deliveryFees?.[0]?.fee /
+                      post.deliveryPot.participants.length
+                    ) : (
+                      <span>무료</span>
+                    )}
+                  </span>
+                  {post.deliveryFees?.[0]?.fee ? (
+                    <span>원씩 배달</span>
+                  ) : (
+                    <span>배달</span>
+                  )}
+                </div>
+                <div style={fontStyle3}>
+                  {post.orderLink ? (
+                    <a style={linkStyle} href={post.orderLink}>
+                      <span>배달 앱 링크 바로가기</span>
+                    </a>
+                  ) : null}
+                </div>
+              </div>
+              <div style={fontstyle4}>
+                <div>
+                  <span>{post.recruitment}</span>
+                  <span>/</span>
+                  <span>{post.deliveryPot.participants.length}</span>
+                  <span>명</span>
+                </div>
+                <div>
+                  <span>{post.meetingLocation}</span>
+                </div>
+              </div>
+            </div>
+            <div style={buttonContainer}>
+              <ButtonContainer
+                onClick={(event) => {
+                  event.stopPropagation();
+                  //true -> false / false -> true
+                  if (post.likedByUsers[0]) {
+                    setLike(false);
+                  } else {
+                    setLike(true);
+                  }
+                }}
+              >
+                {post.likedByUsers[0] ? (
+                  <HeartIconClicked></HeartIconClicked>
+                ) : (
+                  <HeartIcon></HeartIcon>
+                )}
+              </ButtonContainer>
+              {post.deliveryDiscounts.length > 0 ? (
+                <ButtonContainer
+                  onClick={(event) => {
+                    event.stopPropagation();
+                  }}
+                >
+                  <SaleIcon></SaleIcon>
+                </ButtonContainer>
+              ) : null}
+              {/* 우선은 2회 이상 만든 사람에게 왕관 붙여줌 */}
+              <ButtonContainer
+                onClick={(event) => {
+                  event.stopPropagation();
+                }}
+              >
+                {post.author.createdDeliveryPots.length >= 2 ? (
+                  <CrownIcon></CrownIcon>
+                ) : null}
+              </ButtonContainer>
+            </div>
+          </HomeContentsWrapper>
+        );
+      })}
+    </div>
   );
 };
 

@@ -3,22 +3,23 @@ import Font from '../utility/Font';
 import COLOR from '../utility/Color';
 import TagPlaceSM from './TagPlaceSM';
 
+const CommunityWrapper = styled.div`
+  cursor: grab;
+  width: 100%;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  background: ${COLOR.WHITE};
+  margin-bottom: 10px;
+  &:hover {
+    background: ${COLOR.POTZ_PINK_100};
+  }
+`;
+
 const CommunityComp = (props) => {
   let { testData } = props;
 
-  const CommunityWrapper = styled.div`
-    cursor: grab;
-    width: 100%;
-    height: 120px;
-    display: flex;
-    align-items: center;
-    gap: 36px;
-    background: ${COLOR.WHITE};
-    margin-bottom: 10px;
-    &:hover {
-      background: ${COLOR.POTZ_PINK_100};
-    }
-  `;
   const imgStyle = {
     marginLeft: '28px',
     borderRadius: '8px',

@@ -46,6 +46,7 @@ function GoBack(props) {
   return (
     <>
       <GoBackButtonStyle onClick={() => navigate(-1)}>
+
         <svg
           width='29'
           height='28'

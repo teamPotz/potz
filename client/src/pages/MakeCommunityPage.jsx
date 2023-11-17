@@ -1,51 +1,56 @@
 import '../App.css';
 import { useNavigate } from 'react-router-dom';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
+import { Container, Row, Col } from 'react-bootstrap';
 import COLOR from '../utility/Color';
 import Font from '../utility/Font';
 import ButtonBg from '../components/ButtonBG';
 import HeartHandsImg from '../../public/images/graphicImg/heartHands.png';
+import { useAuth } from '../contexts/AuthContext';
+import { useEffect } from 'react';
 
 //contents_container 안에 UI 구현 하시면 됩니다!
 
+const style1 = {
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-around',
+  height: '100%',
+};
+const styles2 = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: '50%',
+};
+const style3 = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '13px',
+};
+const fontStyle = {
+  fontFamily: Font.FontKor,
+  fontSize: '24px',
+  fontWeight: '700',
+  margin: '0',
+  padding: '0',
+  color: COLOR.GRAY_500,
+};
+const fontStyle2 = {
+  fontFamily: Font.FontKor,
+  fontSize: '16px',
+  fontWeight: '300',
+  margin: '0',
+  padding: '0',
+  color: COLOR.GRAY_400,
+};
+
 function MakeCommunity() {
   const navigate = useNavigate();
+  const { user, getUserInfo } = useAuth();
 
-  const style1 = {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    height: '100%',
-  };
-  const styles2 = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: '50%',
-  };
-  const style3 = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '13px',
-  };
-  const fontStyle = {
-    fontFamily: Font.FontKor,
-    fontSize: '24px',
-    fontWeight: '700',
-    margin: '0',
-    padding: '0',
-    color: COLOR.GRAY_500,
-  };
-  const fontStyle2 = {
-    fontFamily: Font.FontKor,
-    fontSize: '16px',
-    fontWeight: '300',
-    margin: '0',
-    padding: '0',
-    color: COLOR.GRAY_400,
-  };
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
   return (
     <Container className='background'>
@@ -57,7 +62,7 @@ function MakeCommunity() {
           <div className='potz_container'>
             <div className='contents_container' style={style1}>
               <div className='text_container' style={fontStyle}>
-                <span>앗, 수현님 근체에</span>
+                <span>앗, {user?.name}님 근체에</span>
                 <br></br>
                 <span>아직 공동체가 없어요. 😅</span>
                 <br></br>

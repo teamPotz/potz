@@ -56,6 +56,46 @@ export async function getCommunityById(req, res) {
             name: true,
           },
         },
+        posts: {
+          select: {
+            storeName: true,
+            imageUrl: true,
+            id: true,
+            storeAddress: true,
+            orderLink: true,
+            category: true,
+            recruitment: true,
+            meetingLocation: true,
+            deliveryFees: true,
+            deliveryDiscounts: true,
+            //나중에 로그인 된 유저 id 넣기
+            likedByUsers: {
+              where: { userId: 1, liked: true },
+            },
+            communityId: true,
+            deliveryPot: {
+              select: {
+                participants: true,
+                orders: {
+                  select: {
+                    price: true,
+                    quantity: true,
+                  },
+                },
+              },
+            },
+            author: {
+              select: {
+                profile: {
+                  select: {
+                    imageUrl: true,
+                  },
+                },
+                createdDeliveryPots: true,
+              },
+            },
+          },
+        },
         _count: {
           select: { members: true },
         },
@@ -77,10 +117,7 @@ export async function saveCommunityImg(req, res) {
 }
 
 export async function createCommunity(req, res) {
-  const { communityTypes, members, longitude, latitude, posts, name } =
-    req.body;
-
-  console.log(communityTypes);
+  const { communityTypes, members, longitude, latitude, name } = req.body;
 
   try {
     //todo: id 1 대신 로그인 유저 데이터 id 넣기
