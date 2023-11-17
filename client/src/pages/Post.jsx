@@ -10,6 +10,7 @@ import TagFood from '../components/TagFood';
 import Font from '../utility/Font';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 
 const Button = styled.div`
   width: 100%;
@@ -133,6 +134,8 @@ function Post() {
   let Address = false;
   let name = false;
 
+  const { getUserInfo } = useAuth();
+
   if (location.state !== null) {
     name = location.state.name;
     Address = location.state.address;
@@ -163,6 +166,7 @@ function Post() {
       const res = await fetch(`${BASE_URL}/posts`, {
         method: 'POST',
         body: formData,
+        credentials: 'include',
       });
       const data = await res.json();
       console.log(data);
@@ -193,7 +197,7 @@ function Post() {
       setValues1((prevValues) => [prevValues[0], e.target.value]);
 
       if (values1[0] && values1[1]) {
-        setLength1([...length1, length1[number] = values1]);
+        setLength1([...length1, (length1[number] = values1)]);
         setValues1([]);
         setCounts1([...counts1, counts1.length]);
       }
@@ -210,7 +214,7 @@ function Post() {
       setValues2((prevValues) => [prevValues[0], e.target.value]);
 
       if (values2[0] && values2[1]) {
-        setLength2([...length2, length2[number] = values2]);
+        setLength2([...length2, (length2[number] = values2)]);
         setValues2([]);
         setCounts2([...counts2, counts2.length]);
       }
@@ -230,6 +234,10 @@ function Post() {
       justifyContent: 'space-between',
     },
   };
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
   return (
     <Container className='background'>
@@ -322,7 +330,7 @@ function Post() {
                       }}
                     >
                       {selectImg ? (
-                        <div/>
+                        <div />
                       ) : (
                         <svg
                           width='21'

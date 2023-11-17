@@ -386,7 +386,7 @@ export async function getPostByName(req, res) {
 }
 
 //create post
-export async function createPost(req, res) {
+export async function createPost(req, res) {  
   let imageUrl = req.file.path;
   let deliveryFees = JSON.parse(req.body.deliveryFees);
   let deliveryDiscounts = JSON.parse(req.body.deliveryDiscounts);
@@ -407,7 +407,7 @@ export async function createPost(req, res) {
         recruitment: parseInt(recruitment),
         meetingLocation,
         communityId: 1,
-        authorId: 1,
+        authorId: req.user.id,
       },
     });
 
