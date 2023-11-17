@@ -8,6 +8,7 @@ import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
 import CategorySearch from '../components/categorySearch';
+import logoImg from '../../public/images/Logo/Potz_Logo.png';
 
 const Divider = styled.div`
   margin-top: 40px;
@@ -106,6 +107,7 @@ function Detail() {
           `http://localhost:5000/categories/${categoryId}`,
           {
             method: 'GET',
+            credentials: 'include',
           }
         );
         const data = await response.json();
@@ -458,15 +460,24 @@ function Detail() {
                 </div>
 
                 <Particiate>
-                  <img
-                    width={46}
-                    height={46}
-                    src={
-                      'http://localhost:5000/' +
-                      postDatas.author.profile.imageUrl
-                    }
-                    style={paddingStyle}
-                  ></img>
+                  {postDatas.author.profile ? (
+                    <img
+                      width={46}
+                      height={46}
+                      src={
+                        'http://localhost:5000/' +
+                        postDatas.author.profile.imageUrl
+                      }
+                      style={paddingStyle}
+                    ></img>
+                  ) : (
+                    <img
+                      width={38}
+                      height={38}
+                      src={logoImg}
+                      style={paddingStyle}
+                    ></img>
+                  )}
                   <div>
                     <span style={fontColored}>{postDatas.recruitment}</span>
                     <span style={fontColored}>/</span>
@@ -497,8 +508,10 @@ function Detail() {
                     <div style={fontStyle3}>
                       <span style={coloredFont}>
                         {postDatas.deliveryFees?.[0]?.fee ? (
-                          postDatas.deliveryFees[0].fee /
-                          postDatas.deliveryPot.participants.length
+                          Math.round(
+                            postDatas.deliveryFees[0].fee /
+                              postDatas.deliveryPot.participants.length
+                          )
                         ) : (
                           <span>무료</span>
                         )}

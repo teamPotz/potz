@@ -54,6 +54,7 @@ const SearchBar = () => {
         `http://localhost:5000/posts/search?key=${searchVal}`,
         {
           method: 'GET',
+          credentials: 'include',
         }
       );
       const data = await response.json();
@@ -71,6 +72,7 @@ const SearchBar = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({ keyword: searchVal }),
       });
       if (response.ok) {

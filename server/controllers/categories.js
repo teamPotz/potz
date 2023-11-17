@@ -21,9 +21,8 @@ export async function getCategory(req, res) {
             meetingLocation: true,
             deliveryFees: true,
             deliveryDiscounts: true,
-            //나중에 로그인 된 유저 id 넣기
             likedByUsers: {
-              where: { userId: 1, liked: true },
+              where: { userId: req.user.id, liked: true },
             },
             communityId: true,
             deliveryPot: {
@@ -56,7 +55,7 @@ export async function getCategory(req, res) {
 
 export async function getCategoryById(req, res) {
   const { id } = req.params;
-
+  console.log(req.user);
   try {
     const categories = await prisma.category.findUnique({
       select: {
@@ -72,9 +71,8 @@ export async function getCategoryById(req, res) {
             meetingLocation: true,
             deliveryFees: true,
             deliveryDiscounts: true,
-            //나중에 로그인 된 유저 id 넣기
             likedByUsers: {
-              where: { userId: 1, liked: true },
+              where: { userId: req.user.id, liked: true },
             },
             communityId: true,
             deliveryPot: {

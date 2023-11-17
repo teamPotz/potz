@@ -124,8 +124,10 @@ const LikedComp = (props) => {
         <div style={fontStyle2}>
           <span style={coloredfont}>
             {postData.deliveryFees?.[0]?.fee ? (
-              postData.deliveryFees[0].fee /
-              postData.deliveryPot.participants.length
+              Math.round(
+                postData.deliveryFees[0].fee /
+                  postData.deliveryPot.participants.length
+              )
             ) : (
               <span>무료</span>
             )}

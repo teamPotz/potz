@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import fileUpload from '../middlewares/multer.js';
+import { verifyAuth } from '../middlewares/auth.js';
 import {
   getCommunities,
   createCommunity,
@@ -13,12 +14,13 @@ const router = Router();
 
 //Router
 
-router.get('/', getCommunities);
-router.post('/', createCommunity);
+router.get('/', verifyAuth, getCommunities);
+router.post('/', verifyAuth, createCommunity);
 router.post('/photo', fileUpload.single('image'), saveCommunityImg);
+// router.post('/join', joinCommunity);
 router
   .route('/:id')
-  .get(getCommunityById)
+  .get(verifyAuth, getCommunityById)
   .patch(updateCommunity)
   .delete(deleteCommunity);
 

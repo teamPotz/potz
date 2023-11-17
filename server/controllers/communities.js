@@ -44,8 +44,8 @@ export async function getCommunities(req, res) {
 }
 
 export async function getCommunityById(req, res) {
+  console.log(req.user);
   const { id } = req.params;
-
   try {
     const communities = await prisma.community.findUnique({
       select: {
@@ -68,9 +68,8 @@ export async function getCommunityById(req, res) {
             meetingLocation: true,
             deliveryFees: true,
             deliveryDiscounts: true,
-            //나중에 로그인 된 유저 id 넣기
             likedByUsers: {
-              where: { userId: 1, liked: true },
+              where: { userId: req.user.id, liked: true },
             },
             communityId: true,
             deliveryPot: {
@@ -117,6 +116,7 @@ export async function saveCommunityImg(req, res) {
 }
 
 export async function createCommunity(req, res) {
+  console.log(req.user);
   const { communityTypes, members, longitude, latitude, name } = req.body;
 
   try {
@@ -128,7 +128,7 @@ export async function createCommunity(req, res) {
         },
         members: {
           connect: {
-            id: 1,
+            id: req.user.id,
           },
         },
         longitude,
@@ -153,3 +153,15 @@ export async function updateCommunity(req, res) {
 export async function deleteCommunity(req, res) {
   // ...
 }
+
+// export async function joinCommunity(req, res) {
+//   // ...
+
+//   await prisma.community.update({
+//     data:{
+//       members:{
+//         connect:?
+//       }
+//     }
+//   })
+// }
