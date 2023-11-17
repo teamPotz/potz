@@ -328,8 +328,54 @@ export async function getPostById(req, res) {
   }
 }
 
+//create post
 export async function createPost(req, res) {
-  // ...
+  let imageUrl = req.file.path;
+  let deliveryFees = JSON.parse(req.body.deliveryFees);
+  let deliveryDiscounts = JSON.parse(req.body.deliveryDiscounts);
+  const { storeName, storeAddress, orderLink, recruitment, meetingLocation } =
+    req.body;
+
+  try {
+    console.log(req.body);
+    console.log(deliveryFees);
+    console.log(deliveryDiscounts);
+    const post = await prisma.post.create({
+      data: {
+        storeName,
+        storeAddress,
+        imageUrl: imageUrl,
+        orderLink,
+        categoryId: 1,
+        recruitment: parseInt(recruitment),
+        meetingLocation,
+        communityId: 1,
+        authorId: 1,
+      },
+    });
+
+    const postWithDeliveryFee = await prisma.deliveryFee.createMany({
+      data: deliveryFees.map((item) => ({
+        minAmount: parseInt(item[0]),
+        maxAmount: item[2] ? parseInt(item[2]) : null,
+        fee: parseInt(item[1]),
+        postId: post.id,
+      })),
+    });
+
+    const postWithDeliveryDiscounts = await prisma.deliveryDiscount.createMany({
+      data: deliveryDiscounts.map((item) => ({
+        minAmount: parseInt(item[0]),
+        discount: parseInt(item[1]),
+        postId: post.id,
+      })),
+    });
+
+    res.status(201).json({ post });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'create post error' });
+  }
 }
 
 export async function updatePost(req, res) {

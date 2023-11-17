@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './index.css';
-// import App from './App.jsx';
 import { AuthProvider } from './contexts/AuthContext.jsx';
+// import App from './App.jsx';
 import MakeCommunity from './pages/MakeCommunityPage.jsx';
 import ChooseFeature from './pages/ChooseFeaturePage.jsx';
 import NamingCommunity from './pages/NamingCommunity.jsx';
@@ -21,6 +21,8 @@ import ProtectedRoute from './pages/ProtectedRoute.jsx';
 import CategorySearch from './pages/CategorySearchPage.jsx';
 import ChooseCommunity from './pages/ChooseCommunityPage.jsx';
 import LikedList from './pages/LikedListPage.jsx';
+import Post from './pages/Post';
+import LandingMap from './pages/LandingMap';
 
 const router = createBrowserRouter([
   {
@@ -98,6 +100,18 @@ const router = createBrowserRouter([
         path: '/liked-list',
         element: <LikedList />,
       },
+      {
+        path: '/post',
+        element: <Post/>,
+      },
+      {
+        path: '/getaddress',
+        element: <LandingMap/>,
+      },
+      {
+        path: '/create-community',
+        element: <MakeCommunity />,
+      }
     ],
   }
 ]);
