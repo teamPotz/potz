@@ -11,29 +11,24 @@ function PostMap(props) {
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
   const navigate = useNavigate();
-  // const coordinateRef = useRef({
-  //   lat: 33.5563,
-  //   lon: 126.79581,
-  // });
+  const coordinateRef = useRef({
+    lat: 37.56421,
+    lon: 127.00169,
+  });
 
-  // useEffect(() => {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition((position) => {
-  //       const bounds = new window.kakao.maps.LatLngBounds();
-  //       coordinateRef.current = {
-  //         lat: position.coords.latitude,
-  //         lon: position.coords.longitude,
-  //       };
-  //       console.log(coordinateRef.current);
-  //       bounds.extend(new window.kakao.maps.LatLng(...coordinateRef.current));
-  //       map.setBounds(bounds);
-  //     });
-  //     //setMap(coordinateRef.current);
-  //     // setMap(new window.kakao.maps.Map(document.getElementById('map'), {
-  //     //   center: coordinateRef.current, // 현재 위치를 center로 설정
-  //     // }));
-  //   }
-  // }, [map]);
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const bounds = new window.kakao.maps.LatLngBounds();
+        coordinateRef.current = {
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        };
+        console.log(coordinateRef.current);
+        bounds.extend(new window.kakao.maps.LatLng(coordinateRef.current.lat, coordinateRef.current.lon));
+        map.setBounds(bounds);
+      });
+    }  }, [map]);
 
   useEffect(() => {
     const ps = new window.kakao.maps.services.Places();

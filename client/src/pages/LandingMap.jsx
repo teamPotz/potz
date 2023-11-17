@@ -7,6 +7,21 @@ import PostMap from './postMap';
 import COLOR from '../utility/Color';
 import { useNavigate } from 'react-router';
 import Font from '../utility/Font';
+import styled from 'styled-components';
+
+const Input = styled.input`
+  border: none;
+  width: 100%;
+  background-color: transparent;
+  font: ${Font.FontKor};
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  placeholder: '선택할 가게를 검색하세요.';
+  &:focus {
+    outline: none;
+  }
+`;
 
 function LandingMap() {
   const [value, setValue] = useState('');
@@ -115,14 +130,12 @@ function LandingMap() {
                       </svg>
                       </button>
                       
-                      <input
-                        onChange={(e) => {
+                      <Input placeholder='선택할 가게를 검색하세요.' onChange={(e) => {
                           e.preventDefault();
                           setValue(e.target.value);
-                        }}
-                        style={styles.input}
-                        placeholder='선택할 가게를 검색하세요.'
-                      ></input>
+                        }}>
+                      
+                      </Input>
                     </form>
                 </div>
               </div>
