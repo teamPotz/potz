@@ -45,7 +45,10 @@ const ShopInput = styled.input`
 const Input = styled.input`
   border: none;
   height: 30px;
-  width: ${(props) => props.width};
+  width: ${(props) =>
+    props.width
+      ? props.width
+      : `calc(35px + ${props.value ? props.value.length * 2 : 0}px)`};
   placeholder: ${(props) => props.placeholder};
   &::placeholder {
     color: ${COLOR.POTZ_PINK_300};
@@ -87,7 +90,9 @@ const ImgInput = styled.div`
   border: none;
   width: 65.33px;
   height: 65.33px;
-  background: ${COLOR.POTZ_PINK_100};
+  background-image: url(${(props) => (props.img ? props.img : 'none')});
+  background-color: ${COLOR.POTZ_PINK_100};
+  background-size: cover;
   border-radius: 9.33333px;
   display: flex;
   align-items: center;
@@ -119,10 +124,9 @@ const FontSm = styled.span`
 `;
 
 function Post() {
-  const [counts1, setCounts1] = useState([0]);
-  //const [selectImg, setSelectImg] = useState('');
   const BASE_URL = 'http://localhost:5000';
   const screenHeight = window.innerHeight - 98;
+  const [selectImg, setSelectImg] = useState(undefined);
   const navigate = useNavigate();
   const location = useLocation();
   const myInputRef = useRef(null);
@@ -141,7 +145,8 @@ function Post() {
     orderLink,
     recruitment,
     meetingLocation,
-    deliveryFee,
+    deliveryFees,
+    deliveryDiscounts,
     file
   ) {
     const formData = new FormData();
@@ -150,7 +155,8 @@ function Post() {
     formData.append('orderLink', orderLink);
     formData.append('recruitment', recruitment);
     formData.append('meetingLocation', meetingLocation);
-    formData.append('deliveryFee', deliveryFee);
+    formData.append('deliveryFees', deliveryFees);
+    formData.append('deliveryDiscounts', deliveryDiscounts);
     formData.append('image', file);
 
     try {
@@ -165,22 +171,48 @@ function Post() {
     }
   }
 
-  const [values, setValues] = useState([]);
-  const [deliveryFee, setDeliveryFee] = useState([]);
+  //배달비, 할인 관련 로직
+
+  //배달비, 할인 갯수
+  const [counts1, setCounts1] = useState([0]);
+  const [counts2, setCounts2] = useState([0]);
+  const [values1, setValues1] = useState([]);
+  const [values2, setValues2] = useState([]);
+
+  //배달비, 할인 글자길이에 따라 늘어나게
+  const [length1, setLength1] = useState([]);
+  const [length2, setLength2] = useState([]);
 
   const deliveryFeeChange = (e, number) => {
     e.preventDefault();
 
     if (e.target.name === `deliveryFeeHeader${number}`) {
-      setValues((prevValues) => [e.target.value, prevValues[1]]);
+      setValues1((prevValues) => [e.target.value, prevValues[1]]);
     }
     if (e.target.name === `deliveryFeeFooter${number}`) {
-      setValues((prevValues) => [prevValues[0], e.target.value]);
+      setValues1((prevValues) => [prevValues[0], e.target.value]);
 
-      if(values[0] && values[1]){
-        setValues([]);
+      if (values1[0] && values1[1]) {
+        setLength1([...length1, length1[number] = values1]);
+        setValues1([]);
         setCounts1([...counts1, counts1.length]);
-        console.log(counts1);
+      }
+    }
+  };
+
+  const deliveryDiscountsChange = (e, number) => {
+    e.preventDefault();
+
+    if (e.target.name === `deliveryDiscountsHeader${number}`) {
+      setValues2((prevValues) => [e.target.value, prevValues[1]]);
+    }
+    if (e.target.name === `deliveryDiscountsFooter${number}`) {
+      setValues2((prevValues) => [prevValues[0], e.target.value]);
+
+      if (values2[0] && values2[1]) {
+        setLength2([...length2, length2[number] = values2]);
+        setValues2([]);
+        setCounts2([...counts2, counts2.length]);
       }
     }
   };
@@ -196,20 +228,6 @@ function Post() {
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
-    },
-
-    img: {
-      width: '65.33px',
-      height: '65.33px',
-      background: `${COLOR.POTZ_PINK_100}`,
-      borderRadius: '9.33333px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      transition: '0.2s',
-      '&:hover': {
-        backgroundColor: `${COLOR.POTZ_PINK_200}`,
-      },
     },
   };
 
@@ -234,11 +252,34 @@ function Post() {
                   const orderLink = e.target.orderLink.value;
                   const recruitment = e.target.recruitment.value;
                   const meetingLocation = e.target.meetingLocation.value;
-                  let deliveryFee;
+
+                  let deliveryFee = [];
                   for (let i = 0; i < counts1.length; i++) {
-                    deliveryFee = {minAmount: e.target[`deliveryFeeHeader${i}`].value, fee: e.target[`deliveryFeeFooter${i}`].value};
-                    
+                    deliveryFee.push([
+                      e.target[`deliveryFeeHeader${i}`].value,
+                      e.target[`deliveryFeeFooter${i}`].value,
+                    ]);
                   }
+                  for (let i = 0; i < deliveryFee.length - 1; i++) {
+                    deliveryFee[i].push(deliveryFee[i + 1][0]);
+                  }
+                  deliveryFee.pop();
+
+                  let deliveryDiscount = [];
+                  for (let i = 0; i < counts2.length; i++) {
+                    deliveryDiscount.push([
+                      e.target[`deliveryDiscountsHeader${i}`].value,
+                      e.target[`deliveryDiscountsFooter${i}`].value,
+                    ]);
+                  }
+                  for (let i = 0; i < deliveryDiscount.length - 1; i++) {
+                    deliveryDiscount[i].push(deliveryDiscount[i + 1][0]);
+                  }
+                  deliveryDiscount.pop();
+
+                  const deliveryFees = JSON.stringify(deliveryFee);
+                  const deliveryDiscounts = JSON.stringify(deliveryDiscount);
+
                   const file = e.target.image.files[0];
 
                   createPost(
@@ -247,7 +288,8 @@ function Post() {
                     orderLink,
                     recruitment,
                     meetingLocation,
-                    deliveryFee,
+                    deliveryFees,
+                    deliveryDiscounts,
                     file
                   );
                 }}
@@ -260,59 +302,43 @@ function Post() {
                       name='image'
                       type='file'
                       accept='image/*'
-                      //   onChange={(e) => {
-                      //     e.preventDefault();
-                      //     let image = e.target.files[0];
-                      //     if (image) {
-                      //       const reader = new FileReader();
-                      //       reader.onloadend = () => {
-                      //         //setSelectImg(reader.result);
-                      //         selectedImg = reader.result;
-                      //         console.log(selectedImg);
-                      //       };
-                      //       reader.readAsDataURL(image);
-                      //     }
-                      //   }
-                      // }
+                      onChange={(e) => {
+                        e.preventDefault();
+                        const image = e.target.files[0];
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setSelectImg(reader.result);
+                        };
+                        if (image) {
+                          reader.readAsDataURL(image);
+                        }
+                      }}
                     ></input>
-                    {/* <div style={styles.img}
-                      onClick={() => {
-                        myInputRef.current.click();
-                      }}>
-                    <svg
-                        width='21'
-                        height='20'
-                        viewBox='0 0 21 20'
-                        fill='none'
-                        xmlns='http://www.w3.org/2000/svg'
-                      >
-                        <path
-                          fillRule='evenodd'
-                          clipRule='evenodd'
-                          d='M6.41858 19.7992H14.9119C18.2344 19.7992 20.4657 17.4687 20.4657 14.0008V5.99761C20.4657 2.52977 18.2344 0.199219 14.9129 0.199219H6.41858C3.09708 0.199219 0.865723 2.52977 0.865723 5.99761V14.0008C0.865723 17.4687 3.09708 19.7992 6.41858 19.7992ZM7.23355 9.01979C5.88248 9.01979 4.78467 7.9205 4.78467 6.56979C4.78467 5.21909 5.88248 4.11979 7.23355 4.11979C8.58364 4.11979 9.68243 5.21909 9.68243 6.56979C9.68243 7.9205 8.58364 9.01979 7.23355 9.01979ZM18.3293 12.8753C18.6574 13.7168 18.4869 14.7281 18.1361 15.5615C17.7202 16.5526 16.924 17.303 15.9208 17.6307C15.4753 17.7763 15.0082 17.84 14.5421 17.84H6.28292C5.46104 17.84 4.73377 17.6428 4.13756 17.2757C3.76407 17.0451 3.69805 16.5131 3.97496 16.1683C4.43813 15.5918 4.89539 15.0133 5.35659 14.4298C6.23562 13.3132 6.82788 12.9896 7.48618 13.2738C7.75324 13.3911 8.02128 13.5671 8.29721 13.7532C9.03237 14.2528 10.0543 14.9395 11.4004 14.1941C12.3216 13.6782 12.8559 12.7932 13.3212 12.0225L13.329 12.0096C13.362 11.9555 13.3946 11.9015 13.4272 11.8475C13.5836 11.5888 13.7379 11.3336 13.9124 11.0984C14.1312 10.8041 14.9422 9.88374 15.9927 10.5391C16.6618 10.9517 17.2245 11.51 17.8267 12.1077C18.0563 12.3363 18.2199 12.5962 18.3293 12.8753Z'
-                          fill='#FF7971'
-                        />
-                      </svg>
-                    </div> */}
+
                     <ImgInput
+                      img={selectImg}
                       onClick={() => {
                         myInputRef.current.click();
                       }}
                     >
-                      <svg
-                        width='21'
-                        height='20'
-                        viewBox='0 0 21 20'
-                        fill='none'
-                        xmlns='http://www.w3.org/2000/svg'
-                      >
-                        <path
-                          fillRule='evenodd'
-                          clipRule='evenodd'
-                          d='M6.41858 19.7992H14.9119C18.2344 19.7992 20.4657 17.4687 20.4657 14.0008V5.99761C20.4657 2.52977 18.2344 0.199219 14.9129 0.199219H6.41858C3.09708 0.199219 0.865723 2.52977 0.865723 5.99761V14.0008C0.865723 17.4687 3.09708 19.7992 6.41858 19.7992ZM7.23355 9.01979C5.88248 9.01979 4.78467 7.9205 4.78467 6.56979C4.78467 5.21909 5.88248 4.11979 7.23355 4.11979C8.58364 4.11979 9.68243 5.21909 9.68243 6.56979C9.68243 7.9205 8.58364 9.01979 7.23355 9.01979ZM18.3293 12.8753C18.6574 13.7168 18.4869 14.7281 18.1361 15.5615C17.7202 16.5526 16.924 17.303 15.9208 17.6307C15.4753 17.7763 15.0082 17.84 14.5421 17.84H6.28292C5.46104 17.84 4.73377 17.6428 4.13756 17.2757C3.76407 17.0451 3.69805 16.5131 3.97496 16.1683C4.43813 15.5918 4.89539 15.0133 5.35659 14.4298C6.23562 13.3132 6.82788 12.9896 7.48618 13.2738C7.75324 13.3911 8.02128 13.5671 8.29721 13.7532C9.03237 14.2528 10.0543 14.9395 11.4004 14.1941C12.3216 13.6782 12.8559 12.7932 13.3212 12.0225L13.329 12.0096C13.362 11.9555 13.3946 11.9015 13.4272 11.8475C13.5836 11.5888 13.7379 11.3336 13.9124 11.0984C14.1312 10.8041 14.9422 9.88374 15.9927 10.5391C16.6618 10.9517 17.2245 11.51 17.8267 12.1077C18.0563 12.3363 18.2199 12.5962 18.3293 12.8753Z'
-                          fill='#FF7971'
-                        />
-                      </svg>
+                      {selectImg ? (
+                        <div/>
+                      ) : (
+                        <svg
+                          width='21'
+                          height='20'
+                          viewBox='0 0 21 20'
+                          fill='none'
+                          xmlns='http://www.w3.org/2000/svg'
+                        >
+                          <path
+                            fillRule='evenodd'
+                            clipRule='evenodd'
+                            d='M6.41858 19.7992H14.9119C18.2344 19.7992 20.4657 17.4687 20.4657 14.0008V5.99761C20.4657 2.52977 18.2344 0.199219 14.9129 0.199219H6.41858C3.09708 0.199219 0.865723 2.52977 0.865723 5.99761V14.0008C0.865723 17.4687 3.09708 19.7992 6.41858 19.7992ZM7.23355 9.01979C5.88248 9.01979 4.78467 7.9205 4.78467 6.56979C4.78467 5.21909 5.88248 4.11979 7.23355 4.11979C8.58364 4.11979 9.68243 5.21909 9.68243 6.56979C9.68243 7.9205 8.58364 9.01979 7.23355 9.01979ZM18.3293 12.8753C18.6574 13.7168 18.4869 14.7281 18.1361 15.5615C17.7202 16.5526 16.924 17.303 15.9208 17.6307C15.4753 17.7763 15.0082 17.84 14.5421 17.84H6.28292C5.46104 17.84 4.73377 17.6428 4.13756 17.2757C3.76407 17.0451 3.69805 16.5131 3.97496 16.1683C4.43813 15.5918 4.89539 15.0133 5.35659 14.4298C6.23562 13.3132 6.82788 12.9896 7.48618 13.2738C7.75324 13.3911 8.02128 13.5671 8.29721 13.7532C9.03237 14.2528 10.0543 14.9395 11.4004 14.1941C12.3216 13.6782 12.8559 12.7932 13.3212 12.0225L13.329 12.0096C13.362 11.9555 13.3946 11.9015 13.4272 11.8475C13.5836 11.5888 13.7379 11.3336 13.9124 11.0984C14.1312 10.8041 14.9422 9.88374 15.9927 10.5391C16.6618 10.9517 17.2245 11.51 17.8267 12.1077C18.0563 12.3363 18.2199 12.5962 18.3293 12.8753Z'
+                            fill='#FF7971'
+                          />
+                        </svg>
+                      )}
                     </ImgInput>
                     <div>
                       <ShopInput
@@ -424,20 +450,19 @@ function Post() {
                       />
                     </svg>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-
                       {counts1.map((count) => {
                         return (
                           <div key={count}>
                             <Input
                               name={`deliveryFeeHeader${count}`}
-                              width='31px'
+                              width='50px'
                               placeholder='얼마'
                               onChange={(e) => deliveryFeeChange(e, count)}
                             ></Input>
                             <FontMd>이상 주문 시 배달비</FontMd>
                             <Input
                               name={`deliveryFeeFooter${count}`}
-                              width='31px'
+                              width='50px'
                               placeholder='얼마'
                               onChange={(e) => deliveryFeeChange(e, count)}
                             ></Input>
@@ -446,7 +471,7 @@ function Post() {
                       })}
                     </div>
                   </Button>
-                  <Button height={'74.67px'}>
+                  <Button height={`${74.67 + 34.33 * (counts2.length - 1)}px`}>
                     <svg
                       width='28'
                       height='29'
@@ -461,18 +486,32 @@ function Post() {
                         fill='#A8A8A8'
                       />
                     </svg>
-                    <Input
-                      name='deliveryDiscounts1'
-                      width='31px'
-                      placeholder='얼마'
-                    ></Input>{' '}
-                    <FontMd>이상 주문 시</FontMd>
-                    <Input
-                      name='deliveryDiscounts2'
-                      width='31px'
-                      placeholder='얼마'
-                    ></Input>{' '}
-                    <FontMd>할인</FontMd>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      {counts2.map((count) => {
+                        return (
+                          <div key={count}>
+                            <Input
+                              name={`deliveryDiscountsHeader${count}`}
+                              width='50px'
+                              placeholder='얼마'
+                              onChange={(e) =>
+                                deliveryDiscountsChange(e, count)
+                              }
+                            ></Input>
+                            <FontMd>이상 주문 시</FontMd>
+                            <Input
+                              name={`deliveryDiscountsFooter${count}`}
+                              width='50px'
+                              placeholder='얼마'
+                              onChange={(e) =>
+                                deliveryDiscountsChange(e, count)
+                              }
+                            ></Input>
+                            <FontMd>할인</FontMd>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </Button>
                 </div>
 
