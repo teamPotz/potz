@@ -5,6 +5,56 @@ import Font from '../utility/Font';
 import styled from 'styled-components';
 import TagPlaceSM from './TagPlaceSM';
 
+const NavBarWrapper = styled.div`
+  width: 100%;
+  background-color: ${COLOR.WHITE};
+  height: 70px;
+  box-shadow: 0px 1.5px 2.7px 0px rgba(0, 0, 0, 0.09);
+  display: flex;
+`;
+
+const ButtonMenu = styled.button`
+  display: flex;
+  width: 36px;
+  height: 36px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: ${COLOR.WHITE};
+  cursor: grab;
+  &:hover {
+    background-color: ${COLOR.GRAY_100};
+  }
+`;
+
+const ButtonAlert = styled.button`
+  display: flex;
+  width: 36px;
+  height: 36px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: ${COLOR.WHITE};
+  cursor: grab;
+  &:hover {
+    background-color: ${COLOR.GRAY_100};
+  }
+`;
+
+const ButtonSearch = styled.button`
+  display: flex;
+  width: 36px;
+  height: 36px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: ${COLOR.WHITE};
+  cursor: grab;
+  &:hover {
+    background-color: ${COLOR.GRAY_100};
+  }
+`;
+
 const NavBarHomePage = (props) => {
   let { communityDatas } = props;
   console.log('네비게이션바 데이터', communityDatas);
@@ -25,55 +75,6 @@ const NavBarHomePage = (props) => {
     navigate('/search');
   };
 
-  const NavBarWrapper = styled.div`
-    width: 100%;
-    background-color: ${COLOR.WHITE};
-    height: 70px;
-    box-shadow: 0px 1.5px 2.7px 0px rgba(0, 0, 0, 0.09);
-    display: flex;
-  `;
-
-  const ButtonMenu = styled.button`
-    display: flex;
-    width: 36px;
-    height: 36px;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    background-color: ${COLOR.WHITE};
-    cursor: grab;
-    &:hover {
-      background-color: ${COLOR.GRAY_100};
-    }
-  `;
-
-  const ButtonAlert = styled.button`
-    display: flex;
-    width: 36px;
-    height: 36px;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    background-color: ${COLOR.WHITE};
-    cursor: grab;
-    &:hover {
-      background-color: ${COLOR.GRAY_100};
-    }
-  `;
-
-  const ButtonSearch = styled.button`
-    display: flex;
-    width: 36px;
-    height: 36px;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    background-color: ${COLOR.WHITE};
-    cursor: grab;
-    &:hover {
-      background-color: ${COLOR.GRAY_100};
-    }
-  `;
   const MenuIcon = () => {
     return (
       <svg

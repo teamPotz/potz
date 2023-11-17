@@ -1,5 +1,6 @@
 import '../App.css';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Font from '../utility/Font';
 import Container from 'react-bootstrap/Container';
@@ -8,18 +9,114 @@ import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
 import SearchBar from '../components/SearchBar';
 import TagFoodSM from '../components/TagFoodSM';
-import {
-  BurgerSM,
-  ChickenSM,
-  CafeSM,
-  PizzaSM,
-  SushiSM,
-  ChineseFoodSM,
-  KoreanFoodSM,
-  SaladSM,
-} from '../components/Search_category';
+import CategoryBtnSM from '../components/CategoryBtnSM';
+
+const Divider = styled.div`
+  margin-top: 18px;
+  margin-bottom: 18px;
+  background-color: ${COLOR.POTZ_PINK_100};
+  height: 10px;
+  width: 100%;
+  & hr {
+    background: ${COLOR.GRAY_200};
+    height: 1px;
+    border: 0;
+  }
+`;
+
+const CategorySearchStyle = styled.div`
+  margin-top: 14px;
+  margin-bottom: 48px;
+  margin-left: 28px;
+  overflow: auto;
+  width: 100%;
+  display: flex;
+  gap: 14px;
+
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const BackButton = styled.button`
+  width: 28px;
+  height: 28px;
+  background: ${COLOR.WHITE};
+  border: none;
+  transition: all 0.2s ease;
+  cursor: grab;
+
+  &:hover {
+    transform: scale(1.18);
+    border-radius: 4px;
+  }
+`;
+
+const GoButton = styled.button`
+  width: 14px;
+  height: 14px;
+  background: ${COLOR.WHITE};
+  border: none;
+  transition: all 0.2s ease;
+  cursor: grab;
+
+  &:hover {
+    transform: scale(1.18);
+    border-radius: 4px;
+  }
+`;
 
 function SearchPage() {
+  let navigate = useNavigate();
+  let [categoryData, setCategoryData] = useState();
+  let [searchValue, setSearchValue] = useState('');
+
+  // SearchBar 컴포넌트로부터 전달받은 값
+  const getSearchResult = (value) => {
+    console.log('검색 키워드', value);
+    setSearchValue(value);
+  };
+
+  useEffect(() => {
+    async function fetchCategoryData() {
+      try {
+        const response = await fetch('http://localhost:5000/categories', {
+          method: 'GET',
+        });
+        const data = await response.json();
+        console.log('카테고리 전체 데이터', data);
+        setCategoryData(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // 비동기 함수를 useEffect 내부에서 직접 호출
+    fetchCategoryData();
+  }, []);
+
+  // useEffect(() => {
+  //   async function fetchCategoryData() {
+  //     try {
+  //       const response = await fetch(`http://localhost:5000/posts/${searchValue}`, {
+  //         method: 'GET',
+  //       });
+  //       const data = await response.json();
+  //       console.log('카테고리 전체 데이터', data);
+  //       setCategoryData(data);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+
+  //   // 비동기 함수를 useEffect 내부에서 직접 호출
+  //   fetchCategoryData();
+  // }, []);
+
   //12개까지 검색한 키워드 저장
   const TestDatas = [
     '떡볶이 세트',
@@ -34,19 +131,6 @@ function SearchPage() {
     '짜장면',
     '순대국밥',
   ];
-
-  const Divider = styled.div`
-    margin-top: 18px;
-    margin-bottom: 18px;
-    background-color: ${COLOR.POTZ_PINK_100};
-    height: 10px;
-    width: 100%;
-    & hr {
-      background: ${COLOR.GRAY_200};
-      height: 1px;
-      border: 0;
-    }
-  `;
 
   const backgroundStyle = {
     backgroundColor: COLOR.WHITE,
@@ -82,24 +166,6 @@ function SearchPage() {
       }
     };
 
-    const CategorySearchStyle = styled.div`
-      margin-top: 14px;
-      margin-bottom: 48px;
-      margin-left: 28px;
-      overflow: auto;
-      width: 100%;
-      display: flex;
-      gap: 14px;
-
-      overflow-y: scroll;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
-    `;
-
     return (
       <CategorySearchStyle
         onMouseDown={onDragStart}
@@ -108,31 +174,16 @@ function SearchPage() {
         onMouseLeave={onDragEnd}
         ref={scroll}
       >
-        <BurgerSM />
-        <ChickenSM />
-        <CafeSM />
-        <PizzaSM />
-        <SushiSM />
-        <ChineseFoodSM />
-        <KoreanFoodSM />
-        <SaladSM />
+        {categoryData
+          ? categoryData.map((category) => (
+              <div key={category.id}>
+                <CategoryBtnSM category={category}></CategoryBtnSM>
+              </div>
+            ))
+          : null}
       </CategorySearchStyle>
     );
   };
-
-  const BackButton = styled.button`
-    width: 28px;
-    height: 28px;
-    background: ${COLOR.WHITE};
-    border: none;
-    transition: all 0.2s ease;
-    cursor: grab;
-
-    &:hover {
-      transform: scale(1.18);
-      border-radius: 4px;
-    }
-  `;
 
   const BackIcon = () => {
     return (
@@ -153,20 +204,6 @@ function SearchPage() {
       </svg>
     );
   };
-
-  const GoButton = styled.button`
-    width: 14px;
-    height: 14px;
-    background: ${COLOR.WHITE};
-    border: none;
-    transition: all 0.2s ease;
-    cursor: grab;
-
-    &:hover {
-      transform: scale(1.18);
-      border-radius: 4px;
-    }
-  `;
 
   const GoIcon = () => {
     return (
@@ -269,10 +306,14 @@ function SearchPage() {
           <div className='potz_container' style={backgroundStyle}>
             <div className='contents_container' style={style1}>
               <div style={TopStyle}>
-                <BackButton>
+                <BackButton
+                  onClick={() => {
+                    navigate(-1);
+                  }}
+                >
                   <BackIcon></BackIcon>
                 </BackButton>
-                <SearchBar></SearchBar>
+                <SearchBar getSearchResult={getSearchResult}></SearchBar>
               </div>
             </div>
             <div>
@@ -283,9 +324,6 @@ function SearchPage() {
                 <div style={recentResultStyle}>
                   <div style={style}>
                     <span style={fontStyle}>최근 검색어</span>
-                    <GoButton>
-                      <GoIcon></GoIcon>
-                    </GoButton>
                   </div>
                   <span style={fontStyle2}>전체 삭제</span>
                 </div>
@@ -299,8 +337,12 @@ function SearchPage() {
                   })}
                 </div>
                 <div style={style}>
-                  <span style={fontStyle}>카테고리로 검색해봐요.</span>
-                  <GoButton>
+                  <span style={fontStyle}>카테고리로 검색해보세요.</span>
+                  <GoButton
+                    onClick={() => {
+                      navigate('/category');
+                    }}
+                  >
                     <GoIcon></GoIcon>
                   </GoButton>
                 </div>

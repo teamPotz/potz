@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './index.css';
 // import App from './App.jsx';
+import { AuthProvider } from './contexts/AuthContext.jsx';
 import MakeCommunity from './pages/MakeCommunityPage.jsx';
 import ChooseFeature from './pages/ChooseFeaturePage.jsx';
 import NamingCommunity from './pages/NamingCommunity.jsx';
@@ -15,10 +16,11 @@ import SearchPage from './pages/Search.jsx';
 import Alarm from './pages/Alarm.jsx';
 import CategoryPage from './pages/Category.jsx';
 import LoginPage from './pages/LocalLogin/LoginPage.jsx';
-
-import { AuthProvider } from './contexts/AuthContext.jsx';
 import LinkSample from './pages/LocalLogin/LinkSample.jsx';
 import ProtectedRoute from './pages/ProtectedRoute.jsx';
+import CategorySearch from './pages/CategorySearchPage.jsx';
+import ChooseCommunity from './pages/ChooseCommunityPage.jsx';
+import LikedList from './pages/LikedListPage.jsx';
 
 const router = createBrowserRouter([
   {
@@ -84,8 +86,20 @@ const router = createBrowserRouter([
         path: '/category',
         element: <CategoryPage />,
       },
+      {
+        path: '/community-lists',
+        element: <ChooseCommunity />,
+      },
+      {
+        path: '/category-search',
+        element: <CategorySearch />,
+      },
+      {
+        path: '/liked-list',
+        element: <LikedList />,
+      },
     ],
-  },
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(

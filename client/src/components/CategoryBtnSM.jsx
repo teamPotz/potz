@@ -1,14 +1,12 @@
-import TagFood from './TagFood';
 import styled from 'styled-components';
 import COLOR from '../utility/Color';
 import { useNavigate } from 'react-router-dom';
 
-const FoodWrapper = styled.div`
-  padding-bottom: 18px;
-  width: 100%;
-  height: 100%;
+const Wrapper = styled.div`
+  min-width: 90px;
+  height: 90px;
   cursor: grab;
-  background-color: ${COLOR.WHITE};
+  background-color: ${COLOR.POTZ_PINK_100};
   border-radius: 9px;
   display: flex;
   flex-direction: column;
@@ -20,13 +18,11 @@ const FoodWrapper = styled.div`
   }
 `;
 
-const CategoryBtn = (props) => {
+const CategoryBtnSM = (props) => {
   let navigate = useNavigate();
   let { category } = props;
-  console.log('카테고리 별 데이터', category);
-
   return (
-    <FoodWrapper
+    <Wrapper
       onClick={() => {
         navigate('/category-search', {
           state: { category: category },
@@ -34,13 +30,12 @@ const CategoryBtn = (props) => {
       }}
     >
       <img
-        width={108}
-        height={108}
+        width={80}
+        height={80}
         src={'http://localhost:5000/' + category.imageUrl}
       ></img>
-      <TagFood>{category.name}</TagFood>
-    </FoodWrapper>
+    </Wrapper>
   );
 };
 
-export default CategoryBtn;
+export default CategoryBtnSM;

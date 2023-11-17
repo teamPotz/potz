@@ -4,26 +4,26 @@ import COLOR from '../utility/Color';
 import ButtonSm from '../components/ButtonSM';
 import ModalImg from '../../public/images/graphicImg/ModalIMG.png';
 
-const ShareCommunityModal = () => {
-  const ModalContainer = styled.div`
-    height: calc(100vh - 200px);
-    display: flex;
-    align-items: center;
-  `;
-  const ModalWrapper = styled.div`
-    margin-left: 28px;
-    background: ${COLOR.WHITE};
-    width: calc(100% - 56px);
-    height: 354px;
-    border-radius: 14px;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    box-shadow: 0px 3.5px 8.1px 0px rgba(0, 0, 0, 0.07);
-  `;
+const ModalContainer = styled.div`
+  height: calc(100vh - 200px);
+  display: flex;
+  align-items: center;
+`;
+const ModalWrapper = styled.div`
+  margin-left: 28px;
+  background: ${COLOR.WHITE};
+  width: calc(100% - 56px);
+  height: 354px;
+  border-radius: 14px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0px 3.5px 8.1px 0px rgba(0, 0, 0, 0.07);
+`;
 
+const ShareCommunityModal = () => {
   const fontStyle = {
     fontFamily: Font.FontKor,
     fontSize: '24px',
