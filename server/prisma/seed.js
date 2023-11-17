@@ -275,6 +275,8 @@ const deliveryPotHistories = [
   },
 ];
 
+const searchResults = [{ keyword: '테스트 검색어1', userId: 1 }];
+
 async function main() {
   // create users
   for (const user of users) {
@@ -441,6 +443,25 @@ async function main() {
         deliveryPotId: history.deliveryPotId,
       },
     });
+  }
+}
+
+for (const result of searchResults) {
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      id: result.userId,
+    },
+  });
+
+  if (existingUser) {
+    await prisma.searchResult.create({
+      data: {
+        userId: result.userId,
+        keyword: result.keyword,
+      },
+    });
+  } else {
+    console.error(`User with id ${result.userId} does not exist.`);
   }
 }
 

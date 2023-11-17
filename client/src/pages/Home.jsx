@@ -13,7 +13,7 @@ import ShareCommunityModal from '../components/shareCommunityModal';
 
 function Home() {
   const location = useLocation();
-  let testcommunityDataID = 7;
+  let testcommunityDataID = 1;
   //실제로는 로그인~커뮤니티 선택 하면서 커뮤니티 아이디 데이터 넘겨받기
   // let { communityDataID } = location.state;
   // console.log('해당 커뮤니티 아이디', communityDataID);

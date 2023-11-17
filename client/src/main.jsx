@@ -21,6 +21,7 @@ import ProtectedRoute from './pages/ProtectedRoute.jsx';
 import CategorySearch from './pages/CategorySearchPage.jsx';
 import ChooseCommunity from './pages/ChooseCommunityPage.jsx';
 import LikedList from './pages/LikedListPage.jsx';
+import SearchResult from './pages/SearchResult.jsx';
 import Post from './pages/Post';
 import LandingMap from './pages/LandingMap';
 
@@ -73,12 +74,20 @@ const router = createBrowserRouter([
         element: <NamingCommunity />,
       },
       {
+        path: '/community-lists',
+        element: <ChooseCommunity />,
+      },
+      {
         path: '/detail',
         element: <Detail />,
       },
       {
         path: '/search',
         element: <SearchPage />,
+      },
+       {
+        path: '/result',
+        element: <SearchResult />,
       },
       {
         path: '/alarm',
@@ -87,10 +96,6 @@ const router = createBrowserRouter([
       {
         path: '/category',
         element: <CategoryPage />,
-      },
-      {
-        path: '/community-lists',
-        element: <ChooseCommunity />,
       },
       {
         path: '/category-search',

@@ -154,9 +154,6 @@ export async function getPosts(req, res) {
                 quantity: true,
               },
             },
-            _count: {
-              select: { quantity: true },
-            },
           },
         },
         deliveryFees: true,
@@ -322,6 +319,66 @@ export async function getPostById(req, res) {
     };
 
     res.status(200).send(transformedPost);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'get posts error' });
+  }
+}
+
+export async function getPostByName(req, res) {
+  const { key } = req.query;
+  console.log(key);
+
+  try {
+    const post = await prisma.post.findMany({
+      where: {
+        storeName: {
+          contains: key,
+        },
+        storeName: {
+          contains: key,
+        },
+      },
+      select: {
+        storeName: true,
+        imageUrl: true,
+        id: true,
+        storeAddress: true,
+        orderLink: true,
+        category: true,
+        recruitment: true,
+        meetingLocation: true,
+        deliveryFees: true,
+        deliveryDiscounts: true,
+        //나중에 로그인 된 유저 id 넣기
+        likedByUsers: {
+          where: { userId: 1, liked: true },
+        },
+        communityId: true,
+        deliveryPot: {
+          select: {
+            participants: true,
+            orders: {
+              select: {
+                price: true,
+                quantity: true,
+              },
+            },
+          },
+        },
+        author: {
+          select: {
+            profile: {
+              select: {
+                imageUrl: true,
+              },
+            },
+            createdDeliveryPots: true,
+          },
+        },
+      },
+    });
+    res.status(200).send(post);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'get posts error' });

@@ -71,15 +71,11 @@ const GoButton = styled.button`
 `;
 
 function SearchPage() {
+  //테스트용 유저 아이디
+  let userId = 1;
   let navigate = useNavigate();
   let [categoryData, setCategoryData] = useState();
-  let [searchValue, setSearchValue] = useState('');
-
-  // SearchBar 컴포넌트로부터 전달받은 값
-  const getSearchResult = (value) => {
-    console.log('검색 키워드', value);
-    setSearchValue(value);
-  };
+  let [searchHistory, setSearchHistory] = useState();
 
   useEffect(() => {
     async function fetchCategoryData() {
@@ -94,43 +90,46 @@ function SearchPage() {
         console.error(error);
       }
     }
-
-    // 비동기 함수를 useEffect 내부에서 직접 호출
     fetchCategoryData();
   }, []);
 
-  // useEffect(() => {
-  //   async function fetchCategoryData() {
-  //     try {
-  //       const response = await fetch(`http://localhost:5000/posts/${searchValue}`, {
-  //         method: 'GET',
-  //       });
-  //       const data = await response.json();
-  //       console.log('카테고리 전체 데이터', data);
-  //       setCategoryData(data);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   }
+  useEffect(() => {
+    async function fetchSearchHistoryData() {
+      try {
+        const response = await fetch('http://localhost:5000/search-history', {
+          method: 'GET',
+        });
+        const data = await response.json();
+        console.log('전체 검색어 데이터', data);
+        setSearchHistory(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchSearchHistoryData();
+  }, []);
 
-  //   // 비동기 함수를 useEffect 내부에서 직접 호출
-  //   fetchCategoryData();
-  // }, []);
+  const clickHandler = () => {
+    deleteSearchHistory();
+  };
 
-  //12개까지 검색한 키워드 저장
-  const TestDatas = [
-    '떡볶이 세트',
-    '짜장면',
-    '순대국밥',
-    '떡볶이 세트',
-    '짜장면',
-    '순대국밥',
-    '마늘 떡볶이',
-    '돈코츠 라멘',
-    '떡볶이 세트',
-    '짜장면',
-    '순대국밥',
-  ];
+  async function deleteSearchHistory() {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/search-history/${userId}`,
+        {
+          method: 'DELETE',
+        }
+      );
+
+      if (response.ok) {
+        console.log('검색 기록 삭제 성공');
+        location.reload();
+      }
+    } catch (error) {
+      console.error('검색 기록 삭제 중 에러남:', error);
+    }
+  }
 
   const backgroundStyle = {
     backgroundColor: COLOR.WHITE,
@@ -236,6 +235,8 @@ function SearchPage() {
     color: COLOR.GRAY_400,
     fontSize: '14px',
     cursor: 'grab',
+    background: 'none',
+    border: 'none',
   };
 
   const style1 = {
@@ -268,7 +269,7 @@ function SearchPage() {
     marginBottom: '48px',
     display: 'grid',
     gap: '14px',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
   };
 
   const tagstyle = {
@@ -313,7 +314,7 @@ function SearchPage() {
                 >
                   <BackIcon></BackIcon>
                 </BackButton>
-                <SearchBar getSearchResult={getSearchResult}></SearchBar>
+                <SearchBar></SearchBar>
               </div>
             </div>
             <div>
@@ -325,16 +326,46 @@ function SearchPage() {
                   <div style={style}>
                     <span style={fontStyle}>최근 검색어</span>
                   </div>
-                  <span style={fontStyle2}>전체 삭제</span>
+                  <button onClick={clickHandler} style={fontStyle2}>
+                    전체 삭제
+                  </button>
                 </div>
                 <div style={tagContainer}>
-                  {TestDatas.map((TestData, index) => {
-                    return (
-                      <TagFoodSM key={index} style={tagstyle}>
-                        {TestData}
-                      </TagFoodSM>
-                    );
-                  })}
+                  {searchHistory
+                    ? searchHistory.slice(0, 12).map((search) => {
+                        return (
+                          <TagFoodSM
+                            onClick={() => {
+                              const fetchSearchData = async () => {
+                                try {
+                                  const response = await fetch(
+                                    `http://localhost:5000/posts/search?key=${search.keyword}`,
+                                    {
+                                      method: 'GET',
+                                    }
+                                  );
+                                  const data = await response.json();
+                                  console.log('검색 데이터', data);
+                                  navigate('/result', {
+                                    state: {
+                                      result: data,
+                                      searchVal: search.keyword,
+                                    },
+                                  });
+                                } catch (error) {
+                                  console.error(error);
+                                }
+                              };
+                              fetchSearchData();
+                            }}
+                            key={search.id}
+                            style={tagstyle}
+                          >
+                            {search.keyword}
+                          </TagFoodSM>
+                        );
+                      })
+                    : null}
                 </div>
                 <div style={style}>
                   <span style={fontStyle}>카테고리로 검색해보세요.</span>
