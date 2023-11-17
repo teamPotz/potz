@@ -1,4 +1,5 @@
 import '../App.css';
+import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
@@ -11,6 +12,14 @@ import COLOR from '../utility/Color';
 import ShareCommunityModal from '../components/shareCommunityModal';
 
 function Home() {
+  const location = useLocation();
+  let testcommunityDataID = 1;
+  //실제로는 로그인~커뮤니티 선택 하면서 커뮤니티 아이디 데이터 넘겨받기
+  // let { communityDataID } = location.state;
+  // console.log('해당 커뮤니티 아이디', communityDataID);
+
+  let [communityDatas, setCommunityDatas] = useState(null);
+
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
 
@@ -27,99 +36,26 @@ function Home() {
     };
   }, []);
 
-  //테스트용 데이터
-  const testDatas = [
-    {
-      store: '디저트123 송도점',
-      price: 230,
-      link: '쿠팡이츠.link',
-      imgSrc: '../../public/images/graphicImg/testImg.png',
-      memNum: 8,
-      limitNum: 10,
-      meetPlace: '아파트 정문',
-      category: '# 카페 디저트',
-      sale: [1],
-      crown: true,
-      heart: false,
-    },
-    {
-      store: '커플케이크 하버뷰점',
-      price: 600,
-      link: '배달의 민족.link',
-      imgSrc: '../../public/images/graphicImg/testImg2.png',
-      memNum: 10,
-      limitNum: 15,
-      meetPlace: '아파트 정문',
-      category: '# 카페 디저트',
-      sale: [],
-      crown: true,
-      heart: false,
-    },
-    {
-      store: '프루츠 후르츠 프루츠 후르츠',
-      price: 900,
-      link: '배달의 민족.link',
-      imgSrc: '../../public/images/graphicImg/testImg3.png',
-      memNum: 10,
-      limitNum: 15,
-      meetPlace: '아파트 정문',
-      category: '# 카페 디저트',
-      sale: [1],
-      crown: false,
-      heart: false,
-    },
-    {
-      store: '샐러디 연세대점',
-      price: 420,
-      link: '배달의 민족.link',
-      imgSrc: '../../public/images/graphicImg/testImg4.png',
-      memNum: 10,
-      limitNum: 15,
-      meetPlace: '아파트 정문',
-      category: '# 샐러드',
-      sale: [],
-      crown: true,
-      heart: false,
-    },
-    {
-      store: '연어와 육회',
-      price: 600,
-      link: '배달의 민족.link',
-      imgSrc: '../../public/images/graphicImg/testImg5.png',
-      memNum: 10,
-      limitNum: 15,
-      meetPlace: '아파트 정문',
-      category: '# 일식 초밥',
-      crown: false,
-      sale: [],
-    },
-    {
-      store: '디저트123 송도점',
-      price: 230,
-      link: '쿠팡이츠.link',
-      imgSrc: '../../public/images/graphicImg/testImg.png',
-      memNum: 8,
-      limitNum: 10,
-      meetPlace: '아파트 정문',
-      category: '# 카페 디저트',
-      sale: [1],
-      crown: true,
-      heart: false,
-    },
-    {
-      store: '프루츠 후르츠',
-      price: 900,
-      link: '배달의 민족.link',
-      imgSrc: '../../public/images/graphicImg/testImg3.png',
-      memNum: 10,
-      limitNum: 15,
-      meetPlace: '아파트 정문',
-      category: '# 카페 디저트',
-      sale: [1],
-      crown: false,
-      heart: false,
-    },
-  ];
+  useEffect(() => {
+    async function fetchCommunityData() {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/communities/${testcommunityDataID}`,
+          {
+            method: 'GET',
+          }
+        );
+        const data = await response.json();
+        console.log('해당 커뮤니티 데이터', data);
+        setCommunityDatas(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // 비동기 함수를 useEffect 내부에서 직접 호출
+    fetchCommunityData();
+  }, [testcommunityDataID]);
 
   const potzContainerStyle = {
     position: 'relative', // potz_container를 relative로 설정합니다.
@@ -160,20 +96,19 @@ function Home() {
         <Col className='col2'>
           <div className='potz_container' style={backgroundStyle}>
             <div style={potzContainerStyle}>
-              <NavBarHomePage></NavBarHomePage>
+              {communityDatas ? (
+                <NavBarHomePage communityDatas={communityDatas} />
+              ) : null}
               <div style={homeContentesContainer}>
                 {/* 만약 컨텐츠 데이터 개수가 1개도 없을 경우 공동체 공유 모달창 띄우기 */}
-                {testDatas.length < 1 ? (
-                  <ShareCommunityModal></ShareCommunityModal>
+                {communityDatas ? (
+                  communityDatas.posts.length < 1 ? (
+                    <ShareCommunityModal></ShareCommunityModal>
+                  ) : null
                 ) : null}
-                {testDatas.map((testData, index) => {
-                  return (
-                    <HomeContents
-                      key={index}
-                      testData={testData}
-                    ></HomeContents>
-                  );
-                })}
+                {communityDatas ? (
+                  <HomeContents communityDatas={communityDatas}></HomeContents>
+                ) : null}
               </div>
               <div style={navbarStyle}>
                 <div style={btnStyle}>

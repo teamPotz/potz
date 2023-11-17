@@ -9,7 +9,7 @@ const TagFoodSM = styled.button`
   border: none;
   display: flex;
   height: 28px;
-  width: auto;
+  width: 100%;
   padding: 10px 12px;
   justify-content: center;
   align-items: center;

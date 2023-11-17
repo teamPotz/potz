@@ -1,17 +1,124 @@
 import '../App.css';
-import { useRef, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Font from '../utility/Font';
 import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
-import ProfilePic from '../../public/images/graphicImg/profiePic.png';
-import LikedComp from '../components/LikedComp';
+import CategorySearch from '../components/categorySearch';
+
+const Divider = styled.div`
+  margin-top: 40px;
+  margin-bottom: 18px;
+  background-color: ${COLOR.POTZ_PINK_100};
+  height: 10px;
+  width: 100%;
+  & hr {
+    background: ${COLOR.GRAY_200};
+    height: 1px;
+    border: 0;
+  }
+`;
+
+const Particiate = styled.div`
+  background-color: ${COLOR.POTZ_PINK_100};
+  height: 60px;
+  width: 100%;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  font-family: ${Font.FontKor};
+  font-weight: 700;
+  color: ${COLOR.GRAY_400};
+`;
+
+const ButtonWrap = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  transition: all 0.2s ease;
+  cursor: grab;
+
+  &:hover {
+    transform: scale(1.18);
+    border-radius: 4px;
+  }
+`;
+
+const EnterStyle = styled.div`
+  marginright: 28px;
+  cursor: grab;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.04);
+    border-color: ${COLOR.POTZ_PINK_100};
+  }
+`;
 
 function Detail() {
+  let location = useLocation();
+  let navigate = useNavigate();
+
+  let { postDatas } = location.state;
+  console.log('해당 포스트 데이터', postDatas);
+
+  let orderDatas = postDatas.deliveryPot.orders;
+  console.log('주문 데이터', orderDatas);
+  let categoryId = postDatas.category.id;
+
+  let [categoryPostData, setCategoryPostData] = useState();
+
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
+
+  let [totalFee, setTotalFee] = useState();
+
+  useEffect(() => {
+    const calcTotalFee = () => {
+      let total = 0;
+
+      orderDatas.forEach((order) => {
+        let price = order.price * order.quantity;
+        total += price;
+      });
+
+      return total;
+    };
+
+    let totalFeeResult = calcTotalFee();
+    console.log('모인 금액', totalFeeResult);
+
+    setTotalFee(totalFeeResult);
+  }, [orderDatas]);
+
+  useEffect(() => {
+    async function fetchCategoryPostData() {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/categories/${categoryId}`,
+          {
+            method: 'GET',
+          }
+        );
+        const data = await response.json();
+        console.log('해당 카테고리 데이터', data);
+        setCategoryPostData(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // 비동기 함수를 useEffect 내부에서 직접 호출
+    fetchCategoryPostData();
+  }, [categoryId]);
 
   useEffect(() => {
     const ReSizeHandler = () => {
@@ -26,158 +133,6 @@ function Detail() {
     };
   }, []);
 
-  //12개까지 검색한 키워드 저장
-  const testDatas = [
-    {
-      store: '디저트123 송도점 ',
-      price: 230,
-      link: '쿠팡이츠.link',
-      imgSrc: '../../public/images/graphicImg/testImg.png',
-      memNum: 8,
-      limitNum: 10,
-      meetPlace: '아파트 정문',
-      category: '# 카페 디저트',
-      sale: [1],
-      crown: true,
-      heart: false,
-    },
-    {
-      store: '커플케이크 하버뷰점',
-      price: 600,
-      link: '배달의 민족.link',
-      imgSrc: '../../public/images/graphicImg/testImg2.png',
-      memNum: 10,
-      limitNum: 15,
-      meetPlace: '아파트 정문',
-      category: '# 카페 디저트',
-      sale: [],
-      crown: true,
-      heart: false,
-    },
-    {
-      store: '프루츠 후르츠',
-      price: 900,
-      link: '배달의 민족.link',
-      imgSrc: '../../public/images/graphicImg/testImg3.png',
-      memNum: 10,
-      limitNum: 15,
-      meetPlace: '아파트 정문',
-      category: '# 카페 디저트',
-      sale: [1],
-      crown: false,
-      heart: false,
-    },
-    {
-      store: '샐러디 연세대점',
-      price: 420,
-      link: '배달의 민족.link',
-      imgSrc: '../../public/images/graphicImg/testImg4.png',
-      memNum: 10,
-      limitNum: 15,
-      meetPlace: '아파트 정문',
-      category: '# 샐러드',
-      sale: [],
-      crown: true,
-      heart: false,
-    },
-    {
-      store: '연어와 육회',
-      price: 600,
-      link: '배달의 민족.link',
-      imgSrc: '../../public/images/graphicImg/testImg5.png',
-      memNum: 10,
-      limitNum: 15,
-      meetPlace: '아파트 정문',
-      category: '# 일식 초밥',
-      crown: false,
-      sale: [],
-    },
-    {
-      store: '디저트123 송도점',
-      price: 230,
-      link: '쿠팡이츠.link',
-      imgSrc: '../../public/images/graphicImg/testImg.png',
-      memNum: 8,
-      limitNum: 10,
-      meetPlace: '아파트 정문',
-      category: '# 카페 디저트',
-      sale: [1],
-      crown: true,
-      heart: false,
-    },
-    {
-      store: '프루츠 후르츠',
-      price: 900,
-      link: '배달의 민족.link',
-      imgSrc: '../../public/images/graphicImg/testImg3.png',
-      memNum: 10,
-      limitNum: 15,
-      meetPlace: '아파트 정문',
-      category: '# 카페 디저트',
-      sale: [1],
-      crown: false,
-      heart: false,
-    },
-  ];
-  const testData1 = {
-    store: '스타벅스 송도점',
-    totalDeliveryPrice: 2000,
-    totalPrice: 450000,
-    price: 230,
-    link: '쿠팡이츠.link',
-    imgSrc: '../../public/images/graphicImg/TestImgBack.png',
-    memNum: 8,
-    limitNum: 10,
-    meetPlace: '아파트 정문',
-    category: '# 카페 디저트',
-    sale: [1],
-    crown: true,
-    heart: false,
-  };
-
-  const Divider = styled.div`
-    margin-top: 40px;
-    margin-bottom: 18px;
-    background-color: ${COLOR.POTZ_PINK_100};
-    height: 10px;
-    width: 100%;
-    & hr {
-      background: ${COLOR.GRAY_200};
-      height: 1px;
-      border: 0;
-    }
-  `;
-
-  const Particiate = styled.div`
-    background-color: ${COLOR.POTZ_PINK_100};
-    height: 60px;
-    width: 100%;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    gap: 80px;
-    font-family: ${Font.FontKor};
-    font-weight: 700;
-    color: ${COLOR.GRAY_400};
-  `;
-
-  const ButtonWrap = styled.button`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: none;
-    border: none;
-    transition: all 0.2s ease;
-    cursor: grab;
-
-    &:hover {
-      transform: scale(1.18);
-      border-radius: 4px;
-    }
-  `;
-
   const backgroundStyle = {
     fontFamily: Font.FontKor,
     backgroundColor: COLOR.WHITE,
@@ -185,68 +140,6 @@ function Detail() {
 
   const fontColored = {
     color: COLOR.POTZ_PINK_DEFAULT,
-  };
-
-  //카테고리 좌 우 드래그로 스크롤 구현
-  const CategorySearch = () => {
-    //DOM 요소의 가로 스크롤 길이를 저장하기 위해 DOM 참조
-    const scroll = useRef(null);
-    //마우스 드래그 중인지 여부 저장
-    const Drag = useRef(false);
-    //드래그 시작 지점
-    const X = useRef();
-
-    const onDragStart = (e) => {
-      e.preventDefault();
-      Drag.current = true;
-      //드래그 시작 지점 재정의
-      //마우스 이벤트 객체에서의 마우스의 X 좌표 +  scroll 객체가 참조하는 DOM 요소의 가로 스크롤 위치
-      X.current = e.pageX + scroll.current.scrollLeft;
-    };
-
-    const onDragEnd = (e) => {
-      Drag.current = false;
-      //드래그 시작 지점 재정의
-      X.current -= e.pageX;
-    };
-
-    const onDragMove = (e) => {
-      if (Drag.current) {
-        //scroll 객체가 참조하는 DOM의 현재 가로 스크롤 길이 좌표 정의
-        scroll.current.scrollLeft = X.current - e.pageX;
-      }
-    };
-
-    const CategorySearchStyle = styled.div`
-      margin-bottom: 88px;
-      margin-left: 28px;
-      overflow: auto;
-      width: 100%;
-      display: flex;
-      gap: 14px;
-
-      overflow-y: scroll;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
-    `;
-
-    return (
-      <CategorySearchStyle
-        onMouseDown={onDragStart}
-        onMouseMove={onDragMove}
-        onMouseUp={onDragEnd}
-        onMouseLeave={onDragEnd}
-        ref={scroll}
-      >
-        {testDatas.map((testData, index) => {
-          return <LikedComp key={index} testData={testData}></LikedComp>;
-        })}
-      </CategorySearchStyle>
-    );
   };
 
   const BackIcon = () => {
@@ -347,16 +240,6 @@ function Detail() {
   };
 
   const ButtonEnter = () => {
-    const EnterStyle = styled.div`
-      marginright: 28px;
-      cursor: grab;
-      transition: all 0.3s ease;
-
-      &:hover {
-        transform: scale(1.04);
-        border-color: ${COLOR.POTZ_PINK_100};
-      }
-    `;
     const EnterIcon = () => {
       return (
         <svg
@@ -476,6 +359,7 @@ function Detail() {
 
   const paddingStyle = {
     padding: '12px',
+    borderRadius: '50%',
   };
 
   const storeFont = {
@@ -508,6 +392,7 @@ function Detail() {
   };
 
   const coloredFont = {
+    marginRight: '4px',
     color: COLOR.POTZ_PINK_DEFAULT,
   };
 
@@ -520,9 +405,18 @@ function Detail() {
         <Col className='col2'>
           <div className='potz_container' style={backgroundStyle}>
             <div style={imgContainer}>
-              <img src={testData1.imgSrc}></img>
+              <img
+                width={420}
+                height={420}
+                src={'http://localhost:5000/' + postDatas.imageUrl + '.png'}
+              ></img>
               <div style={TopStyle}>
-                <ButtonWrap style={marginLeftStyle}>
+                <ButtonWrap
+                  onClick={() => {
+                    navigate(-1);
+                  }}
+                  style={marginLeftStyle}
+                >
                   <BackIcon></BackIcon>
                 </ButtonWrap>
                 <div style={{ display: 'flex' }}>
@@ -536,35 +430,49 @@ function Detail() {
               </div>
               <div style={linkStyle}>
                 <LinkIcon></LinkIcon>
-                <span style={fontStyleLink}>{testData1.link}</span>
+                <a style={fontStyleLink} href={postDatas.orderLink}>
+                  <span>배달앱 링크 바로가기</span>
+                </a>
               </div>
             </div>
             <div>
               <div className='contents_container'>
                 <div style={storeFont}>
-                  <span>{testData1.store}</span>
+                  <span>{postDatas.storeName}</span>
                 </div>
                 <div style={marginBottomStyle}>
                   <div style={fontStyleLink2}>
-                    <span>{testData1.category}</span>
+                    <span>{postDatas.category.name}</span>
                   </div>
                   <div style={fontStyle}>
                     <span>만날 장소</span>
-                    <span>{testData1.meetPlace}</span>
+                    <span>{postDatas.meetingLocation}</span>
                   </div>
                   <div style={fontStyle}>
                     <span>모인 금액</span>
                     <div>
-                      <span>{testData1.totalPrice}</span>
+                      {totalFee ? <span>{totalFee}</span> : <span>0</span>}
                       <span>원</span>
                     </div>
                   </div>
                 </div>
 
                 <Particiate>
-                  <img src={ProfilePic} style={paddingStyle}></img>
+                  <img
+                    width={46}
+                    height={46}
+                    src={
+                      'http://localhost:5000/' +
+                      postDatas.author.profile.imageUrl
+                    }
+                    style={paddingStyle}
+                  ></img>
                   <div>
-                    <span style={fontColored}>11/15</span>
+                    <span style={fontColored}>{postDatas.recruitment}</span>
+                    <span style={fontColored}>/</span>
+                    <span style={fontColored}>
+                      {postDatas.deliveryPot.participants.length}
+                    </span>
                     <span>명 참여중</span>
                   </div>
                 </Particiate>
@@ -575,20 +483,41 @@ function Detail() {
               <div className='contents_container'>
                 <div style={fontStyle1}>
                   <span>지금 모집중인</span>
-                  <span style={fontStyle2}>{testData1.category}</span>
+                  <span style={fontStyle2}>{postDatas.category.name}</span>
                 </div>
               </div>
-              <CategorySearch></CategorySearch>
+              {categoryPostData ? (
+                <CategorySearch
+                  categoryPostData={categoryPostData}
+                ></CategorySearch>
+              ) : null}
               <div style={navbarStyle}>
                 <nav style={navStyles}>
                   <div style={navFontContainer}>
                     <div style={fontStyle3}>
-                      <span style={coloredFont}>{testData1.price}</span>
-                      <span>원씩 배달비</span>
+                      <span style={coloredFont}>
+                        {postDatas.deliveryFees?.[0]?.fee ? (
+                          postDatas.deliveryFees[0].fee /
+                          postDatas.deliveryPot.participants.length
+                        ) : (
+                          <span>무료</span>
+                        )}
+                      </span>
+                      {postDatas.deliveryFees?.[0]?.fee ? (
+                        <span>원씩 배달</span>
+                      ) : (
+                        <span>배달</span>
+                      )}
                     </div>
                     <div style={fontStyle4}>
                       <span>현재 배달비</span>
-                      <span>{testData1.totalDeliveryPrice}</span>
+                      <span>
+                        {postDatas.deliveryFees?.[0]?.fee ? (
+                          postDatas.deliveryFees[0].fee
+                        ) : (
+                          <span>무료</span>
+                        )}
+                      </span>
                     </div>
                   </div>
                   <ButtonEnter></ButtonEnter>

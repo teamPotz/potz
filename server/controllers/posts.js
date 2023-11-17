@@ -148,9 +148,11 @@ export async function getPosts(req, res) {
         },
         deliveryPot: {
           select: {
-            orders: true,
-            _count: {
-              select: { participants: true },
+            orders: {
+              select: {
+                price: true,
+                quantity: true,
+              },
             },
           },
         },
@@ -323,8 +325,114 @@ export async function getPostById(req, res) {
   }
 }
 
+export async function getPostByName(req, res) {
+  const { key } = req.query;
+  console.log(key);
+
+  try {
+    const post = await prisma.post.findMany({
+      where: {
+        storeName: {
+          contains: key,
+        },
+        storeName: {
+          contains: key,
+        },
+      },
+      select: {
+        storeName: true,
+        imageUrl: true,
+        id: true,
+        storeAddress: true,
+        orderLink: true,
+        category: true,
+        recruitment: true,
+        meetingLocation: true,
+        deliveryFees: true,
+        deliveryDiscounts: true,
+        //나중에 로그인 된 유저 id 넣기
+        likedByUsers: {
+          where: { userId: 1, liked: true },
+        },
+        communityId: true,
+        deliveryPot: {
+          select: {
+            participants: true,
+            orders: {
+              select: {
+                price: true,
+                quantity: true,
+              },
+            },
+          },
+        },
+        author: {
+          select: {
+            profile: {
+              select: {
+                imageUrl: true,
+              },
+            },
+            createdDeliveryPots: true,
+          },
+        },
+      },
+    });
+    res.status(200).send(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'get posts error' });
+  }
+}
+
+//create post
 export async function createPost(req, res) {
-  // ...
+  let imageUrl = req.file.path;
+  let deliveryFees = JSON.parse(req.body.deliveryFees);
+  let deliveryDiscounts = JSON.parse(req.body.deliveryDiscounts);
+  const { storeName, storeAddress, orderLink, recruitment, meetingLocation } =
+    req.body;
+
+  try {
+    console.log(req.body);
+    console.log(deliveryFees);
+    console.log(deliveryDiscounts);
+    const post = await prisma.post.create({
+      data: {
+        storeName,
+        storeAddress,
+        imageUrl: imageUrl,
+        orderLink,
+        categoryId: 1,
+        recruitment: parseInt(recruitment),
+        meetingLocation,
+        communityId: 1,
+        authorId: 1,
+      },
+    });
+
+    const postWithDeliveryFee = await prisma.deliveryFee.createMany({
+      data: deliveryFees.map((item) => ({
+        minAmount: parseInt(item[0]),
+        maxAmount: item[2] ? parseInt(item[2]) : null,
+        fee: parseInt(item[1]),
+        postId: post.id,
+      })),
+    });
+
+    const postWithDeliveryDiscounts = await prisma.deliveryDiscount.createMany({
+      data: deliveryDiscounts.map((item) => ({
+        minAmount: parseInt(item[0]),
+        discount: parseInt(item[1]),
+        postId: post.id,
+      })),
+    });
+
+    res.status(201).json({ post });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'create post error' });
+  }
 }
 
 export async function updatePost(req, res) {
@@ -338,32 +446,4 @@ export async function deletePost(req, res) {
 // 찜하기, 찜 취소하기
 export async function toggleLike(req, res) {
   // ...
-}
-
-// TODO : remove samples
-export async function getSamplePosts(req, res) {
-  try {
-    const posts = await prisma.postTemp.findMany();
-    res.status(200).send(posts);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'get posts error' });
-  }
-}
-
-export async function createSamplePost(req, res) {
-  const { title, content } = req.body;
-
-  try {
-    const post = await prisma.postTemp.create({
-      data: {
-        title,
-        content,
-      },
-    });
-    res.status(201).json({ post });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'create post error' });
-  }
 }

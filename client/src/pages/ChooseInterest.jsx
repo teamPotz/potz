@@ -15,11 +15,18 @@ import {
   Chicken,
   ChineseFood,
 } from '../components/Category_Food';
+import { useNavigate } from 'react-router-dom';
 
 //contents_container 안에 UI 구현 하시면 됩니다!
 
 function ChooseInterest() {
+  const navigate = useNavigate();
+
   let [userName, setUserName] = useState('수현');
+
+  const navigateHandler = () => {
+    navigate('/find-community');
+  };
 
   const backgroundStyle = {
     backgroundColor: COLOR.POTZ_PINK_200,
@@ -87,25 +94,27 @@ function ChooseInterest() {
                   <br></br>
                 </div>
                 <div>
-                  <button style={buttonStyle}>SKIP</button>
+                  <button onClick={navigateHandler} style={buttonStyle}>
+                    SKIP
+                  </button>
                 </div>
               </div>
               <div style={categoryContainer}>
                 <div style={category}>
-                  <Burger></Burger>
-                  <Cafe></Cafe>
+                  <Burger navigateHandler={navigateHandler}></Burger>
+                  <Cafe navigateHandler={navigateHandler}></Cafe>
                 </div>
                 <div style={category}>
-                  <KoreanFood> </KoreanFood>
-                  <Sushi></Sushi>
+                  <KoreanFood navigateHandler={navigateHandler}> </KoreanFood>
+                  <Sushi navigateHandler={navigateHandler}></Sushi>
                 </div>
                 <div style={category}>
-                  <ChineseFood></ChineseFood>
-                  <Pizza></Pizza>
+                  <ChineseFood navigateHandler={navigateHandler}></ChineseFood>
+                  <Pizza navigateHandler={navigateHandler}></Pizza>
                 </div>
                 <div style={category}>
-                  <Chicken></Chicken>
-                  <Salad></Salad>
+                  <Chicken navigateHandler={navigateHandler}></Chicken>
+                  <Salad navigateHandler={navigateHandler}></Salad>
                 </div>
               </div>
             </div>

@@ -1,22 +1,91 @@
 import styled from 'styled-components';
 import COLOR from '../utility/Color';
 import Font from '../utility/Font';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const InputSearch = styled.input`
+  font-family: ${Font.FontKor};
+  font-size: 14px;
+  font-weight: 400;
+  margin-left: 18px;
+  width: 75%;
+  border: none;
+  background-color: ${COLOR.POTZ_PINK_100};
+  color: ${COLOR.GRAY_400};
+  &:focus {
+    outline: none;
+  }
+`;
+const InputWrapper = styled.div`
+  display: flex;
+  background-color: ${COLOR.POTZ_PINK_100};
+  border: none;
+  width: 88%;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  align-items: center;
+`;
+
+const SearchIconWrapper = styled.div`
+  margin-left: 20px;
+  margin-top: 4px;
+`;
 
 const SearchBar = () => {
-  const InputWrapper = styled.div`
-    display: flex;
-    background-color: ${COLOR.POTZ_PINK_100};
-    border: none;
-    width: 88%;
-    height: 46px;
-    flex-shrink: 0;
-    border-radius: 12px;
-    align-items: center;
-  `;
-  const SearchIconWrapper = styled.div`
-    margin-left: 20px;
-    margin-top: 4px;
-  `;
+  let [searchVal, setSearchVal] = useState();
+
+  let navigate = useNavigate();
+
+  const onEnterHandler = (event) => {
+    if (event.keyCode === 13) {
+      // 엔터 키가 눌렸을 때만 키워드 검색 및 키워드 히스토리 저장 함수 호출
+      fetchSearchData();
+      postSearchHistory();
+    } else {
+      return;
+    }
+  };
+
+  const fetchSearchData = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/posts/search?key=${searchVal}`,
+        {
+          method: 'GET',
+        }
+      );
+      const data = await response.json();
+      console.log('검색 데이터', data);
+      navigate('/result', { state: { result: data, searchVal: searchVal } });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const postSearchHistory = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/search-history`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ keyword: searchVal }),
+      });
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log('새로운 검색어 저장:', responseData);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onChangeHandler = (e) => {
+    setSearchVal(e.target.value);
+  };
+
   const SearchIcon = () => {
     return (
       <svg
@@ -41,26 +110,18 @@ const SearchBar = () => {
       </svg>
     );
   };
-  const InputSearch = styled.input`
-    font-family: ${Font.FontKor};
-    font-size: 14px;
-    font-weight: 400;
-    margin-left: 18px;
-    width: 75%;
-    border: none;
-    background-color: ${COLOR.POTZ_PINK_100};
-    color: ${COLOR.GRAY_400};
-    &:focus {
-      outline: none;
-    }
-  `;
 
   return (
     <InputWrapper>
       <SearchIconWrapper>
         <SearchIcon></SearchIcon>
       </SearchIconWrapper>
-      <InputSearch placeholder='맛있는 키워드로 검색해보세요.'></InputSearch>
+      <InputSearch
+        value={searchVal}
+        onChange={onChangeHandler}
+        onKeyUp={onEnterHandler}
+        placeholder='맛있는 키워드로 검색해보세요.'
+      ></InputSearch>
     </InputWrapper>
   );
 };
