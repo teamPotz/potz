@@ -2,9 +2,9 @@ import '../../App.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import COLOR from '../../utility/Color';
 import ButtonBg from '../../components/ButtonBG';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { useEffect } from 'react';
+import LoadingPage from '../LoadingPage';
 
 const style3 = {
   display: 'flex',
@@ -20,17 +20,11 @@ const style1 = {
 };
 
 function LinkSample() {
-  const navigate = useNavigate();
-  const { user, logout, getUserInfo } = useAuth();
+  const { user, logout } = useAuth();
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/login');
-  };
-
-  useEffect(() => {
-    getUserInfo();
-  }, []);
+  if (!user) {
+    return <LoadingPage />;
+  }
 
   return (
     <Container className='background'>
@@ -42,12 +36,8 @@ function LinkSample() {
           <div className='potz_container'>
             <div className='contents_container' style={style1}>
               <div>
-                {user && (
-                  <>
-                    <div>{user?.name}님 안녕하세요</div>
-                    <div>email : {user?.email}</div>
-                  </>
-                )}
+                <div>{user.name}님 안녕하세요</div>
+                <div>email : {user.email}</div>
               </div>
               <ul>
                 <li>
@@ -62,10 +52,13 @@ function LinkSample() {
                 <li>
                   <Link to='/search'>검색</Link>
                 </li>
+                <li>
+                  <Link to='/chatrooms'>chat rooms</Link>
+                </li>
               </ul>
 
               <div className='btn_container' style={style3}>
-                <div onClick={handleLogout}>
+                <div onClick={() => logout()}>
                   <ButtonBg
                     backgroundColor={COLOR.POTZ_PINK_200}
                     hoverColor={COLOR.POTZ_PINK_300}

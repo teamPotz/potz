@@ -1,4 +1,10 @@
-import { createContext, useContext, useReducer } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react';
 
 const AuthContext = createContext();
 
@@ -21,6 +27,8 @@ function reducer(state, action) {
 }
 
 function AuthProvider({ children }) {
+  const [isLoading, setIsLoading] = useState(false);
+
   const [{ user, isAuthenticated }, dispatch] = useReducer(
     reducer,
     initialState
@@ -85,9 +93,8 @@ function AuthProvider({ children }) {
   }
 
   async function getUserInfo() {
-    if (user) return;
-
     try {
+      setIsLoading(true);
       const res = await fetch('http://localhost:5000/auth/', {
         credentials: 'include',
       });
@@ -99,8 +106,14 @@ function AuthProvider({ children }) {
     } catch (error) {
       console.error(error);
       dispatch({ type: 'logout' });
+    } finally {
+      setIsLoading(false);
     }
   }
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -111,6 +124,8 @@ function AuthProvider({ children }) {
         login,
         logout,
         getUserInfo,
+        isLoading,
+        setIsLoading,
       }}
     >
       {children}

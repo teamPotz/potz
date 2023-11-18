@@ -1,47 +1,35 @@
-import { useNavigate, Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useEffect, useState } from 'react';
+import LoadingPage from './LoadingPage';
 
 function ProtectedRoute({ children }) {
-  // const { isAutenticated } = useAuth();
-  // const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   if (!isAutenticated) navigate('/login');
-  // }, [isAutenticated, navigate]);
-  // return isAutenticated ? children : null;
-
-  const [isAutenticated, setIsAutenticated] = useState(false);
+  const { getUserInfo, isAuthenticated } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
 
-  async function checkAuth() {
-    setIsLoading(true);
-    try {
-      const res = await fetch('http://localhost:5000/auth/', {
-        credentials: 'include',
-      });
-      const data = await res.json();
-      console.log(data);
-      if (res.ok) {
-        setIsAutenticated(true);
-      }
-    } catch (error) {
-      console.error(error);
-      setIsAutenticated(false);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
   useEffect(() => {
+    async function checkAuth() {
+      setIsLoading(true);
+      try {
+        await getUserInfo();
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
     checkAuth();
   }, []);
 
   if (isLoading) {
-    return <div className=''>Loading...</div>;
+    return <LoadingPage />;
   }
 
-  return isAutenticated ? children || <Outlet /> : <Navigate to={'/login'} />;
+  return isAuthenticated ? (
+    children || <Outlet />
+  ) : (
+    <Navigate to={'/login'} replace />
+  );
 }
 
 export default ProtectedRoute;

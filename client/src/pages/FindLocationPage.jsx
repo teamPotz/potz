@@ -7,6 +7,7 @@ import ButtonBg from '../components/ButtonBG';
 import GraPhic from '../../public/images/graphicImg/Hands.png';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import LoadingPage from './LoadingPage';
 
 //contents_container 안에 UI 구현 하시면 됩니다!
 
@@ -39,11 +40,11 @@ function FindLocation() {
     navigate('');
   };
 
-  const { user, getUserInfo } = useAuth();
+  const { user } = useAuth();
 
-  useEffect(() => {
-    getUserInfo();
-  }, []);
+  if (!user) {
+    return <LoadingPage />;
+  }
 
   return (
     <Container className='background'>
@@ -55,7 +56,7 @@ function FindLocation() {
           <div className='potz_container'>
             <div className='contents_container' style={style1}>
               <div className='text_container' style={fontStyle}>
-                <span>{user?.name}님 근처에 있는</span>
+                <span>{user.name}님 근처에 있는</span>
                 <br></br>
                 <span>배달 공동체를 찾아볼까요?</span>
               </div>
