@@ -8,6 +8,9 @@
     "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "nodemonConfig": {
+    "ignore": "./sessions"
+  },
   "author": "teamPotz",
   "license": "ISC",
   "dependencies": {
@@ -23,6 +26,8 @@
     "multer": "^1.4.5-lts.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
+    "session-file-store": "^1.5.0",
+    "socket.io": "^4.7.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
