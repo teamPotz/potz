@@ -143,16 +143,8 @@ function Post() {
     name = location.state.name;
     Address = location.state.address;
   }
-
-  const [categories, setCategories] = useState('카테고리');
-  const[toggled, setToggled] = useState(false);
-  const toggleHandler = (e) => {
-    e.preventDefault();
-    setToggled(true);
-    
-  }
   
-  //create를 해주는 함수
+  //데이터 전송
   async function createPost(
     storeName,
     storeAddress,
@@ -190,10 +182,17 @@ function Post() {
     getUserInfo();
   }, []);
 
+  const [categories, setCategories] = useState('카테고리');
+  const[toggled, setToggled] = useState(false);
+  const toggleHandler = (e) => {
+    e.preventDefault();
+    setToggled(true);
+  }
+
   //배달비, 할인 관련 로직
   //배달비, 할인 갯수
-  const [counts1, setCounts1] = useState([0]);
-  const [counts2, setCounts2] = useState([0]);
+  const [deliveryFeeCount, setDeliveryFeeCount] = useState([0]);
+  const [deliveryDiscountCount, setdeliveryDiscountCount] = useState([0]);
   const [values1, setValues1] = useState([]);
   const [values2, setValues2] = useState([]);
 
@@ -203,37 +202,60 @@ function Post() {
 
   const deliveryFeeChange = (e, number) => {
     e.preventDefault();
-
     if (e.target.name === `deliveryFeeHeader${number}`) {
       setValues1((prevValues) => [e.target.value, prevValues[1]]);
     }
     if (e.target.name === `deliveryFeeFooter${number}`) {
       setValues1((prevValues) => [prevValues[0], e.target.value]);
-
       if (values1[0] && values1[1]) {
         setLength1([...length1, (length1[number] = values1)]);
         setValues1([]);
-        setCounts1([...counts1, counts1.length]);
+        setDeliveryFeeCount([...deliveryFeeCount, deliveryFeeCount.length]);
       }
     }
   };
 
   const deliveryDiscountsChange = (e, number) => {
     e.preventDefault();
-
     if (e.target.name === `deliveryDiscountsHeader${number}`) {
       setValues2((prevValues) => [e.target.value, prevValues[1]]);
     }
     if (e.target.name === `deliveryDiscountsFooter${number}`) {
       setValues2((prevValues) => [prevValues[0], e.target.value]);
-
       if (values2[0] && values2[1]) {
         setLength2([...length2, (length2[number] = values2)]);
         setValues2([]);
-        setCounts2([...counts2, counts2.length]);
+        setdeliveryDiscountCount([...deliveryDiscountCount, deliveryDiscountCount.length]);
       }
     }
   };
+
+  const processData = (name, e) => {
+    let data = [];
+    
+    if(name === 'deliveryFee'){
+      for(let i = 0; i < deliveryFeeCount.length; i++){
+        data.push([
+          e.target[`deliveryFeeHeader${i}`].value,
+          e.target[`deliveryFeeFooter${i}`].value,
+        ])
+      }
+    }
+    if(name === 'deliveryDiscount'){
+      for(let i = 0; i < deliveryDiscountCount.length; i++){
+        data.push([
+          e.target[`deliveryDiscountsHeader${i}`].value,
+          e.target[`deliveryDiscountsFooter${i}`].value,
+        ])
+      }
+    }
+
+    for (let i = 0; i < data.length - 1; i++) {
+      data[i].push(data[i + 1][0]);
+    }
+    data.pop();
+    return(JSON.stringify(data));
+  }
 
   const styles = {
     background: {
@@ -271,34 +293,8 @@ function Post() {
                   const orderLink = e.target.orderLink.value;
                   const recruitment = e.target.recruitment.value;
                   const meetingLocation = e.target.meetingLocation.value;
-
-                  let deliveryFee = [];
-                  for (let i = 0; i < counts1.length; i++) {
-                    deliveryFee.push([
-                      e.target[`deliveryFeeHeader${i}`].value,
-                      e.target[`deliveryFeeFooter${i}`].value,
-                    ]);
-                  }
-                  for (let i = 0; i < deliveryFee.length - 1; i++) {
-                    deliveryFee[i].push(deliveryFee[i + 1][0]);
-                  }
-                  deliveryFee.pop();
-
-                  let deliveryDiscount = [];
-                  for (let i = 0; i < counts2.length; i++) {
-                    deliveryDiscount.push([
-                      e.target[`deliveryDiscountsHeader${i}`].value,
-                      e.target[`deliveryDiscountsFooter${i}`].value,
-                    ]);
-                  }
-                  for (let i = 0; i < deliveryDiscount.length - 1; i++) {
-                    deliveryDiscount[i].push(deliveryDiscount[i + 1][0]);
-                  }
-                  deliveryDiscount.pop();
-
-                  const deliveryFees = JSON.stringify(deliveryFee);
-                  const deliveryDiscounts = JSON.stringify(deliveryDiscount);
-
+                  const deliveryFees = processData('deliveryFee', e);
+                  const deliveryDiscounts = processData('deliveryDiscount', e);
                   const file = e.target.image.files[0];
 
                   createPost(
@@ -464,7 +460,7 @@ function Post() {
                       placeholder='만날 장소'
                     ></Input>
                   </Button>
-                  <Button height={`${74.67 + 34.33 * (counts1.length - 1)}px`}>
+                  <Button height={`${74.67 + 34.33 * (deliveryFeeCount.length - 1)}px`}>
                     <svg
                       width='28'
                       height='29'
@@ -480,7 +476,7 @@ function Post() {
                       />
                     </svg>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      {counts1.map((count) => {
+                      {deliveryFeeCount.map((count) => {
                         return (
                           <div key={count}>
                             <Input
@@ -501,7 +497,7 @@ function Post() {
                       })}
                     </div>
                   </Button>
-                  <Button height={`${74.67 + 34.33 * (counts2.length - 1)}px`}>
+                  <Button height={`${74.67 + 34.33 * (deliveryDiscountCount.length - 1)}px`}>
                     <svg
                       width='28'
                       height='29'
@@ -517,7 +513,7 @@ function Post() {
                       />
                     </svg>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      {counts2.map((count) => {
+                      {deliveryDiscountCount.map((count) => {
                         return (
                           <div key={count}>
                             <Input
