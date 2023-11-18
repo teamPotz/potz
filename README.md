@@ -8,7 +8,7 @@
 
 ## Tech Stack
 
-- FE : React,
+- FE : React
 - BE : Express, MySQL, Prisma
 
 ## How to Run
@@ -249,7 +249,7 @@ from [Seeding your database](https://www.prisma.io/docs/guides/migrate/seed-data
 
 ## 개발환경 DB를 reset 하는 방법
 
-‼️ 꼭 개발환경에서만 사용 ‼ ️
+‼️ 꼭 개발환경에서만 사용 ‼️
 
 ```bash
 npx prisma migrate reset
