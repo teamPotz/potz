@@ -21,7 +21,10 @@ const Button = styled.div`
   gap: 9px;
   border-bottom: 0.58px solid ${COLOR.GRAY_200};
   justify-content: ${(props) => props.spacebetween};
+  transition: all 0.2s ease;
 `;
+
+
 
 const ShopInput = styled.input`
   border: none;
@@ -141,6 +144,14 @@ function Post() {
     Address = location.state.address;
   }
 
+  const [categories, setCategories] = useState('카테고리');
+  const[toggled, setToggled] = useState(false);
+  const toggleHandler = (e) => {
+    e.preventDefault();
+    setToggled(true);
+    
+  }
+  
   //create를 해주는 함수
   async function createPost(
     storeName,
@@ -175,8 +186,11 @@ function Post() {
     }
   }
 
-  //배달비, 할인 관련 로직
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
+  //배달비, 할인 관련 로직
   //배달비, 할인 갯수
   const [counts1, setCounts1] = useState([0]);
   const [counts2, setCounts2] = useState([0]);
@@ -235,9 +249,6 @@ function Post() {
     },
   };
 
-  useEffect(() => {
-    getUserInfo();
-  }, []);
 
   return (
     <Container className='background'>
@@ -380,9 +391,20 @@ function Post() {
                       placeholder='관련 링크 붙여넣기'
                     ></LinkInput>
                   </Button>
-                  <Button spacebetween={'space-between'} height={'74.67px'}>
-                    <TagFood>카테고리</TagFood>
-                    <svg
+                  <Button spacebetween={'space-between'} height={toggled ? '150.67px' : '74.67px'}>
+                    {
+                      toggled ? <div onClick={(e) => {
+                        e.preventDefault();
+                        setToggled(false);
+                        setCategories(e.target.textContent);}} style={{display: 'flex', flexDirection:'column', gap: '10px'}}>
+                        <div style={{display: 'flex', gap: '7px'}}><TagFood>버거·샌드위치</TagFood><TagFood>카페·디저트</TagFood></div>
+                        <div style={{display: 'flex', gap: '7px'}}><TagFood>한식</TagFood><TagFood>초밥·회</TagFood><TagFood>중식·아시안</TagFood></div>
+                        <div style={{display: 'flex', gap: '7px'}}><TagFood>피자</TagFood><TagFood>치킨</TagFood><TagFood>샐러드</TagFood></div>
+                      </div> :  <TagFood onClick={toggleHandler}>{categories}</TagFood>
+                    }
+                     
+
+                   {/* <svg
                       width='29'
                       height='29'
                       viewBox='0 0 29 29'
@@ -396,7 +418,7 @@ function Post() {
                         strokeLinecap='round'
                         strokeLinejoin='round'
                       />
-                    </svg>
+                    </svg> */}
                   </Button>
 
                   <Button height={'74.67px'}>
