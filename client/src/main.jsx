@@ -24,6 +24,8 @@ import LikedList from './pages/LikedListPage.jsx';
 import SearchResult from './pages/SearchResult.jsx';
 import Post from './pages/Post';
 import LandingMap from './pages/LandingMap';
+import Chat from './pages/Chat/Chat.jsx';
+import ChatRooms from './pages/Chat/ChatRooms.jsx';
 
 const router = createBrowserRouter([
   {
@@ -85,7 +87,7 @@ const router = createBrowserRouter([
         path: '/search',
         element: <SearchPage />,
       },
-       {
+      {
         path: '/result',
         element: <SearchResult />,
       },
@@ -107,22 +109,24 @@ const router = createBrowserRouter([
       },
       {
         path: '/post',
-        element: <Post/>,
+        element: <Post />,
       },
       {
         path: '/getaddress',
-        element: <LandingMap/>,
+        element: <LandingMap />,
       },
       {
         path: '/create-community',
         element: <MakeCommunity />,
-      }
+      },
+      { path: '/chatrooms', element: <ChatRooms /> },
+      { path: '/chat/:potId', element: <Chat /> },
     ],
-  }
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+  // <React.StrictMode>
+  <RouterProvider router={router} />
+  // </React.StrictMode>
 );

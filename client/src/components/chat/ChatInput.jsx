@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import COLOR from '../utility/Color';
+import { useState } from 'react';
+import COLOR from '../../utility/Color';
 import styled from 'styled-components';
-import Font from '../utility/Font';
+import Font from '../../utility/Font';
 
 const ChatInput = () => {
   const [message, setMessage] = useState([]);
