@@ -24,6 +24,7 @@ import LikedList from './pages/LikedListPage.jsx';
 import SearchResult from './pages/SearchResult.jsx';
 import LandingMap from './pages/LandingMap';
 import CreatePost from './pages/CreatePost.jsx';
+import UpdatePost from './pages/UpdatePost.jsx';
 
 const router = createBrowserRouter([
   {
@@ -116,6 +117,10 @@ const router = createBrowserRouter([
       {
         path: '/create-community',
         element: <MakeCommunity />,
+      },
+      {
+        path: '/update-post/:id',
+        element: <UpdatePost/>
       }
     ],
   }
