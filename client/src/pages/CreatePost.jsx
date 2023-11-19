@@ -127,7 +127,7 @@ const FontSm = styled.span`
   }
 `;
 
-function Post() {
+function CreatePost() {
   const BASE_URL = 'http://localhost:5000';
   const screenHeight = window.innerHeight - 98;
   const [selectImg, setSelectImg] = useState(undefined);
@@ -149,6 +149,7 @@ function Post() {
     storeName,
     storeAddress,
     orderLink,
+    categoryId,
     recruitment,
     meetingLocation,
     deliveryFees,
@@ -159,6 +160,7 @@ function Post() {
     formData.append('storeName', storeName);
     formData.append('storeAddress', storeAddress);
     formData.append('orderLink', orderLink);
+    formData.append('categoryId', categoryId);
     formData.append('recruitment', recruitment);
     formData.append('meetingLocation', meetingLocation);
     formData.append('deliveryFees', deliveryFees);
@@ -183,10 +185,15 @@ function Post() {
   }, []);
 
   const [categories, setCategories] = useState('카테고리');
-  const[toggled, setToggled] = useState(false);
-  const toggleHandler = (e) => {
+  const [toggled, setToggled] = useState(false);
+  const [categoryid, setCategoryid] = useState('');
+
+  const categoryHandler = (e) => {
     e.preventDefault();
-    setToggled(true);
+    setToggled(false);
+    setCategoryid(e.target.id);
+    console.log(categoryid);
+    setCategories(e.target.textContent);
   }
 
   //배달비, 할인 관련 로직
@@ -291,6 +298,7 @@ function Post() {
                   const storeName = name ? name : e.target.storeName.value;
                   const storeAddress = Address;
                   const orderLink = e.target.orderLink.value;
+                  const categoryId = categoryid;
                   const recruitment = e.target.recruitment.value;
                   const meetingLocation = e.target.meetingLocation.value;
                   const deliveryFees = processData('deliveryFee', e);
@@ -301,6 +309,7 @@ function Post() {
                     storeName,
                     storeAddress,
                     orderLink,
+                    categoryId,
                     recruitment,
                     meetingLocation,
                     deliveryFees,
@@ -389,14 +398,14 @@ function Post() {
                   </Button>
                   <Button spacebetween={'space-between'} height={toggled ? '150.67px' : '74.67px'}>
                     {
-                      toggled ? <div onClick={(e) => {
-                        e.preventDefault();
-                        setToggled(false);
-                        setCategories(e.target.textContent);}} style={{display: 'flex', flexDirection:'column', gap: '10px'}}>
-                        <div style={{display: 'flex', gap: '7px'}}><TagFood>버거·샌드위치</TagFood><TagFood>카페·디저트</TagFood></div>
-                        <div style={{display: 'flex', gap: '7px'}}><TagFood>한식</TagFood><TagFood>초밥·회</TagFood><TagFood>중식·아시안</TagFood></div>
-                        <div style={{display: 'flex', gap: '7px'}}><TagFood>피자</TagFood><TagFood>치킨</TagFood><TagFood>샐러드</TagFood></div>
-                      </div> :  <TagFood onClick={toggleHandler}>{categories}</TagFood>
+                      toggled ? <div style={{display: 'flex', flexDirection:'column', gap: '10px'}}>
+                        <div style={{display: 'flex', gap: '7px'}}><TagFood id='1' onClick={categoryHandler}>버거·샌드위치</TagFood><TagFood id='2' onClick={categoryHandler}>카페·디저트</TagFood></div>
+                        <div style={{display: 'flex', gap: '7px'}}><TagFood id='3' onClick={categoryHandler}>한식</TagFood><TagFood id='4' onClick={categoryHandler}>초밥·회</TagFood><TagFood id='5' onClick={categoryHandler}>중식·아시안</TagFood></div>
+                        <div style={{display: 'flex', gap: '7px'}}><TagFood id='6' onClick={categoryHandler}>피자</TagFood><TagFood id='7' onClick={categoryHandler}>치킨</TagFood><TagFood id='8' onClick={categoryHandler}>샐러드</TagFood></div>
+                      </div> :  <TagFood onClick={(e) => {
+                          e.preventDefault();
+                          setToggled(true);
+                      }}>{categories}</TagFood>
                     }
                      
 
@@ -563,4 +572,4 @@ function Post() {
   );
 }
 
-export default Post;
+export default CreatePost;

@@ -390,7 +390,7 @@ export async function createPost(req, res) {
   let imageUrl = req.file.path;
   let deliveryFees = JSON.parse(req.body.deliveryFees);
   let deliveryDiscounts = JSON.parse(req.body.deliveryDiscounts);
-  const { storeName, storeAddress, orderLink, recruitment, meetingLocation } =
+  const { storeName, storeAddress, orderLink, categoryId, recruitment, meetingLocation } =
     req.body;
 
   try {
@@ -403,7 +403,7 @@ export async function createPost(req, res) {
         storeAddress,
         imageUrl: imageUrl,
         orderLink,
-        categoryId: 1,
+        categoryId: parseInt(categoryId),
         recruitment: parseInt(recruitment),
         meetingLocation,
         communityId: 1,

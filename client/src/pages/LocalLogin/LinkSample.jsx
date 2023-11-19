@@ -63,7 +63,10 @@ function LinkSample() {
                   <Link to='/search'>검색</Link>
                 </li>
                 <li>
-                  <Link to='/post'>글쓰기</Link>
+                  <Link to='/create-post'>글 쓰기</Link>
+                </li>
+                <li>
+                  <Link to='/update-post'>글 수정하기</Link>
                 </li>
               </ul>
 
