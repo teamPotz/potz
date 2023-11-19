@@ -225,6 +225,7 @@ schema를 변경한 경우에는 마이그레이션을 생성해야합니다.
 
 ```bash
 npx prisma migrate dev --name [마이그레이션명]
+npx prisma generate
 ```
 
 from [Using Prisma Migrate](https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/using-prisma-migrate-node-mysql)
