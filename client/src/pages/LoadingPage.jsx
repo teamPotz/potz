@@ -1,6 +1,6 @@
 import '../App.css';
 import { Container, Row, Col } from 'react-bootstrap';
-import Logo from '../components/Logo';
+import Logo from '../components/ui/Logo';
 
 function LoadingPage() {
   return (
