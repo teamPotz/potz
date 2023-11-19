@@ -47,7 +47,7 @@ function ChatNavBar(props) {
 
   return (
     <>
-      {/* {props.isBangJang ? (
+      {props.isBangJang ? (
         <div style={styles.Wrapper}>
           <div style={styles.ChatBox}>
             <div style={styles.RequireButtonBox}>
@@ -83,7 +83,7 @@ function ChatNavBar(props) {
             </div>
           </div>
         </div>
-      )} */}
+      )}
       <div style={styles.ChatInputBox}>
         <ChatInput />
       </div>

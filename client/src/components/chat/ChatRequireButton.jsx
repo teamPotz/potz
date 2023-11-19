@@ -5,9 +5,8 @@
 <ChatRequireButton imageURL={"images/components/Arrow - Right Square.png"} text={'수령 요청'}></ChatRequireButton> */
 }
 
-import React from 'react';
-import COLOR from '../../utility/Color';
 import styled from 'styled-components';
+import COLOR from '../../utility/Color';
 import Font from '../../utility/Font';
 
 const ChatRequireButton = (props) => {
@@ -64,14 +63,12 @@ const ChatRequireButton = (props) => {
   `;
 
   return (
-    <>
-      <Wrapper>
-        <Icon>
-          <Coin />
-        </Icon>
-        <Text>{props.text}</Text>
-      </Wrapper>
-    </>
+    <Wrapper>
+      <Icon>
+        <Coin />
+      </Icon>
+      <Text>{props.text}</Text>
+    </Wrapper>
   );
 };
 
