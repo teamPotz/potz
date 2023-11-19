@@ -5,7 +5,7 @@ import COLOR from '../../utility/Color';
 import { useNavigate } from 'react-router-dom';
 import ButtonBg from '../../components/ButtonBG';
 import { useAuth } from '../../contexts/AuthContext';
-import Logo from '../../components/Logo';
+import Logo from '../../components/ui/Logo';
 
 const style1 = {
   display: 'inline-flex',

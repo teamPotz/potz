@@ -37,6 +37,25 @@ function ChatRooms() {
     return <LoadingPage />;
   }
 
+  // return (
+  //   <>
+  //     {user.name}&apos;s participating rooms
+  //     <ul>
+  //       {deliveryPots &&
+  //         deliveryPots.map((pot) => (
+  //           <li key={pot.id}>
+  //             <Link
+  //               to={`/chat/${pot.id}`}
+  //               state={{ storeName: pot.post.storeName }}
+  //             >
+  //               {pot.post.storeName}
+  //             </Link>
+  //           </li>
+  //         ))}
+  //     </ul>
+  //   </>
+  // );
+
   return (
     <Container className='background'>
       <Row className='row1'>

@@ -152,39 +152,25 @@ function Chat() {
   }
 
   return (
-    <Container className='background'>
-      <Row className='row1'>
-        <Col className='col1'>
-          <div className='side_container'></div>
-        </Col>
+    <div style={styles.background}>
+      <GoBack text={state?.storeName}></GoBack>
 
-        <Col className='col2'>
-          <div className='potz_container' style={styles.background}>
-            <GoBack text={state?.storeName}></GoBack>
+      <div className='contents_container' style={styles.Content}>
+        {/* <button onClick={() => socket.connect()}>Connect</button> */}
+        {/* <button onClick={() => socket.disconnect()}>disConnect</button> */}
 
-            <div className='contents_container' style={styles.Content}>
-              {/* <button onClick={() => socket.connect()}>Connect</button>
-              <button onClick={() => socket.disconnect()}>disConnect</button> */}
+        {/*  todo : isMyMessage */}
+        <MessageContainer messages={messages} isMyMessage={{}} />
+      </div>
 
-              {/*  todo : isMyMessage */}
-              <MessageContainer messages={messages} isMyMessage={{}} />
-            </div>
-
-            <ChatMenu isPotMaster={isPotMaster} />
-            <ChatInput
-              newMessage={newMessage}
-              setNewMessage={setNewMessage}
-              sendMessage={sendMessage}
-              isConnected={isConnected}
-            />
-          </div>
-        </Col>
-
-        <Col className='col3'>
-          <div className='side_container'></div>
-        </Col>
-      </Row>
-    </Container>
+      <ChatMenu isPotMaster={isPotMaster} />
+      <ChatInput
+        newMessage={newMessage}
+        setNewMessage={setNewMessage}
+        sendMessage={sendMessage}
+        isConnected={isConnected}
+      />
+    </div>
   );
 }
 
