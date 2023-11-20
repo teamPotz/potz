@@ -11,9 +11,7 @@ function AppLayout() {
         </Col>
 
         <Col className='col2'>
-          <div className='potz_container'>
-            <Outlet />
-          </div>
+          <Outlet />
         </Col>
 
         <Col className='col3'>
