@@ -3,10 +3,11 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function getSearchHistory(req, res) {
+  console.log('get', req.user);
   try {
     const communityTypes = await prisma.searchResult.findMany({
       where: {
-        userId: 1,
+        userId: req.user.id,
       },
       distinct: ['keyword'],
       select: {
@@ -24,12 +25,13 @@ export async function getSearchHistory(req, res) {
 export async function createSearchHistory(req, res) {
   const { keyword } = req.body;
   console.log('키워드', keyword);
+  console.log('create', req.user);
 
   try {
     //todo: userId 1 대신 로그인 유저 데이터 id 넣기
     const newSearhData = await prisma.searchResult.create({
       data: {
-        userId: 1,
+        userId: req.user.id,
         keyword,
       },
     });
@@ -43,14 +45,11 @@ export async function createSearchHistory(req, res) {
 }
 
 export async function deleteSearchHistory(req, res) {
-  const { keyword } = req.params;
-  console.log(keyword);
-  const userId = parseInt(keyword, 10);
-
+  console.log('delete', req.user);
   try {
     const deletedSearchData = await prisma.searchResult.deleteMany({
       where: {
-        userId,
+        userId: req.user.id,
       },
     });
     res.status(200).json({ message: '데이터 삭제 완료', deletedSearchData });

@@ -9,6 +9,6 @@ const router = Router();
 
 router.get('/', getSearchHistory);
 router.post('/', createSearchHistory);
-router.delete('/:keyword', deleteSearchHistory);
+router.delete('/', deleteSearchHistory);
 
 export default router;

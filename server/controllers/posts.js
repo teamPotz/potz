@@ -65,23 +65,24 @@ function getNextDeliveryFeeInfos(
         info.minAmount > totalOrderPrice &&
         info.fee < currentDeliveryFeeInfo.fee
     )
-    .sort((a, b) => a.fee - b.fee);
+    .toSorted((a, b) => a.fee - b.fee);
 
   return nextDeliveryFees.at(0) || null;
 }
 
 // 할인금액 구하기
 function calculateDiscount(discountInfo, price) {
-  // 금액 할인인 경우
-  if (discountInfo.discount !== null) {
-    return Math.min(discountInfo.discount, price);
-    // 퍼센트 할인인 경우
-  } else if (discountInfo.discountRate !== null) {
-    return Math.min(
-      discountInfo.discountRate * price,
-      discountInfo.maxDiscountAmount || price
-    );
-  }
+    if(discountInfo === undefined) return 0;
+      // 금액 할인인 경우
+      if (discountInfo.discount !== null) {
+        return Math.min(discountInfo.discount, price);
+        // 퍼센트 할인인 경우
+      } else if (discountInfo.discountRate !== null) {
+        return Math.min(
+          discountInfo.discountRate * price,
+          discountInfo.maxDiscountAmount || price
+        );
+      }
   return 0;
 }
 
@@ -95,7 +96,7 @@ function getAppliedDiscountInfo(deliveryDiscountInfos, totalOrderPrice) {
   // 2. 할인받을 수 있는 금액이 큰 순으로 sort
   const applicableDiscountInfos = deliveryDiscountInfos
     .filter((info) => totalOrderPrice > info.minAmount)
-    .toSorted((a, b) => {
+    .sort((a, b) => {
       const aDiscount = calculateDiscount(a, totalOrderPrice);
       const bDiscount = calculateDiscount(b, totalOrderPrice);
       return bDiscount - aDiscount;
@@ -148,6 +149,7 @@ export async function getPosts(req, res) {
         },
         deliveryPot: {
           select: {
+            _count: {select: {participants: true}},
             orders: {
               select: {
                 price: true,
@@ -222,6 +224,8 @@ export async function getPosts(req, res) {
         potMasterHistoryCount: post.author._count.deliveryPotHistoryAsMaster,
       };
     });
+
+
 
     res.status(200).send(transformedPosts);
   } catch (error) {
@@ -305,7 +309,7 @@ export async function getPostById(req, res) {
       imageUrl: post.imageUrl,
       orderLink: post.orderLink,
       category: post.category.name,
-      potMasterProfileImg: post.author.profile.imageUrl,
+      potMasterProfileImg: post.author.profile ? post.author.profile.imageUrl : null,
       participantsCount: post.deliveryPot._count.participants,
       recruitment: post.recruitment,
       meetingLocation: post.meetingLocation,
@@ -350,9 +354,8 @@ export async function getPostByName(req, res) {
         meetingLocation: true,
         deliveryFees: true,
         deliveryDiscounts: true,
-        //나중에 로그인 된 유저 id 넣기
         likedByUsers: {
-          where: { userId: 1, liked: true },
+          where: { userId: req.user.id, liked: true },
         },
         communityId: true,
         deliveryPot: {
@@ -386,49 +389,62 @@ export async function getPostByName(req, res) {
 }
 
 //create post
-export async function createPost(req, res) {
+export async function createPost(req, res) {  
   let imageUrl = req.file.path;
   let deliveryFees = JSON.parse(req.body.deliveryFees);
   let deliveryDiscounts = JSON.parse(req.body.deliveryDiscounts);
-  const { storeName, storeAddress, orderLink, recruitment, meetingLocation } =
+  const { storeName, storeAddress, orderLink, categoryId, recruitment, meetingLocation } =
     req.body;
 
   try {
     console.log(req.body);
     console.log(deliveryFees);
     console.log(deliveryDiscounts);
-    const post = await prisma.post.create({
+    // 1. 게시글 등록
+    const newPost = await prisma.post.create({
       data: {
         storeName,
         storeAddress,
         imageUrl: imageUrl,
         orderLink,
-        categoryId: 1,
+        categoryId: parseInt(categoryId),
         recruitment: parseInt(recruitment),
         meetingLocation,
         communityId: 1,
-        authorId: 1,
+        authorId: req.user.id,
       },
     });
 
+    // 2. 등록한 게시글의 배달비 정보 등록
     const postWithDeliveryFee = await prisma.deliveryFee.createMany({
       data: deliveryFees.map((item) => ({
         minAmount: parseInt(item[0]),
         maxAmount: item[2] ? parseInt(item[2]) : null,
         fee: parseInt(item[1]),
-        postId: post.id,
+        postId: newPost.id,
       })),
     });
 
+    // 3. 등록한 게시글의 할인정보 등록
     const postWithDeliveryDiscounts = await prisma.deliveryDiscount.createMany({
       data: deliveryDiscounts.map((item) => ({
         minAmount: parseInt(item[0]),
         discount: parseInt(item[1]),
-        postId: post.id,
+        postId: newPost.id,
       })),
     });
+    // 4. 등록한 게시글의 배달팟 생성
+    const postWithDeliveryPot = await prisma.deliveryPot.create({
+      data: {
+        potMasterId: newPost.authorId,
+        participants: {
+          connect: [{ id: newPost.authorId }],
+        },
+        postId: newPost.id,
+      },
+    });
 
-    res.status(201).json({ post });
+    res.status(201).json({ newPost });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'create post error' });

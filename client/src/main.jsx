@@ -20,10 +20,11 @@ import CategorySearch from './pages/CategorySearchPage.jsx';
 import ChooseCommunity from './pages/ChooseCommunityPage.jsx';
 import LikedList from './pages/LikedListPage.jsx';
 import SearchResult from './pages/SearchResult.jsx';
-import Post from './pages/Post';
 import LandingMap from './pages/LandingMap';
 import Chat from './pages/Chat/Chat.jsx';
 import ChatRooms from './pages/Chat/ChatRooms.jsx';
+import CreatePost from './pages/CreatePost.jsx';
+import UpdatePost from './pages/UpdatePost.jsx';
 
 const router = createBrowserRouter([
   {
@@ -106,9 +107,13 @@ const router = createBrowserRouter([
         element: <LikedList />,
       },
       {
-        path: '/post',
-        element: <Post />,
+        path: '/create-post',        
+        element: <CreatePost/>,
       },
+      {
+        path: '/update-post/:id',
+        element: <UpdatePost/>
+      }  
       {
         path: '/getaddress',
         element: <LandingMap />,

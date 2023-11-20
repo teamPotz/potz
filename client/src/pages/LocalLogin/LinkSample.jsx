@@ -46,6 +46,9 @@ function LinkSample() {
           <Link to='/search'>검색</Link>
         </li>
         <li>
+          <Link to='/create-post'>글 쓰기</Link>
+        </li>
+        <li>
           <Link to='/chatrooms'>chat rooms</Link>
         </li>
       </ul>

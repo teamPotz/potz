@@ -137,3 +137,6 @@ dist
 
 # file-store-session
 sessions/
+
+# multer file upload path
+uploads/
