@@ -1,6 +1,5 @@
 import '../../App.css';
 import { useState, useEffect } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
 import COLOR from '../../utility/Color.js';
 import Font from '../../utility/Font.js';
 import GoBack from '../../components/goBack.jsx';
@@ -15,38 +14,10 @@ import MessageContainer from './MessageContainer.jsx';
 // import { io } from 'socket.io-client';
 
 const styles = {
-  Wrapper: {
-    position: 'fixed',
-    bottom: 0,
-    width: '420px',
-    height: '190.17px',
-  },
   background: {
     backgroundColor: `${COLOR.POTZ_PINK_200}`,
     width: '420px',
     height: '100vh',
-  },
-  ChatBox: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    gap: '56px',
-    position: 'absolute',
-    width: '100%',
-    height: '128.33px',
-    left: '0px',
-    bottom: '61.83px',
-    background: `${COLOR.WHITE}`,
-    boxShadow: '0px 26.8333px 61.8333px rgba(0, 0, 0, 0.11)',
-  },
-  RequireButtonBox: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '0px',
-    gap: '9.33px',
-    width: '70px',
-    height: '100%',
   },
   Content: {
     display: 'flex',
@@ -66,7 +37,7 @@ function Chat() {
   const [isLoadingGetMessage, setIsLoadingGetMessage] = useState(false);
   const [isLoadingSendMessage, setisLoadingSendMessage] = useState(false);
 
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const { potId } = useParams();
   const { state } = useLocation();
 
@@ -147,30 +118,30 @@ function Chat() {
     scroll.scrollTop = scroll.scrollHeight;
   }, [messages]);
 
-  if (!user) {
+  if (isLoading) {
     return <LoadingPage />;
   }
 
   return (
-    <div style={styles.background}>
-      <GoBack text={state?.storeName}></GoBack>
+    <>
+      <GoBack text={state?.storeName} />
+      <div style={styles.background}>
+        <div className='contents_container' style={styles.Content}>
+          {/* <button onClick={() => socket.connect()}>Connect</button> */}
+          {/* <button onClick={() => socket.disconnect()}>disConnect</button> */}
 
-      <div className='contents_container' style={styles.Content}>
-        {/* <button onClick={() => socket.connect()}>Connect</button> */}
-        {/* <button onClick={() => socket.disconnect()}>disConnect</button> */}
-
-        {/*  todo : isMyMessage */}
-        <MessageContainer messages={messages} isMyMessage={{}} />
+          {/*  todo : isMyMessage */}
+          <MessageContainer messages={messages} isMyMessage={{}} />
+        </div>
+        <ChatMenu isPotMaster={isPotMaster} />
+        <ChatInput
+          newMessage={newMessage}
+          setNewMessage={setNewMessage}
+          sendMessage={sendMessage}
+          isConnected={isConnected}
+        />
       </div>
-
-      <ChatMenu isPotMaster={isPotMaster} />
-      <ChatInput
-        newMessage={newMessage}
-        setNewMessage={setNewMessage}
-        sendMessage={sendMessage}
-        isConnected={isConnected}
-      />
-    </div>
+    </>
   );
 }
 
