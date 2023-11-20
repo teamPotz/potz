@@ -86,7 +86,7 @@ const router = createBrowserRouter([
         path: '/search',
         element: <SearchPage />,
       },
-       {
+      {
         path: '/result',
         element: <SearchResult />,
       },
@@ -112,7 +112,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/getaddress',
-        element: <LandingMap/>,
+        element: <LandingMap />,
       },
       {
         path: '/create-community',
@@ -123,7 +123,7 @@ const router = createBrowserRouter([
         element: <UpdatePost/>
       }
     ],
-  }
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(

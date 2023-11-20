@@ -43,23 +43,22 @@ function Home() {
           `http://localhost:5000/communities/${testcommunityDataID}`,
           {
             method: 'GET',
+            credentials: 'include',
           }
         );
         const data = await response.json();
-        console.log('해당 커뮤니티 데이터', data);
         setCommunityDatas(data);
       } catch (error) {
         console.error(error);
       }
     }
 
-    // 비동기 함수를 useEffect 내부에서 직접 호출
     fetchCommunityData();
   }, [testcommunityDataID]);
 
   const potzContainerStyle = {
-    position: 'relative', // potz_container를 relative로 설정합니다.
-    minHeight: '100vh', // 최소 높이를 화면 높이(100vh)로 설정합니다.
+    position: 'relative',
+    minHeight: '100vh',
     width: '100%',
   };
 

@@ -82,6 +82,7 @@ function SearchPage() {
       try {
         const response = await fetch('http://localhost:5000/categories', {
           method: 'GET',
+          credentials: 'include',
         });
         const data = await response.json();
         console.log('카테고리 전체 데이터', data);
@@ -98,6 +99,7 @@ function SearchPage() {
       try {
         const response = await fetch('http://localhost:5000/search-history', {
           method: 'GET',
+          credentials: 'include',
         });
         const data = await response.json();
         console.log('전체 검색어 데이터', data);
@@ -115,12 +117,10 @@ function SearchPage() {
 
   async function deleteSearchHistory() {
     try {
-      const response = await fetch(
-        `http://localhost:5000/search-history/${userId}`,
-        {
-          method: 'DELETE',
-        }
-      );
+      const response = await fetch(`http://localhost:5000/search-history/`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
 
       if (response.ok) {
         console.log('검색 기록 삭제 성공');
