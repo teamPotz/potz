@@ -6,7 +6,6 @@ export function verifyAuth(req, res, next) {
 
     next();
   } catch (error) {
-    console.error(error);
     next(error);
   }
 }

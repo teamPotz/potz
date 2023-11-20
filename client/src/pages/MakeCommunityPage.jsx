@@ -6,7 +6,7 @@ import Font from '../utility/Font';
 import ButtonBg from '../components/ButtonBG';
 import HeartHandsImg from '../../public/images/graphicImg/heartHands.png';
 import { useAuth } from '../contexts/AuthContext';
-import { useEffect } from 'react';
+import LoadingPage from './LoadingPage';
 
 //contents_container 안에 UI 구현 하시면 됩니다!
 
@@ -46,11 +46,11 @@ const fontStyle2 = {
 
 function MakeCommunity() {
   const navigate = useNavigate();
-  const { user, getUserInfo } = useAuth();
+  const { user } = useAuth();
 
-  useEffect(() => {
-    getUserInfo();
-  }, []);
+  if (!user) {
+    return <LoadingPage />;
+  }
 
   return (
     <Container className='background'>
@@ -62,7 +62,7 @@ function MakeCommunity() {
           <div className='potz_container'>
             <div className='contents_container' style={style1}>
               <div className='text_container' style={fontStyle}>
-                <span>앗, {user?.name}님 근체에</span>
+                <span>앗, {user.name}님 근체에</span>
                 <br></br>
                 <span>아직 공동체가 없어요. 😅</span>
                 <br></br>

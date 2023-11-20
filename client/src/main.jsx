@@ -1,20 +1,18 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
-import './index.css';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext.jsx';
-// import App from './App.jsx';
+import AppLayout from './components/ui/AppLayout.jsx';
 import MakeCommunity from './pages/MakeCommunityPage.jsx';
 import ChooseFeature from './pages/ChooseFeaturePage.jsx';
 import NamingCommunity from './pages/NamingCommunity.jsx';
 import Home from './pages/Home.jsx';
 import ChooseInterest from './pages/ChooseInterest.jsx';
-import Login from './pages/loginPage.jsx';
 import FindLocation from './pages/FindLocationPage.jsx';
 import Detail from './pages/Detail.jsx';
 import SearchPage from './pages/Search.jsx';
 import Alarm from './pages/Alarm.jsx';
 import CategoryPage from './pages/Category.jsx';
+import Login from './pages/loginPage.jsx';
 import LoginPage from './pages/LocalLogin/LoginPage.jsx';
 import LinkSample from './pages/LocalLogin/LinkSample.jsx';
 import ProtectedRoute from './pages/ProtectedRoute.jsx';
@@ -23,6 +21,8 @@ import ChooseCommunity from './pages/ChooseCommunityPage.jsx';
 import LikedList from './pages/LikedListPage.jsx';
 import SearchResult from './pages/SearchResult.jsx';
 import LandingMap from './pages/LandingMap';
+import Chat from './pages/Chat/Chat.jsx';
+import ChatRooms from './pages/Chat/ChatRooms.jsx';
 import CreatePost from './pages/CreatePost.jsx';
 import UpdatePost from './pages/UpdatePost.jsx';
 
@@ -40,7 +40,7 @@ const router = createBrowserRouter([
     element: (
       <AuthProvider>
         <ProtectedRoute>
-          <Outlet />
+          <AppLayout />
         </ProtectedRoute>
       </AuthProvider>
     ),
@@ -111,6 +111,10 @@ const router = createBrowserRouter([
         element: <CreatePost/>,
       },
       {
+        path: '/update-post/:id',
+        element: <UpdatePost/>
+      }  
+      {
         path: '/getaddress',
         element: <LandingMap />,
       },
@@ -118,16 +122,14 @@ const router = createBrowserRouter([
         path: '/create-community',
         element: <MakeCommunity />,
       },
-      {
-        path: '/update-post/:id',
-        element: <UpdatePost/>
-      }
+      { path: '/chatrooms', element: <ChatRooms /> },
+      { path: '/chat/:potId', element: <Chat /> },
     ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+  // <React.StrictMode>
+  <RouterProvider router={router} />
+  // </React.StrictMode>
 );

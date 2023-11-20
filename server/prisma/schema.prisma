@@ -16,15 +16,6 @@ generator erd {
   output   = "./ERD.svg"
 }
 
-// 연습용 테이블
-model PostTemp {
-  id        Int      @id @default(autoincrement())
-  title     String   @db.VarChar(255)
-  content   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 // 사용자
 model User {
   id                         Int                  @id @default(autoincrement())
@@ -40,11 +31,13 @@ model User {
   orders                     DeliveryOrder[]
   deliveryPotHistoryAsMaster DeliveryPotHistory[]
   deliveryPotHistoryAsMember DeliveryPotHistory[] @relation(name: "ParticipantsRelationHistory")
+  messages                   Message[]
   createdAt                  DateTime             @default(now())
   updatedAt                  DateTime             @updatedAt
   SearchResult               SearchResult[]
 }
 
+// 사용자 프로필
 model UserProfile {
   id            Int      @id @default(autoincrement())
   imageUrl      String?
@@ -160,6 +153,7 @@ model DeliveryPot {
   post               Post                @relation(fields: [postId], references: [id])
   postId             Int                 @unique
   orders             DeliveryOrder[]
+  messages           Message[]
   deliveryPotHistory DeliveryPotHistory?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
@@ -198,4 +192,16 @@ model SearchResult {
   keyword String
   user    User   @relation(fields: [userId], references: [id])
   userId  Int
+}
+
+model Message {
+  id            Int         @id @default(autoincrement())
+  sender        User        @relation(fields: [senderId], references: [id])
+  senderId      Int
+  content       String
+  deliveryPot   DeliveryPot @relation(fields: [deliveryPotId], references: [id])
+  deliveryPotId Int
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  // readBy  User[]
 }
