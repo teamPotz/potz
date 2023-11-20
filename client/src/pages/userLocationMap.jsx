@@ -4,9 +4,7 @@ import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import COLOR from '../utility/Color';
 import { useNavigate } from 'react-router-dom';
 
-//contents_container 안에 UI 구현 하시면 됩니다!
-
-function PostMap(props) {
+function UserLoactionMap(props) {
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
@@ -34,7 +32,7 @@ function PostMap(props) {
         map.setBounds(bounds);
       });
     }
-  }, [map]);
+  }, []);
 
   useEffect(() => {
     const ps = new window.kakao.maps.services.Places();
@@ -65,7 +63,6 @@ function PostMap(props) {
   return (
     <>
       <Map
-        //center={{...coordinateRef.current}}
         center={{ lat: 33.5563, lng: 126.79581 }}
         style={{ width: '420px', height: '100vh' }}
         level={3}
@@ -82,11 +79,11 @@ function PostMap(props) {
                 {marker.content}
                 <button
                   onClick={() =>
-                    navigate('/create-post', {
-                      state: {
-                        name: marker.content,
-                        address: marker.storeAddress,
-                      },
+                    navigate('#', {
+                      // state: {
+                      //   name: marker.content,
+                      //   address: marker.storeAddress,
+                      // },
                     })
                   }
                 >
@@ -101,4 +98,4 @@ function PostMap(props) {
   );
 }
 
-export default PostMap;
+export default UserLoactionMap;

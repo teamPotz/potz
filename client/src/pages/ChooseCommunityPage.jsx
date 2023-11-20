@@ -1,4 +1,3 @@
-import '../App.css';
 import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
@@ -110,42 +109,27 @@ function ChooseCommunity() {
   };
 
   return (
-    <Container className='background'>
-      <Row className='row1'>
-        <Col className='col1'>
-          <div className='side_container'></div>
-        </Col>
-        <Col className='col2'>
-          <div className='potz_container' style={backgroundStyle}>
-            <div style={contentsStyle}>
-              <div style={fontStyle}>
-                <span>수현님 근처에</span>
-                <br></br>
-                <span style={fontStyle3}>{CommunityNum}</span>
-                <span>개의 배달 공동체가 있네요.</span>
-                <br></br>
-                <span style={fontStyle2}>
-                  원하는 공동체에서 배달비를 나누어 보세요.
-                </span>
-              </div>
-              <div>
-                {testDatas.map((testData, index) => {
-                  return (
-                    <CommunityComp
-                      testData={testData}
-                      key={index}
-                    ></CommunityComp>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </Col>
-        <Col className='col3'>
-          <div className='side_container'></div>
-        </Col>
-      </Row>
-    </Container>
+    <div className='potz_container' style={backgroundStyle}>
+      <div style={contentsStyle}>
+        <div style={fontStyle}>
+          <span>수현님 근처에</span>
+          <br></br>
+          <span style={fontStyle3}>{CommunityNum}</span>
+          <span>개의 배달 공동체가 있네요.</span>
+          <br></br>
+          <span style={fontStyle2}>
+            원하는 공동체에서 배달비를 나누어 보세요.
+          </span>
+        </div>
+        <div>
+          {testDatas.map((testData, index) => {
+            return (
+              <CommunityComp testData={testData} key={index}></CommunityComp>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 }
 

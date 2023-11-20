@@ -1,9 +1,5 @@
-import '../App.css';
 import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
 import NavBarHomePage from '../components/NavBarHomePage';
 import HomeContents from '../components/HomeContentsComp';
 import { NavBar1 } from '../components/NavBars';
@@ -87,42 +83,30 @@ function Home() {
   };
 
   return (
-    <Container className='background'>
-      <Row className='row1'>
-        <Col className='col1'>
-          <div className='side_container'></div>
-        </Col>
-        <Col className='col2'>
-          <div className='potz_container' style={backgroundStyle}>
-            <div style={potzContainerStyle}>
-              {communityDatas ? (
-                <NavBarHomePage communityDatas={communityDatas} />
-              ) : null}
-              <div style={homeContentesContainer}>
-                {/* 만약 컨텐츠 데이터 개수가 1개도 없을 경우 공동체 공유 모달창 띄우기 */}
-                {communityDatas ? (
-                  communityDatas.posts.length < 1 ? (
-                    <ShareCommunityModal></ShareCommunityModal>
-                  ) : null
-                ) : null}
-                {communityDatas ? (
-                  <HomeContents communityDatas={communityDatas}></HomeContents>
-                ) : null}
-              </div>
-              <div style={navbarStyle}>
-                <div style={btnStyle}>
-                  <ButtonWrite></ButtonWrite>
-                </div>
-                <NavBar1></NavBar1>
-              </div>
-            </div>
+    <div className='potz_container' style={backgroundStyle}>
+      <div style={potzContainerStyle}>
+        {communityDatas ? (
+          <NavBarHomePage communityDatas={communityDatas} />
+        ) : null}
+        <div style={homeContentesContainer}>
+          {/* 만약 컨텐츠 데이터 개수가 1개도 없을 경우 공동체 공유 모달창 띄우기 */}
+          {communityDatas ? (
+            communityDatas.posts.length < 1 ? (
+              <ShareCommunityModal></ShareCommunityModal>
+            ) : null
+          ) : null}
+          {communityDatas ? (
+            <HomeContents communityDatas={communityDatas}></HomeContents>
+          ) : null}
+        </div>
+        <div style={navbarStyle}>
+          <div style={btnStyle}>
+            <ButtonWrite></ButtonWrite>
           </div>
-        </Col>
-        <Col className='col3'>
-          <div className='side_container'></div>
-        </Col>
-      </Row>
-    </Container>
+          <NavBar1></NavBar1>
+        </div>
+      </div>
+    </div>
   );
 }
 
