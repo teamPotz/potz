@@ -33,14 +33,14 @@ function getApplicableDeliveryFeeInfo(deliveryFeeInfos, totalOrderPrice) {
 
   // 적용되는 구간이 없는 경우 모든 구간 중 가장 비싼 배달비로 적용
   if (applicableDeliveryFees.length <= 0) {
-    const sortedDeliveryFeeInfos = deliveryFeeInfos.sort(
+    const sortedDeliveryFeeInfos = deliveryFeeInfos.toSorted(
       (a, b) => b.fee - a.fee
     );
     return sortedDeliveryFeeInfos.at(0);
   }
 
   // 2. 적용되는 구간 중 배달요금 낮은 순서로 sort
-  const sortedDeliveryFeeInfos = applicableDeliveryFees.sort(
+  const sortedDeliveryFeeInfos = applicableDeliveryFees.toSorted(
     (a, b) => a.fee - b.fee
   );
 
@@ -65,7 +65,7 @@ function getNextDeliveryFeeInfos(
         info.minAmount > totalOrderPrice &&
         info.fee < currentDeliveryFeeInfo.fee
     )
-    .sort((a, b) => a.fee - b.fee);
+    .toSorted((a, b) => a.fee - b.fee);
 
   return nextDeliveryFees.at(0) || null;
 }
