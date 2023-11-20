@@ -20,11 +20,7 @@ const style3 = {
 };
 
 function LinkSample() {
-  const { user, logout, isLoading } = useAuth();
-
-  if (isLoading) {
-    return <LoadingPage />;
-  }
+  const { user, logout } = useAuth();
 
   return (
     <div className='contents_container' style={style1}>
