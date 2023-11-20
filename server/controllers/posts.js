@@ -402,7 +402,7 @@ export async function createPost(req, res) {
     console.log(deliveryFees);
     console.log(deliveryDiscounts);
     // 1. 게시글 등록
-    const Post = await prisma.post.create({
+    const newPost = await prisma.post.create({
       data: {
         storeName,
         storeAddress,
@@ -422,7 +422,7 @@ export async function createPost(req, res) {
         minAmount: parseInt(item[0]),
         maxAmount: item[2] ? parseInt(item[2]) : null,
         fee: parseInt(item[1]),
-        postId: Post.id,
+        postId: newPost.id,
       })),
     });
 
@@ -431,21 +431,21 @@ export async function createPost(req, res) {
       data: deliveryDiscounts.map((item) => ({
         minAmount: parseInt(item[0]),
         discount: parseInt(item[1]),
-        postId: Post.id,
+        postId: newPost.id,
       })),
     });
     // 4. 등록한 게시글의 배달팟 생성
     const postWithDeliveryPot = await prisma.deliveryPot.create({
       data: {
-        potMasterId: Post.authorId,
+        potMasterId: newPost.authorId,
         participants: {
-          connect: [{ id: Post.authorId }],
+          connect: [{ id: newPost.authorId }],
         },
-        postId: Post.id,
+        postId: newPost.id,
       },
     });
 
-    res.status(201).json({ Post });
+    res.status(201).json({ newPost });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'create post error' });
