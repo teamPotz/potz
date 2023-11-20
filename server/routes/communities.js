@@ -21,7 +21,7 @@ router.post('/photo', fileUpload.single('image'), saveCommunityImg);
 router
   .route('/:id')
   .get(verifyAuth, getCommunityById)
-  .patch(updateCommunity)
-  .delete(deleteCommunity);
+  .patch(verifyAuth, updateCommunity)
+  .delete(verifyAuth, deleteCommunity);
 
 export default router;
