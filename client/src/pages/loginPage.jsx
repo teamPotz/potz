@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import '../App.css';
 import COLOR from '../utility/Color';
 import ButtonBg from '../components/ButtonBG';
 import Logo from '../components/ui/Logo';
@@ -25,35 +24,37 @@ function Login() {
   };
 
   return (
-    <div className='contents_container' style={style1}>
-      <Logo />
-      <div className='btn_container' style={style3}>
-        <div onClick={handleNavigate}>
-          <ButtonBg
-            backgroundColor={COLOR.YELLOW}
-            hoverColor={COLOR.YELLOW_100}
-            fontColor={COLOR.WHITE}
-          >
-            카카오톡으로 시작
-          </ButtonBg>
-        </div>
-        <div onClick={handleNavigate}>
-          <ButtonBg
-            backgroundColor={COLOR.POTZ_PINK_500}
-            hoverColor={COLOR.POTZ_PINK_DEFAULT}
-            fontColor={COLOR.WHITE}
-          >
-            구글 계정으로 시작
-          </ButtonBg>
-        </div>
-        <div onClick={handleNavigate}>
-          <ButtonBg
-            backgroundColor={COLOR.POTZ_PINK_200}
-            hoverColor={COLOR.POTZ_PINK_300}
-            fontColor={COLOR.BLACK}
-          >
-            비회원으로 둘러보기
-          </ButtonBg>
+    <div className='potz_container'>
+      <div className='contents_container' style={style1}>
+        <Logo />
+        <div className='btn_container' style={style3}>
+          <div onClick={handleNavigate}>
+            <ButtonBg
+              backgroundColor={COLOR.YELLOW}
+              hoverColor={COLOR.YELLOW_100}
+              fontColor={COLOR.WHITE}
+            >
+              카카오톡으로 시작
+            </ButtonBg>
+          </div>
+          <div onClick={handleNavigate}>
+            <ButtonBg
+              backgroundColor={COLOR.POTZ_PINK_500}
+              hoverColor={COLOR.POTZ_PINK_DEFAULT}
+              fontColor={COLOR.WHITE}
+            >
+              구글 계정으로 시작
+            </ButtonBg>
+          </div>
+          <div onClick={handleNavigate}>
+            <ButtonBg
+              backgroundColor={COLOR.POTZ_PINK_200}
+              hoverColor={COLOR.POTZ_PINK_300}
+              fontColor={COLOR.BLACK}
+            >
+              비회원으로 둘러보기
+            </ButtonBg>
+          </div>
         </div>
       </div>
     </div>

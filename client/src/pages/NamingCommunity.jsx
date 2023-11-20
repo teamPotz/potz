@@ -1,13 +1,8 @@
-import '../App.css';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
 import Font from '../utility/Font';
-import { useAuth } from '../contexts/AuthContext';
 
 const InputField = styled.input`
   border: 2px ${COLOR.POTZ_PINK_DEFAULT} solid;
@@ -277,35 +272,23 @@ function NamingCommunity(props) {
   };
 
   return (
-    <Container className='background'>
-      <Row className='row1'>
-        <Col className='col1'>
-          <div className='side_container'></div>
-        </Col>
-        <Col className='col2'>
-          <div className='potz_container'>
-            <div className='contents_container'>
-              <div style={style1}>
-                <InputFile></InputFile>
-                <form onSubmit={submitHandler} style={formStyle}>
-                  <InputField
-                    style={inputStyles}
-                    onChange={inputChangeHandler}
-                    placeholder='공동체 이름 입력'
-                    value={formDatas.name}
-                  ></InputField>
-                  {/* 수정된 부분: ButtonSubmitStyle을 <input>으로 변경 */}
-                  <ButtonSubmitStyle type='submit' value='공동체 만들기' />
-                </form>
-              </div>
-            </div>
-          </div>
-        </Col>
-        <Col className='col3'>
-          <div className='side_container'></div>
-        </Col>
-      </Row>
-    </Container>
+    <div className='potz_container'>
+      <div className='contents_container'>
+        <div style={style1}>
+          <InputFile></InputFile>
+          <form onSubmit={submitHandler} style={formStyle}>
+            <InputField
+              style={inputStyles}
+              onChange={inputChangeHandler}
+              placeholder='공동체 이름 입력'
+              value={formDatas.name}
+            ></InputField>
+            {/* 수정된 부분: ButtonSubmitStyle을 <input>으로 변경 */}
+            <ButtonSubmitStyle type='submit' value='공동체 만들기' />
+          </form>
+        </div>
+      </div>
+    </div>
   );
 }
 

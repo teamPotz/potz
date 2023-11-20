@@ -24,8 +24,6 @@ const Button = styled.div`
   transition: all 0.2s ease;
 `;
 
-
-
 const ShopInput = styled.input`
   border: none;
   height: 30px;
@@ -147,31 +145,28 @@ function UpdatePost() {
 
   let getdata = '';
   useEffect(() => {
-    const getData = async() => {
-      try{
+    const getData = async () => {
+      try {
         const res = await fetch(`${BASE_URL}/posts/${id}`, {
-                            method: 'GET',
-                            headers: {
-                              'Content-Type': 'application/json',
-                            },
-                            credentials: 'include',
-                          })
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        });
         getdata = await res.json();
         console.log(getdata);
         console.log(getdata.storeName);
         console.log(getdata.storeAddress);
         console.log(getdata.imageUrl);
         name = getdata.storeName;
-
-      }
-      catch(error){
+      } catch (error) {
         console.log(error);
       }
-    }
+    };
     getData();
   }, [id]);
-  
-  
+
   //데이터 전송
   async function createPost(
     storeName,
@@ -222,7 +217,7 @@ function UpdatePost() {
     setCategoryid(e.target.id);
     console.log(categoryid);
     setCategories(e.target.textContent);
-  }
+  };
 
   //배달비, 할인 관련 로직
   //배달비, 할인 갯수
@@ -260,28 +255,31 @@ function UpdatePost() {
       if (values2[0] && values2[1]) {
         setLength2([...length2, (length2[number] = values2)]);
         setValues2([]);
-        setdeliveryDiscountCount([...deliveryDiscountCount, deliveryDiscountCount.length]);
+        setdeliveryDiscountCount([
+          ...deliveryDiscountCount,
+          deliveryDiscountCount.length,
+        ]);
       }
     }
   };
 
   const processData = (name, e) => {
     let data = [];
-    
-    if(name === 'deliveryFee'){
-      for(let i = 0; i < deliveryFeeCount.length; i++){
+
+    if (name === 'deliveryFee') {
+      for (let i = 0; i < deliveryFeeCount.length; i++) {
         data.push([
           e.target[`deliveryFeeHeader${i}`].value,
           e.target[`deliveryFeeFooter${i}`].value,
-        ])
+        ]);
       }
     }
-    if(name === 'deliveryDiscount'){
-      for(let i = 0; i < deliveryDiscountCount.length; i++){
+    if (name === 'deliveryDiscount') {
+      for (let i = 0; i < deliveryDiscountCount.length; i++) {
         data.push([
           e.target[`deliveryDiscountsHeader${i}`].value,
           e.target[`deliveryDiscountsFooter${i}`].value,
-        ])
+        ]);
       }
     }
 
@@ -289,8 +287,8 @@ function UpdatePost() {
       data[i].push(data[i + 1][0]);
     }
     data.pop();
-    return(JSON.stringify(data));
-  }
+    return JSON.stringify(data);
+  };
 
   const styles = {
     background: {
@@ -305,7 +303,6 @@ function UpdatePost() {
       justifyContent: 'space-between',
     },
   };
-
 
   return (
     <Container className='background'>
@@ -424,20 +421,61 @@ function UpdatePost() {
                       placeholder='관련 링크 붙여넣기'
                     ></LinkInput>
                   </Button>
-                  <Button spacebetween={'space-between'} height={toggled ? '150.67px' : '74.67px'}>
-                    {
-                      toggled ? <div style={{display: 'flex', flexDirection:'column', gap: '10px'}}>
-                        <div style={{display: 'flex', gap: '7px'}}><TagFood id='1' onClick={categoryHandler}>버거·샌드위치</TagFood><TagFood id='2' onClick={categoryHandler}>카페·디저트</TagFood></div>
-                        <div style={{display: 'flex', gap: '7px'}}><TagFood id='3' onClick={categoryHandler}>한식</TagFood><TagFood id='4' onClick={categoryHandler}>초밥·회</TagFood><TagFood id='5' onClick={categoryHandler}>중식·아시안</TagFood></div>
-                        <div style={{display: 'flex', gap: '7px'}}><TagFood id='6' onClick={categoryHandler}>피자</TagFood><TagFood id='7' onClick={categoryHandler}>치킨</TagFood><TagFood id='8' onClick={categoryHandler}>샐러드</TagFood></div>
-                      </div> :  <TagFood onClick={(e) => {
+                  <Button
+                    spacebetween={'space-between'}
+                    height={toggled ? '150.67px' : '74.67px'}
+                  >
+                    {toggled ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '10px',
+                        }}
+                      >
+                        <div style={{ display: 'flex', gap: '7px' }}>
+                          <TagFood id='1' onClick={categoryHandler}>
+                            버거·샌드위치
+                          </TagFood>
+                          <TagFood id='2' onClick={categoryHandler}>
+                            카페·디저트
+                          </TagFood>
+                        </div>
+                        <div style={{ display: 'flex', gap: '7px' }}>
+                          <TagFood id='3' onClick={categoryHandler}>
+                            한식
+                          </TagFood>
+                          <TagFood id='4' onClick={categoryHandler}>
+                            초밥·회
+                          </TagFood>
+                          <TagFood id='5' onClick={categoryHandler}>
+                            중식·아시안
+                          </TagFood>
+                        </div>
+                        <div style={{ display: 'flex', gap: '7px' }}>
+                          <TagFood id='6' onClick={categoryHandler}>
+                            피자
+                          </TagFood>
+                          <TagFood id='7' onClick={categoryHandler}>
+                            치킨
+                          </TagFood>
+                          <TagFood id='8' onClick={categoryHandler}>
+                            샐러드
+                          </TagFood>
+                        </div>
+                      </div>
+                    ) : (
+                      <TagFood
+                        onClick={(e) => {
                           e.preventDefault();
                           setToggled(true);
-                      }}>{categories}</TagFood>
-                    }
-                     
+                        }}
+                      >
+                        {categories}
+                      </TagFood>
+                    )}
 
-                   {/* <svg
+                    {/* <svg
                       width='29'
                       height='29'
                       viewBox='0 0 29 29'
@@ -497,7 +535,11 @@ function UpdatePost() {
                       placeholder='만날 장소'
                     ></Input>
                   </Button>
-                  <Button height={`${74.67 + 34.33 * (deliveryFeeCount.length - 1)}px`}>
+                  <Button
+                    height={`${
+                      74.67 + 34.33 * (deliveryFeeCount.length - 1)
+                    }px`}
+                  >
                     <svg
                       width='28'
                       height='29'
@@ -534,7 +576,11 @@ function UpdatePost() {
                       })}
                     </div>
                   </Button>
-                  <Button height={`${74.67 + 34.33 * (deliveryDiscountCount.length - 1)}px`}>
+                  <Button
+                    height={`${
+                      74.67 + 34.33 * (deliveryDiscountCount.length - 1)
+                    }px`}
+                  >
                     <svg
                       width='28'
                       height='29'

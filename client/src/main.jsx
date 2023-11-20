@@ -25,6 +25,8 @@ import Chat from './pages/Chat/Chat.jsx';
 import ChatRooms from './pages/Chat/ChatRooms.jsx';
 import CreatePost from './pages/CreatePost.jsx';
 import UpdatePost from './pages/UpdatePost.jsx';
+import UserLoactionMap from './pages/userLocationMap.jsx';
+import './App.css';
 
 const router = createBrowserRouter([
   {
@@ -121,6 +123,10 @@ const router = createBrowserRouter([
       {
         path: '/create-community',
         element: <MakeCommunity />,
+      },
+      {
+        path: '/user-location',
+        element: <UserLoactionMap />,
       },
       { path: '/chatrooms', element: <ChatRooms /> },
       { path: '/chat/:potId', element: <Chat /> },

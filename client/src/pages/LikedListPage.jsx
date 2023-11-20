@@ -1,8 +1,4 @@
-import '../App.css';
 import { useState, useEffect } from 'react';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
 import LikedComp from '../components/LikedComp';
 import { NavBar2 } from '../components/NavBars';
 import COLOR from '../utility/Color';
@@ -323,70 +319,56 @@ function LikedList() {
   };
 
   return (
-    <Container className='background'>
-      <Row className='row1'>
-        <Col className='col1'>
-          <div className='side_container'></div>
-        </Col>
-        <Col className='col2'>
-          <div className='potz_container' style={backgroundStyle}>
-            <div style={potzContainerStyle}>
-              <nav style={TopNav}>
-                <span
-                  style={{
-                    fontFamily: Font.FontKor,
-                    fontSize: '18px',
-                    fontWeight: '700',
-                    marginLeft: '28px',
-                  }}
-                >
-                  찜해둔 배달팟
-                </span>
-              </nav>
-              <div style={fontStyle}>
-                <div>
-                  <span>찜한 배달팟</span>
-                  <span style={{ marginLeft: '4px' }}>{likedNum}</span>
-                </div>
-                <span>카테고리별 보기</span>
-                <span>편집</span>
-              </div>
-              <div style={homeContentesContainer}>
-                {/* 찜 한 가게 데이터가 없는 경우 */}
-                {postDatas.length < 1 ? (
-                  <div
-                    style={{
-                      marginTop: '40px',
-                      fontFamily: Font.FontKor,
-                      fontWeight: '700',
-                      color: COLOR.POTZ_PINK_DEFAULT,
-                      display: 'flex',
-                      justifyContent: 'center',
-                      padding: '20px',
-                      background: COLOR.WHITE,
-                    }}
-                  >
-                    🍣 아직 찜 하신 가게가 없어요 🍣
-                  </div>
-                ) : null}
-                {/* 찜 한 가게 데이터가 있는 경우 */}
-                {postDatas.map((postData, index) => {
-                  return (
-                    <LikedComp key={index} postData={postData}></LikedComp>
-                  );
-                })}
-              </div>
-              <div style={navbarStyle}>
-                <NavBar2></NavBar2>
-              </div>
-            </div>
+    <div className='potz_container' style={backgroundStyle}>
+      <div style={potzContainerStyle}>
+        <nav style={TopNav}>
+          <span
+            style={{
+              fontFamily: Font.FontKor,
+              fontSize: '18px',
+              fontWeight: '700',
+              marginLeft: '28px',
+            }}
+          >
+            찜해둔 배달팟
+          </span>
+        </nav>
+        <div style={fontStyle}>
+          <div>
+            <span>찜한 배달팟</span>
+            <span style={{ marginLeft: '4px' }}>{likedNum}</span>
           </div>
-        </Col>
-        <Col className='col3'>
-          <div className='side_container'></div>
-        </Col>
-      </Row>
-    </Container>
+          <span>카테고리별 보기</span>
+          <span>편집</span>
+        </div>
+        <div style={homeContentesContainer}>
+          {/* 찜 한 가게 데이터가 없는 경우 */}
+          {postDatas.length < 1 ? (
+            <div
+              style={{
+                marginTop: '40px',
+                fontFamily: Font.FontKor,
+                fontWeight: '700',
+                color: COLOR.POTZ_PINK_DEFAULT,
+                display: 'flex',
+                justifyContent: 'center',
+                padding: '20px',
+                background: COLOR.WHITE,
+              }}
+            >
+              🍣 아직 찜 하신 가게가 없어요 🍣
+            </div>
+          ) : null}
+          {/* 찜 한 가게 데이터가 있는 경우 */}
+          {postDatas.map((postData, index) => {
+            return <LikedComp key={index} postData={postData}></LikedComp>;
+          })}
+        </div>
+        <div style={navbarStyle}>
+          <NavBar2></NavBar2>
+        </div>
+      </div>
+    </div>
   );
 }
 
