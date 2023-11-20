@@ -1,4 +1,3 @@
-import '../../App.css';
 import { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import COLOR from '../../utility/Color';
@@ -31,7 +30,7 @@ function LoginPage() {
   const { isAuthenticated, signUp, login } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/link', { replace: true });
+    if (isAuthenticated) navigate('/home', { replace: true });
   }, [isAuthenticated, navigate]);
 
   async function handleSignUp() {
