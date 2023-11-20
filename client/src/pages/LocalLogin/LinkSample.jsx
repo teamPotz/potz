@@ -62,6 +62,9 @@ function LinkSample() {
                 <li>
                   <Link to='/search'>검색</Link>
                 </li>
+                <li>
+                  <Link to='/create-post'>글 쓰기</Link>
+                </li>
               </ul>
 
               <div className='btn_container' style={style3}>

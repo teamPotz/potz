@@ -10,6 +10,7 @@ import TagFood from '../components/TagFood';
 import Font from '../utility/Font';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 
 const Button = styled.div`
   width: 100%;
@@ -20,7 +21,10 @@ const Button = styled.div`
   gap: 9px;
   border-bottom: 0.58px solid ${COLOR.GRAY_200};
   justify-content: ${(props) => props.spacebetween};
+  transition: all 0.2s ease;
 `;
+
+
 
 const ShopInput = styled.input`
   border: none;
@@ -123,7 +127,7 @@ const FontSm = styled.span`
   }
 `;
 
-function Post() {
+function CreatePost() {
   const BASE_URL = 'http://localhost:5000';
   const screenHeight = window.innerHeight - 98;
   const [selectImg, setSelectImg] = useState(undefined);
@@ -133,16 +137,19 @@ function Post() {
   let Address = false;
   let name = false;
 
+  const { getUserInfo } = useAuth();
+
   if (location.state !== null) {
     name = location.state.name;
     Address = location.state.address;
   }
-
-  //create를 해주는 함수
+  
+  //데이터 전송
   async function createPost(
     storeName,
     storeAddress,
     orderLink,
+    categoryId,
     recruitment,
     meetingLocation,
     deliveryFees,
@@ -153,6 +160,7 @@ function Post() {
     formData.append('storeName', storeName);
     formData.append('storeAddress', storeAddress);
     formData.append('orderLink', orderLink);
+    formData.append('categoryId', categoryId);
     formData.append('recruitment', recruitment);
     formData.append('meetingLocation', meetingLocation);
     formData.append('deliveryFees', deliveryFees);
@@ -163,6 +171,7 @@ function Post() {
       const res = await fetch(`${BASE_URL}/posts`, {
         method: 'POST',
         body: formData,
+        credentials: 'include',
       });
       const data = await res.json();
       console.log(data);
@@ -171,11 +180,26 @@ function Post() {
     }
   }
 
-  //배달비, 할인 관련 로직
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
+  const [categories, setCategories] = useState('카테고리');
+  const [toggled, setToggled] = useState(false);
+  const [categoryid, setCategoryid] = useState('');
+
+  const categoryHandler = (e) => {
+    e.preventDefault();
+    setToggled(false);
+    setCategoryid(e.target.id);
+    console.log(categoryid);
+    setCategories(e.target.textContent);
+  }
+
+  //배달비, 할인 관련 로직
   //배달비, 할인 갯수
-  const [counts1, setCounts1] = useState([0]);
-  const [counts2, setCounts2] = useState([0]);
+  const [deliveryFeeCount, setDeliveryFeeCount] = useState([0]);
+  const [deliveryDiscountCount, setdeliveryDiscountCount] = useState([0]);
   const [values1, setValues1] = useState([]);
   const [values2, setValues2] = useState([]);
 
@@ -185,37 +209,60 @@ function Post() {
 
   const deliveryFeeChange = (e, number) => {
     e.preventDefault();
-
     if (e.target.name === `deliveryFeeHeader${number}`) {
       setValues1((prevValues) => [e.target.value, prevValues[1]]);
     }
     if (e.target.name === `deliveryFeeFooter${number}`) {
       setValues1((prevValues) => [prevValues[0], e.target.value]);
-
       if (values1[0] && values1[1]) {
-        setLength1([...length1, length1[number] = values1]);
+        setLength1([...length1, (length1[number] = values1)]);
         setValues1([]);
-        setCounts1([...counts1, counts1.length]);
+        setDeliveryFeeCount([...deliveryFeeCount, deliveryFeeCount.length]);
       }
     }
   };
 
   const deliveryDiscountsChange = (e, number) => {
     e.preventDefault();
-
     if (e.target.name === `deliveryDiscountsHeader${number}`) {
       setValues2((prevValues) => [e.target.value, prevValues[1]]);
     }
     if (e.target.name === `deliveryDiscountsFooter${number}`) {
       setValues2((prevValues) => [prevValues[0], e.target.value]);
-
       if (values2[0] && values2[1]) {
-        setLength2([...length2, length2[number] = values2]);
+        setLength2([...length2, (length2[number] = values2)]);
         setValues2([]);
-        setCounts2([...counts2, counts2.length]);
+        setdeliveryDiscountCount([...deliveryDiscountCount, deliveryDiscountCount.length]);
       }
     }
   };
+
+  const processData = (name, e) => {
+    let data = [];
+    
+    if(name === 'deliveryFee'){
+      for(let i = 0; i < deliveryFeeCount.length; i++){
+        data.push([
+          e.target[`deliveryFeeHeader${i}`].value,
+          e.target[`deliveryFeeFooter${i}`].value,
+        ])
+      }
+    }
+    if(name === 'deliveryDiscount'){
+      for(let i = 0; i < deliveryDiscountCount.length; i++){
+        data.push([
+          e.target[`deliveryDiscountsHeader${i}`].value,
+          e.target[`deliveryDiscountsFooter${i}`].value,
+        ])
+      }
+    }
+
+    for (let i = 0; i < data.length - 1; i++) {
+      data[i].push(data[i + 1][0]);
+    }
+    data.pop();
+    return(JSON.stringify(data));
+  }
 
   const styles = {
     background: {
@@ -230,6 +277,7 @@ function Post() {
       justifyContent: 'space-between',
     },
   };
+
 
   return (
     <Container className='background'>
@@ -250,42 +298,18 @@ function Post() {
                   const storeName = name ? name : e.target.storeName.value;
                   const storeAddress = Address;
                   const orderLink = e.target.orderLink.value;
+                  const categoryId = categoryid;
                   const recruitment = e.target.recruitment.value;
                   const meetingLocation = e.target.meetingLocation.value;
-
-                  let deliveryFee = [];
-                  for (let i = 0; i < counts1.length; i++) {
-                    deliveryFee.push([
-                      e.target[`deliveryFeeHeader${i}`].value,
-                      e.target[`deliveryFeeFooter${i}`].value,
-                    ]);
-                  }
-                  for (let i = 0; i < deliveryFee.length - 1; i++) {
-                    deliveryFee[i].push(deliveryFee[i + 1][0]);
-                  }
-                  deliveryFee.pop();
-
-                  let deliveryDiscount = [];
-                  for (let i = 0; i < counts2.length; i++) {
-                    deliveryDiscount.push([
-                      e.target[`deliveryDiscountsHeader${i}`].value,
-                      e.target[`deliveryDiscountsFooter${i}`].value,
-                    ]);
-                  }
-                  for (let i = 0; i < deliveryDiscount.length - 1; i++) {
-                    deliveryDiscount[i].push(deliveryDiscount[i + 1][0]);
-                  }
-                  deliveryDiscount.pop();
-
-                  const deliveryFees = JSON.stringify(deliveryFee);
-                  const deliveryDiscounts = JSON.stringify(deliveryDiscount);
-
+                  const deliveryFees = processData('deliveryFee', e);
+                  const deliveryDiscounts = processData('deliveryDiscount', e);
                   const file = e.target.image.files[0];
 
                   createPost(
                     storeName,
                     storeAddress,
                     orderLink,
+                    categoryId,
                     recruitment,
                     meetingLocation,
                     deliveryFees,
@@ -322,7 +346,7 @@ function Post() {
                       }}
                     >
                       {selectImg ? (
-                        <div/>
+                        <div />
                       ) : (
                         <svg
                           width='21'
@@ -372,9 +396,20 @@ function Post() {
                       placeholder='관련 링크 붙여넣기'
                     ></LinkInput>
                   </Button>
-                  <Button spacebetween={'space-between'} height={'74.67px'}>
-                    <TagFood>카테고리</TagFood>
-                    <svg
+                  <Button spacebetween={'space-between'} height={toggled ? '150.67px' : '74.67px'}>
+                    {
+                      toggled ? <div style={{display: 'flex', flexDirection:'column', gap: '10px'}}>
+                        <div style={{display: 'flex', gap: '7px'}}><TagFood id='1' onClick={categoryHandler}>버거·샌드위치</TagFood><TagFood id='2' onClick={categoryHandler}>카페·디저트</TagFood></div>
+                        <div style={{display: 'flex', gap: '7px'}}><TagFood id='3' onClick={categoryHandler}>한식</TagFood><TagFood id='4' onClick={categoryHandler}>초밥·회</TagFood><TagFood id='5' onClick={categoryHandler}>중식·아시안</TagFood></div>
+                        <div style={{display: 'flex', gap: '7px'}}><TagFood id='6' onClick={categoryHandler}>피자</TagFood><TagFood id='7' onClick={categoryHandler}>치킨</TagFood><TagFood id='8' onClick={categoryHandler}>샐러드</TagFood></div>
+                      </div> :  <TagFood onClick={(e) => {
+                          e.preventDefault();
+                          setToggled(true);
+                      }}>{categories}</TagFood>
+                    }
+                     
+
+                   {/* <svg
                       width='29'
                       height='29'
                       viewBox='0 0 29 29'
@@ -388,7 +423,7 @@ function Post() {
                         strokeLinecap='round'
                         strokeLinejoin='round'
                       />
-                    </svg>
+                    </svg> */}
                   </Button>
 
                   <Button height={'74.67px'}>
@@ -434,7 +469,7 @@ function Post() {
                       placeholder='만날 장소'
                     ></Input>
                   </Button>
-                  <Button height={`${74.67 + 34.33 * (counts1.length - 1)}px`}>
+                  <Button height={`${74.67 + 34.33 * (deliveryFeeCount.length - 1)}px`}>
                     <svg
                       width='28'
                       height='29'
@@ -450,7 +485,7 @@ function Post() {
                       />
                     </svg>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      {counts1.map((count) => {
+                      {deliveryFeeCount.map((count) => {
                         return (
                           <div key={count}>
                             <Input
@@ -471,7 +506,7 @@ function Post() {
                       })}
                     </div>
                   </Button>
-                  <Button height={`${74.67 + 34.33 * (counts2.length - 1)}px`}>
+                  <Button height={`${74.67 + 34.33 * (deliveryDiscountCount.length - 1)}px`}>
                     <svg
                       width='28'
                       height='29'
@@ -487,7 +522,7 @@ function Post() {
                       />
                     </svg>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      {counts2.map((count) => {
+                      {deliveryDiscountCount.map((count) => {
                         return (
                           <div key={count}>
                             <Input
@@ -537,4 +572,4 @@ function Post() {
   );
 }
 
-export default Post;
+export default CreatePost;
