@@ -118,10 +118,6 @@ function Chat() {
     scroll.scrollTop = scroll.scrollHeight;
   }, [messages]);
 
-  if (isLoading) {
-    return <LoadingPage />;
-  }
-
   return (
     <>
       <GoBack text={state?.storeName} />

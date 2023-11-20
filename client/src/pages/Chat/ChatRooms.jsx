@@ -6,7 +6,7 @@ import LoadingPage from '../LoadingPage.jsx';
 // import { socket } from '../../../socket.js';
 
 function ChatRooms() {
-  const { user, isLoading } = useAuth();
+  const { user } = useAuth();
   const [deliveryPots, setDeliveryPots] = useState([]);
 
   useEffect(() => {
@@ -31,10 +31,6 @@ function ChatRooms() {
   // useEffect(() => {
   //   socket.connect();
   // }, [user]);
-
-  if (isLoading) {
-    return <LoadingPage />;
-  }
 
   return (
     <div className='contents_container'>
