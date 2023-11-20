@@ -22,7 +22,8 @@ function ProtectedRoute({ children }) {
   }, []);
 
   if (isLoading) {
-    return <LoadingPage />;
+    // return <LoadingPage />;
+    return null;
   }
 
   return isAuthenticated ? (
