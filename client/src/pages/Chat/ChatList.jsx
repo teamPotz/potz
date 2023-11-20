@@ -1,13 +1,7 @@
-import '../../App.css';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
 import styled from 'styled-components';
 import COLOR from '../../utility/Color';
 import Font from '../../utility/Font';
 import { NavBar3 } from '../../components/NavBars';
-
-//contents_container 안에 UI 구현 하시면 됩니다!
 
 function ChatList() {
   const Title = styled.div`
@@ -154,12 +148,6 @@ function ChatList() {
   };
 
   return (
-    <Container className='background'>
-      <Row className='row1'>
-        <Col className='col1'>
-          <div className='side_container'></div>
-        </Col>
-        <Col className='col2'>
           <div className='potz_container' style={styles.background}>
             <Title>배달팟 채팅 목록</Title>
             <div style={styles.sideTitle}>
@@ -276,12 +264,6 @@ function ChatList() {
               <NavBar3></NavBar3>
             </div>
           </div>
-        </Col>
-        <Col className='col3'>
-          <div className='side_container'></div>
-        </Col>
-      </Row>
-    </Container>
   );
 }
 

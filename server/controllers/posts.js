@@ -452,7 +452,52 @@ export async function createPost(req, res) {
 }
 
 export async function updatePost(req, res) {
-  // ...
+  const { id } = req.params;
+
+  try{
+    const getPost = await prisma.post.findUnique({
+      where: {
+        id: +id,
+      },
+      select: {
+        id: true,
+        storeName: true,
+        storeAddress: true,
+        imageUrl: true,
+        orderLink: true,
+        categoryId: true,
+        recruitment: true,
+        meetingLocation: true,
+        deliveryFees: true,
+        deliveryDiscounts: true,
+      }
+    })
+    res.status(200).send(getPost);
+
+    // const updatePost = await prisma.post.update({
+    //   where:{
+    //     id: +id,
+    //   },
+    //   select: {
+    //     id: true,
+    //     storeName: true,
+    //     storeAddress: true,
+    //     imageUrl: true,
+    //     orderLink: true,
+    //     categoryId: true,
+    //     recruitment: true,
+    //     meetingLocation: true,
+    //     deliveryFees: true,
+    //     deliveryDiscounts: true,
+    //   }
+    // })
+    // req.status(201).json(updatePost);
+  }
+
+  catch(error){
+    console.log(error);
+    res.status(500).json({ message: 'update post error' });
+  }
 }
 
 export async function deletePost(req, res) {

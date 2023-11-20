@@ -1,7 +1,3 @@
-import '../App.css';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
 import styled from 'styled-components';
 import { NavBar4 } from '../components/NavBars';
@@ -124,12 +120,6 @@ function UserProfile() {
   ];
 
   return (
-    <Container className='background'>
-      <Row className='row1'>
-        <Col className='col1'>
-          <div className='side_container'></div>
-        </Col>
-        <Col className='col2'>
           <div className='potz_container' style={styles.background}>
             <div className='contents_container'></div>
             <div style={styles.topBar}>
@@ -283,12 +273,6 @@ function UserProfile() {
               <NavBar4 />
             </div>
           </div>
-        </Col>
-        <Col className='col3'>
-          <div className='side_container'></div>
-        </Col>
-      </Row>
-    </Container>
   );
 }
 

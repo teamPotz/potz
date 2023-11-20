@@ -47,6 +47,12 @@ function LinkSample() {
         <li>
           <Link to='/chatrooms'>chat rooms</Link>
         </li>
+        <li>
+        <Link to='/chatlist'>채팅 리스트</Link>
+        </li>
+        <li>
+          <Link to='/profile'>프로필</Link>
+        </li>
       </ul>
 
       <div className='btn_container' style={style3}>

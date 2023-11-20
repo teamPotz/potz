@@ -25,6 +25,8 @@ import Chat from './pages/Chat/Chat.jsx';
 import ChatRooms from './pages/Chat/ChatRooms.jsx';
 import CreatePost from './pages/CreatePost.jsx';
 import UpdatePost from './pages/UpdatePost.jsx';
+import UserProfile from './pages/UserProfile.jsx';
+import ChatList from './pages/Chat/ChatList.jsx';
 
 const router = createBrowserRouter([
   {
@@ -124,6 +126,14 @@ const router = createBrowserRouter([
       },
       { path: '/chatrooms', element: <ChatRooms /> },
       { path: '/chat/:potId', element: <Chat /> },
+      {
+        path: '/chatlist',
+        element: <ChatList/>,
+      },
+      {
+        path: '/profile',
+        element: <UserProfile/>,
+      },
     ],
   },
 ]);
