@@ -107,13 +107,13 @@ const router = createBrowserRouter([
         element: <LikedList />,
       },
       {
-        path: '/create-post',        
-        element: <CreatePost/>,
+        path: '/create-post',
+        element: <CreatePost />,
       },
       {
         path: '/update-post/:id',
-        element: <UpdatePost/>
-      }  
+        element: <UpdatePost />,
+      },
       {
         path: '/getaddress',
         element: <LandingMap />,
