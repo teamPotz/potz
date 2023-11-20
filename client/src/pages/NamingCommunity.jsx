@@ -7,6 +7,7 @@ import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
 import Font from '../utility/Font';
+import { useAuth } from '../contexts/AuthContext';
 
 const InputField = styled.input`
   border: 2px ${COLOR.POTZ_PINK_DEFAULT} solid;
@@ -68,6 +69,7 @@ const InputStyle = styled.input`
 `;
 
 function NamingCommunity(props) {
+  //컨텍스트 api
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -131,6 +133,7 @@ function NamingCommunity(props) {
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: 'include',
           body: JSON.stringify(formDatas),
         });
 

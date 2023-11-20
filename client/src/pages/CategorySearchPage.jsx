@@ -1,6 +1,5 @@
 import '../App.css';
 import { useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';

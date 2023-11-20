@@ -350,9 +350,8 @@ export async function getPostByName(req, res) {
         meetingLocation: true,
         deliveryFees: true,
         deliveryDiscounts: true,
-        //나중에 로그인 된 유저 id 넣기
         likedByUsers: {
-          where: { userId: 1, liked: true },
+          where: { userId: req.user.id, liked: true },
         },
         communityId: true,
         deliveryPot: {

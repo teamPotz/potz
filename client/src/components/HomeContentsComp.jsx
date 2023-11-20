@@ -40,7 +40,6 @@ const HomeContents = (props) => {
 
   let { communityDatas } = props;
 
-  console.log('홈 컨텐츠 데이터', communityDatas);
   console.log('포스트 데이터', communityDatas.posts);
 
   let [like, setLike] = useState(null);
@@ -235,8 +234,10 @@ const HomeContents = (props) => {
                 <div style={fontStyle2}>
                   <span style={coloredfont}>
                     {post.deliveryFees?.[0]?.fee ? (
-                      post.deliveryFees?.[0]?.fee /
-                      post.deliveryPot.participants.length
+                      Math.round(
+                        post.deliveryFees?.[0]?.fee /
+                          post.deliveryPot.participants.length
+                      )
                     ) : (
                       <span>무료</span>
                     )}
