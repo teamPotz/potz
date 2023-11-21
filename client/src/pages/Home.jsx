@@ -1,14 +1,33 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import COLOR from '../utility/Color';
 import NavBarHomePage from '../components/NavBarHomePage';
 import HomeContents from '../components/HomeContentsComp';
 import ButtonWrite from '../components/ButtonWrite';
-import COLOR from '../utility/Color';
 import ShareCommunityModal from '../components/shareCommunityModal';
 import NavBar from '../components/ui/NavBar';
 
+const potzContainerStyle = {
+  position: 'relative',
+  minHeight: '100vh',
+  width: '100%',
+};
+
+const btnStyle = {
+  marginRight: '28px',
+  zIndex: '100',
+};
+
+const homeContentesContainer = {
+  marginBottom: '50px',
+};
+
+const backgroundStyle = {
+  backgroundColor: COLOR.POTZ_PINK_100,
+};
+
 function Home() {
-  let testcommunityDataID = 1;
+  let testCommunityId = 1;
   //실제로는 로그인~커뮤니티 선택 하면서 커뮤니티 아이디 데이터 넘겨받기
   // let { communityDataID } = location.state;
   // console.log('해당 커뮤니티 아이디', communityDataID);
@@ -36,9 +55,8 @@ function Home() {
     async function fetchCommunityData() {
       try {
         const response = await fetch(
-          `http://localhost:5000/communities/${testcommunityDataID}`,
+          `http://localhost:5000/communities/${testCommunityId}`,
           {
-            method: 'GET',
             credentials: 'include',
           }
         );
@@ -50,13 +68,7 @@ function Home() {
     }
 
     fetchCommunityData();
-  }, [testcommunityDataID]);
-
-  const potzContainerStyle = {
-    position: 'relative',
-    minHeight: '100vh',
-    width: '100%',
-  };
+  }, []);
 
   const navbarStyle = {
     display: 'flex',
@@ -69,36 +81,25 @@ function Home() {
     width: displayWidth ? displayWidth : '420px',
   };
 
-  const btnStyle = {
-    marginRight: '28px',
-    zIndex: '100',
-  };
-
-  const homeContentesContainer = {
-    marginBottom: '50px',
-  };
-
-  const backgroundStyle = {
-    backgroundColor: COLOR.POTZ_PINK_100,
-  };
-
   return (
     <div className='potz_container' style={backgroundStyle}>
       <div style={potzContainerStyle}>
         {communityDatas ? (
           <NavBarHomePage communityDatas={communityDatas} />
         ) : null}
+
+        {/* 만약 컨텐츠 데이터 개수가 1개도 없을 경우 공동체 공유 모달창 띄우기 */}
         <div style={homeContentesContainer}>
-          {/* 만약 컨텐츠 데이터 개수가 1개도 없을 경우 공동체 공유 모달창 띄우기 */}
           {communityDatas ? (
             communityDatas.posts.length < 1 ? (
-              <ShareCommunityModal></ShareCommunityModal>
+              <ShareCommunityModal />
             ) : null
           ) : null}
           {communityDatas ? (
-            <HomeContents communityDatas={communityDatas}></HomeContents>
+            <HomeContents communityDatas={communityDatas} />
           ) : null}
         </div>
+
         <div style={navbarStyle}>
           <div style={btnStyle} onClick={() => navigate('/create-post')}>
             <ButtonWrite />
