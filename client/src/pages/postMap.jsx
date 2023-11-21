@@ -4,8 +4,6 @@ import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import COLOR from '../utility/Color';
 import { useNavigate } from 'react-router-dom';
 
-//contents_container 안에 UI 구현 하시면 됩니다!
-
 function PostMap(props) {
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
@@ -81,14 +79,14 @@ function PostMap(props) {
               <div style={{ color: `${COLOR.BLACK}` }}>
                 {marker.content}
                 <button
-                  onClick={() =>
-                    navigate('/create-post', {
+                  onClick={() => {
+                    navigate(props.routeName, {
                       state: {
                         name: marker.content,
                         address: marker.storeAddress,
                       },
-                    })
-                  }
+                    });
+                  }}
                 >
                   선택
                 </button>
