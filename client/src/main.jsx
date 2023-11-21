@@ -14,7 +14,6 @@ import Alarm from './pages/Alarm.jsx';
 import CategoryPage from './pages/Category.jsx';
 import Login from './pages/loginPage.jsx';
 import LoginPage from './pages/LocalLogin/LoginPage.jsx';
-import LinkSample from './pages/LocalLogin/LinkSample.jsx';
 import ProtectedRoute from './pages/ProtectedRoute.jsx';
 import CategorySearch from './pages/CategorySearchPage.jsx';
 import ChooseCommunity from './pages/ChooseCommunityPage.jsx';
@@ -22,7 +21,6 @@ import LikedList from './pages/LikedListPage.jsx';
 import SearchResult from './pages/SearchResult.jsx';
 import LandingMap from './pages/LandingMap';
 import Chat from './pages/Chat/Chat.jsx';
-import ChatRooms from './pages/Chat/ChatRooms.jsx';
 import ChatTemplate from './pages/Chat/ChatTemplate.jsx';
 import CreatePost from './pages/CreatePost.jsx';
 import UpdatePost from './pages/UpdatePost.jsx';
@@ -58,7 +56,6 @@ const router = createBrowserRouter([
       //   path: '/',
       //   element: <Login />,
       // },
-      // { path: '/link', element: <LinkSample /> },
       {
         path: '/user-interests',
         element: <ChooseInterest />,
@@ -138,7 +135,6 @@ const router = createBrowserRouter([
       { path: '/chats/', element: <ChatList /> },
       { path: '/chats/:potId', element: <Chat /> },
       { path: '/chats/', element: <ChatTemplate /> },
-      { path: '/chatrooms', element: <ChatRooms /> },
     ],
   },
 ]);

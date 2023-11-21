@@ -223,7 +223,7 @@ const HomeContents = (props) => {
                 width={112}
                 height={112}
                 style={imgStyle}
-                src={'http://localhost:5000/' + post.imageUrl + '.png'}
+                src={`http://localhost:5000${post.imageUrl}`}
               ></img>
             </div>
             <div style={fontWrapper}>
@@ -258,9 +258,9 @@ const HomeContents = (props) => {
               </div>
               <div style={fontstyle4}>
                 <div>
-                  <span>{post.recruitment}</span>
-                  <span>/</span>
                   <span>{post.deliveryPot.participants.length}</span>
+                  <span>/</span>
+                  <span>{post.recruitment}</span>
                   <span>명</span>
                 </div>
                 <div>
