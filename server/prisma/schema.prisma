@@ -89,7 +89,7 @@ model CommunityType {
 // 공동체특징 연결 정보(공동체-공동체특징간 관계테이블)
 model CommunityTypesOnCommunities {
   id              Int           @id @default(autoincrement())
-  commuintyType   CommunityType @relation(fields: [communityTypeId], references: [id])
+  communityType   CommunityType @relation(fields: [communityTypeId], references: [id])
   communityTypeId Int
   community       Community     @relation(fields: [communityId], references: [id])
   communityId     Int

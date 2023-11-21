@@ -10,15 +10,20 @@ export async function getCommunities(req, res) {
         id: true,
         name: true,
         imageUrl: true,
+        communityTypes: {
+          select: {
+            communityType: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
         _count: {
           select: {
             members: true,
             posts: true,
-          },
-        },
-        communityTypes: {
-          select: {
-            name: true,
           },
         },
       },
@@ -31,7 +36,7 @@ export async function getCommunities(req, res) {
       membersCount: community._count.members,
       postsCount: community._count.posts,
       communityTypes: community.communityTypes.reduce(
-        (acc, cur) => [...acc, cur.name],
+        (acc, cur) => [...acc, cur.communityType.name],
         []
       ),
     }));
@@ -44,16 +49,20 @@ export async function getCommunities(req, res) {
 }
 
 export async function getCommunityById(req, res) {
-  console.log(req.user);
   const { id } = req.params;
   try {
-    const communities = await prisma.community.findUnique({
+    const community = await prisma.community.findUnique({
       select: {
         id: true,
         name: true,
         communityTypes: {
           select: {
-            name: true,
+            communityType: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
         posts: {
@@ -103,7 +112,15 @@ export async function getCommunityById(req, res) {
         id: +id,
       },
     });
-    res.status(200).send(communities);
+
+    const transformedCommunity = {
+      ...community,
+      communityTypes: community.communityTypes.reduce(
+        (acc, cur) => [...acc, cur.communityType],
+        []
+      ),
+    };
+    res.status(200).send(transformedCommunity);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'get communities error' });
@@ -116,11 +133,9 @@ export async function saveCommunityImg(req, res) {
 }
 
 export async function createCommunity(req, res) {
-  console.log(req.user);
-  const { communityTypes, members, longitude, latitude, name } = req.body;
+  const { communityTypes, longitude, latitude, name } = req.body;
 
   try {
-    //todo: id 1 대신 로그인 유저 데이터 id 넣기
     const newCommunityData = await prisma.community.create({
       data: {
         communityTypes: {
