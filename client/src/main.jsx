@@ -14,7 +14,6 @@ import Alarm from './pages/Alarm.jsx';
 import CategoryPage from './pages/Category.jsx';
 import Login from './pages/loginPage.jsx';
 import LoginPage from './pages/LocalLogin/LoginPage.jsx';
-import LinkSample from './pages/LocalLogin/LinkSample.jsx';
 import ProtectedRoute from './pages/ProtectedRoute.jsx';
 import CategorySearch from './pages/CategorySearchPage.jsx';
 import ChooseCommunity from './pages/ChooseCommunityPage.jsx';
@@ -22,11 +21,14 @@ import LikedList from './pages/LikedListPage.jsx';
 import SearchResult from './pages/SearchResult.jsx';
 import LandingMap from './pages/LandingMap';
 import Chat from './pages/Chat/Chat.jsx';
-import ChatRooms from './pages/Chat/ChatRooms.jsx';
+import ChatTemplate from './pages/Chat/ChatTemplate.jsx';
 import CreatePost from './pages/CreatePost.jsx';
 import UpdatePost from './pages/UpdatePost.jsx';
-import UserProfile from './pages/UserProfile.jsx';
+import UserLoactionLandingMap from './pages/UserLocationLanding.jsx';
+import './App.css';
 import ChatList from './pages/Chat/ChatList.jsx';
+import UserProfile from './pages/UserProfile.jsx';
+import Entercommunity from './pages/EnterCommunity.jsx';
 
 const router = createBrowserRouter([
   {
@@ -51,10 +53,13 @@ const router = createBrowserRouter([
         path: '/',
         element: <Login />,
       },
-      { path: '/link', element: <LinkSample /> },
       {
         path: '/home',
         element: <Home />,
+      },
+      {
+        path: '/posts/:id',
+        element: <Detail />,
       },
       {
         path: '/user-interests',
@@ -79,10 +84,6 @@ const router = createBrowserRouter([
       {
         path: '/community-lists',
         element: <ChooseCommunity />,
-      },
-      {
-        path: '/detail',
-        element: <Detail />,
       },
       {
         path: '/search',
@@ -124,16 +125,17 @@ const router = createBrowserRouter([
         path: '/create-community',
         element: <MakeCommunity />,
       },
-      { path: '/chatrooms', element: <ChatRooms /> },
-      { path: '/chat/:potId', element: <Chat /> },
       {
-        path: '/chatlist',
-        element: <ChatList/>,
+        path: '/user-location',
+        element: <UserLoactionLandingMap />,
       },
       {
-        path: '/profile',
-        element: <UserProfile/>,
+        path: '/my-page',
+        element: <UserProfile />,
       },
+      { path: '/chats/', element: <ChatList /> },
+      { path: '/chats/:potId', element: <Chat /> },
+      { path: '/chats/', element: <ChatTemplate /> },
     ],
   },
 ]);

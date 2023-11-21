@@ -1,4 +1,3 @@
-import '../App.css';
 import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
@@ -53,34 +52,22 @@ function CategoryPage() {
   };
 
   return (
-    <Container className='background'>
-      <Row className='row1'>
-        <Col className='col1'>
-          <div className='side_container'></div>
-        </Col>
-        <Col className='col2'>
-          <div className='potz_container' style={backgroundStyle}>
-            <nav>
-              <GoBack text={'카테고리'}></GoBack>
-            </nav>
-            <div className='contents_container' style={style1}>
-              <div style={categoryContainer}>
-                {categoryData
-                  ? categoryData.map((category) => (
-                      <div key={category.id} style={marginstyle}>
-                        <CategoryBtn category={category}></CategoryBtn>
-                      </div>
-                    ))
-                  : null}
-              </div>
-            </div>
-          </div>
-        </Col>
-        <Col className='col3'>
-          <div className='side_container'></div>
-        </Col>
-      </Row>
-    </Container>
+    <div className='potz_container' style={backgroundStyle}>
+      <nav>
+        <GoBack text={'카테고리'}></GoBack>
+      </nav>
+      <div className='contents_container' style={style1}>
+        <div style={categoryContainer}>
+          {categoryData
+            ? categoryData.map((category) => (
+                <div key={category.id} style={marginstyle}>
+                  <CategoryBtn category={category}></CategoryBtn>
+                </div>
+              ))
+            : null}
+        </div>
+      </div>
+    </div>
   );
 }
 

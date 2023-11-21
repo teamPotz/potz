@@ -355,7 +355,8 @@ export async function getPostByName(req, res) {
         deliveryFees: true,
         deliveryDiscounts: true,
         likedByUsers: {
-          where: { userId: req.user.id, liked: true },
+          where: { userId: 1, liked: true },
+          // where: { userId: req.user.id, liked: true },
         },
         communityId: true,
         deliveryPot: {

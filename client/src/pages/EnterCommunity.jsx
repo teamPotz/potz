@@ -1,34 +1,17 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import COLOR from '../utility/Color';
+import { useNavigate, useLocation } from 'react-router-dom';
+import EnterCommunityModal from '../components/EnterCommunityModal';
 import NavBarHomePage from '../components/NavBarHomePage';
 import HomeContents from '../components/HomeContentsComp';
 import ButtonWrite from '../components/ButtonWrite';
+import COLOR from '../utility/Color';
 import ShareCommunityModal from '../components/shareCommunityModal';
 import NavBar from '../components/ui/NavBar';
 
-const potzContainerStyle = {
-  position: 'relative',
-  minHeight: '100vh',
-  width: '100%',
-};
-
-const btnStyle = {
-  marginRight: '28px',
-  zIndex: '100',
-};
-
-const homeContentesContainer = {
-  marginBottom: '50px',
-};
-
-const backgroundStyle = {
-  backgroundColor: COLOR.POTZ_PINK_100,
-};
-
-function Home() {
-  let testCommunityId = 1;
-  //실제로는 로그인~커뮤니티 선택 하면서 커뮤니티 아이디 데이터 넘겨받기
+function Entercommunity() {
+  const location = useLocation();
+  const testId = 1;
+  //유저가 가입되어 있는 커뮤니티 아이디들 중, 가장 마지막으로 가입한 아이디 받아오기
   // let { communityDataID } = location.state;
   // console.log('해당 커뮤니티 아이디', communityDataID);
 
@@ -55,12 +38,14 @@ function Home() {
     async function fetchCommunityData() {
       try {
         const response = await fetch(
-          `http://localhost:5000/communities/${testCommunityId}`,
+          `http://localhost:5000/communities/${testId}`,
           {
+            method: 'GET',
             credentials: 'include',
           }
         );
         const data = await response.json();
+        console.log('해당 커뮤니티 데이터', data);
         setCommunityDatas(data);
       } catch (error) {
         console.error(error);
@@ -69,6 +54,12 @@ function Home() {
 
     fetchCommunityData();
   }, []);
+
+  const potzContainerStyle = {
+    position: 'relative',
+    minHeight: '100vh',
+    width: '100%',
+  };
 
   const navbarStyle = {
     display: 'flex',
@@ -81,25 +72,28 @@ function Home() {
     width: displayWidth ? displayWidth : '420px',
   };
 
+  const btnStyle = {
+    marginRight: '28px',
+    zIndex: '100',
+  };
+
+  const homeContentesContainer = {
+    marginBottom: '50px',
+  };
+
+  const backgroundStyle = {
+    backgroundColor: COLOR.POTZ_PINK_100,
+  };
+
   return (
     <div className='potz_container' style={backgroundStyle}>
       <div style={potzContainerStyle}>
-        {communityDatas ? (
+        {/* {communityDatas ? (
           <NavBarHomePage communityDatas={communityDatas} />
-        ) : null}
-
-        {/* 만약 컨텐츠 데이터 개수가 1개도 없을 경우 공동체 공유 모달창 띄우기 */}
+        ) : null} */}
         <div style={homeContentesContainer}>
-          {communityDatas ? (
-            communityDatas.posts.length < 1 ? (
-              <ShareCommunityModal />
-            ) : null
-          ) : null}
-          {communityDatas ? (
-            <HomeContents communityDatas={communityDatas} />
-          ) : null}
+          <EnterCommunityModal></EnterCommunityModal>
         </div>
-
         <div style={navbarStyle}>
           <div style={btnStyle} onClick={() => navigate('/create-post')}>
             <ButtonWrite />
@@ -111,4 +105,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Entercommunity;

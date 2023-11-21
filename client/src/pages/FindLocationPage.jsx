@@ -1,4 +1,3 @@
-import '../App.css';
 import { useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import COLOR from '../utility/Color';
@@ -7,9 +6,6 @@ import ButtonBg from '../components/ButtonBG';
 import GraPhic from '../../public/images/graphicImg/Hands.png';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import LoadingPage from './LoadingPage';
-
-//contents_container 안에 UI 구현 하시면 됩니다!
 
 const style1 = {
   display: 'flex',
@@ -37,49 +33,37 @@ function FindLocation() {
   const navigate = useNavigate();
 
   const navigateHandler = () => {
-    navigate('');
+    navigate('/user-location');
   };
 
-  const { user } = useAuth();
+  const { user, getUserInfo } = useAuth();
 
-  if (!user) {
-    return <LoadingPage />;
-  }
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
   return (
-    <Container className='background'>
-      <Row className='row1'>
-        <Col className='col1'>
-          <div className='side_container'></div>
-        </Col>
-        <Col className='col2'>
-          <div className='potz_container'>
-            <div className='contents_container' style={style1}>
-              <div className='text_container' style={fontStyle}>
-                <span>{user.name}님 근처에 있는</span>
-                <br></br>
-                <span>배달 공동체를 찾아볼까요?</span>
-              </div>
-              <div className='img_container' style={styles2}>
-                <img style={styles2} width={300} src={GraPhic} />
-              </div>
-              <div className='btn_container' style={style3}>
-                <ButtonBg
-                  backgroundColor={COLOR.POTZ_PINK_DEFAULT}
-                  hoverColor={COLOR.POTZ_PINK_600}
-                  fontColor={COLOR.WHITE}
-                >
-                  내 위치 검색
-                </ButtonBg>
-              </div>
-            </div>
-          </div>
-        </Col>
-        <Col className='col3'>
-          <div className='side_container'></div>
-        </Col>
-      </Row>
-    </Container>
+    <div className='potz_container'>
+      <div className='contents_container' style={style1}>
+        <div className='text_container' style={fontStyle}>
+          <span>{user?.name}님 근처에 있는</span>
+          <br></br>
+          <span>배달 공동체를 찾아볼까요?</span>
+        </div>
+        <div className='img_container' style={styles2}>
+          <img style={styles2} width={300} src={GraPhic} />
+        </div>
+        <div className='btn_container' style={style3} onClick={navigateHandler}>
+          <ButtonBg
+            backgroundColor={COLOR.POTZ_PINK_DEFAULT}
+            hoverColor={COLOR.POTZ_PINK_600}
+            fontColor={COLOR.WHITE}
+          >
+            내 위치 검색
+          </ButtonBg>
+        </div>
+      </div>
+    </div>
   );
 }
 
