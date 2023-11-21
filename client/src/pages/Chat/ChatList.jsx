@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import COLOR from '../../utility/Color';
 import Font from '../../utility/Font';
 import NavBar from '../../components/ui/NavBar';
+import { useEffect, useState } from 'react';
 
 const Title = styled.div`
   display: flex;
@@ -102,7 +103,7 @@ const FontMd = styled.p`
 `;
 const styles = {
   background: {
-    backgroundColor: `${COLOR.GRAY_100}`,
+    backgroundColor: `${COLOR.POTZ_PINK_100}`,
   },
   sideTitle: {
     marginTop: '70px',
@@ -143,6 +144,33 @@ const styles = {
 };
 
 function ChatList() {
+  // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
+  const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const ReSizeHandler = () => {
+      setdisplayWidth(window.innerWidth);
+    };
+
+    //윈도우 리사이즈가 일어나면 콜백 호출
+    window.addEventListener('resize', ReSizeHandler);
+
+    return () => {
+      window.removeEventListener('resize', ReSizeHandler);
+    };
+  }, []);
+
+  const navbarStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '28px',
+    alignItems: 'end',
+    position: 'fixed',
+    bottom: 0,
+    maxWidth: '420px',
+    width: displayWidth ? displayWidth : '420px',
+  };
+
   return (
     <div className='potz_container' style={styles.background}>
       <Title>배달팟 채팅 목록</Title>
@@ -254,7 +282,7 @@ function ChatList() {
         <Chat></Chat>
         <Chat></Chat>
       </div>
-      <div style={styles.navBar}>
+      <div style={navbarStyle}>
         <NavBar />
       </div>
     </div>

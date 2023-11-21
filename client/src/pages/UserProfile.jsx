@@ -4,6 +4,7 @@ import Font from '../utility/Font';
 import NavBar from '../components/ui/NavBar';
 import { useAuth } from '../contexts/AuthContext';
 import ButtonBg from '../components/ButtonBG';
+import { useEffect, useState } from 'react';
 
 const Box = styled.div`
   display: flex;
@@ -120,6 +121,33 @@ const text = [
 
 function UserProfile() {
   const { user, logout } = useAuth();
+
+  // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
+  const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const ReSizeHandler = () => {
+      setdisplayWidth(window.innerWidth);
+    };
+
+    //윈도우 리사이즈가 일어나면 콜백 호출
+    window.addEventListener('resize', ReSizeHandler);
+
+    return () => {
+      window.removeEventListener('resize', ReSizeHandler);
+    };
+  }, []);
+
+  const navbarStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '28px',
+    alignItems: 'end',
+    position: 'fixed',
+    bottom: 0,
+    maxWidth: '420px',
+    width: displayWidth ? displayWidth : '420px',
+  };
 
   return (
     <div className='potz_container' style={styles.background}>
@@ -280,7 +308,7 @@ function UserProfile() {
       </div>
 
       <Box height={'200px'}></Box>
-      <div style={styles.navBar}>
+      <div style={navbarStyle}>
         <NavBar />
       </div>
     </div>

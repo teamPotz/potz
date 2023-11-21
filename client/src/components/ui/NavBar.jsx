@@ -97,7 +97,7 @@ const ChatIcon = () => {
 const ClickedChatIcon = () => {
   return (
     <svg
-      width='28'
+      width='29'
       height='28'
       viewBox='0 0 28 28'
       fill='none'
