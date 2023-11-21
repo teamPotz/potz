@@ -263,7 +263,7 @@ function CreatePost() {
     for (let i = 0; i < data.length - 1; i++) {
       data[i].push(data[i + 1][0]);
     }
-    data.pop();
+      data.pop();
     return JSON.stringify(data);
   };
 

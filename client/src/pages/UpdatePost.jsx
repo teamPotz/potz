@@ -88,9 +88,7 @@ const ImgInput = styled.div`
   border: none;
   width: 65.33px;
   height: 65.33px;
-  // background-image: url({${(props) =>
-    props.src ? props.src : props.img ? props.img : 'none'});
-  background-image: url({${(props) => props.src}});
+  background-image: url(${(props) => (props.img ? props.img : 'none')});
   background-color: ${COLOR.POTZ_PINK_100};
   background-size: cover;
   border-radius: 9.33333px;
@@ -153,11 +151,12 @@ function UpdatePost() {
     categoryId: '',
   });
 
+
   useEffect(() => {
     async function getData() {
       try {
-        const res = await fetch(`${BASE_URL}/posts/${id}`, {
-          method: 'PATCH',
+        const res = await fetch(`${BASE_URL}/posts/${id}/update`, {
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -170,7 +169,7 @@ function UpdatePost() {
       }
     }
     getData();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     if(getData){
@@ -193,7 +192,7 @@ function UpdatePost() {
     meetingLocation,
     deliveryFees,
     deliveryDiscounts,
-    file
+    file,
   ) {
     const formData = new FormData();
     formData.append('storeName', storeName);
@@ -205,9 +204,8 @@ function UpdatePost() {
     formData.append('deliveryFees', deliveryFees);
     formData.append('deliveryDiscounts', deliveryDiscounts);
     formData.append('image', file);
-
     try {
-      const res = await fetch(`${BASE_URL}/posts/${id}`, {
+      const res = await fetch(`${BASE_URL}/posts/${id}/update`, {
         method: 'PATCH',
         body: formData,
         credentials: 'include',
@@ -308,7 +306,6 @@ function UpdatePost() {
     for (let i = 0; i < data.length - 1; i++) {
       data[i].push(data[i + 1][0]);
     }
-    data.pop();
     return JSON.stringify(data);
   };
 
@@ -346,7 +343,7 @@ function UpdatePost() {
             const deliveryDiscounts = processData('deliveryDiscount', e);
             const file = e.target.image.files[0];
 
-            createPost(
+            updatePost(
               storeName,
               storeAddress,
               orderLink,
@@ -355,7 +352,7 @@ function UpdatePost() {
               meetingLocation,
               deliveryFees,
               deliveryDiscounts,
-              file
+              file,
             );
           }}
         >
@@ -408,7 +405,7 @@ function UpdatePost() {
                 <ShopInput
                   name='storeName'
                   placeholder={name ? name : '가게 이름'}
-                  value={getData.storeName}
+                  defaultValue={getData.storeName}
                 ></ShopInput>
                 <div>
                   <svg
@@ -435,7 +432,7 @@ function UpdatePost() {
               <LinkInput
                 name='orderLink'
                 placeholder='관련 링크 붙여넣기'
-                value={getData.orderLink}
+                defaultValue={getData.orderLink}
               ></LinkInput>
             </Button>
             <Button
@@ -528,7 +525,7 @@ function UpdatePost() {
                 name='recruitment'
                 width='320px'
                 placeholder='마감 인원 수'
-                value={getData.recruitment}
+                defaultValue={getData.recruitment}
               ></Input>
             </Button>
             <Button height={'74.67px'}>
@@ -551,7 +548,7 @@ function UpdatePost() {
                 name='meetingLocation'
                 width='320px'
                 placeholder='만날 장소'
-                value={getData.meetingLocation}
+                defaultValue={getData.meetingLocation}
               ></Input>
             </Button>
             <Button height={`${74.67 + 34.33 * (deliveryFeeCount - 1)}px`}>
@@ -570,14 +567,14 @@ function UpdatePost() {
                 />
               </svg>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                {[...Array(deliveryFeeCount).keys()].map((count) => {
+                {[...Array(deliveryFeeCount + 1).keys()].map((count) => {
                   return (
                     <div key={count}>
                       <Input
                         name={`deliveryFeeHeader${count}`}
                         width='50px'
                         placeholder='얼마'
-                        value={getData.deliveryFees[count].minAmount}
+                        defaultValue={getData.deliveryFees[count]?.minAmount}
                         onChange={(e) => deliveryFeeChange(e, count)}
                       ></Input>
                       <FontMd>이상 주문 시 배달비</FontMd>
@@ -585,7 +582,7 @@ function UpdatePost() {
                         name={`deliveryFeeFooter${count}`}
                         width='50px'
                         placeholder='얼마'
-                        value={getData.deliveryFees[count].fee}
+                        defaultValue={getData.deliveryFees[count]?.fee}
                         onChange={(e) => deliveryFeeChange(e, count)}
                       ></Input>
                     </div>
@@ -609,14 +606,14 @@ function UpdatePost() {
                 />
               </svg>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                {[...Array(deliveryDiscountCount).keys()].map((count) => {
+                {[...Array(deliveryDiscountCount + 1).keys()].map((count) => {
                   return (
                     <div key={count}>
                       <Input
                         name={`deliveryDiscountsHeader${count}`}
                         width='50px'
                         placeholder='얼마'
-                        value={getData.deliveryDiscounts[count].minAmount}
+                        defaultValue={getData.deliveryDiscounts[count]?.minAmount}
                         onChange={(e) => deliveryDiscountsChange(e, count)}
                       ></Input>
                       <FontMd>이상 주문 시</FontMd>
@@ -624,7 +621,7 @@ function UpdatePost() {
                         name={`deliveryDiscountsFooter${count}`}
                         width='50px'
                         placeholder='얼마'
-                        value={getData.deliveryDiscounts[count].discount}
+                        defaultValue={getData.deliveryDiscounts[count]?.discount}
                         onChange={(e) => deliveryDiscountsChange(e, count)}
                       ></Input>
                       <FontMd>할인</FontMd>
