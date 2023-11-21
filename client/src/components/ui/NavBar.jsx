@@ -163,7 +163,6 @@ const NavBarWrapper = styled.div`
   background-color: ${COLOR.WHITE};
   border: 1px ${COLOR.GRAY_100} solid;
   border-radius: 16px 16px 0px 0px;
-  box-shadow: 0px -36px 57px 0px rgba(255, 255, 255, 0.8);
 `;
 
 //nav bar buttons wrappers

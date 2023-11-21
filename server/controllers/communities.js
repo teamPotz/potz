@@ -50,19 +50,23 @@ export async function getCommunities(req, res) {
 
 export async function getCommunitiesByLocation(req, res) {
   const { latitude, longitude } = req.query;
-  console.log(latitude, longitude);
+  let lat = latitude;
+  let long = longitude;
+  console.log(lat, long);
 
   try {
     const result = await prisma.$queryRaw`
-    SELECT community.*, 
-        (SELECT ST_DISTANCE_SPHERE(point(longitude, latitude), point(${longitude},${latitude}))) as distance,
-        COUNT(post.id) as post_count
-    FROM community
-    LEFT JOIN post ON community.id = post.communityId
-
-    WHERE ST_DISTANCE_SPHERE(point(longitude, latitude), point(${longitude},${latitude})) <= 500
-    GROUP BY community.id
-    ORDER BY distance;
+    SELECT c.*,
+        GROUP_CONCAT(ct.name) AS communityTypes,
+        (select count(*) from post where communityId=c.id) as postCount,
+        (select count(*) from communitiesOnUsers where communityId=c.id) as memberCount,
+        (select ST_DISTANCE_SPHERE(point(longitude, latitude), point(${long}, ${lat}))) as distance
+    FROM community c
+      INNER JOIN CommunityTypesOnCommunities ctc ON c.id = ctc.communityId
+      INNER JOIN CommunityType ct ON ctc.communityTypeId = ct.id
+    WHERE ST_DISTANCE_SPHERE(point(longitude, latitude), point(${long}, ${lat})) <= 1000
+    GROUP BY c.id
+    order by distance;
     `;
     const stringifiedData = JSON.stringify(result, (key, value) => {
       if (typeof value === 'bigint') {
@@ -72,7 +76,6 @@ export async function getCommunitiesByLocation(req, res) {
     });
 
     res.status(200).send(stringifiedData);
-    console.log(stringifiedData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'get communities error' });
@@ -86,6 +89,7 @@ export async function getCommunityById(req, res) {
       select: {
         id: true,
         name: true,
+        imageUrl: true,
         communityTypes: {
           select: {
             communityType: {
@@ -161,7 +165,7 @@ export async function getCommunityById(req, res) {
 export async function saveCommunityImg(req, res) {
   console.log(req.file.path);
   let editPath = '/' + req.file.path.replace(/\\/g, '/');
-  communityPhoto = editPath.replace('/public', '');
+  communityPhoto = editPath.replace('/uploads', '');
 }
 
 export async function createCommunity(req, res) {
