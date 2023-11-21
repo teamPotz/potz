@@ -2,122 +2,123 @@ import COLOR from '../utility/Color';
 import styled from 'styled-components';
 import Font from '../utility/Font';
 import NavBar from '../components/ui/NavBar';
+import { useAuth } from '../contexts/AuthContext';
 
-//contents_container 안에 UI 구현 하시면 됩니다!
-
-function UserProfile() {
-  const Box = styled.div`
-    display: flex;
-    flex-direction: ${(props) => props.align};
-    align-items: center;
-    width: 100%;
-    height: ${(props) => props.height};
-    justify-content: space-between;
-    background-color: ${COLOR.WHITE};
-    gap: 21px;
-    div {
-      margin: 28px;
-    }
-    p {
-      margin: 0px;
-    }
-  `;
-  const Profile1 = styled.div`
+const Box = styled.div`
+  display: flex;
+  flex-direction: ${(props) => props.align};
+  align-items: center;
+  width: 100%;
+  height: ${(props) => props.height};
+  justify-content: space-between;
+  background-color: ${COLOR.WHITE};
+  gap: 21px;
+  div {
+    margin: 28px;
+  }
+  p {
+    margin: 0px;
+  }
+`;
+const Profile1 = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 21px;
+  align-items: center;
+  height: 70px;
+  margin: 28px;
+  div {
+    margin: 0;
     display: flex;
     flex-direction: row;
-    gap: 21px;
+    justify-content: space-between;
     align-items: center;
-    height: 70px;
-    margin: 28px;
-    div {
-      margin: 0;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      width: 276.5px;
-    }
-  `;
-  const Profile2 = styled.div`
-    display: flex;
-    width: 363.33px;
-    height: 78px;
-    transform: translateY(-46px);
-    background-color: ${COLOR.GRAY_100};
-    border-radius: 9.33333px;
-    div {
-      margin: 0px;
-      padding: 14px 35px 14px 16.3333px;
-    }
-  `;
+    width: 276.5px;
+  }
+`;
+const Profile2 = styled.div`
+  display: flex;
+  width: 363.33px;
+  height: 78px;
+  transform: translateY(-46px);
+  background-color: ${COLOR.GRAY_100};
+  border-radius: 9.33333px;
+  div {
+    margin: 0px;
+    padding: 14px 35px 14px 16.3333px;
+  }
+`;
 
-  const FontBig = styled.p`
-    font-family: ${Font.FontKor};
-    font-style: normal;
-    font-weight: 700;
-    font-size: 18.6667px;
-    color: ${COLOR.BLACK};
-    margin: 0;
-    white-space: nowrap;
-  `;
-  const FontMd = styled.span`
-    font-family: ${Font.FontKor};
-    font-style: normal;
-    font-weight: ${(props) => props.weight};
-    font-size: 16.3333px;
-    color: ${(props) => props.color};
-    margin: 0;
-    white-space: nowrap;
-  `;
-  const FontSm = styled.span`
-    font-family: ${Font.FontKor};
-    font-style: normal;
-    font-weight: 500;
-    font-size: 14px;
-    color: ${COLOR.GRAY_500};
-    margin: 0;
-    white-space: nowrap;
-  `;
+const FontBig = styled.p`
+  font-family: ${Font.FontKor};
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18.6667px;
+  color: ${COLOR.BLACK};
+  margin: 0;
+  white-space: nowrap;
+`;
+const FontMd = styled.span`
+  font-family: ${Font.FontKor};
+  font-style: normal;
+  font-weight: ${(props) => props.weight};
+  font-size: 16.3333px;
+  color: ${(props) => props.color};
+  margin: 0;
+  white-space: nowrap;
+`;
+const FontSm = styled.span`
+  font-family: ${Font.FontKor};
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  color: ${COLOR.GRAY_500};
+  margin: 0;
+  white-space: nowrap;
+`;
 
-  const styles = {
-    background: {
-      backgroundColor: `${COLOR.POTZ_PINK_100}`,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '9.33px',
-    },
-    topBar: {
-      width: '420px',
-      position: 'fixed',
-      top: 0,
-      boxShadow: '0px 1.16667px 2.33333px rgba(0, 0, 0, 0.08)',
-    },
-    content: {
-      marginTop: '60.67px',
-    },
-    navBar: {
-      position: 'fixed',
-      bottom: 0,
-      width: '420px',
-    },
-    verticalAlign: {
-      display: 'flex',
-      alignItems: 'center',
-    },
-    contentBox: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '1.5px',
-    },
-  };
+const styles = {
+  background: {
+    backgroundColor: `${COLOR.POTZ_PINK_100}`,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '9.33px',
+  },
+  topBar: {
+    width: '420px',
+    position: 'fixed',
+    top: 0,
+    boxShadow: '0px 1.16667px 2.33333px rgba(0, 0, 0, 0.08)',
+  },
+  content: {
+    marginTop: '60.67px',
+  },
+  navBar: {
+    position: 'fixed',
+    bottom: 0,
+    width: '420px',
+  },
+  verticalAlign: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  contentBox: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1.5px',
+  },
+};
 
-  const text = [
-    '내 공동체 관리',
-    '알림 설정',
-    '참여 내역',
-    '결제 내역',
-    '이벤트 및 공지사항',
-  ];
+const text = [
+  '내 공동체 관리',
+  '알림 설정',
+  '참여 내역',
+  '결제 내역',
+  '이벤트 및 공지사항',
+];
+
+function UserProfile() {
+  const { user, logout } = useAuth();
 
   return (
     <div className='potz_container' style={styles.background}>
@@ -155,7 +156,7 @@ function UserProfile() {
             />
             <div>
               <span>
-                <FontBig>김기성</FontBig>
+                <FontBig>{user.name}</FontBig>
                 <FontSm color={`${COLOR.GRAY_500}`}>인천 연수구</FontSm>
               </span>
               <svg
@@ -178,7 +179,7 @@ function UserProfile() {
           <Profile2>
             <div>
               <FontMd weight={500} color={`${COLOR.GRAY_400}`}>
-                김기성님! <p></p>이번 달 팟즈로{' '}
+                {user.name}님! <p></p>이번 달 팟즈로{' '}
                 <FontMd weight={500} color={`${COLOR.POTZ_PINK_DEFAULT}`}>
                   배달비 26000원
                 </FontMd>
@@ -225,7 +226,7 @@ function UserProfile() {
               간편 입력 계좌 번호
             </FontMd>
             <FontMd color={COLOR.GRAY_400} weight={400}>
-              1234-12345-1234-1234 김기성
+              1234-12345-1234-1234{user.name}
             </FontMd>
           </div>
           <div>
@@ -267,6 +268,8 @@ function UserProfile() {
           );
         })}
       </div>
+
+      <button onClick={() => logout()}>logout</button>
 
       <Box height={'200px'}></Box>
       <div style={styles.navBar}>
