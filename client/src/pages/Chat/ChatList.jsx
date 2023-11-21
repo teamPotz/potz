@@ -1,4 +1,3 @@
-import '../../App.css';
 import styled from 'styled-components';
 import COLOR from '../../utility/Color';
 import Font from '../../utility/Font';

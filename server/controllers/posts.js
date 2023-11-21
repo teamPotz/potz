@@ -458,8 +458,114 @@ export async function createPost(req, res) {
   }
 }
 
+//update Post
+export async function updateGetPost(req, res) {
+  const { id } = req.params;
+  try {
+    const updateGetPost = await prisma.post.findUnique({
+      where: {
+        id: +id,
+        authorId: req.user.id,
+      },
+      select: {
+        id: true,
+        storeName: true,
+        storeAddress: true,
+        imageUrl: true,
+        orderLink: true,
+        categoryId: true,
+        recruitment: true,
+        meetingLocation: true,
+        deliveryFees: true,
+        deliveryDiscounts: true,
+      },
+    });
+    res.status(201).json(updateGetPost);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'get post error' });
+  }
+}
+
 export async function updatePost(req, res) {
-  // ...
+  const { id } = req.params;
+  let imageUrl = req.file?.path;
+  let deliveryFees = JSON.parse(req.body.deliveryFees);
+  let deliveryDiscounts = JSON.parse(req.body.deliveryDiscounts);
+  const {
+    storeName,
+    storeAddress,
+    orderLink,
+    categoryId,
+    recruitment,
+    meetingLocation,
+  } = req.body;
+
+  try {
+    console.log(req.body);
+    const getPost = await prisma.post.findUnique({
+      where: {
+        id: +id,
+        authorId: req.user.id,
+      },
+    });
+
+    let updatedPostData = '';
+    if (getPost) {
+      updatedPostData = {
+        storeName,
+        storeAddress,
+        imageUrl: imageUrl,
+        orderLink,
+        categoryId: parseInt(categoryId),
+        recruitment: parseInt(recruitment),
+        meetingLocation,
+        communityId: 1,
+      };
+    }
+    const updatePost = await prisma.post.update({
+      where: {
+        id: +id,
+      },
+      data: updatedPostData,
+    });
+
+    //원래 있던 베달비, 할인비 삭제
+    const updatePostWithDeleteDeliveryFee = await prisma.deliveryFee.deleteMany(
+      {
+        where: {
+          postId: +id,
+        },
+      }
+    );
+    const updatePostWithDeleteDeliveryDiscount =
+      await prisma.deliveryDiscount.deleteMany({
+        where: {
+          postId: +id,
+        },
+      });
+    //업데이트한 게시글의 배달비 할인정보 등록
+    const updatePostWithDeliveryFee = await prisma.deliveryFee.createMany({
+      data: deliveryFees.map((item) => ({
+        minAmount: parseInt(item[0]),
+        maxAmount: item[2] ? parseInt(item[2]) : null,
+        fee: parseInt(item[1]),
+        postId: +id,
+      })),
+    });
+    const postWithDeliveryDiscounts = await prisma.deliveryDiscount.createMany({
+      data: deliveryDiscounts.map((item) => ({
+        minAmount: parseInt(item[0]),
+        discount: parseInt(item[1]),
+        postId: +id,
+      })),
+    });
+
+    res.status(201).json(updatePost);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'update post error' });
+  }
 }
 
 export async function deletePost(req, res) {

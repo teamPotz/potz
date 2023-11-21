@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Font from '../utility/Font';
 import NavBar from '../components/ui/NavBar';
 import { useAuth } from '../contexts/AuthContext';
+import ButtonBg from '../components/ButtonBG';
 
 const Box = styled.div`
   display: flex;
@@ -268,8 +269,15 @@ function UserProfile() {
           );
         })}
       </div>
-
-      <button onClick={() => logout()}>logout</button>
+      <div className='contents_container'>
+        <ButtonBg
+          backgroundColor={COLOR.POTZ_PINK_DEFAULT}
+          hoverColor={COLOR.POTZ_PINK_600}
+          fontColor={COLOR.WHITE}
+        >
+          로그아웃
+        </ButtonBg>
+      </div>
 
       <Box height={'200px'}></Box>
       <div style={styles.navBar}>

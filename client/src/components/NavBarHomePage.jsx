@@ -180,7 +180,7 @@ const fontStyle = {
 };
 
 const fontStyle2 = {
-  width: '150px',
+  width: 'auto',
   fontStyle: Font.FontKor,
   fontSize: '12px',
   fontWeight: '700',
