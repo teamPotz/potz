@@ -1,16 +1,13 @@
-import '../../App.css';
 import { useState, useEffect } from 'react';
 import COLOR from '../../utility/Color.js';
-import Font from '../../utility/Font.js';
 import GoBack from '../../components/goBack.jsx';
-import LoadingPage from '../LoadingPage.jsx';
 import ChatMenu from '../../components/chat/ChatMenu.jsx';
 import ChatInput from '../../components/chat/ChatInput.jsx';
+import MessageContainer from './MessageContainer.jsx';
 
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { useLocation, useParams } from 'react-router-dom';
 import { socket } from '../../../socket.js';
-import MessageContainer from './MessageContainer.jsx';
 // import { io } from 'socket.io-client';
 
 const styles = {
@@ -37,9 +34,9 @@ function Chat() {
   const [isLoadingGetMessage, setIsLoadingGetMessage] = useState(false);
   const [isLoadingSendMessage, setisLoadingSendMessage] = useState(false);
 
-  const { user, isLoading } = useAuth();
   const { potId } = useParams();
   const { state } = useLocation();
+  const { user } = useAuth();
 
   async function fetchMessages() {
     setIsLoadingGetMessage(true);
@@ -58,7 +55,10 @@ function Chat() {
   }
 
   async function sendMessage(e) {
-    // if (e.key !== 'Enter' || !newMessage) return;
+    if (isLoadingSendMessage) return;
+    if (!(e.key === 'Enter' || e.type === 'click') || !newMessage) {
+      return;
+    }
 
     try {
       setisLoadingSendMessage(true);
@@ -74,10 +74,7 @@ function Chat() {
       if (!res.ok) {
         throw new Error('send message error');
       }
-      // const data = await res.json();
       const data = await res.json();
-      // console.log(data);
-      // setMessages((prevMessages) => [...prevMessages, data]);
     } catch (error) {
       console.error(error);
     } finally {
@@ -91,42 +88,46 @@ function Chat() {
   }, []);
 
   useEffect(() => {
-    socket.connect();
+    // socket.connect();
+    // socket.on('connect', () => setIsConnected(true));
+    // socket.on('disconnect', () => setIsConnected(false));
     socket.emit('join', { potId, user });
-    socket.on('connect', () => setIsConnected(true));
-    socket.on('disconnect', () => setIsConnected(false));
     socket.on('join', (data) => {
-      console.log(data);
+      setMessages((prevMessages) => [...prevMessages, data]);
     });
     socket.on('message', (data) => {
       console.log(data);
       setMessages((prevMessages) => [...prevMessages, data]);
     });
-
     socket.on('exit', (data) => {
-      console.log(data);
+      setMessages((prevMessages) => [...prevMessages, data]);
     });
 
-    return () => {
-      socket.off('connect', () => setIsConnected(true));
-      socket.disconnect();
-    };
+    // return () => {
+    //   socket.off('connect', () => setIsConnected(true));
+    //   socket.disconnect();
+    // };
   }, []);
 
-  useEffect(() => {
-    const scroll = document.querySelector('.potz_container');
-    scroll.scrollTop = scroll.scrollHeight;
-  }, [messages]);
+  // useEffect(() => {
+  //   const scroll = document.querySelector('.potz_container');
+  //   scroll.scrollTop = scroll.scrollHeight;
+  // }, [messages]);
 
+  {
+    /* <button onClick={() => socket.connect()}>Connect</button> */
+  }
+  {
+    /* <button onClick={() => socket.disconnect()}>disConnect</button> */
+  }
+  {
+    /*  todo : isMyMessage */
+  }
   return (
-    <>
+    <div className='potz_container'>
       <GoBack text={state?.storeName} />
       <div style={styles.background}>
         <div className='contents_container' style={styles.Content}>
-          {/* <button onClick={() => socket.connect()}>Connect</button> */}
-          {/* <button onClick={() => socket.disconnect()}>disConnect</button> */}
-
-          {/*  todo : isMyMessage */}
           <MessageContainer messages={messages} isMyMessage={{}} />
         </div>
         <ChatMenu isPotMaster={isPotMaster} />
@@ -137,7 +138,7 @@ function Chat() {
           isConnected={isConnected}
         />
       </div>
-    </>
+    </div>
   );
 }
 
