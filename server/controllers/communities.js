@@ -50,7 +50,9 @@ export async function getCommunities(req, res) {
 
 export async function getCommunitiesByLocation(req, res) {
   const { latitude, longitude } = req.query;
-  console.log(latitude, longitude);
+  let lat = latitude;
+  let long = longitude;
+  console.log(lat, long);
 
   try {
     const result = await prisma.$queryRaw`
@@ -58,11 +60,11 @@ export async function getCommunitiesByLocation(req, res) {
         GROUP_CONCAT(ct.name) AS communityTypes,
         (select count(*) from post where communityId=c.id) as postCount,
         (select count(*) from communitiesOnUsers where communityId=c.id) as memberCount,
-        (select ST_DISTANCE_SPHERE(point(longitude, latitude), point(126.92042451465518, 37.4999810960111))) as distance
+        (select ST_DISTANCE_SPHERE(point(longitude, latitude), point(${long}, ${lat}))) as distance
     FROM community c
       INNER JOIN CommunityTypesOnCommunities ctc ON c.id = ctc.communityId
       INNER JOIN CommunityType ct ON ctc.communityTypeId = ct.id
-    WHERE ST_DISTANCE_SPHERE(point(longitude, latitude), point(126.92042451465518, 37.4999810960111)) <= 5000
+    WHERE ST_DISTANCE_SPHERE(point(longitude, latitude), point(${long}, ${lat})) <= 1000
     GROUP BY c.id
     order by distance;
     `;
@@ -74,7 +76,6 @@ export async function getCommunitiesByLocation(req, res) {
     });
 
     res.status(200).send(stringifiedData);
-    console.log(stringifiedData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'get communities error' });
