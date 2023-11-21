@@ -83,11 +83,30 @@ function NamingCommunity(props) {
     name: '',
     communityTypes: location.state.data,
     members: userDatas,
-    longitude: 137.554454,
-    latitude: 137.554454,
+    longitude: null,
+    latitude: null,
     posts: 0,
     imageUrl: null,
   });
+
+  useEffect(() => {
+    const getGeolocation = () => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setFormDatas((prevFormDatas) => ({
+            ...prevFormDatas,
+            latitude,
+            longitude,
+          }));
+        },
+        (error) => {
+          console.error('Error getting geolocation:', error);
+        }
+      );
+    };
+    getGeolocation();
+  }, []);
 
   useEffect(() => {
     async function fetchUserDatas() {
@@ -121,27 +140,31 @@ function NamingCommunity(props) {
     if (count < 1) {
       alert('먼저 이미지 저장 버튼을 눌러서 이미지를 업로드해주세요.');
     } else {
-      console.log(formDatas);
-      try {
-        const response = await fetch('http://localhost:5000/communities', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify(formDatas),
-        });
+      if (formDatas.longitude !== null && formDatas.latitude !== null) {
+        console.log(formDatas);
+        try {
+          const response = await fetch('http://localhost:5000/communities', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify(formDatas),
+          });
 
-        if (response.ok) {
-          //새로 생성된 커뮤니티 데이터 받아서 넘겨주기
-          const responseData = await response.json();
-          console.log('새로 생성된 커뮤니티의 ID:', responseData);
+          if (response.ok) {
+            //새로 생성된 커뮤니티 데이터 받아서 넘겨주기
+            const responseData = await response.json();
+            console.log('새로 생성된 커뮤니티의 ID:', responseData);
 
-          navigate('/home', { state: { communityDataID: responseData.id } });
-          console.log('폼 데이터 및 파일 전송 완료🚀');
+            navigate('/home', { state: { communityDataID: responseData.id } });
+            console.log('폼 데이터 및 파일 전송 완료🚀');
+          }
+        } catch (error) {
+          console.error('에러:', error);
         }
-      } catch (error) {
-        console.error('에러:', error);
+      } else {
+        alert('위치 정보를 먼저 가져와주세요.');
       }
     }
   };

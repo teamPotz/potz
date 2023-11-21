@@ -9,7 +9,7 @@ import GoBack from '../../components/goBack';
 import Font from '../../utility/Font';
 import CheckMenu from '../../components/ckeckMenu';
 import { useEffect } from 'react';
-import ChatNavBar from '../../components/ChatNavBar';
+// import ChatNavBar from '../../components/ChatNavBar';
 //contents_container 안에 UI 구현 하시면 됩니다!
 
 function Chat() {
@@ -107,12 +107,15 @@ function Chat() {
           <div className='side_container'></div>
         </Col>
         <Col className='col2'>
-          <div className='potz_container'id='potz_container' style={styles.background}>
+          <div
+            className='potz_container'
+            id='potz_container'
+            style={styles.background}
+          >
             <GoBack text={'버거킹 하버뷰점'}></GoBack>
 
             {/* 받아온 데이터는 contents-container에 구현합니다. */}
-            <div
-              className='contents_container' style={styles.Content}>
+            <div className='contents_container' style={styles.Content}>
               <MessageBox isMyMessage={true}>
                 안녕하세요
                 <div>
@@ -151,7 +154,6 @@ function Chat() {
               <CheckMenu isMyMessage={false}></CheckMenu>
             </div>
             <ChatNavBar isBangJang={BangJang} />
-            
           </div>
         </Col>
         <Col className='col3'>

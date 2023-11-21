@@ -4,10 +4,11 @@ import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import COLOR from '../utility/Color';
 import { useNavigate } from 'react-router-dom';
 
-function UserLoactionMap(props) {
+function PostMap(props) {
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
-  const [map, setMap] = useState();
+  const [map, setMap] = useState('');
+  let [latLon, setLetLon] = useState();
   const navigate = useNavigate();
   const coordinateRef = useRef({
     lat: 37.56421,
@@ -23,22 +24,56 @@ function UserLoactionMap(props) {
           lon: position.coords.longitude,
         };
         console.log(coordinateRef.current);
+        setLetLon(coordinateRef.current);
+
         bounds.extend(
           new window.kakao.maps.LatLng(
             coordinateRef.current.lat,
             coordinateRef.current.lon
           )
         );
-        map.setBounds(bounds);
+        if (map) {
+          map.setBounds(bounds);
+        }
       });
     }
-  }, []);
+  }, [map]);
+
+  useEffect(() => {
+    const ps = new window.kakao.maps.services.Places();
+
+    ps.keywordSearch(props.currentLocation, (data, status) => {
+      if (status === window.kakao.maps.services.Status.OK) {
+        const bounds = new window.kakao.maps.LatLngBounds();
+        const firstResult = data[0];
+
+        let marker = [
+          {
+            position: {
+              lat: firstResult.y,
+              lng: firstResult.x,
+            },
+            content: firstResult.place_name,
+            storeAddress: firstResult.road_address_name,
+          },
+        ];
+
+        bounds.extend(
+          new window.kakao.maps.LatLng(firstResult.y, firstResult.x)
+        );
+
+        setMarkers(marker);
+        if (map) {
+          map.setBounds(bounds);
+        }
+      }
+    });
+  }, [props.currentLocation]);
 
   useEffect(() => {
     const ps = new window.kakao.maps.services.Places();
 
     ps.keywordSearch(props.searchKeyword, (data, status) => {
-      console.log(data);
       if (status === window.kakao.maps.services.Status.OK) {
         const bounds = new window.kakao.maps.LatLngBounds();
         let marker = [];
@@ -58,7 +93,7 @@ function UserLoactionMap(props) {
         map.setBounds(bounds);
       }
     });
-  }, [props]);
+  }, [props.searchKeyword]);
 
   return (
     <>
@@ -74,23 +109,23 @@ function UserLoactionMap(props) {
             position={marker.position}
             onClick={() => setInfo(marker)}
           >
-            {info && info.content === marker.content && (
-              <div style={{ color: `${COLOR.BLACK}` }}>
-                {marker.content}
-                <button
-                  onClick={() =>
-                    navigate('#', {
-                      // state: {
-                      //   name: marker.content,
-                      //   address: marker.storeAddress,
-                      // },
-                    })
-                  }
-                >
-                  선택
-                </button>
-              </div>
-            )}
+            {latLon
+              ? info &&
+                info.content === marker.content && (
+                  <div style={{ color: `${COLOR.BLACK}` }}>
+                    {marker.content}
+                    <button
+                      onClick={() =>
+                        navigate('/community-lists', {
+                          state: { latLon: latLon },
+                        })
+                      }
+                    >
+                      선택
+                    </button>
+                  </div>
+                )
+              : null}
           </MapMarker>
         ))}
       </Map>
@@ -98,4 +133,4 @@ function UserLoactionMap(props) {
   );
 }
 
-export default UserLoactionMap;
+export default PostMap;
