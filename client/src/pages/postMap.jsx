@@ -4,7 +4,6 @@ import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import COLOR from '../utility/Color';
 import { useNavigate } from 'react-router-dom';
 
-
 function PostMap(props) {
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
@@ -24,10 +23,16 @@ function PostMap(props) {
           lon: position.coords.longitude,
         };
         console.log(coordinateRef.current);
-        bounds.extend(new window.kakao.maps.LatLng(coordinateRef.current.lat, coordinateRef.current.lon));
+        bounds.extend(
+          new window.kakao.maps.LatLng(
+            coordinateRef.current.lat,
+            coordinateRef.current.lon
+          )
+        );
         map.setBounds(bounds);
       });
-    }  }, [map]);
+    }
+  }, [map]);
 
   useEffect(() => {
     const ps = new window.kakao.maps.services.Places();
@@ -73,7 +78,16 @@ function PostMap(props) {
             {info && info.content === marker.content && (
               <div style={{ color: `${COLOR.BLACK}` }}>
                 {marker.content}
-                <button onClick={() => navigate('/create-post', {state: {name: marker.content, address: marker.storeAddress}}) }>
+                <button
+                  onClick={() => {
+                    navigate(props.routeName, {
+                      state: {
+                        name: marker.content,
+                        address: marker.storeAddress,
+                      },
+                    });
+                  }}
+                >
                   선택
                 </button>
               </div>

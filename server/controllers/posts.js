@@ -72,17 +72,17 @@ function getNextDeliveryFeeInfos(
 
 // 할인금액 구하기
 function calculateDiscount(discountInfo, price) {
-    if(discountInfo === undefined) return 0;
-      // 금액 할인인 경우
-      if (discountInfo.discount !== null) {
-        return Math.min(discountInfo.discount, price);
-        // 퍼센트 할인인 경우
-      } else if (discountInfo.discountRate !== null) {
-        return Math.min(
-          discountInfo.discountRate * price,
-          discountInfo.maxDiscountAmount || price
-        );
-      }
+  if (discountInfo === undefined) return 0;
+  // 금액 할인인 경우
+  if (discountInfo.discount !== null) {
+    return Math.min(discountInfo.discount, price);
+    // 퍼센트 할인인 경우
+  } else if (discountInfo.discountRate !== null) {
+    return Math.min(
+      discountInfo.discountRate * price,
+      discountInfo.maxDiscountAmount || price
+    );
+  }
   return 0;
 }
 
@@ -149,7 +149,7 @@ export async function getPosts(req, res) {
         },
         deliveryPot: {
           select: {
-            _count: {select: {participants: true}},
+            _count: { select: { participants: true } },
             orders: {
               select: {
                 price: true,
@@ -224,8 +224,6 @@ export async function getPosts(req, res) {
         potMasterHistoryCount: post.author._count.deliveryPotHistoryAsMaster,
       };
     });
-
-
 
     res.status(200).send(transformedPosts);
   } catch (error) {
@@ -309,7 +307,9 @@ export async function getPostById(req, res) {
       imageUrl: post.imageUrl,
       orderLink: post.orderLink,
       category: post.category.name,
-      potMasterProfileImg: post.author.profile ? post.author.profile.imageUrl : null,
+      potMasterProfileImg: post.author.profile
+        ? post.author.profile.imageUrl
+        : null,
       participantsCount: post.deliveryPot._count.participants,
       recruitment: post.recruitment,
       meetingLocation: post.meetingLocation,
@@ -389,12 +389,18 @@ export async function getPostByName(req, res) {
 }
 
 //create post
-export async function createPost(req, res) {  
+export async function createPost(req, res) {
   let imageUrl = req.file.path;
   let deliveryFees = JSON.parse(req.body.deliveryFees);
   let deliveryDiscounts = JSON.parse(req.body.deliveryDiscounts);
-  const { storeName, storeAddress, orderLink, categoryId, recruitment, meetingLocation } =
-    req.body;
+  const {
+    storeName,
+    storeAddress,
+    orderLink,
+    categoryId,
+    recruitment,
+    meetingLocation,
+  } = req.body;
 
   try {
     console.log(req.body);
@@ -452,9 +458,9 @@ export async function createPost(req, res) {
 }
 
 //update Post
-export async function updateGetPost(req, res){
+export async function updateGetPost(req, res) {
   const { id } = req.params;
-  try{
+  try {
     const updateGetPost = await prisma.post.findUnique({
       where: {
         id: +id,
@@ -471,13 +477,12 @@ export async function updateGetPost(req, res){
         meetingLocation: true,
         deliveryFees: true,
         deliveryDiscounts: true,
-      }
-    })
+      },
+    });
     res.status(201).json(updateGetPost);
-  }
-  catch(error){
+  } catch (error) {
     console.log(error);
-    res.status(500).json({message: 'get post error'});
+    res.status(500).json({ message: 'get post error' });
   }
 }
 
@@ -486,10 +491,16 @@ export async function updatePost(req, res) {
   let imageUrl = req.file?.path;
   let deliveryFees = JSON.parse(req.body.deliveryFees);
   let deliveryDiscounts = JSON.parse(req.body.deliveryDiscounts);
-  const { storeName, storeAddress, orderLink, categoryId, recruitment, meetingLocation } =
-    req.body;
+  const {
+    storeName,
+    storeAddress,
+    orderLink,
+    categoryId,
+    recruitment,
+    meetingLocation,
+  } = req.body;
 
-  try{
+  try {
     console.log(req.body);
     const getPost = await prisma.post.findUnique({
       where: {
@@ -497,9 +508,9 @@ export async function updatePost(req, res) {
         authorId: req.user.id,
       },
     });
-    
+
     let updatedPostData = '';
-    if(getPost){
+    if (getPost) {
       updatedPostData = {
         storeName,
         storeAddress,
@@ -509,26 +520,29 @@ export async function updatePost(req, res) {
         recruitment: parseInt(recruitment),
         meetingLocation,
         communityId: 1,
-      }
+      };
     }
     const updatePost = await prisma.post.update({
-      where:{
+      where: {
         id: +id,
       },
       data: updatedPostData,
     });
 
     //원래 있던 베달비, 할인비 삭제
-    const updatePostWithDeleteDeliveryFee = await prisma.deliveryFee.deleteMany({
-      where: {
-        postId: +id,
+    const updatePostWithDeleteDeliveryFee = await prisma.deliveryFee.deleteMany(
+      {
+        where: {
+          postId: +id,
+        },
       }
-    })
-    const updatePostWithDeleteDeliveryDiscount = await prisma.deliveryDiscount.deleteMany({
-      where: {
-        postId: +id,
-      }
-    })
+    );
+    const updatePostWithDeleteDeliveryDiscount =
+      await prisma.deliveryDiscount.deleteMany({
+        where: {
+          postId: +id,
+        },
+      });
     //업데이트한 게시글의 배달비 할인정보 등록
     const updatePostWithDeliveryFee = await prisma.deliveryFee.createMany({
       data: deliveryFees.map((item) => ({
@@ -547,9 +561,7 @@ export async function updatePost(req, res) {
     });
 
     res.status(201).json(updatePost);
-  }
-
-  catch(error){
+  } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'update post error' });
   }

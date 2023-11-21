@@ -263,7 +263,7 @@ function CreatePost() {
     for (let i = 0; i < data.length - 1; i++) {
       data[i].push(data[i + 1][0]);
     }
-      data.pop();
+    data.pop();
     return JSON.stringify(data);
   };
 
@@ -380,7 +380,11 @@ function CreatePost() {
                       fill='#808080'
                     />
                   </svg>
-                  <FontSm onClick={() => navigate('/getaddress')}>
+                  <FontSm onClick={() => navigate('/getaddress', {
+                    state: {
+                      routeName: '/create-post'
+                    }
+                  })}>
                     {Address ? Address : '지도로 주소 검색하기'}
                   </FontSm>
                 </div>
@@ -490,9 +494,7 @@ function CreatePost() {
                 placeholder='만날 장소'
               ></Input>
             </Button>
-            <Button
-              height={`${74.67 + 34.33 * (deliveryFeeCount - 1)}px`}
-            >
+            <Button height={`${74.67 + 34.33 * (deliveryFeeCount - 1)}px`}>
               <svg
                 width='28'
                 height='29'
@@ -529,9 +531,7 @@ function CreatePost() {
                 })}
               </div>
             </Button>
-            <Button
-              height={`${74.67 + 34.33 * (deliveryDiscountCount - 1)}px`}
-            >
+            <Button height={`${74.67 + 34.33 * (deliveryDiscountCount - 1)}px`}>
               <svg
                 width='28'
                 height='29'

@@ -1,3 +1,4 @@
+//글쓴이만 글을 수정할 수 있어요
 import COLOR from '../utility/Color';
 import GoBack from '../components/goBack';
 import styled from 'styled-components';
@@ -131,12 +132,12 @@ function UpdatePost() {
   const { getUserInfo } = useAuth();
   const myInputRef = useRef(null);
 
-  const [address, setAddress] = useState(false);
+  let searchedAddress = false;
   let name = false;
 
   if (location.state !== null) {
     name = location.state.name;
-    setAddress(location.state.address);
+    searchedAddress = location.state.address;
   }
 
   const [getData, setGetData] = useState({
@@ -146,11 +147,10 @@ function UpdatePost() {
     orderLink: '',
     meetingLocation: '',
     imageUrl: '',
-    deliveryFees: [{minAmount: '', fee: ''}],
-    deliveryDiscounts: [{minAmount: '', discount: ''}],
+    deliveryFees: [{ minAmount: '', fee: '' }],
+    deliveryDiscounts: [{ minAmount: '', discount: '' }],
     categoryId: '',
   });
-
 
   useEffect(() => {
     async function getData() {
@@ -171,8 +171,10 @@ function UpdatePost() {
     getData();
   }, [id]);
 
+  const [address, setAddress] = useState('');
+
   useEffect(() => {
-    if(getData){
+    if (getData) {
       console.log(getData);
       setAddress(getData.storeAddress);
       setCategoryid(getData.categoryId);
@@ -192,7 +194,7 @@ function UpdatePost() {
     meetingLocation,
     deliveryFees,
     deliveryDiscounts,
-    file,
+    file
   ) {
     const formData = new FormData();
     formData.append('storeName', storeName);
@@ -334,7 +336,7 @@ function UpdatePost() {
           onSubmit={(e) => {
             e.preventDefault();
             const storeName = name ? name : e.target.storeName.value;
-            const storeAddress = address;
+            const storeAddress = searchedAddress ? searchedAddress : (address ?. address);
             const orderLink = e.target.orderLink.value;
             const categoryId = categoryid;
             const recruitment = e.target.recruitment.value;
@@ -352,7 +354,7 @@ function UpdatePost() {
               meetingLocation,
               deliveryFees,
               deliveryDiscounts,
-              file,
+              file
             );
           }}
         >
@@ -404,8 +406,8 @@ function UpdatePost() {
               <div>
                 <ShopInput
                   name='storeName'
-                  placeholder={name ? name : '가게 이름'}
-                  defaultValue={getData.storeName}
+                  placeholder='가게 이름'
+                  defaultValue={name ? name : (getData ? getData.storeName : null)}
                 ></ShopInput>
                 <div>
                   <svg
@@ -422,8 +424,12 @@ function UpdatePost() {
                       fill='#808080'
                     />
                   </svg>
-                  <FontSm onClick={() => navigate('/getaddress')}>
-                    {address ? address : '지도로 주소 검색하기'}
+                  <FontSm onClick={() => navigate('/getaddress', {
+                    state: {
+                      routeName: `/update-post/${id}`,
+                    }
+                  })}>
+                    {searchedAddress ? searchedAddress : (address ? address : '지도로 주소 검색하기')}
                   </FontSm>
                 </div>
               </div>
@@ -613,7 +619,9 @@ function UpdatePost() {
                         name={`deliveryDiscountsHeader${count}`}
                         width='50px'
                         placeholder='얼마'
-                        defaultValue={getData.deliveryDiscounts[count]?.minAmount}
+                        defaultValue={
+                          getData.deliveryDiscounts[count]?.minAmount
+                        }
                         onChange={(e) => deliveryDiscountsChange(e, count)}
                       ></Input>
                       <FontMd>이상 주문 시</FontMd>
@@ -621,7 +629,9 @@ function UpdatePost() {
                         name={`deliveryDiscountsFooter${count}`}
                         width='50px'
                         placeholder='얼마'
-                        defaultValue={getData.deliveryDiscounts[count]?.discount}
+                        defaultValue={
+                          getData.deliveryDiscounts[count]?.discount
+                        }
                         onChange={(e) => deliveryDiscountsChange(e, count)}
                       ></Input>
                       <FontMd>할인</FontMd>
