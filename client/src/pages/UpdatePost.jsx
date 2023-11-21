@@ -154,7 +154,7 @@ function UpdatePost() {
   });
 
   useEffect(() => {
-    async function updateData() {
+    async function getData() {
       try {
         const res = await fetch(`${BASE_URL}/posts/${id}`, {
           method: 'PATCH',
@@ -169,15 +169,12 @@ function UpdatePost() {
         console.log(error);
       }
     }
-    updateData();
+    getData();
   }, []);
 
   useEffect(() => {
     if(getData){
       console.log(getData);
-      console.log(getData.deliveryFees);
-      console.log(getData.deliveryFees.length);
-      console.log(categories[getData.categoryId - 1]);
       setAddress(getData.storeAddress);
       setCategoryid(getData.categoryId);
       setCategory(categories[getData.categoryId - 1]);
@@ -187,7 +184,7 @@ function UpdatePost() {
   }, [getData]);
 
   //데이터 전송
-  async function createPost(
+  async function updatePost(
     storeName,
     storeAddress,
     orderLink,
@@ -210,8 +207,8 @@ function UpdatePost() {
     formData.append('image', file);
 
     try {
-      const res = await fetch(`${BASE_URL}/posts`, {
-        method: 'POST',
+      const res = await fetch(`${BASE_URL}/posts/${id}`, {
+        method: 'PATCH',
         body: formData,
         credentials: 'include',
       });

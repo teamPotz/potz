@@ -451,6 +451,7 @@ export async function createPost(req, res) {
   }
 }
 
+//update Post
 export async function updatePost(req, res) {
   const { id } = req.params;
 
@@ -474,24 +475,24 @@ export async function updatePost(req, res) {
     })
     res.status(200).send(getPost);
 
-    // const updatePost = await prisma.post.update({
-    //   where:{
-    //     id: +id,
-    //   },
-    //   select: {
-    //     id: true,
-    //     storeName: true,
-    //     storeAddress: true,
-    //     imageUrl: true,
-    //     orderLink: true,
-    //     categoryId: true,
-    //     recruitment: true,
-    //     meetingLocation: true,
-    //     deliveryFees: true,
-    //     deliveryDiscounts: true,
-    //   }
-    // })
-    // req.status(201).json(updatePost);
+    const updatePost = await prisma.post.update({
+      where:{
+        id: +id,
+      },
+      select: {
+        id: true,
+        storeName: true,
+        storeAddress: true,
+        imageUrl: true,
+        orderLink: true,
+        categoryId: true,
+        recruitment: true,
+        meetingLocation: true,
+        deliveryFees: true,
+        deliveryDiscounts: true,
+      }
+    })
+    req.status(201).json(updatePost);
   }
 
   catch(error){

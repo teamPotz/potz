@@ -81,12 +81,6 @@ function LandingMap() {
   };
   return (
     <>
-      <Container className='background'>
-        <Row className='row1'>
-          <Col className='col1'>
-            <div className='side_container'></div>
-          </Col>
-          <Col className='col2'>
             <div className='potz_container'>
               <div style={styles.wrapperInput}>
                 <div style={styles.inputBox}>
@@ -142,12 +136,6 @@ function LandingMap() {
               <PostMap searchKeyword={keyword}></PostMap>
               <div className='contents_container'></div>
             </div>
-          </Col>
-          <Col className='col3'>
-            <div className='side_container'></div>
-          </Col>
-        </Row>
-      </Container>
     </>
   );
 }

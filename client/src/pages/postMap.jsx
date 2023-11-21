@@ -4,7 +4,6 @@ import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import COLOR from '../utility/Color';
 import { useNavigate } from 'react-router-dom';
 
-//contents_container 안에 UI 구현 하시면 됩니다!
 
 function PostMap(props) {
   const [info, setInfo] = useState();
