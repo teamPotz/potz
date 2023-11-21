@@ -2,6 +2,7 @@ import { Router } from 'express';
 import fileUpload from '../middlewares/multer.js';
 import { verifyAuth } from '../middlewares/auth.js';
 import {
+  getCommunitiesByLocation,
   getCommunities,
   createCommunity,
   getCommunityById,
@@ -15,6 +16,7 @@ const router = Router();
 //Router
 
 router.get('/', verifyAuth, getCommunities);
+router.get('/search', verifyAuth, getCommunitiesByLocation);
 router.post('/', verifyAuth, createCommunity);
 router.post('/photo', fileUpload.single('image'), saveCommunityImg);
 // router.post('/join', joinCommunity);

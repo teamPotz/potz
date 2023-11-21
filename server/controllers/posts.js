@@ -72,17 +72,17 @@ function getNextDeliveryFeeInfos(
 
 // 할인금액 구하기
 function calculateDiscount(discountInfo, price) {
-    if(discountInfo === undefined) return 0;
-      // 금액 할인인 경우
-      if (discountInfo.discount !== null) {
-        return Math.min(discountInfo.discount, price);
-        // 퍼센트 할인인 경우
-      } else if (discountInfo.discountRate !== null) {
-        return Math.min(
-          discountInfo.discountRate * price,
-          discountInfo.maxDiscountAmount || price
-        );
-      }
+  if (discountInfo === undefined) return 0;
+  // 금액 할인인 경우
+  if (discountInfo.discount !== null) {
+    return Math.min(discountInfo.discount, price);
+    // 퍼센트 할인인 경우
+  } else if (discountInfo.discountRate !== null) {
+    return Math.min(
+      discountInfo.discountRate * price,
+      discountInfo.maxDiscountAmount || price
+    );
+  }
   return 0;
 }
 
@@ -149,7 +149,7 @@ export async function getPosts(req, res) {
         },
         deliveryPot: {
           select: {
-            _count: {select: {participants: true}},
+            _count: { select: { participants: true } },
             orders: {
               select: {
                 price: true,
@@ -224,8 +224,6 @@ export async function getPosts(req, res) {
         potMasterHistoryCount: post.author._count.deliveryPotHistoryAsMaster,
       };
     });
-
-
 
     res.status(200).send(transformedPosts);
   } catch (error) {
@@ -309,7 +307,9 @@ export async function getPostById(req, res) {
       imageUrl: post.imageUrl,
       orderLink: post.orderLink,
       category: post.category.name,
-      potMasterProfileImg: post.author.profile ? post.author.profile.imageUrl : null,
+      potMasterProfileImg: post.author.profile
+        ? post.author.profile.imageUrl
+        : null,
       participantsCount: post.deliveryPot._count.participants,
       recruitment: post.recruitment,
       meetingLocation: post.meetingLocation,
@@ -355,7 +355,8 @@ export async function getPostByName(req, res) {
         deliveryFees: true,
         deliveryDiscounts: true,
         likedByUsers: {
-          where: { userId: req.user.id, liked: true },
+          where: { userId: 1, liked: true },
+          // where: { userId: req.user.id, liked: true },
         },
         communityId: true,
         deliveryPot: {
@@ -389,12 +390,18 @@ export async function getPostByName(req, res) {
 }
 
 //create post
-export async function createPost(req, res) {  
+export async function createPost(req, res) {
   let imageUrl = req.file.path;
   let deliveryFees = JSON.parse(req.body.deliveryFees);
   let deliveryDiscounts = JSON.parse(req.body.deliveryDiscounts);
-  const { storeName, storeAddress, orderLink, categoryId, recruitment, meetingLocation } =
-    req.body;
+  const {
+    storeName,
+    storeAddress,
+    orderLink,
+    categoryId,
+    recruitment,
+    meetingLocation,
+  } = req.body;
 
   try {
     console.log(req.body);

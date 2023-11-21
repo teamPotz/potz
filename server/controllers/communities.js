@@ -43,6 +43,37 @@ export async function getCommunities(req, res) {
   }
 }
 
+export async function getCommunitiesByLocation(req, res) {
+  const { latitude, longitude } = req.query;
+  console.log(latitude, longitude);
+
+  try {
+    const result = await prisma.$queryRaw`
+    SELECT community.*, 
+        (SELECT ST_DISTANCE_SPHERE(point(longitude, latitude), point(${longitude},${latitude}))) as distance,
+        COUNT(post.id) as post_count
+    FROM community
+    LEFT JOIN post ON community.id = post.communityId
+
+    WHERE ST_DISTANCE_SPHERE(point(longitude, latitude), point(${longitude},${latitude})) <= 500
+    GROUP BY community.id
+    ORDER BY distance;
+    `;
+    const stringifiedData = JSON.stringify(result, (key, value) => {
+      if (typeof value === 'bigint') {
+        return value.toString();
+      }
+      return value;
+    });
+
+    res.status(200).send(stringifiedData);
+    console.log(stringifiedData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'get communities error' });
+  }
+}
+
 export async function getCommunityById(req, res) {
   console.log(req.user);
   const { id } = req.params;
@@ -112,7 +143,8 @@ export async function getCommunityById(req, res) {
 
 export async function saveCommunityImg(req, res) {
   console.log(req.file.path);
-  communityPhoto = req.file.path;
+  let editPath = '/' + req.file.path.replace(/\\/g, '/');
+  communityPhoto = editPath.replace('/public', '');
 }
 
 export async function createCommunity(req, res) {

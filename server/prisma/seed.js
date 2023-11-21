@@ -28,42 +28,42 @@ const categories = [
   {
     name: '버거·샌드위치',
     displayOrder: 1,
-    imageUrl: '/sample-images/category/category-burger.png',
+    imageUrl: '/category/category-burger.png',
   },
   {
     name: '카페·디저트',
     displayOrder: 2,
-    imageUrl: '/sample-images/category/category-cafe.png',
+    imageUrl: '/category/category-cafe.png',
   },
   {
     name: '한식',
     displayOrder: 4,
-    imageUrl: '/sample-images/category/category-koreanFood.png',
+    imageUrl: '/category/category-koreanFood.png',
   },
   {
     name: '초밥·회',
     displayOrder: 3,
-    imageUrl: '/sample-images/category/category-sushi.png',
+    imageUrl: '/category/category-sushi.png',
   },
   {
     name: '중식·아시안',
     displayOrder: 6,
-    imageUrl: '/sample-images/category/category-chineseFood.png',
+    imageUrl: '/category/category-chineseFood.png',
   },
   {
     name: '피자',
     displayOrder: 5,
-    imageUrl: '/sample-images/category/category-pizza.png',
+    imageUrl: '/category/category-pizza.png',
   },
   {
     name: '치킨',
     displayOrder: 7,
-    imageUrl: '/sample-images/category/category-pizza.png',
+    imageUrl: '/category/category-pizza.png',
   },
   {
     name: '샐러드',
     displayOrder: 8,
-    imageUrl: '/sample-images/category/category-salad.png',
+    imageUrl: '/category/category-salad.png',
   },
 ];
 

@@ -332,6 +332,7 @@ function SearchPage() {
                       onClick={() => {
                         const fetchSearchData = async () => {
                           try {
+                            console.log('search.keyword' + search.keyword);
                             const response = await fetch(
                               `http://localhost:5000/posts/search?key=${search.keyword}`,
                               {

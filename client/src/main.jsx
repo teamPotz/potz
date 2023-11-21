@@ -24,10 +24,11 @@ import Chat from './pages/Chat/Chat.jsx';
 import ChatTemplate from './pages/Chat/ChatTemplate.jsx';
 import CreatePost from './pages/CreatePost.jsx';
 import UpdatePost from './pages/UpdatePost.jsx';
-import UserLoactionMap from './pages/userLocationMap.jsx';
+import UserLoactionLandingMap from './pages/UserLocationLanding.jsx';
 import './App.css';
 import ChatList from './pages/Chat/ChatList.jsx';
 import UserProfile from './pages/UserProfile.jsx';
+import Entercommunity from './pages/EnterCommunity.jsx';
 
 const router = createBrowserRouter([
   {
@@ -126,7 +127,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/user-location',
-        element: <UserLoactionMap />,
+        element: <UserLoactionLandingMap />,
       },
       {
         path: '/my-page',

@@ -26,7 +26,7 @@ function LikedList() {
   const postDatas = [
     {
       storeName: '디저트36 송도점',
-      imageUrl: '/sample-images/pot-1',
+      imageUrl: '/sample-images/pot-1.png',
       id: 1,
       storeAddress: '인천 연수구 인천타워대로 241',
       orderLink: 'https://baemin.me/jDQWwYtpw',
@@ -194,7 +194,7 @@ function LikedList() {
     },
     {
       storeName: '커플 케이크 하버뷰점',
-      imageUrl: '/sample-images/pot-2',
+      imageUrl: '/sample-images/pot-2.png',
       id: 2,
       storeAddress: '인천 연수구 센트럴로 160',
       orderLink: 'https://baemin.me/jDQWwYtpw',
@@ -336,7 +336,7 @@ function LikedList() {
         <div style={fontStyle}>
           <div>
             <span>찜한 배달팟</span>
-            <span style={{ marginLeft: '4px' }}>{likedNum}</span>
+            <span style={{ marginLeft: '4px' }}>{postDatas.length}</span>
           </div>
           <span>카테고리별 보기</span>
           <span>편집</span>
