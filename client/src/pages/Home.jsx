@@ -1,20 +1,20 @@
-import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavBarHomePage from '../components/NavBarHomePage';
 import HomeContents from '../components/HomeContentsComp';
-import { NavBar1 } from '../components/NavBars';
 import ButtonWrite from '../components/ButtonWrite';
 import COLOR from '../utility/Color';
 import ShareCommunityModal from '../components/shareCommunityModal';
+import NavBar from '../components/ui/NavBar';
 
 function Home() {
-  const location = useLocation();
   let testcommunityDataID = 1;
   //실제로는 로그인~커뮤니티 선택 하면서 커뮤니티 아이디 데이터 넘겨받기
   // let { communityDataID } = location.state;
   // console.log('해당 커뮤니티 아이디', communityDataID);
 
-  let [communityDatas, setCommunityDatas] = useState(null);
+  const navigate = useNavigate();
+  const [communityDatas, setCommunityDatas] = useState(null);
 
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
@@ -100,10 +100,10 @@ function Home() {
           ) : null}
         </div>
         <div style={navbarStyle}>
-          <div style={btnStyle}>
-            <ButtonWrite></ButtonWrite>
+          <div style={btnStyle} onClick={() => navigate('/create-post')}>
+            <ButtonWrite />
           </div>
-          <NavBar1></NavBar1>
+          <NavBar />
         </div>
       </div>
     </div>

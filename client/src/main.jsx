@@ -23,10 +23,13 @@ import SearchResult from './pages/SearchResult.jsx';
 import LandingMap from './pages/LandingMap';
 import Chat from './pages/Chat/Chat.jsx';
 import ChatRooms from './pages/Chat/ChatRooms.jsx';
+import ChatTemplate from './pages/Chat/ChatTemplate.jsx';
 import CreatePost from './pages/CreatePost.jsx';
 import UpdatePost from './pages/UpdatePost.jsx';
 import UserLoactionMap from './pages/userLocationMap.jsx';
 import './App.css';
+import ChatList from './pages/Chat/ChatList.jsx';
+import UserProfile from './pages/UserProfile.jsx';
 
 const router = createBrowserRouter([
   {
@@ -48,14 +51,14 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: '/',
-        element: <Login />,
-      },
-      { path: '/link', element: <LinkSample /> },
-      {
         path: '/home',
         element: <Home />,
       },
+      // {
+      //   path: '/',
+      //   element: <Login />,
+      // },
+      // { path: '/link', element: <LinkSample /> },
       {
         path: '/user-interests',
         element: <ChooseInterest />,
@@ -128,8 +131,14 @@ const router = createBrowserRouter([
         path: '/user-location',
         element: <UserLoactionMap />,
       },
+      {
+        path: '/my-page',
+        element: <UserProfile />,
+      },
+      { path: '/chats/', element: <ChatList /> },
+      { path: '/chats/:potId', element: <Chat /> },
+      { path: '/chats/', element: <ChatTemplate /> },
       { path: '/chatrooms', element: <ChatRooms /> },
-      { path: '/chat/:potId', element: <Chat /> },
     ],
   },
 ]);
