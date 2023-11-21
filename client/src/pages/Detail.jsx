@@ -392,7 +392,7 @@ function Detail() {
         <img
           width={420}
           height={420}
-          src={'http://localhost:5000/' + postDatas.imageUrl + '.png'}
+          src={`http://localhost:5000${postDatas.imageUrl}`}
         ></img>
         <div style={TopStyle}>
           <ButtonWrap
