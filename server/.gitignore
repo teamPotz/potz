@@ -134,3 +134,9 @@ dist
 
 # mac
 .DS_Store
+
+# file-store-session
+sessions/
+
+# multer file upload path
+uploads/

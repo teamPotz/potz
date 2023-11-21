@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import fileUpload from '../middlewares/multer.js';
+import { verifyAuth } from '../middlewares/auth.js';
 
 import {
   getPostByName,
@@ -14,7 +15,7 @@ import {
 const router = Router();
 router.get('/', getPosts);
 router.get('/search', getPostByName);
-router.post('/', fileUpload.single('image'), createPost);
+router.post('/', verifyAuth, fileUpload.single('image'), createPost);
 router.route('/:id').get(getPostById).patch(updatePost).delete(deletePost);
 router.patch('/:id/like', toggleLike);
 

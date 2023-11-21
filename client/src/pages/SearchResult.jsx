@@ -1,8 +1,4 @@
-import '../App.css';
 import { useLocation } from 'react-router-dom';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
 import GoBack from '../components/goBack';
 import SearchEmptyModal from '../components/SearchEmptyModal';
@@ -29,31 +25,19 @@ function SearchResult() {
   };
 
   return (
-    <Container className='background'>
-      <Row className='row1'>
-        <Col className='col1'>
-          <div className='side_container'></div>
-        </Col>
-        <Col className='col2'>
-          <div className='potz_container' style={backgroundStyle}>
-            <div style={potzContainerStyle}>
-              <GoBack text={searchVal}></GoBack>
-              <div style={homeContentesContainer}>
-                {/* 만약 컨텐츠 데이터 개수가 1개도 없을 경우 공동체 공유 모달창 띄우기 */}
-                {result.length < 1 ? (
-                  <SearchEmptyModal searchVal={searchVal}></SearchEmptyModal>
-                ) : (
-                  <SearchResultComp result={result}></SearchResultComp>
-                )}
-              </div>
-            </div>
-          </div>
-        </Col>
-        <Col className='col3'>
-          <div className='side_container'></div>
-        </Col>
-      </Row>
-    </Container>
+    <div className='potz_container' style={backgroundStyle}>
+      <div style={potzContainerStyle}>
+        <GoBack text={searchVal}></GoBack>
+        <div style={homeContentesContainer}>
+          {/* 만약 컨텐츠 데이터 개수가 1개도 없을 경우 공동체 공유 모달창 띄우기 */}
+          {result.length < 1 ? (
+            <SearchEmptyModal searchVal={searchVal}></SearchEmptyModal>
+          ) : (
+            <SearchResultComp result={result}></SearchResultComp>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 

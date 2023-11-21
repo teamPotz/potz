@@ -103,7 +103,7 @@ const LikedComp = (props) => {
           width={150}
           height={150}
           style={imgStyle}
-          src={'http://localhost:5000/' + postData.imageUrl + '.png'}
+          src={`http://localhost:5000/${postData.imageUrl}`}
         ></img>
       </div>
       <div>
@@ -124,8 +124,10 @@ const LikedComp = (props) => {
         <div style={fontStyle2}>
           <span style={coloredfont}>
             {postData.deliveryFees?.[0]?.fee ? (
-              postData.deliveryFees[0].fee /
-              postData.deliveryPot.participants.length
+              Math.round(
+                postData.deliveryFees[0].fee /
+                  postData.deliveryPot.participants.length
+              )
             ) : (
               <span>무료</span>
             )}

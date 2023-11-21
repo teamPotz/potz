@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Font from '../utility/Font';
 import COLOR from '../utility/Color';
-import TagPlaceSM from './TagPlaceSM';
+import { useNavigate } from 'react-router-dom';
 
 const CommunityWrapper = styled.div`
   cursor: grab;
@@ -18,7 +18,8 @@ const CommunityWrapper = styled.div`
 `;
 
 const CommunityComp = (props) => {
-  let { testData } = props;
+  let navigate = useNavigate();
+  let { communityData } = props;
 
   const imgStyle = {
     marginLeft: '28px',
@@ -58,31 +59,39 @@ const CommunityComp = (props) => {
   };
 
   return (
-    <CommunityWrapper>
+    <CommunityWrapper
+      onClick={() => {
+        navigate('/home', {
+          state: {
+            communityDataID: communityData.id,
+          },
+        });
+      }}
+    >
       <div>
         <img
           style={imgStyle}
           width={92}
           height={92}
-          src={testData.imgSrc}
+          src={'http://localhost:5000/' + communityData.imageUrl}
         ></img>
       </div>
       <div style={style1}>
-        <span style={fontStyle1}>{testData.communityName}</span>
+        <span style={fontStyle1}>{communityData.name}</span>
         <div style={fontStyle2}>
           <div>
             <span>멤버수</span>
-            <span style={fontBold}>{testData.memNum}</span>
+            <span style={fontBold}>{communityData.membersCount}</span>
           </div>
           <div>
-            <span>최신 글 수</span>
-            <span style={fontBold}>{testData.recentContentsNum}</span>
+            <span>글 수</span>
+            <span style={fontBold}>{communityData.post_count}</span>
           </div>
         </div>
         <div style={style2}>
-          {testData.placeTag.map((place, index) => {
-            return <TagPlaceSM key={index}>{place}</TagPlaceSM>;
-          })}
+          {/* {communityData.communityTypes.map((type, index) => {
+            return <TagPlaceSM key={index}>{type}</TagPlaceSM>;
+          })} */}
         </div>
       </div>
     </CommunityWrapper>

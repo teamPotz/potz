@@ -82,6 +82,7 @@ function SearchPage() {
       try {
         const response = await fetch('http://localhost:5000/categories', {
           method: 'GET',
+          credentials: 'include',
         });
         const data = await response.json();
         console.log('카테고리 전체 데이터', data);
@@ -98,6 +99,7 @@ function SearchPage() {
       try {
         const response = await fetch('http://localhost:5000/search-history', {
           method: 'GET',
+          credentials: 'include',
         });
         const data = await response.json();
         console.log('전체 검색어 데이터', data);
@@ -115,12 +117,10 @@ function SearchPage() {
 
   async function deleteSearchHistory() {
     try {
-      const response = await fetch(
-        `http://localhost:5000/search-history/${userId}`,
-        {
-          method: 'DELETE',
-        }
-      );
+      const response = await fetch(`http://localhost:5000/search-history/`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
 
       if (response.ok) {
         console.log('검색 기록 삭제 성공');
@@ -298,145 +298,134 @@ function SearchPage() {
   };
 
   return (
-    <Container className='background'>
-      <Row className='row1'>
-        <Col className='col1'>
-          <div className='side_container'></div>
-        </Col>
-        <Col className='col2'>
-          <div className='potz_container' style={backgroundStyle}>
-            <div className='contents_container' style={style1}>
-              <div style={TopStyle}>
-                <BackButton
-                  onClick={() => {
-                    navigate(-1);
-                  }}
-                >
-                  <BackIcon></BackIcon>
-                </BackButton>
-                <SearchBar></SearchBar>
-              </div>
+    <div className='potz_container' style={backgroundStyle}>
+      <div className='contents_container' style={style1}>
+        <div style={TopStyle}>
+          <BackButton
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            <BackIcon></BackIcon>
+          </BackButton>
+          <SearchBar></SearchBar>
+        </div>
+      </div>
+      <div>
+        <Divider>
+          <hr></hr>
+        </Divider>
+        <div className='contents_container'>
+          <div style={recentResultStyle}>
+            <div style={style}>
+              <span style={fontStyle}>최근 검색어</span>
             </div>
-            <div>
-              <Divider>
-                <hr></hr>
-              </Divider>
-              <div className='contents_container'>
-                <div style={recentResultStyle}>
-                  <div style={style}>
-                    <span style={fontStyle}>최근 검색어</span>
-                  </div>
-                  <button onClick={clickHandler} style={fontStyle2}>
-                    전체 삭제
-                  </button>
-                </div>
-                <div style={tagContainer}>
-                  {searchHistory
-                    ? searchHistory.slice(0, 12).map((search) => {
-                        return (
-                          <TagFoodSM
-                            onClick={() => {
-                              const fetchSearchData = async () => {
-                                try {
-                                  const response = await fetch(
-                                    `http://localhost:5000/posts/search?key=${search.keyword}`,
-                                    {
-                                      method: 'GET',
-                                    }
-                                  );
-                                  const data = await response.json();
-                                  console.log('검색 데이터', data);
-                                  navigate('/result', {
-                                    state: {
-                                      result: data,
-                                      searchVal: search.keyword,
-                                    },
-                                  });
-                                } catch (error) {
-                                  console.error(error);
-                                }
-                              };
-                              fetchSearchData();
-                            }}
-                            key={search.id}
-                            style={tagstyle}
-                          >
-                            {search.keyword}
-                          </TagFoodSM>
-                        );
-                      })
-                    : null}
-                </div>
-                <div style={style}>
-                  <span style={fontStyle}>카테고리로 검색해보세요.</span>
-                  <GoButton
-                    onClick={() => {
-                      navigate('/category');
-                    }}
-                  >
-                    <GoIcon></GoIcon>
-                  </GoButton>
-                </div>
-              </div>
-              <CategorySearch></CategorySearch>
-              <div className='contents_container'>
-                <div style={style}>
-                  <span style={fontStyle}>나의 PICK 맛집</span>
-                  <GoButton>
-                    <GoIcon></GoIcon>
-                  </GoButton>
-                </div>
-                <div style={imgContainerStyle}>
-                  <div style={imgContainer}>
-                    <img
-                      style={imgStyles}
-                      src='https://images.unsplash.com/photo-1508737804141-4c3b688e2546?q=80&w=1972&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                    ></img>
-                    <img
-                      style={imgStyles}
-                      src='https://images.unsplash.com/photo-1612198790700-0ff08cb726e5?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                    ></img>
-                  </div>
-                  <div style={imgContainer}>
-                    <img
-                      style={imgStyles}
-                      src='https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                    ></img>
-                    <img
-                      style={imgStyles}
-                      src='https://images.unsplash.com/photo-1587314168485-3236d6710814?q=80&w=1978&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                    ></img>
-                  </div>
-                  <div style={imgContainer}>
-                    <img
-                      style={imgStyles}
-                      src='https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                    ></img>
-                    <img
-                      style={imgStyles}
-                      src='https://plus.unsplash.com/premium_photo-1677000666414-70458d618524?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                    ></img>
-                  </div>
-                  <div style={imgContainer}>
-                    <img
-                      style={imgStyles}
-                      src='https://images.unsplash.com/photo-1508737804141-4c3b688e2546?q=80&w=1972&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                    ></img>
-                    <img
-                      style={imgStyles}
-                      src='https://images.unsplash.com/photo-1612198790700-0ff08cb726e5?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                    ></img>
-                  </div>
-                </div>
-              </div>
+            <button onClick={clickHandler} style={fontStyle2}>
+              전체 삭제
+            </button>
+          </div>
+          <div style={tagContainer}>
+            {searchHistory
+              ? searchHistory.slice(0, 12).map((search) => {
+                  return (
+                    <TagFoodSM
+                      onClick={() => {
+                        const fetchSearchData = async () => {
+                          try {
+                            console.log('search.keyword' + search.keyword);
+                            const response = await fetch(
+                              `http://localhost:5000/posts/search?key=${search.keyword}`,
+                              {
+                                method: 'GET',
+                              }
+                            );
+                            const data = await response.json();
+                            console.log('검색 데이터', data);
+                            navigate('/result', {
+                              state: {
+                                result: data,
+                                searchVal: search.keyword,
+                              },
+                            });
+                          } catch (error) {
+                            console.error(error);
+                          }
+                        };
+                        fetchSearchData();
+                      }}
+                      key={search.id}
+                      style={tagstyle}
+                    >
+                      {search.keyword}
+                    </TagFoodSM>
+                  );
+                })
+              : null}
+          </div>
+          <div style={style}>
+            <span style={fontStyle}>카테고리로 검색해보세요.</span>
+            <GoButton
+              onClick={() => {
+                navigate('/category');
+              }}
+            >
+              <GoIcon></GoIcon>
+            </GoButton>
+          </div>
+        </div>
+        <CategorySearch></CategorySearch>
+        <div className='contents_container'>
+          <div style={style}>
+            <span style={fontStyle}>나의 PICK 맛집</span>
+            <GoButton>
+              <GoIcon></GoIcon>
+            </GoButton>
+          </div>
+          <div style={imgContainerStyle}>
+            <div style={imgContainer}>
+              <img
+                style={imgStyles}
+                src='https://images.unsplash.com/photo-1508737804141-4c3b688e2546?q=80&w=1972&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              ></img>
+              <img
+                style={imgStyles}
+                src='https://images.unsplash.com/photo-1612198790700-0ff08cb726e5?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              ></img>
+            </div>
+            <div style={imgContainer}>
+              <img
+                style={imgStyles}
+                src='https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              ></img>
+              <img
+                style={imgStyles}
+                src='https://images.unsplash.com/photo-1587314168485-3236d6710814?q=80&w=1978&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              ></img>
+            </div>
+            <div style={imgContainer}>
+              <img
+                style={imgStyles}
+                src='https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              ></img>
+              <img
+                style={imgStyles}
+                src='https://plus.unsplash.com/premium_photo-1677000666414-70458d618524?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              ></img>
+            </div>
+            <div style={imgContainer}>
+              <img
+                style={imgStyles}
+                src='https://images.unsplash.com/photo-1508737804141-4c3b688e2546?q=80&w=1972&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              ></img>
+              <img
+                style={imgStyles}
+                src='https://images.unsplash.com/photo-1612198790700-0ff08cb726e5?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              ></img>
             </div>
           </div>
-        </Col>
-        <Col className='col3'>
-          <div className='side_container'></div>
-        </Col>
-      </Row>
-    </Container>
+        </div>
+      </div>
+    </div>
   );
 }
 

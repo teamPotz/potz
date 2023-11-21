@@ -16,15 +16,6 @@ generator erd {
   output   = "./ERD.svg"
 }
 
-// 연습용 테이블
-model PostTemp {
-  id        Int      @id @default(autoincrement())
-  title     String   @db.VarChar(255)
-  content   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 // 사용자
 model User {
   id                         Int                  @id @default(autoincrement())
@@ -33,18 +24,20 @@ model User {
   name                       String
   profile                    UserProfile?
   posts                      Post[]
-  communities                Community[]
+  communities                CommunitiesOnUsers[]
   likedPosts                 PostLike[]
   createdDeliveryPots        DeliveryPot[]
   participatedDeliveryPots   DeliveryPot[]        @relation(name: "ParticipantsRelation")
   orders                     DeliveryOrder[]
   deliveryPotHistoryAsMaster DeliveryPotHistory[]
   deliveryPotHistoryAsMember DeliveryPotHistory[] @relation(name: "ParticipantsRelationHistory")
+  messages                   Message[]
   createdAt                  DateTime             @default(now())
   updatedAt                  DateTime             @updatedAt
   SearchResult               SearchResult[]
 }
 
+// 사용자 프로필
 model UserProfile {
   id            Int      @id @default(autoincrement())
   imageUrl      String?
@@ -59,26 +52,49 @@ model UserProfile {
 
 // 공동체
 model Community {
-  id             Int             @id @default(autoincrement())
+  id             Int                           @id @default(autoincrement())
   name           String
   latitude       Float
   longitude      Float
   imageUrl       String?
-  members        User[]
-  communityTypes CommunityType[]
+  members        CommunitiesOnUsers[]
+  communityTypes CommunityTypesOnCommunities[]
   posts          Post[]
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  createdAt      DateTime                      @default(now())
+  updatedAt      DateTime                      @updatedAt
+}
+
+// 공동체 가입 정보(사용자-공동체 관계테이블)
+model CommunitiesOnUsers {
+  id          Int       @id @default(autoincrement())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  community   Community @relation(fields: [communityId], references: [id])
+  communityId Int
+  joinedAt    DateTime  @default(now())
+
+  @@unique([userId, communityId])
 }
 
 // 공동체 특징(주택가, 교내시설, 학원, 기숙사, 지하철역 ...)
 model CommunityType {
-  id           Int         @id @default(autoincrement())
-  name         String      @unique
+  id           Int                           @id @default(autoincrement())
+  name         String                        @unique
   displayOrder Int
-  communities  Community[]
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  communities  CommunityTypesOnCommunities[]
+  createdAt    DateTime                      @default(now())
+  updatedAt    DateTime                      @updatedAt
+}
+
+// 공동체특징 연결 정보(공동체-공동체특징간 관계테이블)
+model CommunityTypesOnCommunities {
+  id              Int           @id @default(autoincrement())
+  communityType   CommunityType @relation(fields: [communityTypeId], references: [id])
+  communityTypeId Int
+  community       Community     @relation(fields: [communityId], references: [id])
+  communityId     Int
+
+  @@unique([communityTypeId, communityId])
 }
 
 // 게시글
@@ -136,7 +152,7 @@ model DeliveryDiscount {
   postId            Int
 }
 
-// 게시글 찜 정보
+// 게시글 찜 정보(사용자-게시글간 관계테이블)
 model PostLike {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id])
@@ -160,6 +176,7 @@ model DeliveryPot {
   post               Post                @relation(fields: [postId], references: [id])
   postId             Int                 @unique
   orders             DeliveryOrder[]
+  messages           Message[]
   deliveryPotHistory DeliveryPotHistory?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
@@ -198,4 +215,16 @@ model SearchResult {
   keyword String
   user    User   @relation(fields: [userId], references: [id])
   userId  Int
+}
+
+model Message {
+  id            Int         @id @default(autoincrement())
+  sender        User        @relation(fields: [senderId], references: [id])
+  senderId      Int
+  content       String
+  deliveryPot   DeliveryPot @relation(fields: [deliveryPotId], references: [id])
+  deliveryPotId Int
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  // readBy  User[]
 }

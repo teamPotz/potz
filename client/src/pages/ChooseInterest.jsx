@@ -1,4 +1,3 @@
-import '../App.css';
 import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
@@ -78,53 +77,41 @@ function ChooseInterest() {
   };
 
   return (
-    <Container className='background'>
-      <Row className='row1'>
-        <Col className='col1'>
-          <div className='side_container'></div>
-        </Col>
-        <Col className='col2'>
-          <div className='potz_container' style={backgroundStyle}>
-            <div className='contents_container' style={style1}>
-              <div style={textBoxStyle}>
-                <div style={fontStyle}>
-                  <span>{userName}님이 관심가는</span>
-                  <br></br>
-                  <span>분야를 알려주세요!</span>
-                  <br></br>
-                </div>
-                <div>
-                  <button onClick={navigateHandler} style={buttonStyle}>
-                    SKIP
-                  </button>
-                </div>
-              </div>
-              <div style={categoryContainer}>
-                <div style={category}>
-                  <Burger navigateHandler={navigateHandler}></Burger>
-                  <Cafe navigateHandler={navigateHandler}></Cafe>
-                </div>
-                <div style={category}>
-                  <KoreanFood navigateHandler={navigateHandler}> </KoreanFood>
-                  <Sushi navigateHandler={navigateHandler}></Sushi>
-                </div>
-                <div style={category}>
-                  <ChineseFood navigateHandler={navigateHandler}></ChineseFood>
-                  <Pizza navigateHandler={navigateHandler}></Pizza>
-                </div>
-                <div style={category}>
-                  <Chicken navigateHandler={navigateHandler}></Chicken>
-                  <Salad navigateHandler={navigateHandler}></Salad>
-                </div>
-              </div>
-            </div>
+    <div className='potz_container' style={backgroundStyle}>
+      <div className='contents_container' style={style1}>
+        <div style={textBoxStyle}>
+          <div style={fontStyle}>
+            <span>{userName}님이 관심가는</span>
+            <br></br>
+            <span>분야를 알려주세요!</span>
+            <br></br>
           </div>
-        </Col>
-        <Col className='col3'>
-          <div className='side_container'></div>
-        </Col>
-      </Row>
-    </Container>
+          <div>
+            <button onClick={navigateHandler} style={buttonStyle}>
+              SKIP
+            </button>
+          </div>
+        </div>
+        <div style={categoryContainer}>
+          <div style={category}>
+            <Burger navigateHandler={navigateHandler}></Burger>
+            <Cafe navigateHandler={navigateHandler}></Cafe>
+          </div>
+          <div style={category}>
+            <KoreanFood navigateHandler={navigateHandler}> </KoreanFood>
+            <Sushi navigateHandler={navigateHandler}></Sushi>
+          </div>
+          <div style={category}>
+            <ChineseFood navigateHandler={navigateHandler}></ChineseFood>
+            <Pizza navigateHandler={navigateHandler}></Pizza>
+          </div>
+          <div style={category}>
+            <Chicken navigateHandler={navigateHandler}></Chicken>
+            <Salad navigateHandler={navigateHandler}></Salad>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

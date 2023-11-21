@@ -1,4 +1,3 @@
-import '../App.css';
 import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
@@ -62,46 +61,32 @@ function ChooseFeature() {
   };
 
   return (
-    <Container className='background'>
-      <Row className='row1'>
-        <Col className='col1'>
-          <div className='side_container'></div>
-        </Col>
-        <Col className='col2'>
-          <div className='potz_container'>
-            <div className='contents_container' style={style1}>
-              <div style={textBoxStyle}>
-                <div style={fontStyle}>
-                  <span>만드실 공동체의 특징을</span>
-                  <br></br>
-                  <span>하나 이상 선택해주세요.</span>
-                  <br></br>
-                </div>
-              </div>
-              <div style={TgaWrappers}>
-                <div style={TagContainer}>
-                  {communityTypes.map((communityType) => {
-                    return (
-                      <div key={communityType.id}>
-                        <TagPlace userDatas={userDatas}>
-                          {communityType}
-                        </TagPlace>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-              <div style={imgStyle}>
-                <img src={PlacesImg} width={420}></img>
-              </div>
-            </div>
+    <div className='potz_container'>
+      <div className='contents_container' style={style1}>
+        <div style={textBoxStyle}>
+          <div style={fontStyle}>
+            <span>만드실 공동체의 특징을</span>
+            <br></br>
+            <span>하나 이상 선택해주세요.</span>
+            <br></br>
           </div>
-        </Col>
-        <Col className='col3'>
-          <div className='side_container'></div>
-        </Col>
-      </Row>
-    </Container>
+        </div>
+        <div style={TgaWrappers}>
+          <div style={TagContainer}>
+            {communityTypes.map((communityType) => {
+              return (
+                <div key={communityType.id}>
+                  <TagPlace userDatas={userDatas}>{communityType}</TagPlace>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div style={imgStyle}>
+          <img src={PlacesImg} width={420}></img>
+        </div>
+      </div>
+    </div>
   );
 }
 

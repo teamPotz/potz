@@ -1,4 +1,4 @@
-import COLOR from '../utility/Color';
+import COLOR from '../../utility/Color';
 import ChatInput from './ChatInput';
 import ChatRequireButton from './ChatRequireButton';
 
@@ -47,48 +47,46 @@ function ChatNavBar(props) {
 
   return (
     <>
-
-          {props.isBangJang ? (
-                 <div style={styles.Wrapper}>
-                 <div style={styles.ChatBox}>
-              <div style={styles.RequireButtonBox}>
-                <ChatRequireButton
-                  imageURL={'images/components/icon-coin-mono.png'}
-                  text={'정산 요청'}
-                ></ChatRequireButton>
-              </div>
-
-              <div style={styles.RequireButtonBox}>
-                <ChatRequireButton
-                  imageURL={'images/components/Union.png'}
-                  text={'메뉴 요청'}
-                ></ChatRequireButton>
-              </div>
-
-              <div style={styles.RequireButtonBox}>
-                <ChatRequireButton
-                  imageURL={'images/components/Arrow - Right Square.png'}
-                  text={'수령 요청'}
-                ></ChatRequireButton>
-              </div>
+      {props.isBangJang ? (
+        <div style={styles.Wrapper}>
+          <div style={styles.ChatBox}>
+            <div style={styles.RequireButtonBox}>
+              <ChatRequireButton
+                imageURL={'images/components/icon-coin-mono.png'}
+                text={'정산 요청'}
+              ></ChatRequireButton>
             </div>
-            </div>
-          ) : (
-            <div style={styles.Wrapper}>
-            <div style={styles.ChatBox}>
+
             <div style={styles.RequireButtonBox}>
               <ChatRequireButton
                 imageURL={'images/components/Union.png'}
                 text={'메뉴 요청'}
               ></ChatRequireButton>
             </div>
+
+            <div style={styles.RequireButtonBox}>
+              <ChatRequireButton
+                imageURL={'images/components/Arrow - Right Square.png'}
+                text={'수령 요청'}
+              ></ChatRequireButton>
             </div>
-            </div>
-          )}
-        <div style={styles.ChatInputBox}>
-          <ChatInput />
+          </div>
         </div>
- 
+      ) : (
+        <div style={styles.Wrapper}>
+          <div style={styles.ChatBox}>
+            <div style={styles.RequireButtonBox}>
+              <ChatRequireButton
+                imageURL={'images/components/Union.png'}
+                text={'메뉴 요청'}
+              ></ChatRequireButton>
+            </div>
+          </div>
+        </div>
+      )}
+      <div style={styles.ChatInputBox}>
+        <ChatInput />
+      </div>
     </>
   );
 }

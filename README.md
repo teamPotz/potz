@@ -8,7 +8,7 @@
 
 ## Tech Stack
 
-- FE : React,
+- FE : React
 - BE : Express, MySQL, Prisma
 
 ## How to Run
@@ -225,6 +225,7 @@ schema를 변경한 경우에는 마이그레이션을 생성해야합니다.
 
 ```bash
 npx prisma migrate dev --name [마이그레이션명]
+npx prisma generate
 ```
 
 from [Using Prisma Migrate](https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/using-prisma-migrate-node-mysql)
@@ -249,7 +250,7 @@ from [Seeding your database](https://www.prisma.io/docs/guides/migrate/seed-data
 
 ## 개발환경 DB를 reset 하는 방법
 
-‼️ 꼭 개발환경에서만 사용 ‼ ️
+‼️ 꼭 개발환경에서만 사용 ‼️
 
 ```bash
 npx prisma migrate reset

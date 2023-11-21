@@ -1,10 +1,6 @@
-import '../App.css';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
 import Font from '../utility/Font';
 
@@ -68,6 +64,7 @@ const InputStyle = styled.input`
 `;
 
 function NamingCommunity(props) {
+  //컨텍스트 api
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -86,11 +83,30 @@ function NamingCommunity(props) {
     name: '',
     communityTypes: location.state.data,
     members: userDatas,
-    longitude: 137.554454,
-    latitude: 137.554454,
+    longitude: null,
+    latitude: null,
     posts: 0,
     imageUrl: null,
   });
+
+  useEffect(() => {
+    const getGeolocation = () => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setFormDatas((prevFormDatas) => ({
+            ...prevFormDatas,
+            latitude,
+            longitude,
+          }));
+        },
+        (error) => {
+          console.error('Error getting geolocation:', error);
+        }
+      );
+    };
+    getGeolocation();
+  }, []);
 
   useEffect(() => {
     async function fetchUserDatas() {
@@ -124,26 +140,31 @@ function NamingCommunity(props) {
     if (count < 1) {
       alert('먼저 이미지 저장 버튼을 눌러서 이미지를 업로드해주세요.');
     } else {
-      console.log(formDatas);
-      try {
-        const response = await fetch('http://localhost:5000/communities', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formDatas),
-        });
+      if (formDatas.longitude !== null && formDatas.latitude !== null) {
+        console.log(formDatas);
+        try {
+          const response = await fetch('http://localhost:5000/communities', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify(formDatas),
+          });
 
-        if (response.ok) {
-          //새로 생성된 커뮤니티 데이터 받아서 넘겨주기
-          const responseData = await response.json();
-          console.log('새로 생성된 커뮤니티의 ID:', responseData);
+          if (response.ok) {
+            //새로 생성된 커뮤니티 데이터 받아서 넘겨주기
+            const responseData = await response.json();
+            console.log('새로 생성된 커뮤니티의 ID:', responseData);
 
-          navigate('/home', { state: { communityDataID: responseData.id } });
-          console.log('폼 데이터 및 파일 전송 완료🚀');
+            navigate('/home', { state: { communityDataID: responseData.id } });
+            console.log('폼 데이터 및 파일 전송 완료🚀');
+          }
+        } catch (error) {
+          console.error('에러:', error);
         }
-      } catch (error) {
-        console.error('에러:', error);
+      } else {
+        alert('위치 정보를 먼저 가져와주세요.');
       }
     }
   };
@@ -274,35 +295,23 @@ function NamingCommunity(props) {
   };
 
   return (
-    <Container className='background'>
-      <Row className='row1'>
-        <Col className='col1'>
-          <div className='side_container'></div>
-        </Col>
-        <Col className='col2'>
-          <div className='potz_container'>
-            <div className='contents_container'>
-              <div style={style1}>
-                <InputFile></InputFile>
-                <form onSubmit={submitHandler} style={formStyle}>
-                  <InputField
-                    style={inputStyles}
-                    onChange={inputChangeHandler}
-                    placeholder='공동체 이름 입력'
-                    value={formDatas.name}
-                  ></InputField>
-                  {/* 수정된 부분: ButtonSubmitStyle을 <input>으로 변경 */}
-                  <ButtonSubmitStyle type='submit' value='공동체 만들기' />
-                </form>
-              </div>
-            </div>
-          </div>
-        </Col>
-        <Col className='col3'>
-          <div className='side_container'></div>
-        </Col>
-      </Row>
-    </Container>
+    <div className='potz_container'>
+      <div className='contents_container'>
+        <div style={style1}>
+          <InputFile></InputFile>
+          <form onSubmit={submitHandler} style={formStyle}>
+            <InputField
+              style={inputStyles}
+              onChange={inputChangeHandler}
+              placeholder='공동체 이름 입력'
+              value={formDatas.name}
+            ></InputField>
+            {/* 수정된 부분: ButtonSubmitStyle을 <input>으로 변경 */}
+            <ButtonSubmitStyle type='submit' value='공동체 만들기' />
+          </form>
+        </div>
+      </div>
+    </div>
   );
 }
 
