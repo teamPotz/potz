@@ -49,13 +49,17 @@ const router = createBrowserRouter([
     ),
     children: [
       {
+        path: '/',
+        element: <Login />,
+      },
+      {
         path: '/home',
         element: <Home />,
       },
-      // {
-      //   path: '/',
-      //   element: <Login />,
-      // },
+      {
+        path: '/posts/:id',
+        element: <Detail />,
+      },
       {
         path: '/user-interests',
         element: <ChooseInterest />,
@@ -79,10 +83,6 @@ const router = createBrowserRouter([
       {
         path: '/community-lists',
         element: <ChooseCommunity />,
-      },
-      {
-        path: '/detail',
-        element: <Detail />,
       },
       {
         path: '/search',
