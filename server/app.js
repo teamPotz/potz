@@ -35,6 +35,7 @@ app.use(
   })
 );
 app.use(express.static('public'));
+app.use(express.static('uploads'));
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(

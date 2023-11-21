@@ -81,57 +81,73 @@ const communityTypes = [
 const communities = [
   {
     name: '인천 영어마을 기숙사',
-    longitude: 37.58864938741291,
-    latitude: 126.70157687573356,
+    longitude: 126.92042451465518,
+    latitude: 37.4999810960111,
     imageUrl: '/sample-images/community-1.png',
-    members: [1, 2],
-    communityTypes: [2, 3],
   },
   {
     name: '더샵하버뷰 1동 모임',
-    longitude: 37.397900784651625,
-    latitude: 126.64703596898717,
+    longitude: 126.8873405605419,
+    latitude: 37.47336544009562,
     imageUrl: '/sample-images/community-2.png',
-    members: [1],
-    communityTypes: [4],
   },
   {
     name: '송도 대학교 기숙사',
-    longitude: 37.397900784651625,
-    latitude: 126.64703596898717,
-    members: [],
+    longitude: 126.8906162909543,
+    latitude: 37.475220092661927,
     imageUrl: '/sample-images/community-3.png',
-    communityTypes: [3, 5],
   },
   {
     name: '강남역 1번 출구',
-    longitude: 37.397900784651625,
-    latitude: 126.64703596898717,
-    members: [],
+    longitude: 126.88977188948245,
+    latitude: 37.47669245827042,
     imageUrl: '/sample-images/community-4.png',
-    communityTypes: [6],
   },
   {
     name: '타운 상가 장사 모임',
-    longitude: 37.397900784651625,
-    latitude: 126.64703596898717,
+    longitude: 126.89099120057946,
+    latitude: 37.477846881199696,
     imageUrl: '/sample-images/community-5.png',
-    communityTypes: [7, 8],
   },
   {
     name: '단독주택끼리 뭉쳐요',
-    longitude: 37.397900784651625,
-    latitude: 126.64703596898717,
+    longitude: 126.89169557067764,
+    latitude: 37.47939275932371,
     imageUrl: '/sample-images/community-6.png',
-    communityTypes: [1],
   },
+];
+
+// 공동체 가입 정보
+const communityMembersInfo = [
+  { communityId: 1, userId: 1 },
+  { communityId: 1, userId: 2 },
+  { communityId: 2, userId: 1 },
+  { communityId: 2, userId: 2 },
+  { communityId: 3, userId: 1 },
+  { communityId: 4, userId: 1 },
+  { communityId: 5, userId: 1 },
+  { communityId: 5, userId: 2 },
+  { communityId: 6, userId: 1 },
+];
+
+// 공동체 타입 정보
+const communityTypesInfo = [
+  { communityId: 1, communityTypeId: 1 },
+  { communityId: 1, communityTypeId: 3 },
+  { communityId: 2, communityTypeId: 4 },
+  { communityId: 3, communityTypeId: 3 },
+  { communityId: 3, communityTypeId: 5 },
+  { communityId: 4, communityTypeId: 6 },
+  { communityId: 5, communityTypeId: 7 },
+  { communityId: 5, communityTypeId: 8 },
+  { communityId: 6, communityTypeId: 1 },
 ];
 
 const posts = [
   {
     storeName: '디저트36 송도점',
     storeAddress: '인천 연수구 인천타워대로 241',
-    imageUrl: '/sample-images/pot-1',
+    imageUrl: '/sample-images/pot-1.png',
     orderLink: 'https://baemin.me/jDQWwYtpw',
     categoryId: 2,
     recruitment: 10,
@@ -197,7 +213,7 @@ const posts = [
   {
     storeName: '커플 케이크 하버뷰점',
     storeAddress: '인천 연수구 센트럴로 160',
-    imageUrl: '/sample-images/pot-2',
+    imageUrl: '/sample-images/pot-2.png',
     orderLink: 'https://baemin.me/jDQWwYtpw',
     categoryId: 8,
     recruitment: 10,
@@ -226,7 +242,7 @@ const posts = [
   {
     storeName: '연어 박사',
     storeAddress: '인천 연수구 센트럴로 160',
-    imageUrl: '/sample-images/pot-4',
+    imageUrl: '/sample-images/pot-4.png',
     orderLink: 'https://baemin.me/jDQWwYtpw',
     categoryId: 4,
     recruitment: 15,
@@ -326,23 +342,35 @@ async function main() {
 
   // create communities
   const count = await prisma.community.count();
-  if (count === 0) {
-    for (const community of communities) {
-      await prisma.community.create({
-        data: {
-          name: community.name,
-          latitude: community.latitude,
-          longitude: community.longitude,
-          imageUrl: community.imageUrl,
-          communityTypes: {
-            connect: community.communityTypes.map((item) => ({ id: item })),
-          },
-          members: {
-            connect: community.members?.map((item) => ({ id: item })),
-          },
-        },
-      });
-    }
+  for (const community of communities) {
+    await prisma.community.create({
+      data: {
+        name: community.name,
+        latitude: community.latitude,
+        longitude: community.longitude,
+        imageUrl: community.imageUrl,
+      },
+    });
+  }
+
+  // set community types
+  for (const { communityId, communityTypeId } of communityTypesInfo) {
+    await prisma.communityTypesOnCommunities.create({
+      data: {
+        communityTypeId,
+        communityId,
+      },
+    });
+  }
+
+  // join communiteis
+  for (const { userId, communityId } of communityMembersInfo) {
+    await prisma.communitiesOnUsers.create({
+      data: {
+        userId,
+        communityId,
+      },
+    });
   }
 
   // create post
@@ -444,24 +472,25 @@ async function main() {
       },
     });
   }
-}
 
-for (const result of searchResults) {
-  const existingUser = await prisma.user.findUnique({
-    where: {
-      id: result.userId,
-    },
-  });
-
-  if (existingUser) {
-    await prisma.searchResult.create({
-      data: {
-        userId: result.userId,
-        keyword: result.keyword,
+  // create searchResults
+  for (const result of searchResults) {
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        id: result.userId,
       },
     });
-  } else {
-    console.error(`User with id ${result.userId} does not exist.`);
+
+    if (existingUser) {
+      await prisma.searchResult.create({
+        data: {
+          userId: result.userId,
+          keyword: result.keyword,
+        },
+      });
+    } else {
+      console.error(`User with id ${result.userId} does not exist.`);
+    }
   }
 }
 

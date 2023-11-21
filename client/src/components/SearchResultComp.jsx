@@ -223,7 +223,7 @@ const SearchResultComp = (props) => {
                 width={112}
                 height={112}
                 style={imgStyle}
-                src={'http://localhost:5000/' + res.imageUrl + '.png'}
+                src={`http://localhost:5000${res.imageUrl}`}
               ></img>
             </div>
             <div style={fontWrapper}>

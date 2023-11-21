@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import LikedComp from '../components/LikedComp';
-import { NavBar2 } from '../components/NavBars';
 import COLOR from '../utility/Color';
 import Font from '../utility/Font';
+import NavBar from '../components/ui/NavBar';
 
 function LikedList() {
   let [likedNum, setLikedNum] = useState(30);
@@ -365,7 +365,7 @@ function LikedList() {
           })}
         </div>
         <div style={navbarStyle}>
-          <NavBar2></NavBar2>
+          <NavBar />
         </div>
       </div>
     </div>
