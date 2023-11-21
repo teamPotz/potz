@@ -2,10 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import EnterCommunityModal from '../components/EnterCommunityModal';
 import NavBarHomePage from '../components/NavBarHomePage';
-import HomeContents from '../components/HomeContentsComp';
 import ButtonWrite from '../components/ButtonWrite';
 import COLOR from '../utility/Color';
-import ShareCommunityModal from '../components/shareCommunityModal';
 import NavBar from '../components/ui/NavBar';
 
 function Entercommunity() {
@@ -88,17 +86,8 @@ function Entercommunity() {
   return (
     <div className='potz_container' style={backgroundStyle}>
       <div style={potzContainerStyle}>
-        {/* {communityDatas ? (
-          <NavBarHomePage communityDatas={communityDatas} />
-        ) : null} */}
         <div style={homeContentesContainer}>
           <EnterCommunityModal></EnterCommunityModal>
-        </div>
-        <div style={navbarStyle}>
-          <div style={btnStyle} onClick={() => navigate('/create-post')}>
-            <ButtonWrite />
-          </div>
-          <NavBar />
         </div>
       </div>
     </div>

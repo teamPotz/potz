@@ -153,7 +153,7 @@ function Chat() {
               </MessageBox>
               <CheckMenu isMyMessage={false}></CheckMenu>
             </div>
-            <ChatNavBar isBangJang={BangJang} />
+            {/* <ChatNavBar isBangJang={BangJang} /> */}
           </div>
         </Col>
         <Col className='col3'>

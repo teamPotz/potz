@@ -86,6 +86,10 @@ const router = createBrowserRouter([
         element: <ChooseCommunity />,
       },
       {
+        path: '/enter-community',
+        element: <Entercommunity />,
+      },
+      {
         path: '/search',
         element: <SearchPage />,
       },

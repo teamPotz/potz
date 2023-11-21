@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import Font from '../utility/Font';
 import COLOR from '../utility/Color';
 import { useNavigate } from 'react-router-dom';
+import TagPlaceSM from './TagPlaceSM';
 
 const CommunityWrapper = styled.div`
   cursor: grab;
@@ -61,9 +62,9 @@ const CommunityComp = (props) => {
   return (
     <CommunityWrapper
       onClick={() => {
-        navigate('/home', {
+        navigate('/enter-community', {
           state: {
-            communityDataID: communityData.id,
+            communityData: communityData,
           },
         });
       }}
@@ -81,17 +82,17 @@ const CommunityComp = (props) => {
         <div style={fontStyle2}>
           <div>
             <span>멤버수</span>
-            <span style={fontBold}>{communityData.membersCount}</span>
+            <span style={fontBold}>{communityData.memberCount}</span>
           </div>
           <div>
             <span>글 수</span>
-            <span style={fontBold}>{communityData.post_count}</span>
+            <span style={fontBold}>{communityData.postCount}</span>
           </div>
         </div>
         <div style={style2}>
-          {/* {communityData.communityTypes.map((type, index) => {
+          {communityData.communityTypes.split(',').map((type, index) => {
             return <TagPlaceSM key={index}>{type}</TagPlaceSM>;
-          })} */}
+          })}
         </div>
       </div>
     </CommunityWrapper>
