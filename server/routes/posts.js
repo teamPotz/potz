@@ -3,18 +3,18 @@ import fileUpload from '../middlewares/multer.js';
 import { verifyAuth } from '../middlewares/auth.js';
 
 import {
-  getPostByName,
-  getPosts,
-  getPostById,
-  updateGetPost,
   updatePost,
   deletePost,
   createPost,
   toggleLike,
+  getPostsByCommunityId,
+  getPostById,
+  getPostByName,
+  updateGetPost,
 } from '../controllers/posts.js';
 
 const router = Router();
-router.get('/', getPosts);
+router.get('/', verifyAuth, getPostsByCommunityId);
 router.get('/search', getPostByName);
 router.post('/', verifyAuth, fileUpload.single('image'), createPost);
 router

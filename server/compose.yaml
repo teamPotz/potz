@@ -8,8 +8,9 @@ services:
       - '3306:3306'
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root1234
       MYSQL_DATABASE: potzdb
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root1234
       MYSQL_USER: user
       MYSQL_PASSWORD: user1234
       TZ: Asia/Seoul

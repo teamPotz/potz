@@ -118,6 +118,7 @@ export async function getCommunityById(req, res) {
             communityId: true,
             deliveryPot: {
               select: {
+                id: true,
                 participants: true,
                 orders: {
                   select: {
