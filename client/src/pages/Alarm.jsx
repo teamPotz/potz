@@ -1,3 +1,5 @@
+// alarmpage.jsx
+
 import '../App.css';
 import Font from '../utility/Font';
 import Container from 'react-bootstrap/Container';
@@ -28,21 +30,21 @@ function Alarm() {
   //   };
   // }, []);
 
-  const Title = styled.div`
-    margin-top: 18px;
-    margin-bottom: 18px;
-    background-color: ${COLOR.POTZ_PINK_100};
-    height: 10px;
-    width: 100%;
-    & > hr {
-      background: ${COLOR.GRAY_200};
-      height: 1px;
-      border: 0;
-    }
-  `;
+  // const Title = styled.div`
+  //   background-color: ${COLOR.POTZ_PINK_100};
+  //   height: 100%;
+  //   width: 420px;
+  //   & > hr {
+  //     background: ${COLOR.GRAY_200};
+  //     height: 1px;
+  //     border: 0;
+  //   }
+  // `;
 
   const backgroundStyle = {
-    backgroundColor: COLOR.WHITE,
+    width: '420px',
+    height: '100%',
+    backgroundColor: `${COLOR.WHITE}`,
   };
 
   const BackButton = styled.button`
@@ -54,6 +56,7 @@ function Alarm() {
     cursor: grab;
 
     &:hover {
+      background-color: ${COLOR.GRAY_100};
       transform: scale(1.18);
       border-radius: 4px;
     }
@@ -91,6 +94,8 @@ function Alarm() {
 
     &:hover {
       background-color: ${COLOR.GRAY_100};
+      transform: scale(1.18);
+      border-radius: 4px;
     }
   `;
 
@@ -148,24 +153,24 @@ function Alarm() {
   };
 
   const style1 = {
-    marginLeft: '28px',
+    gap: '11.67px',
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
     height: 'auto',
-    justifycontent: 'space-between',
+    justifycontent: 'center',
   };
 
   const TopStyle = {
     marginTop: '18px',
+    marginBottom: '18px',
     display: 'flex',
     width: '100%',
-    gap: '12px',
+    gap: '11.67px',
     alignItems: 'center',
   };
 
   const fontStyle = {
-    width: '170px',
     fontStyle: Font.FontKor,
     fontSize: '18px',
     fontWeight: '800',
@@ -176,8 +181,12 @@ function Alarm() {
 
   const styles = {
     background: {
-      backgroundColor: `${COLOR.GRAY_100}`,
+      backgroundColor: `${COLOR.POTZ_PINK_100}`,
+      height: '784px',
+      width: '100%',
+      boxShadow: '1px 3px 7px rgba(0, 0, 0, 0.07)',
     },
+
     sideCategory1: {
       /* Frame 10919 */
       /* Auto layout */
@@ -198,32 +207,13 @@ function Alarm() {
       width: '280px',
       height: '24px',
     },
-    line: {
-      /* Line 63 */
-      width: '280px',
-      height: '0px',
-      border: '0.25px solid',
-    },
 
     content: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '9.33px',
+
       marginTop: '-5px',
       marginBottom: '69.33px',
-    },
-    space: {
-      display: 'flex',
-      width: '280px',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    rowFlex: {
-      display: 'flex',
-      flexDirection: 'row',
-      gap: '7px',
-      alignItems: 'center',
-      height: '21px',
     },
   };
 
@@ -248,11 +238,12 @@ function Alarm() {
                 </ButtonDelete>
               </div>
             </div>
-            <Title />
 
             <div className="contents_container"></div>
-            <div style={styles.content}>
-              <AlarmContent />
+            <div style={styles.background}>
+              <div style={styles.content}>
+                <AlarmContent />
+              </div>
             </div>
           </div>
         </Col>
