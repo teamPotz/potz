@@ -414,8 +414,8 @@ export async function createPost(req, res) {
         storeAddress,
         imageUrl: imageUrl,
         orderLink,
-        categoryId: parseInt(categoryId),
-        recruitment: parseInt(recruitment),
+        categoryId: +categoryId,
+        recruitment: +recruitment,
         meetingLocation,
         communityId: 1,
         authorId: req.user.id,
@@ -517,8 +517,8 @@ export async function updatePost(req, res) {
         storeAddress,
         imageUrl: imageUrl,
         orderLink,
-        categoryId: parseInt(categoryId),
-        recruitment: parseInt(recruitment),
+        categoryId: +categoryId,
+        recruitment: +recruitment,
         meetingLocation,
         communityId: 1,
       };
@@ -569,7 +569,13 @@ export async function updatePost(req, res) {
 }
 
 export async function deletePost(req, res) {
-  // ...
+  const { id } = req.params;
+  const postDeleteWithUserId = await prisma.post.delete({
+    where: {
+      postId: +id,
+      authorId: req.user.id,
+    }
+  })
 }
 
 // 찜하기, 찜 취소하기
