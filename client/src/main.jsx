@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext.jsx';
+import { CommunityIdProvider } from './contexts/communityIdContext.jsx';
 import AppLayout from './components/ui/AppLayout.jsx';
 import MakeCommunity from './pages/MakeCommunityPage.jsx';
 import ChooseFeature from './pages/ChooseFeaturePage.jsx';
@@ -43,9 +44,11 @@ const router = createBrowserRouter([
     path: '/',
     element: (
       <AuthProvider>
-        <ProtectedRoute>
-          <AppLayout />
-        </ProtectedRoute>
+        <CommunityIdProvider>
+          <ProtectedRoute>
+            <AppLayout />
+          </ProtectedRoute>
+        </CommunityIdProvider>
       </AuthProvider>
     ),
     children: [
