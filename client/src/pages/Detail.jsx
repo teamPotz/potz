@@ -195,6 +195,7 @@ const imgContainer = {
   maxHeight: '420px',
   marginBottom: '20px',
 };
+
 const TopStyle = {
   position: 'relative',
   bottom: '410px',
@@ -214,6 +215,7 @@ const linkStyle = {
   justifyContent: 'center',
   alignItems: 'center',
 };
+
 const fontStyle = {
   fontSize: '16px',
   color: COLOR.GRAY_500,
@@ -306,16 +308,6 @@ const coloredFont = {
 };
 
 function Detail() {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  let { postDatas } = location.state;
-  console.log('해당 포스트 데이터', postDatas);
-
-  let orderDatas = postDatas.deliveryPot.orders;
-  console.log('주문 데이터', orderDatas);
-  let categoryId = postDatas.category.id;
-
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
 
@@ -330,22 +322,45 @@ function Detail() {
     width: displayWidth ? displayWidth : '420px',
   };
 
-  let [categoryPostData, setCategoryPostData] = useState();
-  let [totalFee, setTotalFee] = useState();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { postDatas } = location.state;
+  console.log('해당 포스트 데이터', postDatas);
+
+  const orderDatas = postDatas.deliveryPot.orders;
+  console.log('주문 데이터', orderDatas);
+  const categoryId = postDatas.category.id;
+
+  const [categoryPostData, setCategoryPostData] = useState();
+  const [totalFee, setTotalFee] = useState();
+
+  useEffect(() => {
+    const ReSizeHandler = () => {
+      setdisplayWidth(window.innerWidth);
+    };
+
+    //윈도우 리사이즈가 일어나면 콜백 호출
+    window.addEventListener('resize', ReSizeHandler);
+
+    return () => {
+      window.removeEventListener('resize', ReSizeHandler);
+    };
+  }, []);
 
   useEffect(() => {
     const calcTotalFee = () => {
       let total = 0;
 
       orderDatas.forEach((order) => {
-        let price = order.price * order.quantity;
+        const price = order.price * order.quantity;
         total += price;
       });
 
       return total;
     };
 
-    let totalFeeResult = calcTotalFee();
+    const totalFeeResult = calcTotalFee();
     console.log('모인 금액', totalFeeResult);
 
     setTotalFee(totalFeeResult);
@@ -373,18 +388,27 @@ function Detail() {
     fetchCategoryPostData();
   }, [categoryId]);
 
-  useEffect(() => {
-    const ReSizeHandler = () => {
-      setdisplayWidth(window.innerWidth);
-    };
-
-    //윈도우 리사이즈가 일어나면 콜백 호출
-    window.addEventListener('resize', ReSizeHandler);
-
-    return () => {
-      window.removeEventListener('resize', ReSizeHandler);
-    };
-  }, []);
+  const enterChatRoom = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/delivery-pots/join', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ potId: postDatas.deliveryPot.id }),
+      });
+      if (!res.ok) {
+        throw new Error('enter chat room error');
+      }
+      const data = await res.json();
+      navigate(`/chats/${postDatas.id}`, {
+        state: { storeName: postDatas.storeName },
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className='potz_container' style={backgroundStyle}>
@@ -393,27 +417,22 @@ function Detail() {
           width={420}
           height={420}
           src={`http://localhost:5000${postDatas.imageUrl}`}
-        ></img>
+        />
         <div style={TopStyle}>
-          <ButtonWrap
-            onClick={() => {
-              navigate(-1);
-            }}
-            style={marginLeftStyle}
-          >
-            <BackIcon></BackIcon>
+          <ButtonWrap onClick={() => navigate(-1)} style={marginLeftStyle}>
+            <BackIcon />
           </ButtonWrap>
           <div style={{ display: 'flex' }}>
             <ButtonWrap>
-              <SaleIcon></SaleIcon>
+              <SaleIcon />
             </ButtonWrap>
             <ButtonWrap style={marginRightStyle}>
-              <BurgerIcon></BurgerIcon>
+              <BurgerIcon />
             </ButtonWrap>
           </div>
         </div>
         <div style={linkStyle}>
-          <LinkIcon></LinkIcon>
+          <LinkIcon />
           <a style={fontStyleLink} href={postDatas.orderLink}>
             <span>배달앱 링크 바로가기</span>
           </a>
@@ -450,14 +469,9 @@ function Detail() {
                   'http://localhost:5000/' + postDatas.author.profile.imageUrl
                 }
                 style={paddingStyle}
-              ></img>
+              />
             ) : (
-              <img
-                width={38}
-                height={38}
-                src={logoImg}
-                style={paddingStyle}
-              ></img>
+              <img width={38} height={38} src={logoImg} style={paddingStyle} />
             )}
             <div>
               <span style={fontColored}>
@@ -470,7 +484,7 @@ function Detail() {
           </Particiate>
         </div>
         <Divider>
-          <hr></hr>
+          <hr />
         </Divider>
         <div className='contents_container'>
           <div style={fontStyle1}>
@@ -512,7 +526,7 @@ function Detail() {
                 </span>
               </div>
             </div>
-            <EnterStyle onClick={() => navigate(`/chats/${postDatas.id}`)}>
+            <EnterStyle onClick={enterChatRoom}>
               <EnterIcon />
             </EnterStyle>
           </nav>
