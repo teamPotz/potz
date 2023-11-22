@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import '../App.css';
 import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import COLOR from '../utility/Color';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +12,7 @@ function PostMap(props) {
     lat: 37.56421,
     lon: 127.00169,
   });
+  const [position, setPosition] = useState();
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -36,9 +36,8 @@ function PostMap(props) {
 
   useEffect(() => {
     const ps = new window.kakao.maps.services.Places();
-
     ps.keywordSearch(props.searchKeyword, (data, status) => {
-      console.log(data);
+      props.sendData(data);
       if (status === window.kakao.maps.services.Status.OK) {
         const bounds = new window.kakao.maps.LatLngBounds();
         let marker = [];
@@ -58,17 +57,26 @@ function PostMap(props) {
         map.setBounds(bounds);
       }
     });
-  }, [props]);
+  }, [props.searchKeyword]);
+
+  const MapClickEventWithMarker = (_t, mouseEvent) => {
+    setPosition({
+      lat: mouseEvent.latLng.getLat(),
+      lng: mouseEvent.latLng.getLng(),
+    });
+    console.log(mouseEvent);
+  };
 
   return (
     <>
       <Map
-        //center={{...coordinateRef.current}}
         center={{ lat: 33.5563, lng: 126.79581 }}
-        style={{ width: '420px', height: '100vh' }}
+        style={{ width: '420px', height: '60vh' }}
         level={3}
         onCreate={setMap}
+        onClick={MapClickEventWithMarker}
       >
+        {position && <MapMarker position={position} />}
         {markers.map((marker) => (
           <MapMarker
             key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
@@ -76,21 +84,7 @@ function PostMap(props) {
             onClick={() => setInfo(marker)}
           >
             {info && info.content === marker.content && (
-              <div style={{ color: `${COLOR.BLACK}` }}>
-                {marker.content}
-                <button
-                  onClick={() => {
-                    navigate(props.routeName, {
-                      state: {
-                        name: marker.content,
-                        address: marker.storeAddress,
-                      },
-                    });
-                  }}
-                >
-                  선택
-                </button>
-              </div>
+              <div style={{ color: `${COLOR.BLACK}` }}>{marker.content}</div>
             )}
           </MapMarker>
         ))}
