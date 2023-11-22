@@ -129,11 +129,6 @@ function CreatePost() {
   const navigate = useNavigate();
   const location = useLocation();
   const myInputRef = useRef(null);
-  const { getUserInfo } = useAuth();
-
-  useEffect(() => {
-    getUserInfo();
-  }, []);
 
   let Address = false;
   let name = false;

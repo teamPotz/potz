@@ -129,13 +129,8 @@ function UpdatePost() {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
-  const { getUserInfo } = useAuth();
   const myInputRef = useRef(null);
-
-  useEffect(() => {
-    getUserInfo();
-  }, []);
-
+ 
   //데이터 받아와서 바인딩
   const [getData, setGetData] = useState({
     storeName: '',
