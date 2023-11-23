@@ -9,8 +9,8 @@ import {
 
 const router = Router();
 router.get('/', verifyAuth, getDeliveryPots);
+router.patch('/:potId/join', verifyAuth, joinDeliveryPot);
+router.patch('/:potId/leave', verifyAuth, leaveDeliveryPot);
 router.get('/:potId/pot-master', verifyAuth, getPotMasterId);
-router.patch('/join', verifyAuth, joinDeliveryPot);
-router.patch('/leave', verifyAuth, leaveDeliveryPot);
 
 export default router;
