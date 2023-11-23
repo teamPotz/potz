@@ -157,7 +157,7 @@ function NamingCommunity(props) {
             const responseData = await response.json();
             console.log('새로 생성된 커뮤니티', responseData);
             localStorage.setItem('communityDataID', responseData.id);
-            navigate('/home');
+            navigate(`/community/${responseData.id}`);
             console.log('폼 데이터 및 파일 전송 완료🚀');
           }
         } catch (error) {

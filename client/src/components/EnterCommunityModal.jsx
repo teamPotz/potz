@@ -51,12 +51,10 @@ const EnterCommunityModal = () => {
       console.log('데이터', data);
       if (data.existingConnection) {
         alert('이미 가입된 커뮤니티네요! 해당 커뮤니티로 바로 이동하겠습니다.');
-        navigate('/home', {
-          state: { communityDataID: data.existingConnection.communityId },
-        });
+        navigate(`/community/${communityId}`);
       } else {
         alert('가입 완료되었습니다!');
-        navigate('/home');
+        navigate(`/community/${communityId}`);
       }
     } catch (error) {
       console.error(error);

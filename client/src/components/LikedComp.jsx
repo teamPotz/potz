@@ -86,9 +86,7 @@ const LikedComp = (props) => {
   return (
     <LikedCompWrapper
       onClick={() => {
-        navigate('/detail/', {
-          state: { postDatas: postData },
-        });
+        navigate(`/posts/${postData.id}`);
       }}
     >
       <div>
@@ -97,7 +95,7 @@ const LikedComp = (props) => {
         </a>
 
         <div style={tagStyle}>
-          <TagPlaceSM>{postData.category.name}</TagPlaceSM>
+          <TagPlaceSM>{postData.category}</TagPlaceSM>
         </div>
         <img
           width={150}
@@ -114,7 +112,7 @@ const LikedComp = (props) => {
           <div>
             <span>{postData.recruitment}</span>
             <span>/</span>
-            <span>{postData.deliveryPot.participants.length}</span>
+            <span>{postData.participantsCount}</span>
             <span>명</span>
           </div>
           <div>
@@ -123,16 +121,13 @@ const LikedComp = (props) => {
         </div>
         <div style={fontStyle2}>
           <span style={coloredfont}>
-            {postData.deliveryFees?.[0]?.fee ? (
-              Math.round(
-                postData.deliveryFees[0].fee /
-                  postData.deliveryPot.participants.length
-              )
+            {postData.appliedDeliveryFeeInfo ? (
+              <span> {postData.appliedDeliveryFeeInfo.fee} </span>
             ) : (
               <span>무료</span>
             )}
           </span>
-          {postData.deliveryFees?.[0]?.fee ? (
+          {postData.participantsCount ? (
             <span>원씩 배달</span>
           ) : (
             <span>배달</span>

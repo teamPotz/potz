@@ -29,6 +29,7 @@ const backgroundStyle = {
 function Home() {
   let navigate = useNavigate();
   const [communityDatas, setCommunityDatas] = useState();
+  const [postDatas, setPostDatas] = useState();
 
   const communityId = localStorage.getItem('communityDataID');
 
@@ -73,20 +74,29 @@ function Home() {
   }, [communityId]);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/users/info', {
-          method: 'GET',
-          credentials: 'include',
-        });
-        const data = await response.json();
-        console.log('검색 데이터', data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchUserData();
-  }, []);
+    if (communityId !== null) {
+      console.log('커뮤니티 아이디 num', communityId);
+      const fetchCommunityData = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:5000/posts?communityId=${communityId}`,
+            {
+              method: 'GET',
+              credentials: 'include',
+            }
+          );
+
+          const data = await response.json();
+          console.log('포스트 데이터', data);
+          setPostDatas(data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      fetchCommunityData();
+    }
+  }, [communityId]);
 
   const navbarStyle = {
     display: 'flex',
@@ -109,20 +119,21 @@ function Home() {
 
         {/* 만약 컨텐츠 데이터 개수가 1개도 없을 경우 공동체 공유 모달창 띄우기 */}
         <div style={homeContentesContainer}>
-          {communityDatas ? (
-            communityDatas.posts && communityDatas.posts.length === 0 ? (
+          {postDatas ? (
+            postDatas.length === 0 ? (
               <ShareCommunityModal />
             ) : null
           ) : null}
-          {communityDatas ? (
-            communityDatas.posts && communityDatas.posts.length > 0 ? (
-              <HomeContents communityDatas={communityDatas} />
-            ) : null
-          ) : null}
+          {postDatas ? <HomeContents postDatas={postDatas} /> : null}
         </div>
 
         <div style={navbarStyle}>
-          <div style={btnStyle} onClick={() => navigate('/create-post')}>
+          <div
+            style={btnStyle}
+            onClick={() =>
+              navigate('/create-post', { state: { communityId: communityId } })
+            }
+          >
             <ButtonWrite />
           </div>
           <NavBar />

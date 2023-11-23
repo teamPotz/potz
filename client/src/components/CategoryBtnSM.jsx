@@ -21,11 +21,17 @@ const Wrapper = styled.div`
 const CategoryBtnSM = (props) => {
   let navigate = useNavigate();
   let { category } = props;
+  console.log('카테고리 별 데이터', category);
+
   return (
     <Wrapper
       onClick={() => {
         navigate('/category-search', {
-          state: { category: category },
+          state: {
+            categoryID: category.id,
+            categoryName: category.name,
+            categoryImg: category.imageUrl,
+          },
         });
       }}
     >

@@ -5,7 +5,7 @@ import ButtonSm from '../components/ButtonSM';
 import ModalImg from '../../public/images/graphicImg/ModalIMG.png';
 
 const ResultEmptyModal = (props) => {
-  let { category } = props;
+  let { categoryImg, categoryName } = props;
   const ModalContainer = styled.div`
     height: calc(100vh - 200px);
     display: flex;
@@ -39,6 +39,16 @@ const ResultEmptyModal = (props) => {
     color: COLOR.GRAY_500,
   };
 
+  const potzContainerStyle = {
+    position: 'relative', // potz_container를 relative로 설정합니다.
+    minHeight: '100vh', // 최소 높이를 화면 높이(100vh)로 설정합니다.
+    width: '100%',
+  };
+
+  const backgroundStyle = {
+    backgroundColor: COLOR.POTZ_PINK_100,
+  };
+
   const coloredFont = {
     fontFamily: Font.FontKor,
     fontSize: '16px',
@@ -46,26 +56,31 @@ const ResultEmptyModal = (props) => {
     color: COLOR.POTZ_PINK_DEFAULT,
     marginRight: '8px',
   };
+
   return (
-    <ModalContainer>
-      <ModalWrapper>
-        <div>
-          <span style={coloredFont}>{category.name}</span>
-          <span style={fontStyle}>카테고리가 비어있어요.</span>
-        </div>
-        <div>
-          <img src={'http://localhost:5000/' + category.imageUrl}></img>
-        </div>
-        <span style={fontStyle2}>새로운 모집글을 작성해보세요.</span>
-        <ButtonSm
-          backgroundColor={COLOR.POTZ_PINK_DEFAULT}
-          hoverColor={COLOR.POTZ_PINK_600}
-          fontColor={COLOR.WHITE}
-        >
-          글 작성하러 가기
-        </ButtonSm>
-      </ModalWrapper>
-    </ModalContainer>
+    <div className='potz_container' style={backgroundStyle}>
+      <div style={potzContainerStyle}>
+        <ModalContainer>
+          <ModalWrapper>
+            <div>
+              <span style={coloredFont}>{categoryName}</span>
+              <span style={fontStyle}>카테고리가 비어있어요.</span>
+            </div>
+            <div>
+              <img src={'http://localhost:5000/' + categoryImg}></img>
+            </div>
+            <span style={fontStyle2}>새로운 모집글을 작성해보세요.</span>
+            <ButtonSm
+              backgroundColor={COLOR.POTZ_PINK_DEFAULT}
+              hoverColor={COLOR.POTZ_PINK_600}
+              fontColor={COLOR.WHITE}
+            >
+              글 작성하러 가기
+            </ButtonSm>
+          </ModalWrapper>
+        </ModalContainer>
+      </div>
+    </div>
   );
 };
 

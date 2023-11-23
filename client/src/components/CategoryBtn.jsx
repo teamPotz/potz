@@ -29,7 +29,11 @@ const CategoryBtn = (props) => {
     <FoodWrapper
       onClick={() => {
         navigate('/category-search', {
-          state: { category: category },
+          state: {
+            categoryID: category.id,
+            categoryName: category.name,
+            categoryImg: category.imageUrl,
+          },
         });
       }}
     >
