@@ -2,6 +2,7 @@ import passport from 'passport';
 import { PrismaClient } from '@prisma/client';
 
 import localStrategy from './localStrategy.js';
+import kakaoStrategy from './kakaoStrategy.js';
 const prisma = new PrismaClient();
 
 export default function () {
@@ -28,4 +29,5 @@ export default function () {
   });
 
   localStrategy();
+  kakaoStrategy();
 }

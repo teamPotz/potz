@@ -99,3 +99,30 @@ export function logout(req, res, next) {
     next(error);
   }
 }
+
+// export function kakao(){
+//   try{
+//     passport.authenticate('kakao');
+//     console.log('카카오 로그인');
+//   }
+//   catch(error){
+//     console.log(error);
+//   }
+
+// }
+
+// export function kakaoLogin()  {
+//   // try{
+//   //   passport.authenticate('kakao', {
+//   //     failureRedirect: '/',
+//   //   }), (req, res) => {
+//   //     res.redirect('/');
+//   //   }
+//   // }
+//   // catch(error){
+//   //   console.log(error);
+//   // }
+
+  
+// }
+
