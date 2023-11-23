@@ -1,5 +1,4 @@
 //alarmcontent.jsx
-
 import styled from 'styled-components';
 import Font from '../utility/Font';
 import COLOR from '../utility/Color';
@@ -38,6 +37,95 @@ const contentPostData = [
   },
 ];
 
+const RightButton = styled.button`
+  display: flex;
+  width: 36px;
+  height: 36px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: ${COLOR.WHITE};
+  transition: all 0.2s ease;
+  cursor: grab;
+  &:hover {
+    background-color: ${COLOR.GRAY_100};
+  }
+`;
+//framebox
+const AlarmBox = styled.div`
+  margin: 0px auto;
+  margin-top: 9.33px;
+  width: 364px;
+  height: 144px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  /* gap: 8px; */
+  position: relative;
+  border-radius: 7px;
+  background-color: ${COLOR.WHITE};
+  color: ${COLOR.GRAY_200};
+  cursor: grab;
+  box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.07);
+`;
+
+const AlarmMessage = styled.div`
+  width: 86.7px;
+  height: 21px;
+  background: ${COLOR.POTZ_PINK_200};
+  border-radius: 10px;
+  color: ${COLOR.POTZ_PINK_DEFAULT};
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  font-family: ${Font.FontKor};
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 150%;
+  cursor: grab;
+  &:hover {
+    background: ${COLOR.GRAY_200};
+  }
+`;
+
+const AlarmFont1 = styled.div`
+  /* width: 290px;
+    height: 21px; */
+
+  /* 본문/14_Medium */
+  font-family: ${Font.FontKor};
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%;
+  letter-spacing: -0.6px;
+  color: ${COLOR.BLACK};
+`;
+
+const AlarmFont2 = styled.div`
+  /* width: 220px;
+    height: 18px; */
+
+  /* 제목/설명/12_Medium */
+
+  font-family: ${Font.FontKor};
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 150%;
+  /* identical to box height, or 18px */
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  /* Grey/2 */
+  color: ${COLOR.GRAY_200};
+`;
+
 const AlarmContent = (props) => {
   //let { contentPostData } = props;
   console.log('컨텐트 포스트 데이터', contentPostData.posts);
@@ -61,95 +149,6 @@ const AlarmContent = (props) => {
       </svg>
     );
   };
-
-  const RightButton = styled.button`
-    display: flex;
-    width: 36px;
-    height: 36px;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    background-color: ${COLOR.WHITE};
-    transition: all 0.2s ease;
-    cursor: grab;
-    &:hover {
-      background-color: ${COLOR.GRAY_100};
-    }
-  `;
-  //framebox
-  const AlarmBox = styled.div`
-    margin: 0px auto;
-    margin-top: 9.33px;
-    width: 364px;
-    height: 144px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-between;
-    /* gap: 8px; */
-    position: relative;
-    border-radius: 7px;
-    background-color: ${COLOR.WHITE};
-    color: ${COLOR.GRAY_200};
-    cursor: grab;
-    box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.07);
-  `;
-
-  const AlarmMessage = styled.div`
-    width: 86.7px;
-    height: 21px;
-    background: ${COLOR.POTZ_PINK_200};
-    border-radius: 10px;
-    color: ${COLOR.POTZ_PINK_DEFAULT};
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-
-    font-family: ${Font.FontKor};
-    font-style: normal;
-    font-weight: 500;
-    font-size: 10px;
-    line-height: 150%;
-    cursor: grab;
-    &:hover {
-      background: ${COLOR.GRAY_200};
-    }
-  `;
-
-  const AlarmFont1 = styled.div`
-    /* width: 290px;
-    height: 21px; */
-
-    /* 본문/14_Medium */
-    font-family: ${Font.FontKor};
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 150%;
-    letter-spacing: -0.6px;
-    color: ${COLOR.BLACK};
-  `;
-
-  const AlarmFont2 = styled.div`
-    /* width: 220px;
-    height: 18px; */
-
-    /* 제목/설명/12_Medium */
-
-    font-family: ${Font.FontKor};
-    font-style: normal;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 150%;
-    /* identical to box height, or 18px */
-    display: flex;
-    align-items: center;
-    text-align: center;
-
-    /* Grey/2 */
-    color: ${COLOR.GRAY_200};
-  `;
 
   const styles = {
     background: {

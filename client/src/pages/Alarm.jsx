@@ -1,16 +1,44 @@
 // alarmpage.jsx
-
 import '../App.css';
 import Font from '../utility/Font';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
 import styled from 'styled-components';
 import COLOR from '../utility/Color';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import AlarmContent from '../components/AlarmContent';
 
 //contents_container 안에 UI 구현 하시면 됩니다!
+
+const ButtonDelete = styled.button`
+  display: flex;
+  width: 36px;
+  height: 36px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: ${COLOR.WHITE};
+  cursor: grab;
+
+  &:hover {
+    background-color: ${COLOR.GRAY_100};
+    transform: scale(1.18);
+    border-radius: 4px;
+  }
+`;
+
+const BackButton = styled.button`
+  width: 28px;
+  height: 28px;
+  background: ${COLOR.WHITE};
+  border: none;
+  transition: all 0.2s ease;
+  cursor: grab;
+
+  &:hover {
+    background-color: ${COLOR.GRAY_100};
+    transform: scale(1.18);
+    border-radius: 4px;
+  }
+`;
 
 function Alarm() {
   let [Name1, setName1] = useState('알람');
@@ -41,27 +69,6 @@ function Alarm() {
   //   }
   // `;
 
-  const backgroundStyle = {
-    width: '420px',
-    height: '100%',
-    backgroundColor: `${COLOR.WHITE}`,
-  };
-
-  const BackButton = styled.button`
-    width: 28px;
-    height: 28px;
-    background: ${COLOR.WHITE};
-    border: none;
-    transition: all 0.2s ease;
-    cursor: grab;
-
-    &:hover {
-      background-color: ${COLOR.GRAY_100};
-      transform: scale(1.18);
-      border-radius: 4px;
-    }
-  `;
-
   const BackIcon = () => {
     return (
       <svg
@@ -81,23 +88,6 @@ function Alarm() {
       </svg>
     );
   };
-
-  const ButtonDelete = styled.button`
-    display: flex;
-    width: 36px;
-    height: 36px;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    background-color: ${COLOR.WHITE};
-    cursor: grab;
-
-    &:hover {
-      background-color: ${COLOR.GRAY_100};
-      transform: scale(1.18);
-      border-radius: 4px;
-    }
-  `;
 
   const DeleteIcon = () => {
     return (
@@ -150,6 +140,12 @@ function Alarm() {
         />
       </svg>
     );
+  };
+
+  const backgroundStyle = {
+    width: '420px',
+    height: '100%',
+    backgroundColor: `${COLOR.WHITE}`,
   };
 
   const style1 = {
