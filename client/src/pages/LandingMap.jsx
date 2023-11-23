@@ -26,6 +26,10 @@ const SearchResult = styled.div`
   border-radius: 9.33333px;
   box-sizing: border-box;
   gap: 16.33px;
+  transition: 0.2s;
+  &: hover {
+    transform: scale(1.04);
+  }
 `;
 
 const ContentMargin = styled.div`
@@ -69,7 +73,7 @@ const ButtonStyle = styled.button`
   font-family: ${Font.FontKor};
   font-size: 16px;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
   border: none;
   border-radius: 12px;
   display: flex;
@@ -80,7 +84,7 @@ const ButtonStyle = styled.button`
   align-items: center;
   gap: 11px;
   background-color: ${COLOR.POTZ_PINK_200};
-  color: ${COLOR.BLACK};
+  color: ${COLOR.POTZ_PINK_500};
   cursor: grab;
 
   // 호버 상태 스타일
@@ -95,6 +99,7 @@ function LandingMap(props) {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchResult, setSearchResult] = useState([]);
+  const [latLon, setLatLon] = useState([]);
 
   const styles = {
     background: {
@@ -144,7 +149,7 @@ function LandingMap(props) {
       backgroundColor: 'transparent',
     },
     searchResultContainer: {
-      marginTop: '552px',
+      marginTop: '643px',
       display: 'flex',
       flexDirection: 'column',
       gap: '9.33px',
@@ -222,18 +227,26 @@ function LandingMap(props) {
             </form>
           </div>
         </div>
-        <div style={{ position: 'fixed' }}>
+        <div style={{ position: 'fixed', zIndex: 998 }}>
           <PostMap
             searchKeyword={keyword}
             routeName={location.state.routeName}
             sendData={sendDataHandler}
+            latlon={latLon}
           ></PostMap>
         </div>
         <div className='contents_container'></div>
         <div style={styles.searchResultContainer}>
           {searchResult.map((result, i) => {
             return (
-              <SearchResult key={i}>
+              <SearchResult
+                key={i}
+                onMouseOver={() => {
+                  setLatLon([result.y, result.x]);
+                  console.log(result.x);
+                  console.log(result.y);
+                }}
+              >
                 <ContentMargin>
                   <Content>
                     <FontBg>{result.place_name}</FontBg>

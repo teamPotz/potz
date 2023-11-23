@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import COLOR from '../utility/Color';
-import { useNavigate } from 'react-router-dom';
 
 function PostMap(props) {
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
-  const navigate = useNavigate();
   const coordinateRef = useRef({
     lat: 37.56421,
     lon: 127.00169,
@@ -59,6 +57,17 @@ function PostMap(props) {
     });
   }, [props.searchKeyword]);
 
+  useEffect(() => {
+    console.log(props.latlon);
+    if (props.latlon && map) {
+      const bounds = new window.kakao.maps.LatLngBounds();
+      bounds.extend(
+        new window.kakao.maps.LatLng(props.latlon[0], props.latlon[1])
+      );
+      map.setBounds(bounds);
+    }
+  }, [map, props.latlon]);
+
   const MapClickEventWithMarker = (_t, mouseEvent) => {
     setPosition({
       lat: mouseEvent.latLng.getLat(),
@@ -70,10 +79,11 @@ function PostMap(props) {
   return (
     <>
       <Map
-        center={{ lat: 33.5563, lng: 126.79581 }}
-        style={{ width: '420px', height: '60vh' }}
+        center={{ lat: 37.56421, lng: 127.00169 }}
+        style={{ width: '420px', height: '70vh' }}
         level={3}
         onCreate={setMap}
+        isPanto={true}
         onClick={MapClickEventWithMarker}
       >
         {position && <MapMarker position={position} />}
