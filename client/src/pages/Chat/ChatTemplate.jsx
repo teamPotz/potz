@@ -1,7 +1,4 @@
 import '../../App.css';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
 import COLOR from '../../utility/Color';
 import styled from 'styled-components';
 import SelectMenu from '../../components/selectMenu';
@@ -9,7 +6,7 @@ import GoBack from '../../components/goBack';
 import Font from '../../utility/Font';
 import CheckMenu from '../../components/ckeckMenu';
 import { useEffect } from 'react';
-// import ChatNavBar from '../../components/ChatNavBar';
+import ChatNavBar from '../../components/chat/ChatNavBar';
 //contents_container 안에 UI 구현 하시면 됩니다!
 
 function Chat() {
@@ -101,66 +98,66 @@ function Chat() {
   };
 
   return (
-    <Container className='background'>
-      <Row className='row1'>
-        <Col className='col1'>
-          <div className='side_container'></div>
-        </Col>
-        <Col className='col2'>
-          <div
-            className='potz_container'
-            id='potz_container'
-            style={styles.background}
-          >
-            <GoBack text={'버거킹 하버뷰점'}></GoBack>
+    <div
+      className='potz_container'
+      id='potz_container'
+      style={styles.background}
+    >
+      <GoBack text={'버거킹 하버뷰점'}></GoBack>
 
-            {/* 받아온 데이터는 contents-container에 구현합니다. */}
-            <div className='contents_container' style={styles.Content}>
-              <MessageBox isMyMessage={true}>
-                안녕하세요
-                <div>
-                  11:51
-                  <svg
-                    width='13'
-                    height='10'
-                    viewBox='0 0 13 10'
-                    fill='none'
-                    xmlns='http://www.w3.org/2000/svg'
-                  >
-                    <path
-                      d='M4.61751 7.95284L2.03616 5.37149C1.9078 5.24752 1.73589 5.17892 1.55745 5.18047C1.37901 5.18202 1.20832 5.2536 1.08214 5.37978C0.955962 5.50596 0.884389 5.67665 0.882838 5.85509C0.881288 6.03353 0.949884 6.20544 1.07385 6.33379L4.13635 9.39629C4.26398 9.52388 4.43705 9.59555 4.61751 9.59555C4.79796 9.59555 4.97104 9.52388 5.09866 9.39629L12.5848 1.91018C12.7087 1.78183 12.7773 1.60992 12.7758 1.43148C12.7742 1.25304 12.7027 1.08235 12.5765 0.956166C12.4503 0.829986 12.2796 0.758412 12.1012 0.756862C11.9227 0.755311 11.7508 0.823908 11.6225 0.947876L4.61751 7.95284Z'
-                      fill='white'
-                    />
-                  </svg>
-                </div>
-              </MessageBox>
-              <MessageBox isMyMessage={false}>
-                반가워요<div>12:14</div>
-              </MessageBox>
-              <SelectMenu isMyMessage={true}></SelectMenu>
-              <MessageBox isMyMessage={false}>
-                2000원 더 모이면 3000원 할인 쿠폰을 사용할 수 있다는데 어떻게
-                하실래요?<div>12:15</div>
-              </MessageBox>
-              <CheckMenu isMyMessage={false}></CheckMenu>
-              <MessageBox isMyMessage={false}>
-                반가워요<div>12:14</div>
-              </MessageBox>
-              <SelectMenu isMyMessage={true}></SelectMenu>
-              <MessageBox isMyMessage={false}>
-                2000원 더 모이면 3000원 할인 쿠폰을 사용할 수 있다는데 어떻게
-                하실래요?<div>12:15</div>
-              </MessageBox>
-              <CheckMenu isMyMessage={false}></CheckMenu>
-            </div>
-            {/* <ChatNavBar isBangJang={BangJang} /> */}
+      {/* 받아온 데이터는 contents-container에 구현합니다. */}
+      <div className='contents_container' style={styles.Content}>
+        <MessageBox isMyMessage={true}>
+          안녕하세요
+          <div>
+            11:51
+            <svg
+              width='13'
+              height='10'
+              viewBox='0 0 13 10'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+            >
+              <path
+                d='M4.61751 7.95284L2.03616 5.37149C1.9078 5.24752 1.73589 5.17892 1.55745 5.18047C1.37901 5.18202 1.20832 5.2536 1.08214 5.37978C0.955962 5.50596 0.884389 5.67665 0.882838 5.85509C0.881288 6.03353 0.949884 6.20544 1.07385 6.33379L4.13635 9.39629C4.26398 9.52388 4.43705 9.59555 4.61751 9.59555C4.79796 9.59555 4.97104 9.52388 5.09866 9.39629L12.5848 1.91018C12.7087 1.78183 12.7773 1.60992 12.7758 1.43148C12.7742 1.25304 12.7027 1.08235 12.5765 0.956166C12.4503 0.829986 12.2796 0.758412 12.1012 0.756862C11.9227 0.755311 11.7508 0.823908 11.6225 0.947876L4.61751 7.95284Z'
+                fill='white'
+              />
+            </svg>
           </div>
-        </Col>
-        <Col className='col3'>
-          <div className='side_container'></div>
-        </Col>
-      </Row>
-    </Container>
+        </MessageBox>
+        <MessageBox isMyMessage={false}>
+          반가워요<div>12:14</div>
+        </MessageBox>
+        <SelectMenu isMyMessage={true}></SelectMenu>
+        <MessageBox isMyMessage={false}>
+          2000원 더 모이면 3000원 할인 쿠폰을 사용할 수 있다는데 어떻게
+          하실래요?<div>12:15</div>
+        </MessageBox>
+        <CheckMenu isMyMessage={false}></CheckMenu>
+        <MessageBox isMyMessage={false}>
+          반가워요<div>12:14</div>
+        </MessageBox>
+        <SelectMenu isMyMessage={true}></SelectMenu>
+        <MessageBox isMyMessage={false}>
+          2000원 더 모이면 3000원 할인 쿠폰을 사용할 수 있다는데 어떻게
+          하실래요?<div>12:15</div>
+        </MessageBox>
+        <MessageBox isMyMessage={false}>
+          2000원 더 모이면 3000원 할인 쿠폰을 사용할 수 있다는데 어떻게
+          하실래요?<div>12:15</div>
+        </MessageBox>
+        <MessageBox isMyMessage={false}>
+          2000원 더 모이면 3000원 할인 쿠폰을 사용할 수 있다는데 어떻게
+          하실래요?<div>12:15</div>
+        </MessageBox>
+        <MessageBox isMyMessage={false}>
+          2000원 더 모이면 3000원 할인 쿠폰을 사용할 수 있다는데 어떻게
+          하실래요?<div>12:15</div>
+        </MessageBox>
+        <CheckMenu isMyMessage={false}></CheckMenu>
+      </div>
+      <ChatNavBar isBangJang={BangJang} />
+    </div>
   );
 }
 

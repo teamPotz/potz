@@ -127,10 +127,19 @@ function getNextDiscountInfos(
   return nextDiscountInfos.at(0);
 }
 
-export async function getPosts(req, res) {
-  // todo: change likedByUsers filtering id to loginned userId
+export async function getPostsByCommunityId(req, res, next) {
   try {
+    const { communityId } = req.body;
+
+    if (!communityId) {
+      res.status(400);
+      throw new Error('missing communityId in request');
+    }
+
     const posts = await prisma.post.findMany({
+      where: {
+        communityId: +communityId,
+      },
       select: {
         id: true,
         storeName: true,
@@ -142,7 +151,7 @@ export async function getPosts(req, res) {
         recruitment: true,
         meetingLocation: true,
         likedByUsers: {
-          where: { userId: 1, liked: true },
+          where: { userId: req.user.id, liked: true },
         },
         category: {
           select: { name: true },
@@ -228,7 +237,7 @@ export async function getPosts(req, res) {
     res.status(200).send(transformedPosts);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get posts error' });
+    next(error);
   }
 }
 
@@ -413,8 +422,8 @@ export async function createPost(req, res) {
         storeAddress,
         imageUrl: imageUrl,
         orderLink,
-        categoryId: parseInt(categoryId),
-        recruitment: parseInt(recruitment),
+        categoryId: +categoryId,
+        recruitment: +recruitment,
         meetingLocation,
         communityId: 1,
         authorId: req.user.id,
@@ -516,8 +525,8 @@ export async function updatePost(req, res) {
         storeAddress,
         imageUrl: imageUrl,
         orderLink,
-        categoryId: parseInt(categoryId),
-        recruitment: parseInt(recruitment),
+        categoryId: +categoryId,
+        recruitment: +recruitment,
         meetingLocation,
         communityId: 1,
       };
@@ -568,7 +577,13 @@ export async function updatePost(req, res) {
 }
 
 export async function deletePost(req, res) {
-  // ...
+  const { id } = req.params;
+  const postDeleteWithUserId = await prisma.post.delete({
+    where: {
+      postId: +id,
+      authorId: req.user.id,
+    }
+  })
 }
 
 // 찜하기, 찜 취소하기

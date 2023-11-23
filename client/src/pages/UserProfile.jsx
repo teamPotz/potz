@@ -50,7 +50,6 @@ const Profile2 = styled.div`
     padding: 14px 35px 14px 16.3333px;
   }
 `;
-
 const FontBig = styled.p`
   font-family: ${Font.FontKor};
   font-style: normal;
@@ -78,7 +77,6 @@ const FontSm = styled.span`
   margin: 0;
   white-space: nowrap;
 `;
-
 const styles = {
   background: {
     backgroundColor: `${COLOR.POTZ_PINK_100}`,

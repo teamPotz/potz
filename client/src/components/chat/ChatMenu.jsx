@@ -1,6 +1,5 @@
 import COLOR from '../../utility/Color';
 import ChatRequireButton from './ChatRequireButton';
-import styled from 'styled-components';
 
 const styles = {
   Wrapper: {
@@ -33,67 +32,49 @@ const styles = {
   },
 };
 
-const navbarStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '28px',
-  alignItems: 'end',
-  position: 'fixed',
-  bottom: 0,
-  maxWidth: '420px',
-  width: '420px',
-};
+function PotMasterMenu() {
+  return (
+    <>
+      <div style={styles.RequireButtonBox} onClick={() => console.log('hi')}>
+        <ChatRequireButton
+          imageURL={'images/components/icon-coin-mono.png'}
+          text={'정산 요청'}
+        />
+      </div>
 
-//nav bar wrappers
-const NavBarWrapper = styled.div`
-  padding-top: 4px;
-  padding-bottom: 4px;
-  width: 100%;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: ${COLOR.WHITE};
-  border: 1px ${COLOR.GRAY_100} solid;
-  border-radius: 16px 16px 0px 0px;
-  box-shadow: 0px -36px 57px 0px rgba(255, 255, 255, 0.8);
-`;
+      <div style={styles.RequireButtonBox}>
+        <ChatRequireButton
+          imageURL={'images/components/Union.png'}
+          text={'메뉴 요청'}
+        />
+      </div>
+
+      <div style={styles.RequireButtonBox}>
+        <ChatRequireButton
+          imageURL={'images/components/Arrow - Right Square.png'}
+          text={'수령 요청'}
+        />
+      </div>
+    </>
+  );
+}
+
+function UserMenu() {
+  return (
+    <div style={styles.RequireButtonBox}>
+      <ChatRequireButton
+        imageURL={'images/components/Union.png'}
+        text={'메뉴 요청'}
+      />
+    </div>
+  );
+}
 
 function ChatMenu({ isPotMaster }) {
   return (
     <div style={styles.Wrapper}>
       <div style={styles.ChatBox}>
-        {isPotMaster ? (
-          <>
-            <div style={styles.RequireButtonBox}>
-              <ChatRequireButton
-                imageURL={'images/components/icon-coin-mono.png'}
-                text={'정산 요청'}
-              ></ChatRequireButton>
-            </div>
-
-            <div style={styles.RequireButtonBox}>
-              <ChatRequireButton
-                imageURL={'images/components/Union.png'}
-                text={'메뉴 요청'}
-              ></ChatRequireButton>
-            </div>
-
-            <div style={styles.RequireButtonBox}>
-              <ChatRequireButton
-                imageURL={'images/components/Arrow - Right Square.png'}
-                text={'수령 요청'}
-              ></ChatRequireButton>
-            </div>
-          </>
-        ) : (
-          <div style={styles.RequireButtonBox}>
-            <ChatRequireButton
-              imageURL={'images/components/Union.png'}
-              text={'메뉴 요청'}
-            ></ChatRequireButton>
-          </div>
-        )}
+        {isPotMaster ? <PotMasterMenu /> : <UserMenu />}
       </div>
     </div>
   );
