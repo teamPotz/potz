@@ -26,13 +26,8 @@ export async function getUserDataById(req, res) {
         id: req.user.id,
       },
       select: {
-        id: true,
-        name: true,
-        email: true,
-        profile: true,
         communities: {
           select: {
-            userId: true,
             communityId: true,
             joinedAt: true,
           },

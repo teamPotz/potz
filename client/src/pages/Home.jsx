@@ -1,15 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import COLOR from '../utility/Color';
 import NavBarHomePage from '../components/NavBarHomePage';
 import HomeContents from '../components/HomeContentsComp';
 import ButtonWrite from '../components/ButtonWrite';
 import ShareCommunityModal from '../components/shareCommunityModal';
 import NavBar from '../components/ui/NavBar';
-import {
-  useCommunityId,
-  CommunityIdProvider,
-} from '../contexts/communityIdContext';
 
 const potzContainerStyle = {
   position: 'relative',
@@ -31,23 +27,10 @@ const backgroundStyle = {
 };
 
 function Home() {
+  let navigate = useNavigate();
   const [communityDatas, setCommunityDatas] = useState();
-  const { communityDataID, setCommunityDataID } = useCommunityId();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const initialCommunityDataID = location.state?.communityDataID;
 
-  useEffect(() => {
-    const updateCommunityDataID = async () => {
-      if (initialCommunityDataID) {
-        console.log('아이디', initialCommunityDataID);
-        setCommunityDataID(initialCommunityDataID);
-        localStorage.setItem('communityDataID', initialCommunityDataID);
-      }
-    };
-
-    updateCommunityDataID();
-  }, [initialCommunityDataID, setCommunityDataID, communityDataID]);
+  const communityId = localStorage.getItem('communityDataID');
 
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
@@ -66,13 +49,14 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    if (communityDataID !== null) {
-      console.log('커뮤니티 아이디 num', communityDataID);
+    if (communityId !== null) {
+      console.log('커뮤니티 아이디 num', communityId);
       const fetchCommunityData = async () => {
         try {
           const response = await fetch(
-            `http://localhost:5000/communities/${communityDataID}`,
+            `http://localhost:5000/communities/${communityId}`,
             {
+              method: 'GET',
               credentials: 'include',
             }
           );
@@ -86,7 +70,23 @@ function Home() {
 
       fetchCommunityData();
     }
-  }, [communityDataID]);
+  }, [communityId]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/users/info', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        const data = await response.json();
+        console.log('검색 데이터', data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchUserData();
+  }, []);
 
   const navbarStyle = {
     display: 'flex',

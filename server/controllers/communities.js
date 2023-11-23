@@ -172,6 +172,7 @@ export async function saveCommunityImg(req, res) {
 
 export async function createCommunity(req, res) {
   const { communityTypes, longitude, latitude, name } = req.body;
+  console.log('유저 아이디', req.user.id);
 
   try {
     const newCommunityData = await prisma.community.create({
@@ -180,8 +181,12 @@ export async function createCommunity(req, res) {
           connect: { id: communityTypes.id },
         },
         members: {
-          connect: {
-            id: req.user.id,
+          create: {
+            user: {
+              connect: {
+                id: req.user.id,
+              },
+            },
           },
         },
         longitude,
@@ -190,7 +195,6 @@ export async function createCommunity(req, res) {
         name,
       },
     });
-
     res.status(201).send(newCommunityData);
     console.log('데이터 저장 완료');
   } catch (error) {
@@ -202,7 +206,7 @@ export async function createCommunity(req, res) {
 export async function joinCommunity(req, res) {
   const { id } = req.params;
 
-  console.log('userid, communityId', req.user.id, id);
+  console.log('userid, communityId', req.user.id, parseInt(id));
   //연결용 DB에서 유저 검색/추가
   try {
     const existingConnection = await prisma.communitiesOnUsers.findFirst({

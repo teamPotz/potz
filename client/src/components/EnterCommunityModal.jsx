@@ -34,12 +34,8 @@ const EnterCommunityModal = () => {
   let communityId = communityData.id;
 
   const clickHandler = () => {
-    //로그인한 유저를 communityData.id의 커뮤니티 member에 update하기
-    //로그인한 유저의 정보를 GET해오는데, 이때 가입한 커뮤니티 순서를 joinedAt 순서 중 1번을 받아오기
-    //받아온 1번 커뮤니티의 id 추출
-    //가입 완료 문구와 Home으로 이동하기 버튼 -> 이때 받아온 1번 커뮤니티의 id 전달
-    //Home 페이지에서 가입한 커뮤니티 1번의 id를 기준으로 Home에서 fetch하기
     updateUserData();
+    localStorage.setItem('communityDataID', communityId);
   };
 
   const updateUserData = async () => {
@@ -60,9 +56,7 @@ const EnterCommunityModal = () => {
         });
       } else {
         alert('가입 완료되었습니다!');
-        navigate('/home', {
-          state: { communityDataID: data.communityId },
-        });
+        navigate('/home');
       }
     } catch (error) {
       console.error(error);

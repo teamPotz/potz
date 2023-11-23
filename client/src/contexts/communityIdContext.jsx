@@ -1,23 +1,26 @@
-import { createContext, useContext, useState } from 'react';
-import { useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const CommunityIdContext = createContext();
+
 export const CommunityIdProvider = ({ children }) => {
-  // 로컬 스토리지에서 데이터 불러오기
-  const storedCommunityDataID = localStorage.getItem('communityDataID');
+  const [communityDataIDs, setCommunityDataID] = useState(null);
 
-  const [communityDataID, setCommunityDataID] = useState(
-    storedCommunityDataID || null
-  );
-
-  // 로컬 스토리지에 데이터 저장하기
   useEffect(() => {
-    localStorage.setItem('communityDataID', communityDataID);
-  }, [communityDataID]);
+    const storedCommunityDataID = localStorage.getItem('communityDataID');
+    if (storedCommunityDataID !== null) {
+      setCommunityDataID(storedCommunityDataID);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (communityDataIDs !== null) {
+      localStorage.setItem('communityDataID', communityDataIDs);
+    }
+  }, [communityDataIDs]);
 
   return (
     <CommunityIdContext.Provider
-      value={{ communityDataID, setCommunityDataID }}
+      value={{ communityDataIDs, setCommunityDataID }}
     >
       {children}
     </CommunityIdContext.Provider>

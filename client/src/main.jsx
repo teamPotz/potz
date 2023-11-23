@@ -1,7 +1,6 @@
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext.jsx';
-import { CommunityIdProvider } from './contexts/communityIdContext.jsx';
 import AppLayout from './components/ui/AppLayout.jsx';
 import MakeCommunity from './pages/MakeCommunityPage.jsx';
 import ChooseFeature from './pages/ChooseFeaturePage.jsx';
@@ -30,6 +29,7 @@ import './App.css';
 import ChatList from './pages/Chat/ChatList.jsx';
 import UserProfile from './pages/UserProfile.jsx';
 import Entercommunity from './pages/EnterCommunity.jsx';
+import AuthorizeUser from './pages/authorize.jsx';
 
 const router = createBrowserRouter([
   {
@@ -44,17 +44,19 @@ const router = createBrowserRouter([
     path: '/',
     element: (
       <AuthProvider>
-        <CommunityIdProvider>
-          <ProtectedRoute>
-            <AppLayout />
-          </ProtectedRoute>
-        </CommunityIdProvider>
+        <ProtectedRoute>
+          <AppLayout />
+        </ProtectedRoute>
       </AuthProvider>
     ),
     children: [
       {
         path: '/',
         element: <Login />,
+      },
+      {
+        path: '/authorize',
+        element: <AuthorizeUser />,
       },
       {
         path: '/home',
