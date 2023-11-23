@@ -108,84 +108,70 @@ function UserLoactionLandingMap() {
   }, []);
 
   return (
-    <>
-      <Container className='background'>
-        <Row className='row1'>
-          <Col className='col1'>
-            <div className='side_container'></div>
-          </Col>
-          <Col className='col2'>
-            <div className='potz_container'>
-              <div style={styles.wrapperInput}>
-                <div style={styles.inputBox}>
-                  <svg
-                    onClick={() => {
-                      navigate(-1);
-                    }}
-                    width='29'
-                    height='28'
-                    viewBox='0 0 29 28'
-                    fill='none'
-                    xmlns='http://www.w3.org/2000/svg'
-                  >
-                    <path
-                      d='M18.7498 22.1673L10.5832 14.0007L18.7498 5.83398'
-                      stroke='black'
-                      strokeWidth='1.75'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                  </svg>
+    <div className='potz_container'>
+      <div style={styles.wrapperInput}>
+        <div style={styles.inputBox}>
+          <svg
+            onClick={() => {
+              navigate(-1);
+            }}
+            width='29'
+            height='28'
+            viewBox='0 0 29 28'
+            fill='none'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <path
+              d='M18.7498 22.1673L10.5832 14.0007L18.7498 5.83398'
+              stroke='black'
+              strokeWidth='1.75'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+            />
+          </svg>
 
-                  <form onSubmit={submitKeyWord} style={styles.form}>
-                    <button type='submit' style={styles.button}>
-                      <svg
-                        width='28'
-                        height='28'
-                        viewBox='0 0 28 28'
-                        fill='none'
-                        xmlns='http://www.w3.org/2000/svg'
-                      >
-                        <circle
-                          cx='12.25'
-                          cy='12.2503'
-                          r='7.58333'
-                          stroke='#808080'
-                          strokeWidth='1.75'
-                          strokeLinejoin='round'
-                        />
-                        <path
-                          d='M22.7146 23.9521C23.0563 24.2938 23.6103 24.2938 23.9521 23.9521C24.2938 23.6103 24.2938 23.0563 23.9521 22.7146L22.7146 23.9521ZM23.9521 22.7146L18.1187 16.8813L16.8813 18.1187L22.7146 23.9521L23.9521 22.7146Z'
-                          fill='#808080'
-                        />
-                      </svg>
-                    </button>
+          <form onSubmit={submitKeyWord} style={styles.form}>
+            <button type='submit' style={styles.button}>
+              <svg
+                width='28'
+                height='28'
+                viewBox='0 0 28 28'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <circle
+                  cx='12.25'
+                  cy='12.2503'
+                  r='7.58333'
+                  stroke='#808080'
+                  strokeWidth='1.75'
+                  strokeLinejoin='round'
+                />
+                <path
+                  d='M22.7146 23.9521C23.0563 24.2938 23.6103 24.2938 23.9521 23.9521C24.2938 23.6103 24.2938 23.0563 23.9521 22.7146L22.7146 23.9521ZM23.9521 22.7146L18.1187 16.8813L16.8813 18.1187L22.7146 23.9521L23.9521 22.7146Z'
+                  fill='#808080'
+                />
+              </svg>
+            </button>
 
-                    <Input
-                      placeholder='내 위치를 검색해보세요.'
-                      onChange={(e) => {
-                        e.preventDefault();
-                        setValue(e.target.value);
-                      }}
-                    ></Input>
-                  </form>
-                </div>
-              </div>
-              {currentLocation ? (
-                <UserLocationMap
-                  currentLocation={currentLocation}
-                  searchKeyword={keyword}
-                ></UserLocationMap>
-              ) : null}
-              <div className='contents_container'></div>
-            </div>
-          </Col>
-          <Col className='col3'>
-            <div className='side_container'></div>
-          </Col>
-        </Row>
-      </Container>
-    </>
+            <Input
+              placeholder='내 위치를 검색해보세요.'
+              onChange={(e) => {
+                e.preventDefault();
+                setValue(e.target.value);
+              }}
+            ></Input>
+          </form>
+        </div>
+      </div>
+      {currentLocation ? (
+        <UserLocationMap
+          currentLocation={currentLocation}
+          searchKeyword={keyword}
+        ></UserLocationMap>
+      ) : null}
+      <div className='contents_container'></div>
+    </div>
   );
 }
 

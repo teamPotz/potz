@@ -29,6 +29,7 @@ import './App.css';
 import ChatList from './pages/Chat/ChatList.jsx';
 import UserProfile from './pages/UserProfile.jsx';
 import Entercommunity from './pages/EnterCommunity.jsx';
+import AuthorizeUser from './pages/authorize.jsx';
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Login />,
+      },
+      {
+        path: '/authorize',
+        element: <AuthorizeUser />,
       },
       {
         path: '/home',

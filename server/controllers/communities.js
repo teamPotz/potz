@@ -84,8 +84,13 @@ export async function getCommunitiesByLocation(req, res) {
 
 export async function getCommunityById(req, res) {
   const { id } = req.params;
+  const communityId = parseInt(id, 10);
+  console.log('커뮤니티 아이디', communityId);
   try {
     const community = await prisma.community.findUnique({
+      where: {
+        id: communityId,
+      },
       select: {
         id: true,
         name: true,
@@ -144,9 +149,6 @@ export async function getCommunityById(req, res) {
           select: { members: true },
         },
       },
-      where: {
-        id: +id,
-      },
     });
 
     const transformedCommunity = {
@@ -171,6 +173,7 @@ export async function saveCommunityImg(req, res) {
 
 export async function createCommunity(req, res) {
   const { communityTypes, longitude, latitude, name } = req.body;
+  console.log('유저 아이디', req.user.id);
 
   try {
     const newCommunityData = await prisma.community.create({
@@ -179,8 +182,12 @@ export async function createCommunity(req, res) {
           connect: { id: communityTypes.id },
         },
         members: {
-          connect: {
-            id: req.user.id,
+          create: {
+            user: {
+              connect: {
+                id: req.user.id,
+              },
+            },
           },
         },
         longitude,
@@ -189,12 +196,44 @@ export async function createCommunity(req, res) {
         name,
       },
     });
-
     res.status(201).send(newCommunityData);
     console.log('데이터 저장 완료');
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get communities error' });
+    res.status(500).json({ message: 'create communities error' });
+  }
+}
+
+export async function joinCommunity(req, res) {
+  const { id } = req.params;
+
+  console.log('userid, communityId', req.user.id, parseInt(id));
+  //연결용 DB에서 유저 검색/추가
+  try {
+    const existingConnection = await prisma.communitiesOnUsers.findFirst({
+      where: {
+        userId: req.user.id,
+        communityId: parseInt(id),
+      },
+    });
+
+    if (!existingConnection) {
+      const updateUserData = await prisma.communitiesOnUsers.create({
+        data: {
+          communityId: +id,
+          userId: req.user.id,
+        },
+      });
+
+      console.log('가입 완료.');
+      res.status(201).send(updateUserData);
+    } else {
+      console.log('이미 가입된 상태.');
+      res.status(201).send({ existingConnection: existingConnection });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'join communities error' });
   }
 }
 

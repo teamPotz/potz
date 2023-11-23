@@ -52,7 +52,7 @@ function MakeCommunity() {
     <div className='potz_container'>
       <div className='contents_container' style={style1}>
         <div className='text_container' style={fontStyle}>
-          <span>앗, {user.name}님 근체에</span>
+          <span>앗, {user.name}님 근처에</span>
           <br></br>
           <span>아직 공동체가 없어요. 😅</span>
           <br></br>

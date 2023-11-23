@@ -8,7 +8,7 @@ function PostMap(props) {
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState('');
-  let [latLon, setLetLon] = useState();
+  const [latLon, setLatLon] = useState();
   const navigate = useNavigate();
   const coordinateRef = useRef({
     lat: 37.56421,
@@ -23,8 +23,7 @@ function PostMap(props) {
           lat: position.coords.latitude,
           lon: position.coords.longitude,
         };
-        console.log(coordinateRef.current);
-        setLetLon(coordinateRef.current);
+        console.log('현재 위치', coordinateRef.current);
 
         bounds.extend(
           new window.kakao.maps.LatLng(
@@ -43,7 +42,9 @@ function PostMap(props) {
     const ps = new window.kakao.maps.services.Places();
 
     ps.keywordSearch(props.currentLocation, (data, status) => {
+      console.log('props.currentLocation:', props.currentLocation);
       if (status === window.kakao.maps.services.Status.OK) {
+        console.log('currentLocation search result:', status, data);
         const bounds = new window.kakao.maps.LatLngBounds();
         const firstResult = data[0];
 
@@ -61,7 +62,6 @@ function PostMap(props) {
         bounds.extend(
           new window.kakao.maps.LatLng(firstResult.y, firstResult.x)
         );
-
         setMarkers(marker);
         if (map) {
           map.setBounds(bounds);
@@ -71,9 +71,12 @@ function PostMap(props) {
   }, [props.currentLocation]);
 
   useEffect(() => {
+    console.log('props.searchKeyword:', props.searchKeyword);
     const ps = new window.kakao.maps.services.Places();
 
     ps.keywordSearch(props.searchKeyword, (data, status) => {
+      console.log('Keyword search result:', status, data);
+
       if (status === window.kakao.maps.services.Status.OK) {
         const bounds = new window.kakao.maps.LatLngBounds();
         let marker = [];
@@ -95,6 +98,12 @@ function PostMap(props) {
     });
   }, [props.searchKeyword]);
 
+  const handleMarkerClick = (clickedMarker) => {
+    setInfo(clickedMarker);
+    console.log('현재 위치', clickedMarker.position);
+    setLatLon(clickedMarker.position);
+  };
+
   return (
     <>
       <Map
@@ -107,7 +116,7 @@ function PostMap(props) {
           <MapMarker
             key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
             position={marker.position}
-            onClick={() => setInfo(marker)}
+            onClick={() => handleMarkerClick(marker)}
           >
             {latLon
               ? info &&

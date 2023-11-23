@@ -296,7 +296,12 @@ function UserProfile() {
         })}
       </div>
       <div className='contents_container'>
-        <div onClick={() => logout()}>
+        <div
+          onClick={() => {
+            logout();
+            localStorage.removeItem('communityDataID');
+          }}
+        >
           <ButtonBg
             backgroundColor={COLOR.POTZ_PINK_DEFAULT}
             hoverColor={COLOR.POTZ_PINK_600}
