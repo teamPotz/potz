@@ -50,7 +50,7 @@ function Login() {
               구글 계정으로 시작
             </ButtonBg>
           </div>
-          <div onClick={handleNavigate}>
+          <div onClick={() => navigate('/local-login')}>
             <ButtonBg
               backgroundColor={COLOR.POTZ_PINK_200}
               hoverColor={COLOR.POTZ_PINK_300}
