@@ -28,7 +28,11 @@ function Login() {
       <div className='contents_container' style={style1}>
         <Logo />
         <div className='btn_container' style={style3}>
-          <div onClick={handleNavigate}>
+          <div
+            onClick={() =>
+              (window.location.href = 'http://localhost:5000/auth/login/kakao')
+            }
+          >
             <ButtonBg
               backgroundColor={COLOR.YELLOW}
               hoverColor={COLOR.YELLOW_100}
@@ -46,7 +50,7 @@ function Login() {
               구글 계정으로 시작
             </ButtonBg>
           </div>
-          <div onClick={handleNavigate}>
+          <div onClick={() => navigate('/local-login')}>
             <ButtonBg
               backgroundColor={COLOR.POTZ_PINK_200}
               hoverColor={COLOR.POTZ_PINK_300}

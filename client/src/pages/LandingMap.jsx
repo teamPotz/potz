@@ -149,7 +149,7 @@ function LandingMap(props) {
       backgroundColor: 'transparent',
     },
     searchResultContainer: {
-      marginTop: '643px',
+      marginTop: '675px',
       display: 'flex',
       flexDirection: 'column',
       gap: '9.33px',

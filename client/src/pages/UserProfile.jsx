@@ -5,6 +5,7 @@ import NavBar from '../components/ui/NavBar';
 import { useAuth } from '../contexts/AuthContext';
 import ButtonBg from '../components/ButtonBG';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Box = styled.div`
   display: flex;
@@ -119,7 +120,7 @@ const text = [
 
 function UserProfile() {
   const { user, logout } = useAuth();
-
+  const navigate = useNavigate();
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
 
@@ -300,6 +301,7 @@ function UserProfile() {
           onClick={() => {
             logout();
             localStorage.removeItem('communityDataID');
+            navigate('/');
           }}
         >
           <ButtonBg

@@ -33,12 +33,22 @@ import AuthorizeUser from './pages/authorize.jsx';
 
 const router = createBrowserRouter([
   {
-    path: '/login',
+    path: '/',
     element: (
       <AuthProvider>
-        <LoginPage />
+        <AppLayout />
       </AuthProvider>
     ),
+    children: [
+      {
+        path: '/login',
+        element: <Login />,
+      },
+      {
+        path: '/local-login',
+        element: <LoginPage />,
+      },
+    ],
   },
   {
     path: '/',
@@ -50,10 +60,6 @@ const router = createBrowserRouter([
       </AuthProvider>
     ),
     children: [
-      {
-        path: '/',
-        element: <Login />,
-      },
       {
         path: '/authorize',
         element: <AuthorizeUser />,
