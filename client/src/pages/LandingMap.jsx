@@ -93,7 +93,8 @@ const ButtonStyle = styled.button`
   }
 `;
 
-function LandingMap(props) {
+function LandingMap() {
+  const screenHeight = window.innerHeight;
   const [value, setValue] = useState('');
   const [keyword, setKeyword] = useState('');
   const navigate = useNavigate();
@@ -149,7 +150,7 @@ function LandingMap(props) {
       backgroundColor: 'transparent',
     },
     searchResultContainer: {
-      marginTop: '675px',
+      marginTop: `${screenHeight}` * 0.705,
       display: 'flex',
       flexDirection: 'column',
       gap: '9.33px',
