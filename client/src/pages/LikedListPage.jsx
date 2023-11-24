@@ -360,9 +360,9 @@ function LikedList() {
             </div>
           ) : null}
           {/* 찜 한 가게 데이터가 있는 경우 */}
-          {postDatas.map((postData, index) => {
+          {/* {postDatas.map((postData, index) => {
             return <LikedComp key={index} postData={postData}></LikedComp>;
-          })}
+          })} */}
         </div>
         <div style={navbarStyle}>
           <NavBar />
