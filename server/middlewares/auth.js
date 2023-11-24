@@ -1,5 +1,5 @@
 export function verifyAuth(req, res, next) {
-  console.log('auth', req.isAuthenticated());
+  // console.log('auth', req.isAuthenticated());
 
   try {
     if (!req.isAuthenticated()) {

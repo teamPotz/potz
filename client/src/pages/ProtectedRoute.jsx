@@ -29,7 +29,7 @@ function ProtectedRoute({ children }) {
   return isAuthenticated ? (
     children || <Outlet />
   ) : (
-    <Navigate to={'/'} replace />
+    <Navigate to={'/login'} replace />
   );
 }
 
