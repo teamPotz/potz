@@ -105,46 +105,6 @@ export async function getCommunityById(req, res) {
             },
           },
         },
-        posts: {
-          select: {
-            storeName: true,
-            imageUrl: true,
-            id: true,
-            storeAddress: true,
-            orderLink: true,
-            category: true,
-            recruitment: true,
-            meetingLocation: true,
-            deliveryFees: true,
-            deliveryDiscounts: true,
-            likedByUsers: {
-              where: { userId: req.user.id, liked: true },
-            },
-            communityId: true,
-            deliveryPot: {
-              select: {
-                id: true,
-                participants: true,
-                orders: {
-                  select: {
-                    price: true,
-                    quantity: true,
-                  },
-                },
-              },
-            },
-            author: {
-              select: {
-                profile: {
-                  select: {
-                    imageUrl: true,
-                  },
-                },
-                createdDeliveryPots: true,
-              },
-            },
-          },
-        },
         _count: {
           select: { members: true },
         },

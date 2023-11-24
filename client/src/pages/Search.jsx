@@ -72,7 +72,6 @@ const GoButton = styled.button`
 
 function SearchPage() {
   //테스트용 유저 아이디
-  let userId = 1;
   let navigate = useNavigate();
   let [categoryData, setCategoryData] = useState();
   let [searchHistory, setSearchHistory] = useState();
@@ -337,6 +336,7 @@ function SearchPage() {
                               `http://localhost:5000/posts/search?key=${search.keyword}`,
                               {
                                 method: 'GET',
+                                credentials: 'include',
                               }
                             );
                             const data = await response.json();

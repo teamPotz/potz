@@ -209,9 +209,7 @@ const SearchResultComp = (props) => {
         return (
           <HomeContentsWrapper
             onClick={() => {
-              navigate('/detail/', {
-                state: { postDatas: res },
-              });
+              navigate(`/posts/${res.id}`);
             }}
             key={res.id}
           >

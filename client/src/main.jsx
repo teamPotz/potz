@@ -59,7 +59,7 @@ const router = createBrowserRouter([
         element: <AuthorizeUser />,
       },
       {
-        path: '/home',
+        path: '/community/:id',
         element: <Home />,
       },
       {

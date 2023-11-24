@@ -27,7 +27,7 @@ function AuthorizeUser() {
             'communityDataID',
             sortedCommunities[0].communityId
           );
-          navigate('/home');
+          navigate(`/community/${sortedCommunities[0].communityId}`);
         } else {
           navigate('/find-community');
         }

@@ -3,6 +3,7 @@ import fileUpload from '../middlewares/multer.js';
 import { verifyAuth } from '../middlewares/auth.js';
 
 import {
+  getPostByCategoryId,
   updatePost,
   deletePost,
   createPost,
@@ -16,6 +17,7 @@ import {
 const router = Router();
 router.get('/', verifyAuth, getPostsByCommunityId);
 router.get('/search', getPostByName);
+router.get('/category', getPostByCategoryId);
 router.post('/', verifyAuth, fileUpload.single('image'), createPost);
 router
   .route('/:id/update')
