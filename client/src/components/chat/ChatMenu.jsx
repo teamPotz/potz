@@ -35,24 +35,26 @@ const styles = {
 function PotMasterMenu() {
   return (
     <>
-      <div style={styles.RequireButtonBox} onClick={() => console.log('hi')}>
+      <div style={styles.RequireButtonBox}>
         <ChatRequireButton
           imageURL={'images/components/icon-coin-mono.png'}
-          text={'정산 요청'}
+          title={'정산 요청'}
+          onClick={() => console.log('hi')}
         />
       </div>
 
       <div style={styles.RequireButtonBox}>
         <ChatRequireButton
           imageURL={'images/components/Union.png'}
-          text={'메뉴 요청'}
+          title={'메뉴 요청'}
+          onClick={() => console.log('bye')}
         />
       </div>
 
       <div style={styles.RequireButtonBox}>
         <ChatRequireButton
           imageURL={'images/components/Arrow - Right Square.png'}
-          text={'수령 요청'}
+          title={'수령 요청'}
         />
       </div>
     </>
@@ -61,12 +63,20 @@ function PotMasterMenu() {
 
 function UserMenu() {
   return (
-    <div style={styles.RequireButtonBox}>
-      <ChatRequireButton
-        imageURL={'images/components/Union.png'}
-        text={'메뉴 요청'}
-      />
-    </div>
+    <>
+      <div style={styles.RequireButtonBox}>
+        <ChatRequireButton
+          imageURL={'images/components/Union.png'}
+          title='메뉴 선택하기'
+        />
+      </div>
+      <div style={styles.RequireButtonBox}>
+        <ChatRequireButton
+          imageURL={'images/components/Union.png'}
+          title='입금 인증하기'
+        />
+      </div>
+    </>
   );
 }
 

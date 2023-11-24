@@ -13,9 +13,9 @@ export async function checkPotExists(potId) {
 export async function checkUserJoined(potId, userId) {
   const userAlreadyJoined = await prisma.deliveryPot.findUnique({
     where: {
-      id: potId,
+      id: +potId,
       participants: {
-        some: { id: userId },
+        some: { id: +userId },
       },
     },
   });
@@ -29,6 +29,21 @@ export async function joinPot(potId, userId) {
     data: {
       participants: {
         connect: { id: userId },
+      },
+    },
+    include: {
+      post: {
+        select: {
+          id: true,
+          storeName: true,
+          imageUrl: true,
+        },
+      },
+      messages: {
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 1,
       },
     },
   });
@@ -47,6 +62,22 @@ export async function leavePot(potId, userId) {
   });
 
   return leavedPot;
+}
+
+export async function getParticipantsByPotId(potId) {
+  const { participants } = await prisma.deliveryPot.findUnique({
+    where: { id: +potId },
+    select: {
+      participants: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  return participants;
 }
 
 // export async function getPotMasterId(req, res, next) {
