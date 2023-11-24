@@ -11,8 +11,10 @@ export default function () {
         callbackURL: '/auth/login/kakao/callback',
       },
       async (accessToken, refreshToken, profile, done) => {
-        console.log('profile: ', profile);
-        const profileImage = profile._json.kakao_account.profile.profile_image_url;
+        console.log('kakaoId: ', profile.id);
+        console.log('kakaoId: ', profile.username, 'signup complete');
+        const profileImage =
+          profile._json.kakao_account.profile.profile_image_url;
         console.log(profile._json.kakao_account.profile.profile_image_url);
 
         try {
@@ -21,21 +23,21 @@ export default function () {
               kakaoId: profile.id,
             },
           });
-          if(user){
+          if (user) {
             done(null, user);
-          }else{
+          } else {
             const newUser = await prisma.user.create({
               data: {
                 kakaoId: profile.id,
                 name: profile.username,
-              }
-            })
+              },
+            });
             const newProfile = await prisma.UserProfile.create({
               data: {
                 userId: +newUser.id,
                 imageUrl: profileImage,
-              }
-            })
+              },
+            });
           }
         } catch (error) {
           console.log(error);

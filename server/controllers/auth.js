@@ -100,29 +100,17 @@ export function logout(req, res, next) {
   }
 }
 
-// export function kakao(){
-//   try{
-//     passport.authenticate('kakao');
-//     console.log('카카오 로그인');
-//   }
-//   catch(error){
-//     console.log(error);
-//   }
+export function kakaoLogin() {
+  return passport.authenticate('kakao');
+}
 
-// }
-
-// export function kakaoLogin()  {
-//   // try{
-//   //   passport.authenticate('kakao', {
-//   //     failureRedirect: '/',
-//   //   }), (req, res) => {
-//   //     res.redirect('/');
-//   //   }
-//   // }
-//   // catch(error){
-//   //   console.log(error);
-//   // }
-
-  
-// }
-
+export function kakaoLoginCallback() {
+  return (
+    passport.authenticate('kakao', {
+      failureRedirect: 'http://localhost:5173',
+    }),
+    (req, res) => {
+      res.redirect('http://localhost:5173/user-interests');
+    }
+  );
+}

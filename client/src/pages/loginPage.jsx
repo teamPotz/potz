@@ -28,7 +28,11 @@ function Login() {
       <div className='contents_container' style={style1}>
         <Logo />
         <div className='btn_container' style={style3}>
-          <div onClick={handleNavigate}>
+          <div
+            onClick={() =>
+              (window.location.href = 'http://localhost:5000/auth/login/kakao')
+            }
+          >
             <ButtonBg
               backgroundColor={COLOR.YELLOW}
               hoverColor={COLOR.YELLOW_100}
