@@ -30,7 +30,7 @@ function Login() {
         <div className='btn_container' style={style3}>
           <div
             onClick={() =>
-              (window.location.href = 'http://localhost:5000/auth/login/kakao')
+              (window.location.href = 'http://localhost:5000/auth/kakao')
             }
           >
             <ButtonBg

@@ -8,39 +8,36 @@ export default function () {
     new KakaoStrategy(
       {
         clientID: process.env.KAKAO_ID,
-        callbackURL: '/auth/login/kakao/callback',
+        callbackURL: '/auth/kakao/callback',
       },
       async (accessToken, refreshToken, profile, done) => {
-        console.log('kakaoId :', profile.id);
-        console.log('name :', profile.username);
-        const profileImage =
-          profile._json.kakao_account.profile.profile_image_url;
-
         try {
-          const user = await prisma.user.findUnique({
+          const exUser = await prisma.user.findUnique({
             where: {
-              kakaoId: profile.id,
+              kakaoId: String(profile.id),
             },
           });
-          if (user) {
-            return done(null, user);
-          } else {
-            const newUser = await prisma.user.create({
-              data: {
-                kakaoId: profile.id,
-                name: profile.username,
-              },
-            });
-            const newProfile = await prisma.UserProfile.create({
-              data: {
-                userId: +newUser.id,
-                imageUrl: profileImage,
-              },
-            });
-            return done(null, user);
+
+          if (exUser) {
+            return done(null, exUser);
           }
+
+          const newUser = await prisma.user.create({
+            data: {
+              kakaoId: String(profile.id),
+              name: profile.username,
+              profile: {
+                create: {
+                  imageUrl:
+                    profile._json?.kakao_account?.profile.profile_image_url,
+                },
+              },
+            },
+          });
+          done(null, newUser);
         } catch (error) {
           console.log(error);
+          done(error);
         }
       }
     )
