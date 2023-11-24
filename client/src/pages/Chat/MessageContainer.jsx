@@ -1,41 +1,69 @@
 import styled from 'styled-components';
-import Font from '../../utility/Font.js';
 import COLOR from '../../utility/Color.js';
-// import SelectMenu from '../../components/selectMenu';
-// import CheckMenu from '../../components/ckeckMenu';
+import OrderMessage from '../../components/chat/messages/OrderMessage.jsx';
+import TextMessage from '../../components/chat/messages/TextMessage.jsx';
+import OrderConfirmMessage from '../../components/chat/messages/OrderConfirmMessage.jsx';
 
-const MessageBox = styled.div`
-  background-color: ${(props) =>
-    props.isMyMessage ? `${COLOR.POTZ_PINK_500}` : `${COLOR.WHITE}`};
-  border-radius: 14px 14px 14px 14px;
-  width: auto;
-  max-width: 276.5px;
-  padding: 4.66667px 14px;
-  margin-left: ${(props) => (props.isMyMessage ? 'auto' : 'none')};
-  margin-right: ${(props) => (props.isMyMessage ? 'none' : 'auto')};
-  font-family: ${Font.FontKor};
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16.3333px;
-  color: ${(props) =>
-    props.isMyMessage ? `${COLOR.WHITE}` : `${COLOR.BLACK}`};
-  & > div {
-    font-size: 14px;
-    margin-right: ${(props) => (props.isMyMessage ? 'auto' : 'none')};
-    display: flex;
-    align-items: center;
-    justify-content: ${(props) => (props.isMyMessage ? 'none' : 'flex-end')};
-  }
+const MessageContainerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  margin-bottom: ${(props) => (props.ismenubaropend ? '142px' : '10px')};
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+  padding-top: 74px;
+  padding-bottom: 60px;
+  background-color: ${COLOR.POTZ_PINK_200};
 `;
 
-function MessageContainer({ messages, isMyMessage }) {
+// const scroll = document.querySelector('.potz_container');
+// useEffect(() => {
+//   scroll.scrollTop = scroll.scrollHeight;
+// }, [messages]);
+
+function MessageContainer({
+  messages,
+  isMenuBarOpened,
+  isPotMaster,
+  confirmOrder,
+}) {
   return (
-    <>
-      {messages &&
-        messages.map((message) => (
-          <MessageBox key={message.id}>{message.content}</MessageBox>
-        ))}
-    </>
+    <MessageContainerWrapper ismenubaropend={isMenuBarOpened.toString()}>
+      {messages.map((message) => {
+        switch (message.type) {
+          case 'text':
+            return (
+              <TextMessage key={`m-${message.id}`} content={message.content} />
+            );
+          case 'order':
+            return (
+              <OrderMessage
+                key={`o-${message.id}`}
+                orderId={message.id}
+                user={message.user}
+                imageUrl={message.imageUrl}
+                menuName={message.menuName}
+                quantity={message.quantity}
+                price={message.price}
+                isPotMaster={isPotMaster}
+                confirmOrder={confirmOrder}
+                isOrderConfirmed={message.orderConfirmed}
+              />
+            );
+          case 'order_confirm':
+            return (
+              <OrderConfirmMessage
+                key={`oc-${message.id}`}
+                user={message.user}
+              />
+            );
+          default:
+            return null;
+        }
+      })}
+    </MessageContainerWrapper>
   );
 }
 

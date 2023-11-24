@@ -33,9 +33,9 @@ model User {
   deliveryPotHistoryAsMaster DeliveryPotHistory[]
   deliveryPotHistoryAsMember DeliveryPotHistory[] @relation(name: "ParticipantsRelationHistory")
   messages                   Message[]
+  SearchResult               SearchResult[]
   createdAt                  DateTime             @default(now())
   updatedAt                  DateTime             @updatedAt
-  SearchResult               SearchResult[]
 }
 
 // 사용자 프로필
@@ -194,6 +194,7 @@ model DeliveryOrder {
   quantity         Int
   price            Int
   imageUrl         String?
+  orderConfirmed   Boolean     @default(false)
   depositConfirmed Boolean     @default(false)
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt

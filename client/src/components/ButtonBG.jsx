@@ -15,25 +15,40 @@ const ButtonBgStyle = styled.button`
   justify-content: center;
   align-items: center;
   gap: 11.667px;
-  background-color: ${(props) => props.backgroundColor};
-  color: ${(props) => props.fontColor};
+  background-color: ${(props) => props.backgroundcolor};
+  color: ${(props) => props.fontcolor};
   cursor: grab;
 
   // 호버 상태 스타일
   &:hover {
-    background-color: ${(props) => props.hoverColor};
+    background-color: ${(props) =>
+      props.disabled ? props.backgroundColor : props.hovercolor};
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.5;
+    // background: var(--button-bg-color, #025ce2);
   }
 `;
 
 const ButtonBg = (props) => {
-  const { backgroundColor, fontColor, hoverColor, children, onClick } = props;
+  const {
+    backgroundColor,
+    fontColor,
+    hoverColor,
+    children,
+    onClick,
+    isDisabled,
+  } = props;
 
   return (
     <ButtonBgStyle
-      backgroundColor={backgroundColor}
-      fontColor={fontColor}
-      hoverColor={hoverColor}
+      backgroundcolor={backgroundColor}
+      fontcolor={fontColor}
+      hovercolor={hoverColor}
       onClick={onClick}
+      disabled={isDisabled}
     >
       {children}
     </ButtonBgStyle>

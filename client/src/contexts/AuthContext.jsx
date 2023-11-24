@@ -87,6 +87,7 @@ function AuthProvider({ children }) {
       const data = await res.json();
       console.log(data);
       dispatch({ type: 'logout' });
+      localStorage.clear();
     } catch (error) {
       console.error(error);
     }

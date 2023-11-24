@@ -1,12 +1,8 @@
 import styled from 'styled-components';
-import COLOR from '../utility/Color';
-import Font from '../utility/Font';
-import { useNavigate } from 'react-router-dom';
+import COLOR from '../../utility/Color';
+import Font from '../../utility/Font';
 
-// 사용법 <GoBack text={'뒤로 가기'}></GoBack>
-//페이지 상단에 fixed속성 포함되어 있습니다. contents_container 밖 potz_container에서 사용해 주세요.
-
-const GoBackButtonStyle = styled.div`
+const BackNavBarWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -15,7 +11,6 @@ const GoBackButtonStyle = styled.div`
   height: 70px;
   box-shadow: 0px 1.16667px 2.33333px rgba(0, 0, 0, 0.08);
   background-color: ${COLOR.WHITE};
-  position: fixed;
   top: 0;
   font-family: ${Font};
   font-style: normal;
@@ -23,7 +18,6 @@ const GoBackButtonStyle = styled.div`
   font-size: 18.6667px;
   line-height: 150%;
   font-color: ${COLOR.BLACK};
-  z-index: 1;
   & svg {
     cursor: grab;
     margin: 28px;
@@ -61,17 +55,13 @@ const BackArrowIcon = () => {
   );
 };
 
-function GoBack(props) {
-  const navigate = useNavigate();
-
+function BackNavBar({ title, onClick }) {
   return (
-    <>
-      <GoBackButtonStyle onClick={() => navigate(-1)}>
-        <BackArrowIcon />
-        <div>{props.text}</div>
-      </GoBackButtonStyle>
-    </>
+    <BackNavBarWrapper onClick={() => onClick()}>
+      <BackArrowIcon />
+      <div>{title}</div>
+    </BackNavBarWrapper>
   );
 }
 
-export default GoBack;
+export default BackNavBar;
