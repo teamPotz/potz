@@ -231,7 +231,7 @@ const ButtonMyPage = styled(NavLink)`
 function NavBar() {
   return (
     <NavBarWrapper>
-      <ButtonHome to='/home'>
+      <ButtonHome to={`/community/${localStorage.getItem('communityDataID')}`}>
         {({ isActive }) => (isActive ? <ClickedHomeIcon /> : <HomeIcon />)}
       </ButtonHome>
       <ButtonHeart to='/liked-list'>

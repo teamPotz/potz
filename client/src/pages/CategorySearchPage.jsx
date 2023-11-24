@@ -1,20 +1,42 @@
 import { useLocation } from 'react-router-dom';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
-import HomeContents from '../components/HomeContentsComp';
+import ResultContentsComp from '../components/ResultContentsComp.jsx';
 import COLOR from '../utility/Color';
 import GoBack from '../components/goBack';
 import ResultEmptyModal from '../components/ResultEmptyModal';
+import { useEffect, useState } from 'react';
 
 function CategorySearch() {
   const location = useLocation();
-  let { category } = location.state;
-  console.log('해당 카테고리 데이터 1', category);
+  let { categoryID, categoryName, categoryImg } = location.state;
+  let communityId = localStorage.getItem('communityDataID');
+  let [categoryDatas, setCategoryDatas] = useState();
+  console.log('해당 카테고리 데이터들', categoryID, categoryName, categoryImg);
+
+  useEffect(() => {
+    async function fetchCategoryPostData() {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/posts/category?categoryId=${categoryID}&communityId=${communityId}`,
+          {
+            method: 'GET',
+            credentials: 'include',
+          }
+        );
+        const data = await response.json();
+        console.log('해당 카테고리 데이터', data);
+        setCategoryDatas(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // 비동기 함수를 useEffect 내부에서 직접 호출
+    fetchCategoryPostData();
+  }, [categoryID]);
 
   const potzContainerStyle = {
     position: 'relative', // potz_container를 relative로 설정합니다.
-    minHeight: '100vh', // 최소 높이를 화면 높이(100vh)로 설정합니다.
+    height: '100vh', // 최소 높이를 화면 높이(100vh)로 설정합니다.
     width: '100%',
   };
   const homeContentesContainer = {
@@ -29,14 +51,17 @@ function CategorySearch() {
   return (
     <div className='potz_container' style={backgroundStyle}>
       <div style={potzContainerStyle}>
-        <GoBack text={category.name}></GoBack>
+        <GoBack text={categoryName}></GoBack>
         <div style={homeContentesContainer}>
           {/* 만약 컨텐츠 데이터 개수가 1개도 없을 경우 공동체 공유 모달창 띄우기 */}
-          {category.posts.length < 1 ? (
-            <ResultEmptyModal category={category}></ResultEmptyModal>
+          {categoryDatas && categoryDatas.length < 1 ? (
+            <ResultEmptyModal
+              categoryImg={categoryImg}
+              categoryName={categoryName}
+            ></ResultEmptyModal>
           ) : null}
-          {category ? (
-            <HomeContents communityDatas={category}></HomeContents>
+          {categoryDatas ? (
+            <ResultContentsComp postDatas={categoryDatas}></ResultContentsComp>
           ) : null}
         </div>
       </div>

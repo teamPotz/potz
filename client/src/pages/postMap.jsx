@@ -1,18 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import '../App.css';
 import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import COLOR from '../utility/Color';
-import { useNavigate } from 'react-router-dom';
 
 function PostMap(props) {
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
-  const navigate = useNavigate();
   const coordinateRef = useRef({
     lat: 37.56421,
     lon: 127.00169,
   });
+  const [position, setPosition] = useState();
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -36,9 +34,8 @@ function PostMap(props) {
 
   useEffect(() => {
     const ps = new window.kakao.maps.services.Places();
-
     ps.keywordSearch(props.searchKeyword, (data, status) => {
-      console.log(data);
+      props.sendData(data);
       if (status === window.kakao.maps.services.Status.OK) {
         const bounds = new window.kakao.maps.LatLngBounds();
         let marker = [];
@@ -58,17 +55,38 @@ function PostMap(props) {
         map.setBounds(bounds);
       }
     });
-  }, [props]);
+  }, [props.searchKeyword]);
+
+  useEffect(() => {
+    console.log(props.latlon);
+    if (props.latlon && map) {
+      const bounds = new window.kakao.maps.LatLngBounds();
+      bounds.extend(
+        new window.kakao.maps.LatLng(props.latlon[0], props.latlon[1])
+      );
+      map.setBounds(bounds);
+    }
+  }, [map, props.latlon]);
+
+  const MapClickEventWithMarker = (_t, mouseEvent) => {
+    setPosition({
+      lat: mouseEvent.latLng.getLat(),
+      lng: mouseEvent.latLng.getLng(),
+    });
+    console.log(mouseEvent);
+  };
 
   return (
     <>
       <Map
-        //center={{...coordinateRef.current}}
-        center={{ lat: 33.5563, lng: 126.79581 }}
-        style={{ width: '420px', height: '100vh' }}
+        center={{ lat: 37.56421, lng: 127.00169 }}
+        style={{ width: '420px', height: '70vh' }}
         level={3}
         onCreate={setMap}
+        isPanto={true}
+        onClick={MapClickEventWithMarker}
       >
+        {position && <MapMarker position={position} />}
         {markers.map((marker) => (
           <MapMarker
             key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
@@ -76,21 +94,7 @@ function PostMap(props) {
             onClick={() => setInfo(marker)}
           >
             {info && info.content === marker.content && (
-              <div style={{ color: `${COLOR.BLACK}` }}>
-                {marker.content}
-                <button
-                  onClick={() => {
-                    navigate(props.routeName, {
-                      state: {
-                        name: marker.content,
-                        address: marker.storeAddress,
-                      },
-                    });
-                  }}
-                >
-                  선택
-                </button>
-              </div>
+              <div style={{ color: `${COLOR.BLACK}` }}>{marker.content}</div>
             )}
           </MapMarker>
         ))}

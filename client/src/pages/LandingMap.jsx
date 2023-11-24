@@ -1,5 +1,4 @@
-import '../App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PostMap from './postMap';
 import COLOR from '../utility/Color';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -20,13 +19,92 @@ const Input = styled.input`
   }
 `;
 
-function LandingMap() {
+const SearchResult = styled.div`
+  width: 420px;
+  height: 97px;
+  background: ${COLOR.WHITE};
+  border-radius: 9.33333px;
+  box-sizing: border-box;
+  gap: 16.33px;
+  transition: 0.2s;
+  &: hover {
+    transform: scale(1.04);
+  }
+`;
+
+const ContentMargin = styled.div`
+  padding: 28px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const FontBg = styled.span`
+  font-family: ${Font.FontKor};
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18.33px;
+  color: ${COLOR.GRAY_500};
+`;
+
+const FontMd = styled.span`
+  font-family: ${Font.FontKor};
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15.33px;
+  color: ${COLOR.GRAY_500};
+`;
+const FontSm = styled.span`
+  font-family: ${Font.FontKor};
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14.33px;
+  color: ${COLOR.GRAY_500};
+`;
+
+const ButtonStyle = styled.button`
+  font-family: ${Font.FontKor};
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  display: flex;
+  width: 100px;
+  height: 47px;
+  padding: 9.333px 18.667px;
+  justify-content: center;
+  align-items: center;
+  gap: 11px;
+  background-color: ${COLOR.POTZ_PINK_200};
+  color: ${COLOR.POTZ_PINK_500};
+  cursor: grab;
+
+  // 호버 상태 스타일
+  &:hover {
+    background-color: ${COLOR.POTZ_PINK_300};
+  }
+`;
+
+function LandingMap(props) {
   const [value, setValue] = useState('');
   const [keyword, setKeyword] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchResult, setSearchResult] = useState([]);
+  const [latLon, setLatLon] = useState([]);
 
   const styles = {
+    background: {
+      backgroundColor: `${COLOR.POTZ_PINK_100}`,
+    },
     wrapperInput: {
       width: '420px',
       height: '70px',
@@ -70,6 +148,12 @@ function LandingMap() {
       border: 'none',
       backgroundColor: 'transparent',
     },
+    searchResultContainer: {
+      marginTop: '675px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '9.33px',
+    },
   };
 
   const submitKeyWord = (e) => {
@@ -77,9 +161,17 @@ function LandingMap() {
     setKeyword(value);
     console.log(keyword);
   };
+
+  useEffect(() => {
+    console.log(searchResult);
+  }, [searchResult]);
+
+  const sendDataHandler = (data) => {
+    if (data !== 'ERROR') setSearchResult([...data]);
+  };
   return (
     <>
-      <div className='potz_container'>
+      <div className='potz_container' style={styles.background}>
         <div style={styles.wrapperInput}>
           <div style={styles.inputBox}>
             <svg
@@ -135,8 +227,49 @@ function LandingMap() {
             </form>
           </div>
         </div>
-        <PostMap searchKeyword={keyword} routeName={location.state.routeName}></PostMap>
+        <div style={{ position: 'fixed', zIndex: 998 }}>
+          <PostMap
+            searchKeyword={keyword}
+            routeName={location.state.routeName}
+            sendData={sendDataHandler}
+            latlon={latLon}
+          ></PostMap>
+        </div>
         <div className='contents_container'></div>
+        <div style={styles.searchResultContainer}>
+          {searchResult.map((result, i) => {
+            return (
+              <SearchResult
+                key={i}
+                onMouseOver={() => {
+                  setLatLon([result.y, result.x]);
+                  console.log(result.x);
+                  console.log(result.y);
+                }}
+              >
+                <ContentMargin>
+                  <Content>
+                    <FontBg>{result.place_name}</FontBg>
+                    <FontMd>{result.address_name}</FontMd>
+                    <FontSm>{result.phone}</FontSm>
+                  </Content>
+                  <ButtonStyle
+                    onClick={() => {
+                      navigate(location.state.routeName, {
+                        state: {
+                          name: result.place_name,
+                          address: result.address_name,
+                        },
+                      });
+                    }}
+                  >
+                    선택
+                  </ButtonStyle>
+                </ContentMargin>
+              </SearchResult>
+            );
+          })}
+        </div>
       </div>
     </>
   );

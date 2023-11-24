@@ -188,17 +188,11 @@ const linkStyle = {
   color: COLOR.GRAY_300,
 };
 
-const HomeContents = ({ postDatas }) => {
+const ResultContentsComp = ({ postDatas }) => {
   console.log('포스트 데이터 받아옴', postDatas);
 
   const [like, setLike] = useState(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    //클릭에 따라 서버에 업데이트
-    console.log('좋아요 클릭에 따라 true false 상태 저장', like);
-    setLike(like);
-  }, [like]);
 
   return (
     <div style={homeContentesContainer}>
@@ -303,4 +297,4 @@ const HomeContents = ({ postDatas }) => {
   );
 };
 
-export default HomeContents;
+export default ResultContentsComp;

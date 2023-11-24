@@ -99,3 +99,35 @@ export function logout(req, res, next) {
     next(error);
   }
 }
+
+export function kakaoLogin() {
+  return passport.authenticate('kakao');
+}
+
+export function kakaoLoginCallback() {
+  try {
+    return (req, res, next) => {
+      passport.authenticate('kakao', (err, user) => {
+        if (err) {
+          console.error(err);
+          return next(err);
+        }
+
+        if (!user) {
+          throw new Error('error');
+        }
+
+        return req.login(user, (err) => {
+          if (err) {
+            console.error(err);
+            return next(err);
+          }
+          res.redirect('http://localhost:5173/home');
+        });
+      })(req, res, next);
+    };
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}
