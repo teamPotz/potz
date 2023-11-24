@@ -5,6 +5,7 @@ import Font from '../utility/Font';
 import COLOR from '../utility/Color';
 import CategorySearch from '../components/categorySearch';
 import logoImg from '../../public/images/Logo/Potz_Logo.png';
+import { useChat } from '../contexts/ChatContext';
 
 const Divider = styled.div`
   margin-top: 40px;
@@ -324,6 +325,7 @@ function Detail() {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const { setSelectedPot } = useChat();
 
   const { postDatas } = location.state;
   console.log('해당 포스트 데이터', postDatas);
@@ -389,19 +391,20 @@ function Detail() {
   }, [categoryId]);
 
   const enterChatRoom = async () => {
+    const potId = postDatas.deliveryPot.id;
     try {
-      const res = await fetch('http://localhost:5000/delivery-pots/join', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ potId: postDatas.deliveryPot.id }),
-      });
+      const res = await fetch(
+        `http://localhost:5000/delivery-pots/${potId}/join`,
+        {
+          method: 'PATCH',
+          credentials: 'include',
+        }
+      );
       if (!res.ok) {
         throw new Error('enter chat room error');
       }
       const data = await res.json();
+      setSelectedPot(data);
       navigate(`/chats/${postDatas.id}`, {
         state: { storeName: postDatas.storeName },
       });
