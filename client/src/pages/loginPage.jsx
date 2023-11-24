@@ -49,7 +49,11 @@ function Login() {
               카카오톡으로 시작
             </ButtonBg>
           </div>
-          <div onClick={handleNavigate}>
+          <div
+            onClick={() => {
+              window.location.href = 'http://localhost:5000/auth/google';
+            }}
+          >
             <ButtonBg
               backgroundColor={COLOR.POTZ_PINK_500}
               hoverColor={COLOR.POTZ_PINK_DEFAULT}
@@ -58,7 +62,7 @@ function Login() {
               구글 계정으로 시작
             </ButtonBg>
           </div>
-          <div onClick={() => navigate('/local-login')}>
+          <div>
             <ButtonBg
               backgroundColor={COLOR.POTZ_PINK_200}
               hoverColor={COLOR.POTZ_PINK_300}

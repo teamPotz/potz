@@ -3,6 +3,8 @@ import { PrismaClient } from '@prisma/client';
 
 import localStrategy from './localStrategy.js';
 import kakaoStrategy from './kakaoStrategy.js';
+import googleStrategy from './googleStrategy.js';
+
 const prisma = new PrismaClient();
 
 export default function () {
@@ -30,4 +32,5 @@ export default function () {
 
   localStrategy();
   kakaoStrategy();
+  googleStrategy();
 }
