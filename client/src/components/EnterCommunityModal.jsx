@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Font from '../utility/Font';
 import COLOR from '../utility/Color';
 import ButtonSm from '../components/ButtonSM';
@@ -10,6 +10,7 @@ const ModalContainer = styled.div`
   height: calc(100vh - 200px);
   display: flex;
   align-items: center;
+  margin-top: 70px;
 `;
 const ModalWrapper = styled.div`
   margin-left: 28px;
@@ -26,9 +27,39 @@ const ModalWrapper = styled.div`
 `;
 
 const EnterCommunityModal = () => {
+  let navigate = useNavigate();
   let location = useLocation();
   let { communityData } = location.state;
   console.log('해당 커뮤니티 데이터', communityData);
+  let communityId = communityData.id;
+
+  const clickHandler = () => {
+    updateUserData();
+    localStorage.setItem('communityDataID', communityId);
+  };
+
+  const updateUserData = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/communities/${communityId}/join`,
+        {
+          method: 'PATCH',
+          credentials: 'include',
+        }
+      );
+      const data = await response.json();
+      console.log('데이터', data);
+      if (data.existingConnection) {
+        alert('이미 가입된 커뮤니티네요! 해당 커뮤니티로 바로 이동하겠습니다.');
+        navigate(`/community/${communityId}`);
+      } else {
+        alert('가입 완료되었습니다!');
+        navigate(`/community/${communityId}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const fontStyle = {
     fontFamily: Font.FontKor,
@@ -51,6 +82,11 @@ const EnterCommunityModal = () => {
     marginRight: '12px',
   };
 
+  const tagStyle = {
+    display: 'flex',
+    gap: '12px',
+  };
+
   return (
     <ModalContainer>
       {communityData ? (
@@ -59,9 +95,11 @@ const EnterCommunityModal = () => {
           <div style={fontStyle2}>
             <span>멤버 수</span>
             <span style={fontColored}>{communityData.memberCount}</span>
-            {communityData.communityTypes.split(',').map((type, index) => (
-              <TagPlaceSM key={index}>{type}</TagPlaceSM>
-            ))}
+            <div style={tagStyle}>
+              {communityData.communityTypes.split(',').map((type, index) => (
+                <TagPlaceSM key={index}>{type}</TagPlaceSM>
+              ))}
+            </div>
           </div>
           <div>
             {/* 공동체 사진으로 넣기 */}
@@ -74,15 +112,7 @@ const EnterCommunityModal = () => {
           <span style={fontStyle2}>
             공동체에 가입해서 배달비를 나누어보세요.
           </span>
-          <div
-            onClick={() => {
-              //로그인한 유저를 communityData.id의 커뮤니티 member에 update하기
-              //로그인한 유저의 정보를 GET해오는데, 이때 가입한 커뮤니티 순서를 joinedAt 순서 중 1번을 받아오기
-              //받아온 1번 커뮤니티의 id 추출
-              //가입 완료 문구와 Home으로 이동하기 버튼 -> 이때 받아온 1번 커뮤니티의 id 전달
-              //Home 페이지에서 가입한 커뮤니티 1번의 id를 기준으로 Home에서 fetch하기
-            }}
-          >
+          <div onClick={clickHandler}>
             <ButtonSm
               backgroundColor={COLOR.POTZ_PINK_DEFAULT}
               hoverColor={COLOR.POTZ_PINK_600}

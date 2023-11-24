@@ -27,13 +27,11 @@ const backgroundStyle = {
 };
 
 function Home() {
-  let testCommunityId = 1;
-  //실제로는 로그인~커뮤니티 선택 하면서 커뮤니티 아이디 데이터 넘겨받기
-  // let { communityDataID } = location.state;
-  // console.log('해당 커뮤니티 아이디', communityDataID);
+  let navigate = useNavigate();
+  const [communityDatas, setCommunityDatas] = useState();
+  const [postDatas, setPostDatas] = useState();
 
-  const navigate = useNavigate();
-  const [communityDatas, setCommunityDatas] = useState(null);
+  const communityId = localStorage.getItem('communityDataID');
 
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
@@ -52,23 +50,53 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    async function fetchCommunityData() {
-      try {
-        const response = await fetch(
-          `http://localhost:5000/communities/${testCommunityId}`,
-          {
-            credentials: 'include',
-          }
-        );
-        const data = await response.json();
-        setCommunityDatas(data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
+    if (communityId !== null) {
+      console.log('커뮤니티 아이디 num', communityId);
+      const fetchCommunityData = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:5000/communities/${communityId}`,
+            {
+              method: 'GET',
+              credentials: 'include',
+            }
+          );
+          const data = await response.json();
+          console.log('홈 데이터', data);
+          setCommunityDatas(data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
-    fetchCommunityData();
-  }, []);
+      fetchCommunityData();
+    }
+  }, [communityId]);
+
+  useEffect(() => {
+    if (communityId !== null) {
+      console.log('커뮤니티 아이디 num', communityId);
+      const fetchCommunityData = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:5000/posts?communityId=${communityId}`,
+            {
+              method: 'GET',
+              credentials: 'include',
+            }
+          );
+
+          const data = await response.json();
+          console.log('포스트 데이터', data);
+          setPostDatas(data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      fetchCommunityData();
+    }
+  }, [communityId]);
 
   const navbarStyle = {
     display: 'flex',
@@ -84,24 +112,28 @@ function Home() {
   return (
     <div className='potz_container' style={backgroundStyle}>
       <div style={potzContainerStyle}>
+        {communityDatas ? console.log('communityDatas', communityDatas) : null}
         {communityDatas ? (
           <NavBarHomePage communityDatas={communityDatas} />
         ) : null}
 
         {/* 만약 컨텐츠 데이터 개수가 1개도 없을 경우 공동체 공유 모달창 띄우기 */}
         <div style={homeContentesContainer}>
-          {communityDatas ? (
-            communityDatas.posts.length < 1 ? (
+          {postDatas ? (
+            postDatas.length === 0 ? (
               <ShareCommunityModal />
             ) : null
           ) : null}
-          {communityDatas ? (
-            <HomeContents communityDatas={communityDatas} />
-          ) : null}
+          {postDatas ? <HomeContents postDatas={postDatas} /> : null}
         </div>
 
         <div style={navbarStyle}>
-          <div style={btnStyle} onClick={() => navigate('/create-post')}>
+          <div
+            style={btnStyle}
+            onClick={() =>
+              navigate('/create-post', { state: { communityId: communityId } })
+            }
+          >
             <ButtonWrite />
           </div>
           <NavBar />

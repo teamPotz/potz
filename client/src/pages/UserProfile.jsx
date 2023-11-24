@@ -5,6 +5,7 @@ import NavBar from '../components/ui/NavBar';
 import { useAuth } from '../contexts/AuthContext';
 import ButtonBg from '../components/ButtonBG';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Box = styled.div`
   display: flex;
@@ -50,7 +51,6 @@ const Profile2 = styled.div`
     padding: 14px 35px 14px 16.3333px;
   }
 `;
-
 const FontBig = styled.p`
   font-family: ${Font.FontKor};
   font-style: normal;
@@ -78,7 +78,6 @@ const FontSm = styled.span`
   margin: 0;
   white-space: nowrap;
 `;
-
 const styles = {
   background: {
     backgroundColor: `${COLOR.POTZ_PINK_100}`,
@@ -121,7 +120,7 @@ const text = [
 
 function UserProfile() {
   const { user, logout } = useAuth();
-
+  const navigate = useNavigate();
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
 
@@ -298,13 +297,21 @@ function UserProfile() {
         })}
       </div>
       <div className='contents_container'>
-        <ButtonBg
-          backgroundColor={COLOR.POTZ_PINK_DEFAULT}
-          hoverColor={COLOR.POTZ_PINK_600}
-          fontColor={COLOR.WHITE}
+        <div
+          onClick={() => {
+            logout();
+            localStorage.removeItem('communityDataID');
+            navigate('/');
+          }}
         >
-          로그아웃
-        </ButtonBg>
+          <ButtonBg
+            backgroundColor={COLOR.POTZ_PINK_DEFAULT}
+            hoverColor={COLOR.POTZ_PINK_600}
+            fontColor={COLOR.WHITE}
+          >
+            로그아웃
+          </ButtonBg>
+        </div>
       </div>
 
       <Box height={'200px'}></Box>

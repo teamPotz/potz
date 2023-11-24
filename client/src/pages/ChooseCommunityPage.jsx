@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import MakeCommunity from './MakeCommunityPage';
 
 const ButtonNew = styled.button`
   border: none;
@@ -25,7 +26,7 @@ function ChooseCommunity() {
   let { latLon } = location.state;
   let [communityDatas, setCommunityDatas] = useState();
   let latitude = latLon.lat;
-  let longitude = latLon.lon;
+  let longitude = latLon.lng;
 
   useEffect(() => {
     async function fetchCommunityData() {
@@ -87,40 +88,44 @@ function ChooseCommunity() {
 
   return (
     <div className='potz_container' style={backgroundStyle}>
-      <div style={contentsStyle}>
-        <div style={fontStyle}>
-          <span>수현님 근처에</span>
-          <br></br>
-          {communityDatas ? (
-            <span style={fontStyle3}>{communityDatas.length}</span>
-          ) : null}
+      {communityDatas && communityDatas.length < 1 ? (
+        <MakeCommunity></MakeCommunity>
+      ) : (
+        <div style={contentsStyle}>
+          <div style={fontStyle}>
+            <span>수현님 근처에</span>
+            <br></br>
+            {communityDatas ? (
+              <span style={fontStyle3}>{communityDatas.length}</span>
+            ) : null}
 
-          <span>개의 배달 공동체가 있네요.</span>
-          <br></br>
-          <span style={fontStyle2}>
-            원하는 공동체에서 배달비를 나누어 보세요.
-          </span>
+            <span>개의 배달 공동체가 있네요.</span>
+            <br></br>
+            <span style={fontStyle2}>
+              원하는 공동체에서 배달비를 나누어 보세요.
+            </span>
+          </div>
+          <div>
+            {communityDatas
+              ? communityDatas.map((communityData) => {
+                  return (
+                    <CommunityComp
+                      communityData={communityData}
+                      key={communityData.id}
+                    ></CommunityComp>
+                  );
+                })
+              : null}
+          </div>
+          <ButtonNew
+            onClick={() => {
+              navigate('/community-types');
+            }}
+          >
+            직접 공동체 만들기
+          </ButtonNew>
         </div>
-        <div>
-          {communityDatas
-            ? communityDatas.map((communityData) => {
-                return (
-                  <CommunityComp
-                    communityData={communityData}
-                    key={communityData.id}
-                  ></CommunityComp>
-                );
-              })
-            : null}
-        </div>
-        <ButtonNew
-          onClick={() => {
-            navigate('/community-types');
-          }}
-        >
-          직접 공동체 만들기
-        </ButtonNew>
-      </div>
+      )}
     </div>
   );
 }

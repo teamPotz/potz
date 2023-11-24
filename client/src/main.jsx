@@ -29,15 +29,32 @@ import './App.css';
 import ChatList from './pages/Chat/ChatList.jsx';
 import UserProfile from './pages/UserProfile.jsx';
 import Entercommunity from './pages/EnterCommunity.jsx';
+import AuthorizeUser from './pages/authorize.jsx';
 
 const router = createBrowserRouter([
   {
-    path: '/login',
+    path: '/',
     element: (
       <AuthProvider>
-        <LoginPage />
+        {/* <ProtectedRoute> */}
+        <AppLayout />
+        {/* </ProtectedRoute> */}
       </AuthProvider>
     ),
+    children: [
+      {
+        path: '/',
+        element: <Login />,
+      },
+      {
+        path: '/login',
+        element: <Login />,
+      },
+      {
+        path: '/local-login',
+        element: <LoginPage />,
+      },
+    ],
   },
   {
     path: '/',
@@ -50,11 +67,11 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: '/',
-        element: <Login />,
+        path: '/authorize',
+        element: <AuthorizeUser />,
       },
       {
-        path: '/home',
+        path: '/community/:id',
         element: <Home />,
       },
       {

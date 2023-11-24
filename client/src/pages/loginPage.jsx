@@ -2,6 +2,21 @@ import { useNavigate } from 'react-router-dom';
 import COLOR from '../utility/Color';
 import ButtonBg from '../components/ButtonBG';
 import Logo from '../components/ui/Logo';
+import { useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+
+const style1 = {
+  display: 'inline-flex',
+  flexDirection: 'column',
+  justifyContent: 'space-around',
+  height: '100%',
+};
+
+const style3 = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '13px',
+};
 
 function Login() {
   const navigate = useNavigate();
@@ -10,25 +25,22 @@ function Login() {
     navigate('/user-interests');
   };
 
-  const style1 = {
-    display: 'inline-flex',
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    height: '100%',
-  };
+  const { isAuthenticated } = useAuth();
 
-  const style3 = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '13px',
-  };
+  useEffect(() => {
+    if (isAuthenticated) navigate('/authorize', { replace: true });
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className='potz_container'>
       <div className='contents_container' style={style1}>
         <Logo />
         <div className='btn_container' style={style3}>
-          <div onClick={handleNavigate}>
+          <div
+            onClick={() =>
+              (window.location.href = 'http://localhost:5000/auth/login/kakao')
+            }
+          >
             <ButtonBg
               backgroundColor={COLOR.YELLOW}
               hoverColor={COLOR.YELLOW_100}
@@ -46,7 +58,7 @@ function Login() {
               구글 계정으로 시작
             </ButtonBg>
           </div>
-          <div onClick={handleNavigate}>
+          <div onClick={() => navigate('/local-login')}>
             <ButtonBg
               backgroundColor={COLOR.POTZ_PINK_200}
               hoverColor={COLOR.POTZ_PINK_300}

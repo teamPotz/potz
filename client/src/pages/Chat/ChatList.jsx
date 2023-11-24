@@ -2,7 +2,10 @@ import styled from 'styled-components';
 import COLOR from '../../utility/Color';
 import Font from '../../utility/Font';
 import NavBar from '../../components/ui/NavBar';
+import { useAuth } from '../../contexts/AuthContext';
+import { socket } from '../../../socket.js';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Title = styled.div`
   display: flex;
@@ -32,6 +35,7 @@ const Chat = styled.div`
   border-radius: 9.33333px;
   box-sizing: border-box;
   gap: 16.33px;
+  cursor: pointer;
 `;
 const Content1 = styled.div`
   margin-left: 28px;
@@ -143,7 +147,60 @@ const styles = {
   },
 };
 
+const BellIcon = () => {
+  return (
+    <svg
+      width='29'
+      height='28'
+      viewBox='0 0 29 28'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+    >
+      <path
+        fillRule='evenodd'
+        clipRule='evenodd'
+        d='M22.1581 10.2621C22.1581 11.7273 22.5454 12.591 23.3976 13.5862C24.0434 14.3194 24.2498 15.2606 24.2498 16.2817C24.2498 17.3016 23.9147 18.2698 23.2434 19.0559C22.3645 19.9983 21.125 20.5999 19.86 20.7045C18.0268 20.8608 16.1924 20.9924 14.3338 20.9924C12.4739 20.9924 10.6407 20.9136 8.80755 20.7045C7.54137 20.5999 6.30186 19.9983 5.42411 19.0559C4.75276 18.2698 4.4165 17.3016 4.4165 16.2817C4.4165 15.2606 4.62406 14.3194 5.26874 13.5862C6.14764 12.591 6.50941 11.7273 6.50941 10.2621V9.76503C6.50941 7.80274 6.99872 6.51961 8.00633 5.26351C9.50441 3.43165 11.9057 2.33301 14.2816 2.33301H14.3859C16.8128 2.33301 19.2918 3.48453 20.7644 5.39512C21.7198 6.62537 22.1581 7.85444 22.1581 9.76503V10.2621ZM10.9192 23.4038C10.9192 22.8163 11.4584 22.5472 11.9569 22.4321C12.5402 22.3087 16.0941 22.3087 16.6773 22.4321C17.1759 22.5472 17.715 22.8163 17.715 23.4038C17.6861 23.9631 17.3579 24.459 16.9046 24.7739C16.3167 25.2321 15.6268 25.5224 14.9056 25.6269C14.5067 25.6786 14.1148 25.6798 13.7298 25.6269C13.0075 25.5224 12.3176 25.2321 11.7308 24.7727C11.2763 24.459 10.9482 23.9631 10.9192 23.4038Z'
+        fill='#A8A8A8'
+      />
+    </svg>
+  );
+};
+
 function ChatList() {
+  const [deliveryPots, setDeliveryPots] = useState([]);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    async function getDeliveryPots() {
+      try {
+        const res = await fetch('http://localhost:5000/delivery-pots', {
+          credentials: 'include',
+        });
+        if (!res.ok) {
+          throw new Error('get delivery pots error');
+        }
+        const data = await res.json();
+        console.log(data);
+        setDeliveryPots(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    getDeliveryPots();
+  }, []);
+
+  useEffect(() => {
+    socket.connect();
+    // socket.on('connect', () => setIsConnected(true));
+    // socket.on('disconnect', () => setIsConnected(false));
+
+    return () => {
+      // socket.off('connect', () => setIsConnected(true));
+      // socket.disconnect();
+    };
+  });
+
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
 
@@ -175,7 +232,9 @@ function ChatList() {
     <div className='potz_container' style={styles.background}>
       <Title>배달팟 채팅 목록</Title>
       <div style={styles.sideTitle}>
-        <FontMd color={`${COLOR.GRAY_400}`}>지금 참여중인 배달팟 채팅 4</FontMd>
+        <FontMd color={`${COLOR.GRAY_400}`}>
+          지금 참여중인 배달팟 채팅 {deliveryPots.length}
+        </FontMd>
         <svg
           width='7'
           height='6'
@@ -189,98 +248,44 @@ function ChatList() {
           />
         </svg>
       </div>
+
       <div className='contents_container'></div>
       <div style={styles.content}>
-        <Chat>
-          <Content1>
-            <img
-              style={{ width: '70px' }}
-              src='/images/graphicImg/testImg.png'
-            />
-            <div>
-              <div style={styles.space}>
-                <FontBig>누들박스</FontBig>
-                <Alarm>12</Alarm>
-              </div>
-              <div style={styles.rowFlex}>
-                <GreenDot />
-                <FontMd color={`${COLOR.GRAY_400}`}>
-                  10명 참여중 | 1분 전
-                </FontMd>
-              </div>
-            </div>
-          </Content1>
-          <Content2>
-            <svg
-              width='29'
-              height='28'
-              viewBox='0 0 29 28'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path
-                fillRule='evenodd'
-                clipRule='evenodd'
-                d='M22.1581 10.2621C22.1581 11.7273 22.5454 12.591 23.3976 13.5862C24.0434 14.3194 24.2498 15.2606 24.2498 16.2817C24.2498 17.3016 23.9147 18.2698 23.2434 19.0559C22.3645 19.9983 21.125 20.5999 19.86 20.7045C18.0268 20.8608 16.1924 20.9924 14.3338 20.9924C12.4739 20.9924 10.6407 20.9136 8.80755 20.7045C7.54137 20.5999 6.30186 19.9983 5.42411 19.0559C4.75276 18.2698 4.4165 17.3016 4.4165 16.2817C4.4165 15.2606 4.62406 14.3194 5.26874 13.5862C6.14764 12.591 6.50941 11.7273 6.50941 10.2621V9.76503C6.50941 7.80274 6.99872 6.51961 8.00633 5.26351C9.50441 3.43165 11.9057 2.33301 14.2816 2.33301H14.3859C16.8128 2.33301 19.2918 3.48453 20.7644 5.39512C21.7198 6.62537 22.1581 7.85444 22.1581 9.76503V10.2621ZM10.9192 23.4038C10.9192 22.8163 11.4584 22.5472 11.9569 22.4321C12.5402 22.3087 16.0941 22.3087 16.6773 22.4321C17.1759 22.5472 17.715 22.8163 17.715 23.4038C17.6861 23.9631 17.3579 24.459 16.9046 24.7739C16.3167 25.2321 15.6268 25.5224 14.9056 25.6269C14.5067 25.6786 14.1148 25.6798 13.7298 25.6269C13.0075 25.5224 12.3176 25.2321 11.7308 24.7727C11.2763 24.459 10.9482 23.9631 10.9192 23.4038Z'
-                fill='#A8A8A8'
+        {deliveryPots.map((pot) => (
+          <Chat
+            key={pot.id}
+            onClick={() =>
+              navigate(`/chats/${pot.id}`, {
+                state: { storeName: pot.post.storeName },
+              })
+            }
+          >
+            <Content1>
+              <img
+                style={{ width: '70px' }}
+                src={`http://localhost:5000${pot.post.imageUrl}`}
               />
-            </svg>
-            <FontMd color={`${COLOR.BLACK}`}>방장 요청사항</FontMd>
-            <FontMd color={`${COLOR.BLACK}`}>2개</FontMd>
-            <AlarmMessage>정산해요</AlarmMessage>
-          </Content2>
-        </Chat>
-        <Chat>
-          <Content1>
-            <img
-              style={{ width: '70px' }}
-              src='/images/graphicImg/testImg.png'
-            />
-            <div>
-              <div style={styles.space}>
-                <FontBig>누들박스</FontBig>
-                <Alarm>12</Alarm>
+              <div>
+                <div style={styles.space}>
+                  <FontBig>{pot.post.storeName}</FontBig>
+                  <Alarm>n</Alarm>
+                </div>
+                <div style={styles.rowFlex}>
+                  <GreenDot />
+                  <FontMd color={`${COLOR.GRAY_400}`}>
+                    n명 참여중 | n분 전
+                  </FontMd>
+                </div>
               </div>
-              <div style={styles.rowFlex}>
-                <GreenDot />
-                <FontMd color={`${COLOR.GRAY_400}`}>
-                  10명 참여중 | 1분 전
-                </FontMd>
-              </div>
-            </div>
-          </Content1>
-          <Content2>
-            <svg
-              width='29'
-              height='29'
-              viewBox='0 0 29 29'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path
-                fillRule='evenodd'
-                clipRule='evenodd'
-                d='M22.1581 10.7621C22.1581 12.2273 22.5454 13.091 23.3976 14.0862C24.0434 14.8194 24.2498 15.7606 24.2498 16.7817C24.2498 17.8016 23.9147 18.7698 23.2434 19.5559C22.3645 20.4983 21.125 21.0999 19.86 21.2045C18.0268 21.3608 16.1924 21.4924 14.3338 21.4924C12.4739 21.4924 10.6407 21.4136 8.80755 21.2045C7.54137 21.0999 6.30186 20.4983 5.42411 19.5559C4.75276 18.7698 4.4165 17.8016 4.4165 16.7817C4.4165 15.7606 4.62406 14.8194 5.26874 14.0862C6.14764 13.091 6.50941 12.2273 6.50941 10.7621V10.265C6.50941 8.30274 6.99872 7.01961 8.00633 5.76351C9.50441 3.93165 11.9057 2.83301 14.2816 2.83301H14.3859C16.8128 2.83301 19.2918 3.98453 20.7644 5.89512C21.7198 7.12537 22.1581 8.35444 22.1581 10.265V10.7621ZM10.9192 23.9038C10.9192 23.3163 11.4584 23.0472 11.9569 22.9321C12.5402 22.8087 16.0941 22.8087 16.6773 22.9321C17.1759 23.0472 17.715 23.3163 17.715 23.9038C17.6861 24.4631 17.3579 24.959 16.9046 25.2739C16.3167 25.7321 15.6268 26.0224 14.9056 26.1269C14.5067 26.1786 14.1148 26.1798 13.7298 26.1269C13.0075 26.0224 12.3176 25.7321 11.7308 25.2727C11.2763 24.959 10.9482 24.4631 10.9192 23.9038Z'
-                fill='black'
-              />
-              <circle
-                cx='20.7502'
-                cy='5.7487'
-                r='4.08333'
-                fill='#FF7971'
-                stroke='white'
-                strokeWidth='2.33333'
-              />
-            </svg>
-            <FontMd color={`${COLOR.BLACK}`}>방장 요청사항</FontMd>
-            <FontMd color={`${COLOR.BLACK}`}>2개</FontMd>
-            <AlarmMessage>정산해요</AlarmMessage>
-          </Content2>
-        </Chat>
-        <Chat></Chat>
-        <Chat></Chat>
-        <Chat></Chat>
-        <Chat></Chat>
+            </Content1>
+            <Content2>
+              <BellIcon />
+              <FontMd color={`${COLOR.BLACK}`}>방장 요청사항</FontMd>
+              <FontMd color={`${COLOR.BLACK}`}>n개</FontMd>
+              <AlarmMessage>정산해요</AlarmMessage>
+            </Content2>
+          </Chat>
+        ))}
       </div>
       <div style={navbarStyle}>
         <NavBar />

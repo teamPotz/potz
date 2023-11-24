@@ -7,8 +7,8 @@ import MessageContainer from './MessageContainer.jsx';
 
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { useLocation, useParams } from 'react-router-dom';
-import { socket } from '../../../socket.js';
-// import { io } from 'socket.io-client';
+// import { socket } from '../../../socket.js';
+import { io } from 'socket.io-client';
 
 const styles = {
   background: {
@@ -26,7 +26,8 @@ const styles = {
 };
 
 function Chat() {
-  const [isConnected, setIsConnected] = useState(socket.connected);
+  // const [isConnected, setIsConnected] = useState(socket.connected);
+  const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
 
@@ -56,7 +57,8 @@ function Chat() {
 
   async function sendMessage(e) {
     if (isLoadingSendMessage) return;
-    if (!(e.key === 'Enter' || e.type === 'click') || !newMessage) {
+    // if (!(e.key === 'Enter' || e.type === 'click') || !newMessage) {
+    if (!newMessage) {
       return;
     }
 
@@ -88,9 +90,10 @@ function Chat() {
   }, []);
 
   useEffect(() => {
-    // socket.connect();
-    // socket.on('connect', () => setIsConnected(true));
-    // socket.on('disconnect', () => setIsConnected(false));
+    const socket = io('http://localhost:5000/chat');
+    socket.connect();
+    socket.on('connect', () => setIsConnected(true));
+    socket.on('disconnect', () => setIsConnected(false));
     socket.emit('join', { potId, user });
     socket.on('join', (data) => {
       setMessages((prevMessages) => [...prevMessages, data]);
@@ -113,6 +116,31 @@ function Chat() {
   //   const scroll = document.querySelector('.potz_container');
   //   scroll.scrollTop = scroll.scrollHeight;
   // }, [messages]);
+
+  useEffect(() => {
+    async function getPotMasterId() {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/delivery-pots/${potId}/pot-master`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+          }
+        );
+        if (!res.ok) {
+          throw new Error('get potMasterId error');
+        }
+        const data = await res.json();
+        console.log('yoooo', data);
+        setIsPotMaster(data.potMasterId === user.id);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    getPotMasterId();
+  }, [potId, user]);
 
   {
     /* <button onClick={() => socket.connect()}>Connect</button> */

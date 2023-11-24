@@ -188,8 +188,8 @@ const linkStyle = {
   color: COLOR.GRAY_300,
 };
 
-const HomeContents = ({ communityDatas }) => {
-  console.log('포스트 데이터', communityDatas.posts);
+const HomeContents = ({ postDatas }) => {
+  console.log('포스트 데이터 받아옴', postDatas);
 
   const [like, setLike] = useState(null);
   const navigate = useNavigate();
@@ -202,19 +202,15 @@ const HomeContents = ({ communityDatas }) => {
 
   return (
     <div style={homeContentesContainer}>
-      {communityDatas.posts.map((post) => {
+      {postDatas.map((post) => {
         return (
           <HomeContentsWrapper
             key={post.id}
-            onClick={() =>
-              navigate(`/posts/${post.id}`, {
-                state: { postDatas: post },
-              })
-            }
+            onClick={() => navigate(`/posts/${post.id}`)}
           >
             <div>
               <div style={tagStyle}>
-                <TagPlaceSM>{post.category.name}</TagPlaceSM>
+                <TagPlaceSM>{post.category}</TagPlaceSM>
               </div>
               <img
                 width={112}
@@ -230,16 +226,13 @@ const HomeContents = ({ communityDatas }) => {
                 </div>
                 <div style={fontStyle2}>
                   <span style={coloredfont}>
-                    {post.deliveryFees?.[0]?.fee ? (
-                      Math.round(
-                        post.deliveryFees?.[0]?.fee /
-                          post.deliveryPot.participants.length
-                      )
+                    {post.deliveryFeePerPerson ? (
+                      <span>{post.deliveryFeePerPerson}</span>
                     ) : (
                       <span>무료</span>
                     )}
                   </span>
-                  {post.deliveryFees?.[0]?.fee ? (
+                  {post.deliveryFeePerPerson ? (
                     <span>원씩 배달</span>
                   ) : (
                     <span>배달</span>
@@ -255,7 +248,7 @@ const HomeContents = ({ communityDatas }) => {
               </div>
               <div style={fontstyle4}>
                 <div>
-                  <span>{post.deliveryPot.participants.length}</span>
+                  <span>{post.participantsCount}</span>
                   <span>/</span>
                   <span>{post.recruitment}</span>
                   <span>명</span>
@@ -270,20 +263,20 @@ const HomeContents = ({ communityDatas }) => {
                 onClick={(event) => {
                   event.stopPropagation();
                   //true -> false / false -> true
-                  if (post.likedByUsers[0]) {
+                  if (post.liked == true) {
                     setLike(false);
                   } else {
                     setLike(true);
                   }
                 }}
               >
-                {post.likedByUsers[0] ? (
+                {post.liked == true ? (
                   <HeartIconClicked></HeartIconClicked>
                 ) : (
                   <HeartIcon></HeartIcon>
                 )}
               </ButtonContainer>
-              {post.deliveryDiscounts.length > 0 ? (
+              {post.hasDiscount ? (
                 <ButtonContainer
                   onClick={(event) => {
                     event.stopPropagation();
@@ -298,7 +291,7 @@ const HomeContents = ({ communityDatas }) => {
                   event.stopPropagation();
                 }}
               >
-                {post.author.createdDeliveryPots.length >= 2 ? (
+                {post.potMasterHistoryCount >= 2 ? (
                   <CrownIcon></CrownIcon>
                 ) : null}
               </ButtonContainer>
