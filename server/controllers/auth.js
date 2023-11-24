@@ -100,29 +100,45 @@ export function logout(req, res, next) {
   }
 }
 
-// export function kakao(){
-//   try{
-//     passport.authenticate('kakao');
-//     console.log('카카오 로그인');
-//   }
-//   catch(error){
-//     console.log(error);
-//   }
+export function kakaoLogin() {
+  return passport.authenticate('kakao');
+}
 
-// }
+export function kakaoLoginCallback() {
+  try {
+    return (req, res, next) => {
+      passport.authenticate('kakao', (err, user) => {
+        if (err) {
+          console.error(err);
+          return next(err);
+        }
 
-// export function kakaoLogin()  {
-//   // try{
-//   //   passport.authenticate('kakao', {
-//   //     failureRedirect: '/',
-//   //   }), (req, res) => {
-//   //     res.redirect('/');
-//   //   }
-//   // }
-//   // catch(error){
-//   //   console.log(error);
-//   // }
+        if (!user) {
+          throw new Error('error');
+        }
 
+        return req.login(user, (err) => {
+          if (err) {
+            console.error(err);
+            return next(err);
+          }
   
-// }
+          return res.json(user);
+        });
+      })(req, res, next);
 
+      //   return req.login(user, (err) => {
+      //     if (err) {
+      //       console.error(err);
+      //       return next(err);
+      //     }
+      //     return res.json(user);
+      //     // res.redirect('http://localhost:5173/home');
+      //   });
+      // })(req, res, next);
+    };
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}
