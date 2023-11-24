@@ -36,10 +36,16 @@ const router = createBrowserRouter([
     path: '/',
     element: (
       <AuthProvider>
+        {/* <ProtectedRoute> */}
         <AppLayout />
+        {/* </ProtectedRoute> */}
       </AuthProvider>
     ),
     children: [
+      {
+        path: '/',
+        element: <Login />,
+      },
       {
         path: '/login',
         element: <Login />,

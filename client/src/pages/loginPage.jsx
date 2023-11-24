@@ -2,6 +2,21 @@ import { useNavigate } from 'react-router-dom';
 import COLOR from '../utility/Color';
 import ButtonBg from '../components/ButtonBG';
 import Logo from '../components/ui/Logo';
+import { useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+
+const style1 = {
+  display: 'inline-flex',
+  flexDirection: 'column',
+  justifyContent: 'space-around',
+  height: '100%',
+};
+
+const style3 = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '13px',
+};
 
 function Login() {
   const navigate = useNavigate();
@@ -10,18 +25,11 @@ function Login() {
     navigate('/user-interests');
   };
 
-  const style1 = {
-    display: 'inline-flex',
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    height: '100%',
-  };
+  const { isAuthenticated } = useAuth();
 
-  const style3 = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '13px',
-  };
+  useEffect(() => {
+    if (isAuthenticated) navigate('/authorize', { replace: true });
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className='potz_container'>

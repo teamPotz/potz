@@ -7,12 +7,12 @@ const prisma = new PrismaClient();
 
 export default function () {
   passport.serializeUser((user, done) => {
-    console.log('serializeUser', user);
+    // console.log('serializeUser', user);
     done(null, user.id);
   });
 
   passport.deserializeUser(async (id, done) => {
-    console.log('deserializeUser', id);
+    // console.log('deserializeUser', id);
     try {
       const user = await prisma.user.findUnique({
         where: { id },
