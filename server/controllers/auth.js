@@ -131,3 +131,37 @@ export function kakaoLoginCallback() {
     next(error);
   }
 }
+
+export function googleLogIn(req, res, next) {
+  return passport.authenticate('google', {
+    scope: ['email', 'profile'],
+  });
+}
+
+export function googleLogInCallback(req, res, next) {
+  try {
+    return (req, res, next) => {
+      passport.authenticate('google', (err, user) => {
+        if (err) {
+          console.error(err);
+          return next(err);
+        }
+
+        if (!user) {
+          throw new Error('error');
+        }
+
+        return req.login(user, (err) => {
+          if (err) {
+            console.error(err);
+            return next(err);
+          }
+          res.redirect('http://localhost:5173/authorize');
+        });
+      })(req, res, next);
+    };
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}

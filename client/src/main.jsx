@@ -30,7 +30,6 @@ import UserProfile from './pages/UserProfile.jsx';
 import Entercommunity from './pages/EnterCommunity.jsx';
 import { ChatProvider } from './contexts/ChatContext.jsx';
 import AuthorizeUser from './pages/authorize.jsx';
-
 const router = createBrowserRouter([
   {
     path: '/',
