@@ -61,6 +61,7 @@ function MessageContainer({
                 isPotMaster={isPotMaster}
                 confirmOrder={confirmOrder}
                 isOrderConfirmed={message.orderConfirmed}
+                own={message.user.id === user.id}
               />
             );
           case 'order_confirm':
@@ -68,6 +69,7 @@ function MessageContainer({
               <OrderConfirmMessage
                 key={`oc-${message.id}`}
                 user={message.user}
+                own={message.user.id === user.id}
               />
             );
           default:

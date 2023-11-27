@@ -41,7 +41,7 @@ const OrderMessageWrapper = styled.div`
   gap: 11.67px;
   display: flex;
   flex-direction: column;
-  margin-left: ${(props) => (props.isMyMessage ? 'auto' : 'none')};
+  margin-left: ${(props) => (props.own ? 'auto' : 'none')};
 `;
 
 const Title = ({ children }) => {
@@ -60,13 +60,13 @@ function OrderMessage({
   imageUrl,
   quantity,
   price,
-  isMyMessage,
+  own,
   isPotMaster,
   confirmOrder,
   isOrderConfirmed,
 }) {
   return (
-    <OrderMessageWrapper isMyMessage={isMyMessage}>
+    <OrderMessageWrapper own={own}>
       <Title>{user.name}님의 메뉴 선정</Title>
       {imageUrl && (
         <img
