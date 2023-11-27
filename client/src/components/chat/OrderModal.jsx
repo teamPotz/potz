@@ -84,7 +84,6 @@ const Footer = styled.div`
 function OrderModal({
   closeModal,
   orderFormData,
-  previewImage,
   handleFileChange,
   handleFormChange,
   sendOrderMessage,
@@ -96,7 +95,7 @@ function OrderModal({
       <ModalContainer>
         <div style={{ marginTop: '60px', marginBottom: '60px' }}>
           <ImageFileInput
-            imgUrl={previewImage}
+            file={orderFormData.file}
             onChange={handleFileChange}
             width='361px'
             height='224px'

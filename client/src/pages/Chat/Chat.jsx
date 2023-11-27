@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import GoBack from '../../components/goBack.jsx';
 import ChatMenu from '../../components/chat/ChatMenu.jsx';
 import ChatInput from '../../components/chat/ChatInput.jsx';
-import MessageContainer from './MessageContainer.jsx';
+import MessageContainer from '../../components/chat/messages/MessageContainer.jsx';
 import COLOR from '../../utility/Color.js';
 
 import { useAuth } from '../../contexts/AuthContext.jsx';
@@ -28,18 +28,12 @@ function Chat() {
     quantity: 0,
     price: 0,
   });
-  const [previewImage, setPreviewImage] = useState(null);
 
   const { state } = useLocation();
   const { potId } = useParams();
-  const navigate = useNavigate();
   const { user } = useAuth();
   const { leavePot, setSelectedPot } = useChat();
-
-  // todo : potId로 pot 정보불러오기
-  async function fetchPotInfos() {
-    // 팟이름, 카테고리id? img?
-  }
+  const navigate = useNavigate();
 
   async function fetchMessages() {
     setIsLoadingGetMessage(true);
@@ -122,21 +116,19 @@ function Chat() {
         quantity: 0,
         price: 0,
       });
-      setPreviewImage(null);
+      // setPreviewImage(null);
     } catch (error) {
       console.error(error);
     }
   }
 
+  useEffect(() => {
+    console.log(orderFormData);
+  }, [orderFormData]);
+
   async function handleOrderFileChange(e) {
     const file = e.target.files[0];
     setOrderFormData((prev) => ({ ...prev, file }));
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setPreviewImage(reader.result);
-    };
   }
 
   async function handleOrderFormChange(e) {
@@ -297,7 +289,6 @@ function Chat() {
         <OrderModal
           closeModal={() => setOpenOrderModal(false)}
           orderFormData={orderFormData}
-          previewImage={previewImage}
           handleFileChange={handleOrderFileChange}
           handleFormChange={handleOrderFormChange}
           sendOrderMessage={sendOrderMessage}

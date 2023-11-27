@@ -271,6 +271,7 @@ export async function getPostById(req, res) {
         },
         deliveryPot: {
           select: {
+            id: true,
             orders: true,
             _count: {
               select: { participants: true },
@@ -334,6 +335,7 @@ export async function getPostById(req, res) {
       appliedDiscountInfo,
       nextDiscountInfos,
       deliveryFeePerPerson,
+      potId: post.deliveryPot.id,
     };
 
     res.status(200).send(transformedPost);

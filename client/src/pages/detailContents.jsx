@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Font from '../utility/Font';
 import COLOR from '../utility/Color';
 import CategorySearch from '../components/categorySearch';
 import logoImg from '../../public/images/Logo/Potz_Logo.png';
+import { socket } from '../../socket';
+import { useChat } from '../contexts/ChatContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const Divider = styled.div`
   margin-top: 40px;
@@ -307,16 +310,29 @@ const coloredFont = {
   color: COLOR.POTZ_PINK_DEFAULT,
 };
 
-function DetailContents(props) {
-  let communityId = localStorage.getItem('communityDataID');
-  let { postDatas } = props;
+function DetailContents({ postDatas }) {
+  const communityId = localStorage.getItem('communityDataID');
   console.log('받은 postDatas', postDatas);
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
-  const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
   const [categoryPostData, setCategoryPostData] = useState();
-  const navigate = useNavigate();
   const categoryId = postDatas.categoryId;
   console.log(categoryId);
+
+  const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
+  const navbarStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '28px',
+    alignItems: 'end',
+    position: 'fixed',
+    bottom: 0,
+    maxWidth: '420px',
+    width: displayWidth ? displayWidth : '420px',
+  };
+
+  const { user } = useAuth();
+  const { joinPot } = useChat();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const ReSizeHandler = () => {
@@ -351,39 +367,15 @@ function DetailContents(props) {
 
     // 비동기 함수를 useEffect 내부에서 직접 호출
     fetchCategoryPostData();
-  }, [categoryId]);
+  }, [categoryId, communityId]);
 
   const enterChatRoom = async () => {
-    try {
-      const res = await fetch('http://localhost:5000/delivery-pots/join', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ potId: postDatas.deliveryPot.id }),
-      });
-      if (!res.ok) {
-        throw new Error('enter chat room error');
-      }
-      const data = await res.json();
-      navigate(`/chats/${postDatas.id}`, {
-        state: { storeName: postDatas.storeName },
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    const { potId, storeName } = postDatas;
+    joinPot(potId, user, socket);
 
-  const navbarStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '28px',
-    alignItems: 'end',
-    position: 'fixed',
-    bottom: 0,
-    maxWidth: '420px',
-    width: displayWidth ? displayWidth : '420px',
+    navigate(`/chats/${potId}`, {
+      state: { storeName },
+    });
   };
 
   return (

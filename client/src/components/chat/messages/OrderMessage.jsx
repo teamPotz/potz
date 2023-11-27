@@ -1,5 +1,5 @@
-import COLOR from '../../../utility/Color';
 import styled from 'styled-components';
+import COLOR from '../../../utility/Color';
 import Font from '../../../utility/Font';
 import CartIcon from '../assets/CartIcon';
 import ButtonBg from '../../ButtonBG';
@@ -24,10 +24,11 @@ const styles = {
   imageStyle: {
     objectFit: 'cover',
     width: '240.33px',
-    // height: '148.17px',
+    height: '148.17px',
     boxSizing: 'border-box',
     border: `1.16667px solid #EDEDED`,
     borderRadius: '10px',
+    cursor: 'pointer',
   },
 };
 
@@ -41,7 +42,7 @@ const OrderMessageWrapper = styled.div`
   gap: 11.67px;
   display: flex;
   flex-direction: column;
-  margin-left: ${(props) => (props.isMyMessage ? 'auto' : 'none')};
+  margin-left: ${(props) => (props.own ? 'auto' : 'none')};
 `;
 
 const Title = ({ children }) => {
@@ -60,18 +61,21 @@ function OrderMessage({
   imageUrl,
   quantity,
   price,
-  isMyMessage,
+  own,
   isPotMaster,
   confirmOrder,
   isOrderConfirmed,
 }) {
   return (
-    <OrderMessageWrapper isMyMessage={isMyMessage}>
+    <OrderMessageWrapper own={own}>
       <Title>{user.name}님의 메뉴 선정</Title>
       {imageUrl && (
         <img
           style={styles.imageStyle}
           src={`http://localhost:5000/images/${imageUrl}`}
+          onClick={() =>
+            window.open(`http://localhost:5000/images/${imageUrl}`, '_blank')
+          }
         />
       )}
       <div>{menuName}</div>
