@@ -3,6 +3,7 @@ import LikedComp from '../components/LikedComp';
 import COLOR from '../utility/Color';
 import Font from '../utility/Font';
 import NavBar from '../components/ui/NavBar';
+import TagPlaceSM from '../components/TagPlaceSM';
 
 function LikedList() {
   let communityId = localStorage.getItem('communityDataID');
@@ -108,12 +109,13 @@ function LikedList() {
         </nav>
         <div style={fontStyle}>
           <div>
-            <span>찜한 배달팟</span>
+            <span>찜한 배달팟이</span>
             {postDatas ? (
-              <span style={{ marginLeft: '4px' }}>{postDatas.length}</span>
+              <span style={{ marginLeft: '4px' }}>
+                {postDatas.length}개 있어요!
+              </span>
             ) : null}
           </div>
-          <span>편집</span>
         </div>
         <div style={homeContentesContainer}>
           {/* 찜 한 가게 데이터가 없는 경우 */}

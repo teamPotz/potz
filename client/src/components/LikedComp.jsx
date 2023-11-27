@@ -21,11 +21,72 @@ const LikedCompWrapper = styled.div`
   }
 `;
 
+const ButtonContainer = styled.button`
+  display: flex;
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  border: none;
+  background-color: ${COLOR.BLACK_OPACITY_200};
+  cursor: grab;
+  &:hover {
+    background: ${COLOR.POTZ_PINK_100};
+  }
+`;
+
+const HeartIconClicked = () => {
+  return (
+    <svg
+      width='28'
+      height='28'
+      viewBox='0 0 28 28'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+    >
+      <path
+        fillRule='evenodd'
+        clipRule='evenodd'
+        d='M12.7213 25.1148C13.4983 25.6281 14.5005 25.6281 15.2763 25.1148C17.7438 23.4861 23.1163 19.593 25.431 15.2366C28.4818 9.48965 24.899 3.75781 20.1623 3.75781C17.4626 3.75781 15.8386 5.16831 14.9403 6.38048C14.8324 6.52894 14.6909 6.64976 14.5274 6.73307C14.3638 6.81638 14.1829 6.85981 13.9994 6.85981C13.8158 6.85981 13.6349 6.81638 13.4714 6.73307C13.3079 6.64976 13.1664 6.52894 13.0585 6.38048C12.1601 5.16831 10.5361 3.75781 7.83646 3.75781C3.09979 3.75781 -0.483041 9.48965 2.56896 15.2366C4.88129 19.593 10.2561 23.4861 12.7213 25.1148Z'
+        fill='#FF7971'
+      />
+    </svg>
+  );
+};
+
 const LikedComp = (props) => {
   let navigate = useNavigate();
 
   let { postData } = props;
-  console.log('해당 카테고리의 포스트 데이터', postData);
+  console.log('좋아요한 포스트 데이터', postData);
+  let postId = postData.id;
+
+  const handleLikeToggle = async (postId) => {
+    try {
+      //서버로 좋아요 데이터 업데이트
+      try {
+        const response = await fetch(
+          `http://localhost:5000/posts/${postId}/like`,
+          {
+            method: 'PATCH',
+            credentials: 'include',
+          }
+        );
+        const data = await response.json();
+        console.log('좋아요 업데이트', data);
+        alert('찜 목록을 수정했어요.😋');
+      } catch (error) {
+        console.error(error);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const clickHandler = (event) => {
+    event.stopPropagation();
+  };
 
   const textOverflow = {
     width: '124px',
@@ -68,8 +129,19 @@ const LikedComp = (props) => {
 
   const linkStyle = {
     position: 'relative',
-    top: '158px',
+    top: '196px',
     left: '52px',
+    textDecoration: 'underline',
+    color: COLOR.WHITE,
+    background: 'none',
+    fontWeight: '600',
+    fontSize: '12px',
+  };
+
+  const likedStyle = {
+    position: 'relative',
+    top: '68px',
+    left: '100px',
     textDecoration: 'underline',
     color: COLOR.WHITE,
     background: 'none',
@@ -93,7 +165,11 @@ const LikedComp = (props) => {
         <a style={linkStyle} href={postData.orderLink}>
           <span>배달앱 바로가기</span>
         </a>
-
+        <div style={likedStyle} onClick={clickHandler}>
+          <ButtonContainer>
+            <HeartIconClicked></HeartIconClicked>
+          </ButtonContainer>
+        </div>
         <div style={tagStyle}>
           <TagPlaceSM>{postData.category}</TagPlaceSM>
         </div>
@@ -122,7 +198,7 @@ const LikedComp = (props) => {
         <div style={fontStyle2}>
           <span style={coloredfont}>
             {postData.appliedDeliveryFeeInfo ? (
-              <span> {postData.appliedDeliveryFeeInfo.fee} </span>
+              <span> {postData.deliveryFeePerPerson} </span>
             ) : (
               <span>무료</span>
             )}

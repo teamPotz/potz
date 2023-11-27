@@ -38,7 +38,9 @@ const CategorySearch = (props) => {
   const CategorySearchStyle = styled.div`
     margin-bottom: 88px;
     margin-left: 28px;
+    margin-right: 56px;
     overflow: auto;
+    max-width: 420px;
     width: ${displayWidth - 56}px;
     display: flex;
     gap: 14px;
