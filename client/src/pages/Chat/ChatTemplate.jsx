@@ -1,10 +1,10 @@
 import '../../App.css';
 import COLOR from '../../utility/Color';
 import styled from 'styled-components';
-import SelectMenu from '../../components/selectMenu';
+import OrderMessage from '../../components/chat/messages/OrderMessage';
 import GoBack from '../../components/goBack';
 import Font from '../../utility/Font';
-import CheckMenu from '../../components/ckeckMenu';
+import OrderConfirmMesage from '../../components/chat/messages/OrderConfirmMessage';
 import { useEffect } from 'react';
 import ChatNavBar from '../../components/chat/ChatNavBar';
 //contents_container 안에 UI 구현 하시면 됩니다!
@@ -128,16 +128,16 @@ function Chat() {
         <MessageBox isMyMessage={false}>
           반가워요<div>12:14</div>
         </MessageBox>
-        <SelectMenu isMyMessage={true}></SelectMenu>
+        <OrderMessage isMyMessage={true} />
         <MessageBox isMyMessage={false}>
           2000원 더 모이면 3000원 할인 쿠폰을 사용할 수 있다는데 어떻게
           하실래요?<div>12:15</div>
         </MessageBox>
-        <CheckMenu isMyMessage={false}></CheckMenu>
+        <OrderConfirmMesage isMyMessage={false} />
         <MessageBox isMyMessage={false}>
           반가워요<div>12:14</div>
         </MessageBox>
-        <SelectMenu isMyMessage={true}></SelectMenu>
+        <OrderMessage isMyMessage={true} />
         <MessageBox isMyMessage={false}>
           2000원 더 모이면 3000원 할인 쿠폰을 사용할 수 있다는데 어떻게
           하실래요?<div>12:15</div>
@@ -154,7 +154,7 @@ function Chat() {
           2000원 더 모이면 3000원 할인 쿠폰을 사용할 수 있다는데 어떻게
           하실래요?<div>12:15</div>
         </MessageBox>
-        <CheckMenu isMyMessage={false}></CheckMenu>
+        <OrderConfirmMesage isMyMessage={false} />
       </div>
       <ChatNavBar isBangJang={BangJang} />
     </div>

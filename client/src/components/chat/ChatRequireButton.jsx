@@ -40,7 +40,6 @@ const Icon = styled.div`
 `;
 
 const Text = styled.div`
-  width: 54.83px;
   height: 21px;
   font-family: ${Font.FontKor};
   font-style: normal;
@@ -53,18 +52,20 @@ const Text = styled.div`
   color: ${COLOR.BLACK};
 `;
 
-const ChatRequireButton = (props) => {
-  // const Coin = styled.img.attrs({
-  //   src: props.imageURL,
-  //   alt: 'icon',
-  // })`
-  //   width: 28px;
-  //   height: 28px;
-  // `;
+// const Coin = styled.img`
+//   src: props.imageURL,
+// const Coin = styled.img.attrs({
+//   alt: 'icon',
+// })`
+//   width: 28px;
+//   height: 28px;
+// `;
+
+const ChatRequireButton = ({ title, onClick }) => {
   return (
-    <Wrapper>
+    <Wrapper onClick={onClick}>
       <Icon>{/* <Coin /> */}</Icon>
-      <Text>{props.text}</Text>
+      <Text>{title}</Text>
     </Wrapper>
   );
 };
