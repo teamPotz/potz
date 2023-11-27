@@ -6,47 +6,46 @@ import { useNavigate } from 'react-router-dom';
 // 사용법 <GoBack text={'뒤로 가기'}></GoBack>
 //페이지 상단에 fixed속성 포함되어 있습니다. contents_container 밖 potz_container에서 사용해 주세요.
 
+const GoBackButtonStyle = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0px;
+  width: 420px;
+  height: 70px;
+  box-shadow: 0px 1.16667px 2.33333px rgba(0, 0, 0, 0.08);
+  background-color: ${COLOR.WHITE};
+  position: fixed;
+  top: 0;
+  font-family: ${Font};
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18.6667px;
+  line-height: 150%;
+  font-color: ${COLOR.BLACK};
+  & svg {
+    cursor: grab;
+    margin-left: 28px;
+    margin-right: 14px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: scale(1.18);
+      border-radius: 4px;
+    }
+  }
+  & div {
+    margin-top: 3px;
+    align-self: center;
+  }
+`;
+
 function GoBack(props) {
-  const GoBackButtonStyle = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0px;
-    width: 420px;
-    height: 70px;
-    box-shadow: 0px 1.16667px 2.33333px rgba(0, 0, 0, 0.08);
-    background-color: ${COLOR.WHITE};
-    position: fixed;
-    top: 0;
-    font-family: ${Font};
-    font-style: normal;
-    font-weight: 700;
-    font-size: 18.6667px;
-    line-height: 150%;
-    font-color: ${COLOR.BLACK};
-    & svg {
-      cursor: grab;
-      margin: 28px;
-      margin-right: 14px;
-      transition: all 0.2s ease;
-
-      &:hover {
-        transform: scale(1.18);
-        border-radius: 4px;
-      }
-    }
-    & div {
-      margin-top: 3px;
-      align-self: center;
-    }
-  `;
-
   let navigate = useNavigate();
 
   return (
     <>
       <GoBackButtonStyle onClick={() => navigate(-1)}>
-
         <svg
           width='29'
           height='28'

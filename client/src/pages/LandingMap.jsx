@@ -29,6 +29,7 @@ const SearchResult = styled.div`
   transition: 0.2s;
   &: hover {
     transform: scale(1.04);
+    cursor: pointer;
   }
 `;
 
@@ -44,6 +45,17 @@ const ContentMargin = styled.div`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const Hover = styled.div`
+  width: 29px;
+  height: 28px;
+  & svg {
+    cursor: grab;
+    transition: all 0.2s ease;
+  }
+  &:hover {
+    transform: scale(1.18);
 `;
 
 const FontBg = styled.span`
@@ -120,9 +132,10 @@ function LandingMap() {
       display: 'flex',
       width: '420px',
       flexDirection: 'row',
-      margin: '28px',
       alignItems: 'center',
       justifyContent: 'space-between',
+      marginLeft: '28px',
+      marginRight: '28px'
     },
     form: {
       display: 'flex',
@@ -175,6 +188,7 @@ function LandingMap() {
       <div className='potz_container' style={styles.background}>
         <div style={styles.wrapperInput}>
           <div style={styles.inputBox}>
+            <Hover>
             <svg
               onClick={() => {
                 navigate(-1);
@@ -193,6 +207,8 @@ function LandingMap() {
                 strokeLinejoin='round'
               />
             </svg>
+            </Hover>
+
 
             <form onSubmit={submitKeyWord} style={styles.form}>
               <button type='submit' style={styles.button}>
@@ -242,7 +258,7 @@ function LandingMap() {
             return (
               <SearchResult
                 key={i}
-                onMouseOver={() => {
+                onClick={() => {
                   setLatLon([result.y, result.x]);
                   console.log(result.x);
                   console.log(result.y);
