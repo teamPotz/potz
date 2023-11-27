@@ -6,6 +6,11 @@ const MIME_TYPE_MAP = {
   'image/png': 'png',
   'image/jpeg': 'jpeg',
   'image/jpg': 'jpg',
+  'image/bmp': 'bmp',
+  'image/gif': 'gif',
+  'image/webp': 'webp',
+  'image/tiff': 'tiff',
+  'image/svg+xml': 'svg',
 };
 
 const UPLOAD_PATH = 'uploads/images';
