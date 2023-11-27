@@ -38,41 +38,34 @@ function Login() {
       <div className='contents_container' style={style1}>
         <Logo />
         <div className='btn_container' style={style3}>
-          <div
+          <ButtonBg
+            backgroundColor={COLOR.YELLOW}
+            hoverColor={COLOR.YELLOW_100}
+            fontColor={COLOR.WHITE}
             onClick={() =>
               (window.location.href = 'http://localhost:5000/auth/kakao')
             }
           >
-            <ButtonBg
-              backgroundColor={COLOR.YELLOW}
-              hoverColor={COLOR.YELLOW_100}
-              fontColor={COLOR.WHITE}
-            >
-              카카오톡으로 시작
-            </ButtonBg>
-          </div>
-          <div
+            카카오톡으로 시작
+          </ButtonBg>
+          <ButtonBg
+            backgroundColor={COLOR.POTZ_PINK_500}
+            hoverColor={COLOR.POTZ_PINK_DEFAULT}
+            fontColor={COLOR.WHITE}
             onClick={() => {
               window.location.href = 'http://localhost:5000/auth/google';
             }}
           >
-            <ButtonBg
-              backgroundColor={COLOR.POTZ_PINK_500}
-              hoverColor={COLOR.POTZ_PINK_DEFAULT}
-              fontColor={COLOR.WHITE}
-            >
-              구글 계정으로 시작
-            </ButtonBg>
-          </div>
-          <div>
-            <ButtonBg
-              backgroundColor={COLOR.POTZ_PINK_200}
-              hoverColor={COLOR.POTZ_PINK_300}
-              fontColor={COLOR.BLACK}
-            >
-              비회원으로 둘러보기
-            </ButtonBg>
-          </div>
+            구글 계정으로 시작
+          </ButtonBg>
+          <ButtonBg
+            backgroundColor={COLOR.POTZ_PINK_200}
+            hoverColor={COLOR.POTZ_PINK_300}
+            fontColor={COLOR.BLACK}
+            onClick={() => navigate('/local-login')}
+          >
+            비회원으로 둘러보기
+          </ButtonBg>
         </div>
       </div>
     </div>

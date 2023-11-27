@@ -1,5 +1,5 @@
-import COLOR from '../../../utility/Color';
 import styled from 'styled-components';
+import COLOR from '../../../utility/Color';
 import Font from '../../../utility/Font';
 import CartIcon from '../assets/CartIcon';
 import ButtonBg from '../../ButtonBG';
@@ -24,10 +24,11 @@ const styles = {
   imageStyle: {
     objectFit: 'cover',
     width: '240.33px',
-    // height: '148.17px',
+    height: '148.17px',
     boxSizing: 'border-box',
     border: `1.16667px solid #EDEDED`,
     borderRadius: '10px',
+    cursor: 'pointer',
   },
 };
 
@@ -72,6 +73,9 @@ function OrderMessage({
         <img
           style={styles.imageStyle}
           src={`http://localhost:5000/images/${imageUrl}`}
+          onClick={() =>
+            window.open(`http://localhost:5000/images/${imageUrl}`, '_blank')
+          }
         />
       )}
       <div>{menuName}</div>
