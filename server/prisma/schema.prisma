@@ -193,7 +193,7 @@ model DeliveryOrder {
   userId           Int
   menuName         String
   quantity         Int
-  price            Int
+  price            Decimal
   imageUrl         String?
   orderConfirmed   Boolean     @default(false)
   depositConfirmed Boolean     @default(false)
@@ -220,6 +220,7 @@ model SearchResult {
   userId  Int
 }
 
+// 채팅 메시지
 model Message {
   id            Int         @id @default(autoincrement())
   sender        User        @relation(fields: [senderId], references: [id])

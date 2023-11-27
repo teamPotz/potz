@@ -1,9 +1,7 @@
-import { useEffect } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
 import COLOR from '../utility/Color';
 import Font from '../utility/Font';
 import ButtonBg from '../components/ButtonBG';
-import GraPhic from '../../public/images/graphicImg/Hands.png';
+import Graphic from '../../public/images/graphicImg/Hands.png';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -19,7 +17,6 @@ const styles2 = {
   justifyContent: 'center',
   borderRadius: '50%',
 };
-const style3 = {};
 const fontStyle = {
   fontFamily: Font.FontKor,
   fontSize: '24px',
@@ -31,29 +28,25 @@ const fontStyle = {
 
 function FindLocation() {
   const navigate = useNavigate();
-
-  const navigateHandler = () => {
-    navigate('/user-location');
-  };
-
-  const { user, getUserInfo } = useAuth();
-
-  useEffect(() => {
-    getUserInfo();
-  }, []);
+  const { user } = useAuth();
 
   return (
     <div className='potz_container'>
       <div className='contents_container' style={style1}>
         <div className='text_container' style={fontStyle}>
-          <span>{user?.name}님 근처에 있는</span>
-          <br></br>
-          <span>배달 공동체를 찾아볼까요?</span>
+          <span>
+            {user.name}님 근처에 있는
+            <br />
+            배달 공동체를 찾아볼까요?
+          </span>
         </div>
         <div className='img_container' style={styles2}>
-          <img style={styles2} width={300} src={GraPhic} />
+          <img style={styles2} width={300} src={Graphic} />
         </div>
-        <div className='btn_container' style={style3} onClick={navigateHandler}>
+        <div
+          className='btn_container'
+          onClick={() => navigate('/user-location')}
+        >
           <ButtonBg
             backgroundColor={COLOR.POTZ_PINK_DEFAULT}
             hoverColor={COLOR.POTZ_PINK_600}
