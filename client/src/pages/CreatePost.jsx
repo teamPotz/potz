@@ -5,8 +5,7 @@ import ButtonBg from '../components/ButtonBG';
 import TagFood from '../components/TagFood';
 import Font from '../utility/Font';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useRef, useState } from 'react';
 
 const Button = styled.div`
   width: 100%;
@@ -229,7 +228,9 @@ function CreatePost() {
       setValues1((prevValues) => [prevValues[0], e.target.value]);
       if (values1[0] && values1[1]) {
         setValues1([]);
-        setDeliveryFeeCount(deliveryFeeCount + 1);
+        if (deliveryFeeCount - 1 === number) {
+          setDeliveryFeeCount(deliveryFeeCount + 1);
+        }
       }
     }
   };
@@ -257,7 +258,9 @@ function CreatePost() {
       setValues2((prevValues) => [prevValues[0], e.target.value]);
       if (values2[0] && values2[1]) {
         setValues2([]);
-        setdeliveryDiscountCount(deliveryDiscountCount + 1);
+        if (deliveryDiscountCount - 1 === number) {
+          setdeliveryDiscountCount(deliveryDiscountCount + 1);
+        }
       }
     }
   };
@@ -289,6 +292,13 @@ function CreatePost() {
     data.pop();
     return JSON.stringify(data);
   };
+
+  function checkNumberic(arr) {
+    const isNumeric = (str) => {
+      return !isNaN(str);
+    };
+    return JSON.parse(arr).every((innerArr) => innerArr.every(isNumeric));
+  }
 
   const styles = {
     background: {
@@ -325,30 +335,39 @@ function CreatePost() {
             const file = e.target.image.files[0];
 
             if (
-              storeName &&
-              storeAddress &&
-              orderLink &&
-              categoryId &&
-              recruitment &&
-              meetingLocation &&
-              file &&
-              deliveryFees
+              checkNumberic(deliveryFees) &&
+              checkNumberic(deliveryDiscounts)
             ) {
-              createPost(
-                storeName,
-                storeAddress,
-                orderLink,
-                categoryId,
-                recruitment,
-                meetingLocation,
-                deliveryFees,
-                deliveryDiscounts,
-                file
-              );
+              if (!isNaN(recruitment)) {
+                if (
+                  storeName &&
+                  storeAddress &&
+                  orderLink &&
+                  categoryId &&
+                  recruitment &&
+                  meetingLocation &&
+                  file &&
+                  (deliveryFees || deliveryDiscounts)
+                ) {
+                  createPost(
+                    storeName,
+                    storeAddress,
+                    orderLink,
+                    categoryId,
+                    recruitment,
+                    meetingLocation,
+                    deliveryFees,
+                    deliveryDiscounts,
+                    file
+                  );
+                } else {
+                  alert('모든 내용을 입력해주세요.');
+                }
+              } else {
+                alert('마감 인원수에는 숫자만 입력 가능합니다.');
+              }
             } else {
-              alert(
-                '모든 내용을 입력해주세요.'
-              );
+              alert('배달비에는 숫자만 입력 가능합니다.');
             }
           }}
         >
@@ -515,7 +534,8 @@ function CreatePost() {
                 placeholder='마감 인원 수'
                 onChange={(e) => {
                   e.preventDefault();
-                  setToggleLimit(true);
+                  if (e.target.value) setToggleLimit(true);
+                  else setToggleLimit(false);
                 }}
               ></Input>
             </Button>
@@ -558,12 +578,13 @@ function CreatePost() {
                 placeholder='만날 장소'
                 onChange={(e) => {
                   e.preventDefault();
-                  setToggleMeetingLocation(true);
+                  if (e.target.value) setToggleMeetingLocation(true);
+                  else setToggleMeetingLocation(false);
                 }}
               ></Input>
             </Button>
             <Button height={`${74.67 + 34.33 * (deliveryFeeCount - 1)}px`}>
-              {deliveryFeeWidth[0]?.footer ? (
+              {deliveryFeeWidth[0]?.header && deliveryFeeWidth[0]?.footer ? (
                 <svg
                   width='28'
                   height='29'
@@ -625,7 +646,7 @@ function CreatePost() {
               </div>
             </Button>
             <Button height={`${74.67 + 34.33 * (deliveryDiscountCount - 1)}px`}>
-              {deliveryDiscountsWidth[0]?.footer ? (
+              {deliveryDiscountsWidth[0]?.header && deliveryDiscountsWidth[0]?.footer ? (
                 <svg
                   width='28'
                   height='29'

@@ -30,6 +30,8 @@ import UserProfile from './pages/UserProfile.jsx';
 import Entercommunity from './pages/EnterCommunity.jsx';
 import { ChatProvider } from './contexts/ChatContext.jsx';
 import AuthorizeUser from './pages/authorize.jsx';
+import MyBigData from './pages/myBigData.jsx';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -149,6 +151,10 @@ const router = createBrowserRouter([
       {
         path: '/my-page',
         element: <UserProfile />,
+      },
+      {
+        path: '/my-bigdata',
+        element: <MyBigData/>,
       },
       { path: '/chats/', element: <ChatList /> },
       { path: '/chats/:potId', element: <Chat /> },

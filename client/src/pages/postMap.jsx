@@ -80,7 +80,7 @@ function PostMap(props) {
     <>
       <Map
         center={{ lat: 37.56421, lng: 127.00169 }}
-        style={{ width: '420px', height: '70vh' }}
+        style={{ width: '420px', height: props.searchKeyword ? '70vh' : '100vh' }}
         level={3}
         onCreate={setMap}
         isPanto={true}

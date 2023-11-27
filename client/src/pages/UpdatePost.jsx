@@ -7,7 +7,6 @@ import TagFood from '../components/TagFood';
 import Font from '../utility/Font';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 
 const Button = styled.div`
   width: 100%;
@@ -130,7 +129,7 @@ function UpdatePost() {
   const location = useLocation();
   const { id } = useParams();
   const myInputRef = useRef(null);
- 
+
   //데이터 받아와서 바인딩
   const [getData, setGetData] = useState({
     storeName: '',
@@ -217,6 +216,9 @@ function UpdatePost() {
     searchedAddress = location.state.address;
   }
 
+  const [toggleLimit, setToggleLimit] = useState(true);
+  const [toggleMeetingLocation, setToggleMeetingLocation] = useState(true);
+
   const [category, setCategory] = useState('카테고리');
   const categories = [
     '버거·샌드위치',
@@ -245,10 +247,6 @@ function UpdatePost() {
   const [values1, setValues1] = useState([]);
   const [values2, setValues2] = useState([]);
 
-  //배달비, 할인 글자길이에 따라 늘어나게
-  const [length1, setLength1] = useState([]);
-  const [length2, setLength2] = useState([]);
-
   const deliveryFeeChange = (e, number) => {
     e.preventDefault();
     if (e.target.name === `deliveryFeeHeader${number}`) {
@@ -257,9 +255,10 @@ function UpdatePost() {
     if (e.target.name === `deliveryFeeFooter${number}`) {
       setValues1((prevValues) => [prevValues[0], e.target.value]);
       if (values1[0] && values1[1]) {
-        setLength1([...length1, (length1[number] = values1)]);
         setValues1([]);
-        setDeliveryFeeCount(deliveryFeeCount + 1);
+        if (deliveryFeeCount === number) {
+          setDeliveryFeeCount(deliveryFeeCount + 1);
+        }
       }
     }
   };
@@ -272,9 +271,10 @@ function UpdatePost() {
     if (e.target.name === `deliveryDiscountsFooter${number}`) {
       setValues2((prevValues) => [prevValues[0], e.target.value]);
       if (values2[0] && values2[1]) {
-        setLength2([...length2, (length2[number] = values2)]);
         setValues2([]);
-        setdeliveryDiscountCount(deliveryDiscountCount + 1);
+        if (deliveryDiscountCount === number) {
+          setdeliveryDiscountCount(deliveryDiscountCount + 1);
+        }
       }
     }
   };
@@ -304,6 +304,13 @@ function UpdatePost() {
     }
     return JSON.stringify(data);
   };
+
+  function checkNumberic(arr) {
+    const isNumeric = (str) => {
+      return !isNaN(str);
+    };
+    return JSON.parse(arr).every((innerArr) => innerArr.every(isNumeric));
+  }
 
   const styles = {
     background: {
@@ -344,28 +351,38 @@ function UpdatePost() {
             const file = e.target.image.files[0];
 
             if (
-              storeName &&
-              storeAddress &&
-              orderLink &&
-              categoryId &&
-              recruitment &&
-              meetingLocation &&
-              file &&
-              deliveryFees
+              checkNumberic(deliveryFees) &&
+              checkNumberic(deliveryDiscounts)
             ) {
-              updatePost(
-                storeName,
-                storeAddress,
-                orderLink,
-                categoryId,
-                recruitment,
-                meetingLocation,
-                deliveryFees,
-                deliveryDiscounts,
-                file
-              );
-            }else{
-              alert('모든 내용을 입력해주세요.')
+              if (!isNaN(recruitment)) {
+                if (
+                  storeName &&
+                  storeAddress &&
+                  orderLink &&
+                  categoryId &&
+                  recruitment &&
+                  meetingLocation &&
+                  (deliveryFees || deliveryDiscounts)
+                ) {
+                  updatePost(
+                    storeName,
+                    storeAddress,
+                    orderLink,
+                    categoryId,
+                    recruitment,
+                    meetingLocation,
+                    deliveryFees,
+                    deliveryDiscounts,
+                    file
+                  );
+                } else {
+                  alert('모든 내용을 입력해주세요.');
+                }
+              } else {
+                alert('마감 인원수에는 숫자만 입력 가능합니다.');
+              }
+            } else {
+              alert('배달비에는 숫자만 입력 가능합니다.');
             }
           }}
         >
@@ -515,70 +532,98 @@ function UpdatePost() {
                   {category}
                 </TagFood>
               )}
-
-              {/* <svg
-                      width='29'
-                      height='29'
-                      viewBox='0 0 29 29'
-                      fill='none'
-                      xmlns='http://www.w3.org/2000/svg'
-                    >
-                      <path
-                        d='M10.75 6.33268L18.9167 14.4993L10.75 22.666'
-                        stroke='#373737'
-                        strokeWidth='1.75'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                      />
-                    </svg> */}
             </Button>
 
             <Button height={'74.67px'}>
-              <svg
-                width='28'
-                height='29'
-                viewBox='0 0 28 29'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  fillRule='evenodd'
-                  clipRule='evenodd'
-                  d='M20.1757 8.6729C20.1757 12.0994 17.4283 14.847 13.9994 14.847C10.5716 14.847 7.82308 12.0994 7.82308 8.6729C7.82308 5.24636 10.5716 2.5 13.9994 2.5C17.4283 2.5 20.1757 5.24636 20.1757 8.6729ZM13.9993 25.8332C8.93879 25.8332 4.66602 25.0107 4.66602 21.8373C4.66602 18.6628 8.96563 17.8695 13.9993 17.8695C19.0611 17.8695 23.3327 18.692 23.3327 21.8653C23.3327 25.0399 19.0331 25.8332 13.9993 25.8332Z'
-                  fill='#FF7971'
-                />
-              </svg>
+              {toggleLimit ? (
+                <svg
+                  width='28'
+                  height='29'
+                  viewBox='0 0 28 29'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    fillRule='evenodd'
+                    clipRule='evenodd'
+                    d='M20.1757 8.6729C20.1757 12.0994 17.4283 14.847 13.9994 14.847C10.5716 14.847 7.82308 12.0994 7.82308 8.6729C7.82308 5.24636 10.5716 2.5 13.9994 2.5C17.4283 2.5 20.1757 5.24636 20.1757 8.6729ZM13.9993 25.8332C8.93879 25.8332 4.66602 25.0107 4.66602 21.8373C4.66602 18.6628 8.96563 17.8695 13.9993 17.8695C19.0611 17.8695 23.3327 18.692 23.3327 21.8653C23.3327 25.0399 19.0331 25.8332 13.9993 25.8332Z'
+                    fill='#FF7971'
+                  />
+                </svg>
+              ) : (
+                <svg
+                  width='28'
+                  height='29'
+                  viewBox='0 0 28 29'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    fillRule='evenodd'
+                    clipRule='evenodd'
+                    d='M20.1757 8.67485C20.1757 12.1014 17.4283 14.8489 13.9994 14.8489C10.5716 14.8489 7.82308 12.1014 7.82308 8.67485C7.82308 5.24831 10.5716 2.50195 13.9994 2.50195C17.4283 2.50195 20.1757 5.24831 20.1757 8.67485ZM13.9993 25.8352C8.93879 25.8352 4.66602 25.0127 4.66602 21.8393C4.66602 18.6648 8.96563 17.8714 13.9993 17.8714C19.0611 17.8714 23.3327 18.6939 23.3327 21.8673C23.3327 25.0418 19.0331 25.8352 13.9993 25.8352Z'
+                    fill='#A8A8A8'
+                  />
+                </svg>
+              )}
               <Input
                 name='recruitment'
                 width='320px'
                 placeholder='마감 인원 수'
                 defaultValue={getData.recruitment}
+                onChange={(e) => {
+                  e.preventDefault();
+                  if (e.target.value) setToggleLimit(true);
+                  else setToggleLimit(false);
+                }}
               ></Input>
             </Button>
             <Button height={'74.67px'}>
-              <svg
-                width='28'
-                height='29'
-                viewBox='0 0 28 29'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  fillRule='evenodd'
-                  clipRule='evenodd'
-                  d='M14.7892 24.725C16.6198 22.6526 21 17.1154 21 11.5781C21 9.24479 19.25 4.57812 14 4.57812C8.75 4.57812 7 9.24479 7 11.5781C7 17.1154 11.3802 22.6526 13.2108 24.725C13.6373 25.2079 14.3627 25.2079 14.7892 24.725ZM14 13.9113C15.2887 13.9113 16.3333 12.8666 16.3333 11.578C16.3333 10.2893 15.2887 9.24463 14 9.24463C12.7113 9.24463 11.6667 10.2893 11.6667 11.578C11.6667 12.8666 12.7113 13.9113 14 13.9113Z'
-                  fill='#FF7971'
-                />
-              </svg>
+              {toggleMeetingLocation ? (
+                <svg
+                  width='28'
+                  height='29'
+                  viewBox='0 0 28 29'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    fillRule='evenodd'
+                    clipRule='evenodd'
+                    d='M14.7892 24.725C16.6198 22.6526 21 17.1154 21 11.5781C21 9.24479 19.25 4.57812 14 4.57812C8.75 4.57812 7 9.24479 7 11.5781C7 17.1154 11.3802 22.6526 13.2108 24.725C13.6373 25.2079 14.3627 25.2079 14.7892 24.725ZM14 13.9113C15.2887 13.9113 16.3333 12.8666 16.3333 11.578C16.3333 10.2893 15.2887 9.24463 14 9.24463C12.7113 9.24463 11.6667 10.2893 11.6667 11.578C11.6667 12.8666 12.7113 13.9113 14 13.9113Z'
+                    fill='#FF7971'
+                  />
+                </svg>
+              ) : (
+                <svg
+                  width='28'
+                  height='29'
+                  viewBox='0 0 28 29'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    fillRule='evenodd'
+                    clipRule='evenodd'
+                    d='M14.7892 24.727C16.6198 22.6546 21 17.1173 21 11.5801C21 9.24675 19.25 4.58008 14 4.58008C8.75 4.58008 7 9.24675 7 11.5801C7 17.1173 11.3802 22.6546 13.2108 24.727C13.6373 25.2099 14.3627 25.2099 14.7892 24.727ZM14 13.9132C15.2887 13.9132 16.3333 12.8686 16.3333 11.5799C16.3333 10.2913 15.2887 9.24658 14 9.24658C12.7113 9.24658 11.6667 10.2913 11.6667 11.5799C11.6667 12.8686 12.7113 13.9132 14 13.9132Z'
+                    fill='#A8A8A8'
+                  />
+                </svg>
+              )}
 
               <Input
                 name='meetingLocation'
                 width='320px'
                 placeholder='만날 장소'
                 defaultValue={getData.meetingLocation}
+                onChange={(e) => {
+                  e.preventDefault();
+                  if (e.target.value) setToggleMeetingLocation(true);
+                  else setToggleMeetingLocation(false);
+                }}
               ></Input>
             </Button>
-            <Button height={`${74.67 + 34.33 * (deliveryFeeCount - 1)}px`}>
+            <Button height={`${74.67 + 34.33 * deliveryFeeCount}px`}>
               <svg
                 width='28'
                 height='29'
@@ -617,7 +662,7 @@ function UpdatePost() {
                 })}
               </div>
             </Button>
-            <Button height={`${74.67 + 34.33 * (deliveryDiscountCount - 1)}px`}>
+            <Button height={`${74.67 + 34.33 * deliveryDiscountCount}px`}>
               <svg
                 width='28'
                 height='29'
