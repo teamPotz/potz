@@ -343,15 +343,13 @@ export async function getPostById(req, res) {
 }
 
 export async function getPostByName(req, res) {
-  const { key } = req.query;
-  console.log(key);
+  const { key, communityId } = req.query;
+  console.log(key, communityId);
 
   try {
     const post = await prisma.post.findMany({
       where: {
-        storeName: {
-          contains: key,
-        },
+        communityId: parseInt(communityId, 10),
         storeName: {
           contains: key,
         },
