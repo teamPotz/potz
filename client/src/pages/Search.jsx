@@ -333,7 +333,11 @@ function SearchPage() {
                           try {
                             console.log('search.keyword' + search.keyword);
                             const response = await fetch(
-                              `http://localhost:5000/posts/search?key=${search.keyword}`,
+                              `http://localhost:5000/posts/search?key=${
+                                search.keyword
+                              }&communityId=${localStorage.getItem(
+                                'communityDataID'
+                              )}`,
                               {
                                 method: 'GET',
                                 credentials: 'include',
