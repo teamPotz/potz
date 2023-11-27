@@ -18,6 +18,13 @@ const Box = styled.div`
   gap: 21px;
   div {
     margin: 28px;
+    svg {
+      cursor: grab;
+      transition: all 0.2s ease;
+      &:hover{
+        transform: ${props => props.noTransform ? 'none' : 'scale(1.18)'};
+      }
+    }
   }
   p {
     margin: 0px;
@@ -68,6 +75,8 @@ const FontMd = styled.span`
   color: ${(props) => props.color};
   margin: 0;
   white-space: nowrap;
+  filter: ${(props) => (props.blur ? 'blur(5px)' : 'none')};
+  transition: 0.2s;
 `;
 const FontSm = styled.span`
   font-family: ${Font.FontKor};
@@ -137,6 +146,15 @@ function UserProfile() {
     };
   }, []);
 
+  const [blur, setBlur] = useState(true);
+  const blurHandler = () => {
+    if (blur) {
+      setBlur(false);
+    } else {
+      setBlur(true);
+    }
+  };
+
   const navbarStyle = {
     display: 'flex',
     flexDirection: 'column',
@@ -157,7 +175,6 @@ function UserProfile() {
             <FontBig>마이 팟즈</FontBig>
           </div>
           <div>
-            {' '}
             <svg
               width='29'
               height='28'
@@ -179,13 +196,20 @@ function UserProfile() {
         <Box height={'227.33px'} align={'column'}>
           <Profile1>
             <img
-              src='./images/graphicImg/testProfile.png'
-              style={{ width: '70px' }}
+              src={user.profile.imageUrl}
+              style={{
+                width: '70px',
+                height: '70px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+              }}
             />
             <div>
               <span>
                 <FontBig>{user.name}</FontBig>
-                <FontSm color={`${COLOR.GRAY_500}`}>인천 연수구</FontSm>
+                <FontSm color={`${COLOR.GRAY_500}`}>
+                  {user.profile.address}
+                </FontSm>
               </span>
               <svg
                 width='29'
@@ -248,20 +272,82 @@ function UserProfile() {
       </Box>
 
       <div style={styles.contentBox}>
-        <Box height={'91px'}>
+        <Box height={'91px'} noTransform={true}>
           <div>
             <FontMd color={COLOR.BLACK} weight={400}>
               간편 입력 계좌 번호
             </FontMd>
-            <FontMd color={COLOR.GRAY_400} weight={400}>
-              1234-12345-1234-1234{user.name}
+            <FontMd color={COLOR.GRAY_400} weight={400} blur={blur}>
+              1234-12345-1234-1234 {user.name}
             </FontMd>
           </div>
-          <div>
-            <img
-              src='/images/graphicImg/toggleButton.png'
-              style={{ width: '46.67px' }}
-            ></img>
+          <div onClick={blurHandler} style={{ cursor: 'pointer' }}>
+            <svg
+              width='64'
+              height='44'
+              viewBox='0 0 64 44'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+            >
+              <g filter='url(#filter0_d_60_13457)'>
+                <rect
+                  style={{ transition: 'all 0.2s ease' }}
+                  x='8.33301'
+                  y='5.41797'
+                  width='46.6667'
+                  height='26.8333'
+                  rx='13.4167'
+                  fill={blur ? COLOR.GRAY_300 : COLOR.POTZ_PINK_DEFAULT}
+                />
+              </g>
+              <g filter='url(#filter1_d_60_13456)'>
+                <ellipse
+                  style={{ transition: 'all 0.2s ease' }}
+                  cx={blur ? '23' : '40.4956'}
+                  cy='18.835'
+                  rx='9.45946'
+                  ry='8.75'
+                  fill='white'
+                />
+              </g>
+              <defs>
+                <filter
+                  id='filter0_d_60_13457'
+                  x='0.166341'
+                  y='0.751302'
+                  width='63.0003'
+                  height='43.1663'
+                  filterUnits='userSpaceOnUse'
+                  colorInterpolationFilters='sRGB'
+                >
+                  <feFlood floodOpacity='0' result='BackgroundImageFix' />
+                  <feColorMatrix
+                    in='SourceAlpha'
+                    type='matrix'
+                    values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0'
+                    result='hardAlpha'
+                  />
+                  <feOffset dy='3.5' />
+                  <feGaussianBlur stdDeviation='4.08333' />
+                  <feComposite in2='hardAlpha' operator='out' />
+                  <feColorMatrix
+                    type='matrix'
+                    values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0'
+                  />
+                  <feBlend
+                    mode='normal'
+                    in2='BackgroundImageFix'
+                    result='effect1_dropShadow_60_13457'
+                  />
+                  <feBlend
+                    mode='normal'
+                    in='SourceGraphic'
+                    in2='effect1_dropShadow_60_13457'
+                    result='shape'
+                  />
+                </filter>
+              </defs>
+            </svg>
           </div>
         </Box>
 
