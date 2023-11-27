@@ -16,7 +16,15 @@ export default function () {
         try {
           const user = await prisma.user.findUnique({
             where: { email },
-            include: { profile: true },
+            // include: {
+            //   profile: true,
+            //   communities: {
+            //     select: {
+            //       communityId: true,
+            //       joinedAt: true,
+            //     },
+            //   },
+            // },
           });
 
           if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -26,7 +34,6 @@ export default function () {
           }
 
           const { password: pw, ...userWithoutPassword } = user;
-
           return done(null, userWithoutPassword);
         } catch (error) {
           console.error(error);

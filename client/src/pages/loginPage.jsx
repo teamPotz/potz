@@ -25,48 +25,47 @@ function Login() {
     navigate('/user-interests');
   };
 
-  const { isAuthenticated } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/authorize', { replace: true });
-  }, [isAuthenticated, navigate]);
+    if (user) {
+      navigate('/', { replace: true });
+    }
+  }, [user, navigate]);
 
   return (
     <div className='potz_container'>
       <div className='contents_container' style={style1}>
         <Logo />
         <div className='btn_container' style={style3}>
-          <div
+          <ButtonBg
+            backgroundColor={COLOR.YELLOW}
+            hoverColor={COLOR.YELLOW_100}
+            fontColor={COLOR.WHITE}
             onClick={() =>
-              (window.location.href = 'http://localhost:5000/auth/login/kakao')
+              (window.location.href = 'http://localhost:5000/auth/kakao')
             }
           >
-            <ButtonBg
-              backgroundColor={COLOR.YELLOW}
-              hoverColor={COLOR.YELLOW_100}
-              fontColor={COLOR.WHITE}
-            >
-              카카오톡으로 시작
-            </ButtonBg>
-          </div>
-          <div onClick={handleNavigate}>
-            <ButtonBg
-              backgroundColor={COLOR.POTZ_PINK_500}
-              hoverColor={COLOR.POTZ_PINK_DEFAULT}
-              fontColor={COLOR.WHITE}
-            >
-              구글 계정으로 시작
-            </ButtonBg>
-          </div>
-          <div onClick={() => navigate('/local-login')}>
-            <ButtonBg
-              backgroundColor={COLOR.POTZ_PINK_200}
-              hoverColor={COLOR.POTZ_PINK_300}
-              fontColor={COLOR.BLACK}
-            >
-              비회원으로 둘러보기
-            </ButtonBg>
-          </div>
+            카카오톡으로 시작
+          </ButtonBg>
+          <ButtonBg
+            backgroundColor={COLOR.POTZ_PINK_500}
+            hoverColor={COLOR.POTZ_PINK_DEFAULT}
+            fontColor={COLOR.WHITE}
+            onClick={() => {
+              window.location.href = 'http://localhost:5000/auth/google';
+            }}
+          >
+            구글 계정으로 시작
+          </ButtonBg>
+          <ButtonBg
+            backgroundColor={COLOR.POTZ_PINK_200}
+            hoverColor={COLOR.POTZ_PINK_300}
+            fontColor={COLOR.BLACK}
+            onClick={() => navigate('/local-login')}
+          >
+            비회원으로 둘러보기
+          </ButtonBg>
         </div>
       </div>
     </div>

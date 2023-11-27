@@ -100,34 +100,64 @@ export function logout(req, res, next) {
   }
 }
 
-export function kakaoLogin() {
-  return passport.authenticate('kakao');
+export function kakaoLogin(req, res, next) {
+  return passport.authenticate('kakao')(req, res, next);
 }
 
-export function kakaoLoginCallback() {
-  try {
-    return (req, res, next) => {
-      passport.authenticate('kakao', (err, user) => {
+export function kakaoLoginCallback(req, res, next) {
+  passport.authenticate('kakao', (err, user) => {
+    try {
+      if (err) {
+        console.error(err);
+        throw err;
+      }
+
+      if (!user) {
+        throw new Error('error');
+      }
+
+      req.login(user, (err) => {
+        if (err) {
+          console.error(err);
+          throw err;
+        }
+        res.redirect('http://localhost:5173/');
+      });
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  })(req, res, next);
+}
+
+export function googleLogIn(req, res, next) {
+  return passport.authenticate('google', {
+    scope: ['email', 'profile'],
+  })(req, res, next);
+}
+
+export function googleLogInCallback(req, res, next) {
+  passport.authenticate('google', (err, user) => {
+    try {
+      if (err) {
+        console.error(err);
+        throw err;
+      }
+
+      if (!user) {
+        throw new Error('error');
+      }
+
+      req.login(user, (err) => {
         if (err) {
           console.error(err);
           return next(err);
         }
-
-        if (!user) {
-          throw new Error('error');
-        }
-
-        return req.login(user, (err) => {
-          if (err) {
-            console.error(err);
-            return next(err);
-          }
-          res.redirect('http://localhost:5173/home');
-        });
-      })(req, res, next);
-    };
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
+        res.redirect('http://localhost:5173/');
+      });
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  })(req, res, next);
 }

@@ -34,18 +34,14 @@ const ImgIcon = () => {
   );
 };
 
-const filestyle = {
-  display: 'none',
-};
-
-function ImageFileInput({ imgUrl, onChange, width, height }) {
+function ImageFileInput({ file, onChange, width, height }) {
   return (
     <label>
       <InputFileStyle width={width} height={height}>
-        {imgUrl ? (
+        {file ? (
           <img
-            src={imgUrl}
-            alt='Preview'
+            src={URL.createObjectURL(file)}
+            alt='preview'
             style={{
               maxWidth: '100%',
               maxHeight: '100%',
@@ -57,7 +53,7 @@ function ImageFileInput({ imgUrl, onChange, width, height }) {
 
         <input
           type='file'
-          style={filestyle}
+          style={{ display: 'none' }}
           name='image'
           accept='image/*'
           onChange={onChange}

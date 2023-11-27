@@ -141,6 +141,9 @@ export async function getPostsByCommunityId(req, res, next) {
       where: {
         communityId: +communityId,
       },
+      orderBy: {
+        id: 'desc',
+      },
       select: {
         id: true,
         storeName: true,
@@ -268,6 +271,7 @@ export async function getPostById(req, res) {
         },
         deliveryPot: {
           select: {
+            id: true,
             orders: true,
             _count: {
               select: { participants: true },
@@ -331,6 +335,7 @@ export async function getPostById(req, res) {
       appliedDiscountInfo,
       nextDiscountInfos,
       deliveryFeePerPerson,
+      potId: post.deliveryPot.id,
     };
 
     res.status(200).send(transformedPost);
@@ -341,15 +346,13 @@ export async function getPostById(req, res) {
 }
 
 export async function getPostByName(req, res) {
-  const { key } = req.query;
-  console.log(key);
+  const { key, communityId } = req.query;
+  console.log(key, communityId);
 
   try {
     const post = await prisma.post.findMany({
       where: {
-        storeName: {
-          contains: key,
-        },
+        communityId: parseInt(communityId, 10),
         storeName: {
           contains: key,
         },
@@ -695,7 +698,44 @@ export async function deletePost(req, res) {
   });
 }
 
-// 찜하기, 찜 취소하기
+/// 찜하기, 찜 취소하기
 export async function toggleLike(req, res) {
-  // ...
+  const postId = parseInt(req.params.id);
+  console.log(postId, req.user.id);
+
+  //좋아요 여부 확인을 위한 사용자 정보
+  const existingLike = await prisma.postLike.findUnique({
+    where: {
+      userId_postId: {
+        userId: req.user.id,
+        postId: postId,
+      },
+    },
+  });
+
+  try {
+    const result = await prisma.postLike.upsert({
+      where: {
+        userId_postId: {
+          userId: req.user.id,
+          postId: postId,
+        },
+      },
+      //사용자가 있되, 기존의 liked가 true면 false로 / false면 true로 update
+      update: {
+        liked: existingLike ? !existingLike.liked : true,
+      },
+      //사용자가 없는 경우 생성
+      create: {
+        postId: postId,
+        userId: req.user.id,
+        liked: true,
+      },
+    });
+
+    res.status(201).json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'update post error' });
+  }
 }

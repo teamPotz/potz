@@ -55,7 +55,7 @@ export async function getCategory(req, res) {
 
 export async function getCategoryById(req, res) {
   const { id } = req.params;
-  console.log(req.user);
+  // console.log(req.user);
   try {
     const categories = await prisma.category.findUnique({
       select: {

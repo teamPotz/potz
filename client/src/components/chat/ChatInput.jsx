@@ -117,11 +117,17 @@ const SendIcon = () => {
   );
 };
 
-function ChatInput({ newMessage, setNewMessage, sendMessage, isConnected }) {
+function ChatInput({
+  newMessage,
+  setNewMessage,
+  sendMessage,
+  isConnected,
+  toggleMenuBar,
+}) {
   return (
     <div style={chatInputBoxStyle}>
       <Wrapper>
-        <SideButton onClick={sendMessage}>
+        <SideButton onClick={toggleMenuBar}>
           <CloseIcon />
         </SideButton>
         <Input

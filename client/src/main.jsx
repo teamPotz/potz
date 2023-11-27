@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext.jsx';
+import './App.css';
 import AppLayout from './components/ui/AppLayout.jsx';
 import MakeCommunity from './pages/MakeCommunityPage.jsx';
 import ChooseFeature from './pages/ChooseFeaturePage.jsx';
@@ -21,14 +22,13 @@ import LikedList from './pages/LikedListPage.jsx';
 import SearchResult from './pages/SearchResult.jsx';
 import LandingMap from './pages/LandingMap';
 import Chat from './pages/Chat/Chat.jsx';
-import ChatTemplate from './pages/Chat/ChatTemplate.jsx';
 import CreatePost from './pages/CreatePost.jsx';
 import UpdatePost from './pages/UpdatePost.jsx';
 import UserLoactionLandingMap from './pages/UserLocationLanding.jsx';
-import './App.css';
 import ChatList from './pages/Chat/ChatList.jsx';
 import UserProfile from './pages/UserProfile.jsx';
 import Entercommunity from './pages/EnterCommunity.jsx';
+import { ChatProvider } from './contexts/ChatContext.jsx';
 import AuthorizeUser from './pages/authorize.jsx';
 import MyBigData from './pages/myBigData.jsx';
 
@@ -37,22 +37,16 @@ const router = createBrowserRouter([
     path: '/',
     element: (
       <AuthProvider>
-        {/* <ProtectedRoute> */}
         <AppLayout />
-        {/* </ProtectedRoute> */}
       </AuthProvider>
     ),
     children: [
-      {
-        path: '/',
-        element: <Login />,
-      },
       {
         path: '/login',
         element: <Login />,
       },
       {
-        path: '/local-login',
+        path: '/local-login/',
         element: <LoginPage />,
       },
     ],
@@ -61,15 +55,18 @@ const router = createBrowserRouter([
     path: '/',
     element: (
       <AuthProvider>
-        <ProtectedRoute>
-          <AppLayout />
-        </ProtectedRoute>
+        <ChatProvider>
+          <ProtectedRoute>
+            <AppLayout />
+          </ProtectedRoute>
+        </ChatProvider>
       </AuthProvider>
     ),
     children: [
       {
-        path: '/authorize',
+        path: '/',
         element: <AuthorizeUser />,
+        index: true,
       },
       {
         path: '/community/:id',
@@ -161,7 +158,6 @@ const router = createBrowserRouter([
       },
       { path: '/chats/', element: <ChatList /> },
       { path: '/chats/:potId', element: <Chat /> },
-      { path: '/chats/', element: <ChatTemplate /> },
     ],
   },
 ]);

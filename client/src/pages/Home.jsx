@@ -6,6 +6,8 @@ import HomeContents from '../components/HomeContentsComp';
 import ButtonWrite from '../components/ButtonWrite';
 import ShareCommunityModal from '../components/shareCommunityModal';
 import NavBar from '../components/ui/NavBar';
+import { socket } from '../../socket';
+import { useAuth } from '../contexts/AuthContext';
 
 const potzContainerStyle = {
   position: 'relative',
@@ -36,6 +38,14 @@ function Home() {
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
 
+  const { user } = useAuth();
+
+  useEffect(() => {
+    socket.connect();
+
+    // socket.emit('setUserId', user.id);
+  }, []);
+
   useEffect(() => {
     const ReSizeHandler = () => {
       setdisplayWidth(window.innerWidth);
@@ -49,6 +59,7 @@ function Home() {
     };
   }, []);
 
+  //커뮤니티 데이터
   useEffect(() => {
     if (communityId !== null) {
       console.log('커뮤니티 아이디 num', communityId);
@@ -73,6 +84,7 @@ function Home() {
     }
   }, [communityId]);
 
+  //post 데이터
   useEffect(() => {
     if (communityId !== null) {
       console.log('커뮤니티 아이디 num', communityId);
