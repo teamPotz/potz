@@ -30,18 +30,14 @@ import ChatList from './pages/Chat/ChatList.jsx';
 import UserProfile from './pages/UserProfile.jsx';
 import Entercommunity from './pages/EnterCommunity.jsx';
 import AuthorizeUser from './pages/authorize.jsx';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
       <AuthProvider>
-        <GoogleOAuthProvider clientId={`${import.meta.env.VITE_APP_GOOGLE_ID}`}>
-          {/* <ProtectedRoute> */}
-          <AppLayout />
-          {/* </ProtectedRoute> */}
-        </GoogleOAuthProvider>
+        {/* <ProtectedRoute> */}
+        <AppLayout />
+        {/* </ProtectedRoute> */}
       </AuthProvider>
     ),
     children: [
