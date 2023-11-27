@@ -22,20 +22,8 @@ router.post('/logout', logout);
 router.get('/login/kakao', kakaoLogin());
 router.get('/login/kakao/callback', kakaoLoginCallback());
 
-router.get(
-  '/google',
-  passport.authenticate('google', {
-    scope: ['email', 'profile'],
-  })
-);
+router.get('/google', googleLogIn());
 
-router.get(
-  '/google/callback',
-  passport.authenticate('google', {
-    successRedirect: 'http://localhost:5173/authorize',
-    failureRedirect: 'http://localhost:5173/login',
-  }),
-  function (req, res) {}
-);
+router.get('/google/callback', googleLogInCallback());
 
 export default router;

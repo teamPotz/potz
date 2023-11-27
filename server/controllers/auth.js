@@ -132,11 +132,13 @@ export function kakaoLoginCallback() {
   }
 }
 
-export async function googleLogIn(req, res, next) {
-  return passport.authenticate('google');
+export function googleLogIn(req, res, next) {
+  return passport.authenticate('google', {
+    scope: ['email', 'profile'],
+  });
 }
 
-export async function googleLogInCallback(req, res, next) {
+export function googleLogInCallback(req, res, next) {
   try {
     return (req, res, next) => {
       passport.authenticate('google', (err, user) => {
@@ -154,7 +156,7 @@ export async function googleLogInCallback(req, res, next) {
             console.error(err);
             return next(err);
           }
-          res.redirect('http://localhost:5173/home');
+          res.redirect('http://localhost:5173/authorize');
         });
       })(req, res, next);
     };
