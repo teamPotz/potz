@@ -693,7 +693,43 @@ export async function deletePost(req, res) {
   });
 }
 
-// 찜하기, 찜 취소하기
+/// 찜하기, 찜 취소하기
 export async function toggleLike(req, res) {
-  // ...
+  console.log(req.params.id, req.user.id);
+  const postId = parseInt(req.params.id);
+
+  try {
+    const isLiked = await prisma.postLike.findUnique({
+      where: {
+        userId_postId: {
+          userId: req.user.id,
+          postId: postId,
+        },
+      },
+    });
+
+    if (isLiked) {
+      await prisma.postLike.delete({
+        where: {
+          userId_postId: {
+            userId: req.user.id,
+            postId: postId,
+          },
+        },
+      });
+    } else {
+      await prisma.postLike.create({
+        data: {
+          postId: +postId,
+          userId: req.user.id,
+          liked: true,
+        },
+      });
+    }
+
+    res.status(201).json(isLiked);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'update post error' });
+  }
 }

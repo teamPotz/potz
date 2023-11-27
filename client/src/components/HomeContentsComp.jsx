@@ -261,12 +261,24 @@ const HomeContents = ({ postDatas }) => {
             <div style={buttonContainer}>
               <ButtonContainer
                 onClick={(event) => {
+                  let postId = post.id;
                   event.stopPropagation();
-                  //true -> false / false -> true
-                  if (post.liked == true) {
-                    setLike(false);
-                  } else {
-                    setLike(true);
+                  try {
+                    const response = fetch(
+                      `http://localhost:5000/posts/${postId}/like`,
+                      {
+                        method: 'PATCH',
+                        credentials: 'include',
+                      }
+                    );
+                    const data = response;
+                    console.log('좋아요 업데이트', data);
+                    alert('찜 목록을 수정했어요.😋');
+                    window.location.replace(
+                      `/community/${localStorage.getItem('communityDataID')}`
+                    );
+                  } catch (error) {
+                    console.error(error);
                   }
                 }}
               >
