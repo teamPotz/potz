@@ -113,7 +113,6 @@ function LikedList() {
               <span style={{ marginLeft: '4px' }}>{postDatas.length}</span>
             ) : null}
           </div>
-          <span>카테고리별 보기</span>
           <span>편집</span>
         </div>
         <div style={homeContentesContainer}>
