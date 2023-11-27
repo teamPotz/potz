@@ -1,10 +1,10 @@
 import styled from 'styled-components';
-import COLOR from '../../utility/Color.js';
-import OrderMessage from '../../components/chat/messages/OrderMessage.jsx';
-import TextMessage from '../../components/chat/messages/TextMessage.jsx';
-import OrderConfirmMessage from '../../components/chat/messages/OrderConfirmMessage.jsx';
+import COLOR from '../../../utility/Color.js';
+import OrderMessage from './OrderMessage.jsx';
+import TextMessage from './TextMessage.jsx';
+import OrderConfirmMessage from './OrderConfirmMessage.jsx';
 import { useEffect, useRef } from 'react';
-import { useAuth } from '../../contexts/AuthContext.jsx';
+import { useAuth } from '../../../contexts/AuthContext.jsx';
 
 const MessageContainerWrapper = styled.div`
   background-color: ${COLOR.POTZ_PINK_200};
