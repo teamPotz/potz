@@ -345,6 +345,114 @@ export async function getPostById(req, res) {
   }
 }
 
+export async function getPostByLiked(req, res) {
+  try {
+    const posts = await prisma.postLike.findMany({
+      where: {
+        userId: req.user.id,
+        liked: true,
+      },
+      select: {
+        post: {
+          select: {
+            id: true,
+            storeName: true,
+            storeAddress: true,
+            imageUrl: true,
+            orderLink: true,
+            recruitment: true,
+            meetingLocation: true,
+            deliveryDiscounts: true,
+            category: {
+              select: { name: true, id: true },
+            },
+            author: {
+              select: { profile: { select: { imageUrl: true } } },
+            },
+            deliveryPot: {
+              select: {
+                id: true,
+                orders: { select: { id: true } },
+                _count: {
+                  select: { participants: true },
+                },
+              },
+            },
+            deliveryFees: true,
+            _count: {
+              select: { deliveryDiscounts: true },
+            },
+          },
+        },
+      },
+    });
+
+    const transformedposts = [];
+
+    for (const post of posts) {
+      const totalOrderPrice = getTotalOrderPrice(post.post.deliveryPot.orders);
+
+      const appliedDeliveryFeeInfo = getApplicableDeliveryFeeInfo(
+        post.post.deliveryFees,
+        totalOrderPrice
+      );
+
+      const nextDeliveryFeeInfo = getNextDeliveryFeeInfos(
+        post.post.deliveryFees,
+        appliedDeliveryFeeInfo,
+        totalOrderPrice
+      );
+
+      const appliedDiscountInfo = getAppliedDiscountInfo(
+        post.post.deliveryDiscounts,
+        totalOrderPrice
+      );
+
+      const nextDiscountInfos = getNextDiscountInfos(
+        post.post.deliveryDiscounts,
+        appliedDiscountInfo,
+        totalOrderPrice
+      );
+
+      const orderedUserCount = getOrderedUserCount(
+        post.post.deliveryPot.orders
+      );
+
+      const deliveryFeePerPerson =
+        appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
+
+      const transformedpost = {
+        id: post.post.id,
+        storeName: post.post.storeName,
+        storeAddress: post.post.storeAddress,
+        imageUrl: post.post.imageUrl,
+        orderLink: post.post.orderLink,
+        categoryId: post.post.category.id,
+        category: post.post.category.name,
+        potMasterProfileImg: post.post.author.profile
+          ? post.post.author.profile.imageUrl
+          : null,
+        participantsCount: post.post.deliveryPot._count.participants,
+        recruitment: post.post.recruitment,
+        meetingLocation: post.post.meetingLocation,
+        orderedUserCount,
+        totalOrderPrice,
+        appliedDeliveryFeeInfo,
+        nextDeliveryFeeInfo,
+        appliedDiscountInfo,
+        nextDiscountInfos,
+        deliveryFeePerPerson,
+        potId: post.post.deliveryPot.id,
+      };
+      transformedposts.push(transformedpost);
+    }
+    res.status(200).send(transformedposts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'get posts error' });
+  }
+}
+
 export async function getPostByName(req, res) {
   const { key, communityId } = req.query;
   console.log(key, communityId);
