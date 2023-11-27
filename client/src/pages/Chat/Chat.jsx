@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
-import COLOR from '../../utility/Color.js';
+import { useState, useEffect } from 'react';
 import GoBack from '../../components/goBack.jsx';
 import ChatMenu from '../../components/chat/ChatMenu.jsx';
 import ChatInput from '../../components/chat/ChatInput.jsx';
 import MessageContainer from './MessageContainer.jsx';
+import COLOR from '../../utility/Color.js';
 
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -245,7 +245,10 @@ function Chat() {
   }
 
   return (
-    <div className='potz_container'>
+    <div
+      className='potz_container'
+      style={{ backgroundColor: COLOR.POTZ_PINK_200 }}
+    >
       <GoBack text={state?.storeName} />
 
       {/* test buttons */}
@@ -269,12 +272,14 @@ function Chat() {
         </div>
       </div>
 
-      <MessageContainer
-        messages={messages}
-        isMenuBarOpened={openMenuBar}
-        isPotMaster={isPotMaster}
-        confirmOrder={confirmOrder}
-      />
+      <div>
+        <MessageContainer
+          messages={messages}
+          isMenuBarOpened={openMenuBar}
+          isPotMaster={isPotMaster}
+          confirmOrder={confirmOrder}
+        />
+      </div>
 
       {openMenuBar && (
         <ChatMenu isPotMaster={isPotMaster} leavePot={leavePot} />
