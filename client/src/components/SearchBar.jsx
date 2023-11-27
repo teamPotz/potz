@@ -34,8 +34,8 @@ const SearchIconWrapper = styled.div`
 `;
 
 const SearchBar = () => {
+  let communityId = localStorage.getItem('communityDataID');
   let [searchVal, setSearchVal] = useState();
-
   let navigate = useNavigate();
 
   const onEnterHandler = (event) => {
@@ -51,7 +51,7 @@ const SearchBar = () => {
   const fetchSearchData = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/posts/search?key=${searchVal}`,
+        `http://localhost:5000/posts/search?key=${searchVal}&communityId=${communityId}`,
         {
           method: 'GET',
           credentials: 'include',

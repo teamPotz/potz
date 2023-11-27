@@ -22,6 +22,7 @@ model User {
   email                      String?              @unique
   password                   String?
   kakaoId                    String?              @unique
+  googleId                   String?              @unique
   name                       String
   profile                    UserProfile?
   posts                      Post[]
