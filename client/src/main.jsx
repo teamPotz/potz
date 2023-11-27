@@ -36,22 +36,16 @@ const router = createBrowserRouter([
     path: '/',
     element: (
       <AuthProvider>
-        {/* <ProtectedRoute> */}
         <AppLayout />
-        {/* </ProtectedRoute> */}
       </AuthProvider>
     ),
     children: [
-      {
-        path: '/',
-        element: <Login />,
-      },
       {
         path: '/login',
         element: <Login />,
       },
       {
-        path: '/local-login',
+        path: '/local-login/',
         element: <LoginPage />,
       },
     ],
@@ -69,8 +63,9 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: '/authorize',
+        path: '/',
         element: <AuthorizeUser />,
+        index: true,
       },
       {
         path: '/community/:id',

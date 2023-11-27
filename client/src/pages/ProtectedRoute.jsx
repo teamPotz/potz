@@ -1,32 +1,17 @@
+import { useEffect } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { useEffect, useState } from 'react';
-import LoadingPage from './LoadingPage';
 
 function ProtectedRoute({ children }) {
-  const { getUserInfo, isAuthenticated } = useAuth();
-  const [isLoading, setIsLoading] = useState(true);
+  const { user, isFetching, getUserInfo } = useAuth();
 
   useEffect(() => {
-    async function checkAuth() {
-      setIsLoading(true);
-      try {
-        await getUserInfo();
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
+    if (!user && !isFetching) {
+      getUserInfo();
     }
-    checkAuth();
-  }, []);
+  }, [getUserInfo, isFetching, user]);
 
-  if (isLoading) {
-    // return <LoadingPage />;
-    return null;
-  }
-
-  return isAuthenticated ? (
+  return user && !isFetching ? (
     children || <Outlet />
   ) : (
     <Navigate to={'/login'} replace />

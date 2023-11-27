@@ -157,7 +157,6 @@ function UserProfile() {
             <FontBig>마이 팟즈</FontBig>
           </div>
           <div>
-            {' '}
             <svg
               width='29'
               height='28'
@@ -219,11 +218,10 @@ function UserProfile() {
       </div>
       <Box height={'74.67px'}>
         <div style={styles.verticalAlign}>
-          {' '}
           <img
             style={{ width: '60.67px', height: '60.67px' }}
             src='/images/graphicImg/heart1.png'
-          ></img>
+          />
           <FontMd weight={700} color={`${COLOR.BLACK}`}>
             내 맛집 빅데이터
           </FontMd>
@@ -297,21 +295,17 @@ function UserProfile() {
         })}
       </div>
       <div className='contents_container'>
-        <div
+        <ButtonBg
+          backgroundColor={COLOR.POTZ_PINK_DEFAULT}
+          hoverColor={COLOR.POTZ_PINK_600}
+          fontColor={COLOR.WHITE}
           onClick={() => {
             logout();
-            localStorage.removeItem('communityDataID');
             navigate('/');
           }}
         >
-          <ButtonBg
-            backgroundColor={COLOR.POTZ_PINK_DEFAULT}
-            hoverColor={COLOR.POTZ_PINK_600}
-            fontColor={COLOR.WHITE}
-          >
-            로그아웃
-          </ButtonBg>
-        </div>
+          로그아웃
+        </ButtonBg>
       </div>
 
       <Box height={'200px'}></Box>

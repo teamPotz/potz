@@ -25,11 +25,13 @@ function Login() {
     navigate('/user-interests');
   };
 
-  const { isAuthenticated } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/authorize', { replace: true });
-  }, [isAuthenticated, navigate]);
+    if (user) {
+      navigate('/', { replace: true });
+    }
+  }, [user, navigate]);
 
   return (
     <div className='potz_container'>
@@ -38,7 +40,7 @@ function Login() {
         <div className='btn_container' style={style3}>
           <div
             onClick={() =>
-              (window.location.href = 'http://localhost:5000/auth/login/kakao')
+              (window.location.href = 'http://localhost:5000/auth/kakao')
             }
           >
             <ButtonBg
