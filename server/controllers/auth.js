@@ -154,7 +154,7 @@ export function googleLogInCallback(req, res, next) {
             console.error(err);
             return next(err);
           }
-          res.redirect('http://localhost:5173/authorize');
+          res.redirect('http://localhost:5173/');
         });
       })(req, res, next);
     };

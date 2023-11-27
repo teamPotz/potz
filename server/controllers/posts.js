@@ -141,6 +141,9 @@ export async function getPostsByCommunityId(req, res, next) {
       where: {
         communityId: +communityId,
       },
+      orderBy: {
+        id: 'desc',
+      },
       select: {
         id: true,
         storeName: true,
@@ -695,41 +698,42 @@ export async function deletePost(req, res) {
 
 /// 찜하기, 찜 취소하기
 export async function toggleLike(req, res) {
-  console.log(req.params.id, req.user.id);
   const postId = parseInt(req.params.id);
+  console.log(postId, req.user.id);
+
+  //좋아요 여부 확인을 위한 사용자 정보
+  const existingLike = await prisma.postLike.findUnique({
+    where: {
+      userId_postId: {
+        userId: req.user.id,
+        postId: postId,
+      },
+    },
+  });
 
   try {
-    const isLiked = await prisma.postLike.findUnique({
+    const result = await prisma.postLike.upsert({
       where: {
         userId_postId: {
           userId: req.user.id,
           postId: postId,
         },
       },
+      //사용자가 있되, 기존의 liked가 true면 false로 / false면 true로 update
+      update: {
+        liked: existingLike ? !existingLike.liked : true,
+      },
+      //사용자가 없는 경우 생성
+      create: {
+        postId: postId,
+        userId: req.user.id,
+        liked: true,
+      },
     });
 
-    if (isLiked) {
-      await prisma.postLike.delete({
-        where: {
-          userId_postId: {
-            userId: req.user.id,
-            postId: postId,
-          },
-        },
-      });
-    } else {
-      await prisma.postLike.create({
-        data: {
-          postId: +postId,
-          userId: req.user.id,
-          liked: true,
-        },
-      });
-    }
-
-    res.status(201).json(isLiked);
+    res.status(201).json(result);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ message: 'update post error' });
   }
 }

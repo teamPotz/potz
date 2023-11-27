@@ -59,6 +59,7 @@ function Home() {
     };
   }, []);
 
+  //커뮤니티 데이터
   useEffect(() => {
     if (communityId !== null) {
       console.log('커뮤니티 아이디 num', communityId);
@@ -83,6 +84,7 @@ function Home() {
     }
   }, [communityId]);
 
+  //post 데이터
   useEffect(() => {
     if (communityId !== null) {
       console.log('커뮤니티 아이디 num', communityId);

@@ -189,20 +189,55 @@ const linkStyle = {
 };
 
 const HomeContents = ({ postDatas }) => {
-  console.log('포스트 데이터 받아옴', postDatas);
-
-  const [like, setLike] = useState(null);
+  console.log('첫 랜더링을 위해 받아온 데이터', postDatas);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    //클릭에 따라 서버에 업데이트
-    console.log('좋아요 클릭에 따라 true false 상태 저장', like);
-    setLike(like);
-  }, [like]);
+  //postDatas 배열에서 좋아요 데이터와 id 데이터만 따로 추출해서 배열로 관리
+  const [likeStates, setLikeStates] = useState(
+    postDatas.map((post) => ({ liked: post.liked, id: post.id }))
+  );
+
+  //postId와 일치하는 likeState 찾기
+  const findLikeStateByPostId = (postId) => {
+    return likeStates.find((likeState) => likeState.id === postId);
+  };
+
+  const handleLikeToggle = async (postId) => {
+    try {
+      //서버로 좋아요 데이터 업데이트
+      try {
+        const response = await fetch(
+          `http://localhost:5000/posts/${postId}/like`,
+          {
+            method: 'PATCH',
+            credentials: 'include',
+          }
+        );
+        const data = await response.json();
+        console.log('좋아요 업데이트', data);
+        alert('찜 목록을 수정했어요.😋');
+      } catch (error) {
+        console.error(error);
+      }
+
+      //화면 출력
+      setLikeStates((prevLikeStates) =>
+        prevLikeStates.map((prevState) =>
+          //클릭한 버튼이 속한 post의 Id가 postDatas의 post Id와 같을 경우에 liked 값을 이전 값과 반대로 토글함
+          prevState.id === postId
+            ? { ...prevState, liked: !prevState.liked }
+            : prevState
+        )
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div style={homeContentesContainer}>
-      {postDatas.map((post) => {
+      {postDatas.map((post, index) => {
+        const likeState = findLikeStateByPostId(post.id);
         return (
           <HomeContentsWrapper
             key={post.id}
@@ -260,32 +295,16 @@ const HomeContents = ({ postDatas }) => {
             </div>
             <div style={buttonContainer}>
               <ButtonContainer
-                onClick={(event) => {
-                  let postId = post.id;
-                  event.stopPropagation();
-                  try {
-                    const response = fetch(
-                      `http://localhost:5000/posts/${postId}/like`,
-                      {
-                        method: 'PATCH',
-                        credentials: 'include',
-                      }
-                    );
-                    const data = response;
-                    console.log('좋아요 업데이트', data);
-                    alert('찜 목록을 수정했어요.😋');
-                    window.location.replace(
-                      `/community/${localStorage.getItem('communityDataID')}`
-                    );
-                  } catch (error) {
-                    console.error(error);
-                  }
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLikeToggle(post.id);
                 }}
               >
-                {post.liked == true ? (
-                  <HeartIconClicked></HeartIconClicked>
+                {/* findLikeStateByPostId 함수로 찾은 postid와 같은 id를 가진 객체 */}
+                {likeStates && likeState.liked ? (
+                  <HeartIconClicked />
                 ) : (
-                  <HeartIcon></HeartIcon>
+                  <HeartIcon />
                 )}
               </ButtonContainer>
               {post.hasDiscount ? (
