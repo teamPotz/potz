@@ -40,3 +40,21 @@ export async function getUserDataById(req, res) {
     res.status(500).json({ message: 'get userData error' });
   }
 }
+
+export async function getUserOrderById(req, res) {
+  console.log(req.user);
+  try {
+    const userOrderData = await prisma.User.findMany({
+      where: {
+        id: req.user.id,
+      },
+      select: {
+        orders: true,
+      },
+    });
+    res.status(200).send(userOrderData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'get userOrderData error' });
+  }
+}
