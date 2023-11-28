@@ -43,44 +43,128 @@ const styles = {
   },
 };
 
-function MyBigData() {
-  const [postDatas, setPostDatas] = useState([]);
+//카테고리 배열에서 최빈 카테고리 구하는 함수
+const findFrequency = (arr) => {
+  const frequency = {};
+  arr.forEach((element) => {
+    frequency[element] = (frequency[element] || 0) + 1;
+  });
 
-  //랜덤 데이터 두개 추출
-  const getRandomArray = (arr) => {
-    const shuffleArray = arr.sort(() => Math.random() - 0.5);
-    const randomArray = shuffleArray.splice(0, 2);
-    return randomArray;
+  let mode;
+  let maxFrequency = 0;
+
+  for (const key in frequency) {
+    if (frequency[key] > maxFrequency) {
+      mode = key;
+      maxFrequency = frequency[key];
+    }
   }
+  return mode;
+};
+
+function MyBigData() {
+  const [datas, setDatas] = useState([]);
+  const [orderCategory, setOrderCategory] = useState([]);
+  const [postDatas, setPostDatas] = useState([]);
+  const categories = [
+    '버거·샌드위치',
+    '카페·디저트',
+    '한식',
+    '초밥·회',
+    '중식·아시안',
+    '피자',
+    '치킨',
+    '샐러드',
+  ];
+
+  // //랜덤 데이터 두개 추출
+  // const getRandomArray = (arr) => {
+  //   const shuffleArray = arr.sort(() => Math.random() - 0.5);
+  //   const randomArray = shuffleArray.splice(0, 2);
+  //   return randomArray;
+  // };
 
   useEffect(() => {
-    console.log(user);
-    async function getData() {
+    const fetchUserOrderData = async () => {
       try {
-        const res = await fetch('http://localhost:5000/categories/2', {
+        const response = await fetch('http://localhost:5000/users/user-order', {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
           credentials: 'include',
         });
-        const data = await res.json();
-        setPostDatas(data.posts);
+        const data = await response.json();
+        setDatas(data[0].deliveryPotHistoryAsMember);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
-    }
-    getData();
+    };
+    fetchUserOrderData();
   }, []);
 
   useEffect(() => {
-    if (postDatas) {
-      console.log(postDatas);
-      console.log(postDatas.length);
-      getRandomArray(postDatas);
+    console.log('지금까지 주문한 데이터: ', datas);
+  }, [datas]);
 
-    }
-  }, [postDatas]);
+  //주문 데이터 가격 배열화 & 평균값
+  const [orderPrices, setOrderPrices] = useState([]);
+  const [average, setAverage] = useState('');
+  useEffect(() => {
+    datas.map((data) => {
+      data.deliveryPot.orders.map((order) => {
+        const sum = order.price * order.quantity;
+        setOrderPrices((prev) => [...prev, sum]);
+      });
+    });
+  }, [datas]);
+  useEffect(() => {
+    let sum = 0;
+    orderPrices.map((orderPrice) => {
+      sum += orderPrice;
+    });
+    setAverage(sum / orderPrices.length);
+  }, [orderPrices]);
+
+
+  //지금까지 주문한 카테고리 이력의 배열
+  const [historyCategory, setHistoryCategory] = useState([]);
+  const [selectCategory, setSelectCategory] = useState('');
+  useEffect(() => {
+    datas.map((data) => {
+      setHistoryCategory((prev) => [...prev, data.deliveryPot.post.categoryId]);
+    });
+  }, [datas]);
+
+  //최빈 카테고리 구하기
+  useEffect(() => {
+    const value = findFrequency(historyCategory);
+    setSelectCategory(value);
+  }, [historyCategory]);
+
+  // useEffect(() => {
+  //   const getCategoriesData = async() => {
+  //     try {
+  //       const res = await fetch(`http://localhost:5000/categories/${selectCategory}`, {
+  //         method: 'GET',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         credentials: 'include',
+  //       });
+  //       const data = await res.json();
+  //       setPostDatas(data.posts);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  //   getCategoriesData();
+  // }, [selectCategory]);
+
+  // useEffect(() => {
+  //   if (postDatas) {
+  //     // console.log(postDatas);
+  //     // console.log(postDatas.length);
+  //     getRandomArray(postDatas);
+  //   }
+  // }, [postDatas]);
 
   const { user } = useAuth();
 
@@ -90,20 +174,30 @@ function MyBigData() {
       <div className='contents_container' style={styles.background}>
         <PaddingTop padding='37.33px'>
           <FontBg>{user.name}님의 선호 카테고리는</FontBg>
-          <br></br> <FontBg color={COLOR.POTZ_PINK_DEFAULT}>초밥 회</FontBg>
+          <br></br>{' '}
+          <FontBg color={COLOR.POTZ_PINK_DEFAULT}>
+            {categories[selectCategory - 1]}
+          </FontBg>
           <FontBg> 네요!</FontBg>
         </PaddingTop>
 
         <PaddingTop padding='24.5px'>
-          <img style={styles.bigImg} src='public/images/graphicImg/categoryCafe.png'></img>
+          <img
+            style={styles.bigImg}
+            src='public/images/graphicImg/categorySushi.png'
+          ></img>
         </PaddingTop>
 
         <PaddingTop padding='23.33px'>
-          <FontSm>평균 15000원을 선택했어요.</FontSm>
+          {average ? (
+            <FontSm>평균 {average}원을 선택했어요.</FontSm>
+          ) : (
+            <FontSm>아직 팟즈를 이용해보신 적이 없네요..</FontSm>
+          )}
           <p></p>
           <FontBg>비슷한 가격대의 우리동네</FontBg>
           <br></br>
-          <FontBg color={COLOR.POTZ_PINK_DEFAULT}>초밥 회</FontBg>
+          <FontBg color={COLOR.POTZ_PINK_DEFAULT}>{categories[selectCategory - 1]}</FontBg>
           <FontBg> 맛집을 추천할게요.</FontBg>
         </PaddingTop>
 
