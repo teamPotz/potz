@@ -623,9 +623,9 @@ export async function getPostByCategoryId(req, res) {
 
 //create post
 export async function createPost(req, res) {
-  let imageUrl = req.file.path;
-  let deliveryFees = JSON.parse(req.body.deliveryFees);
-  let deliveryDiscounts = JSON.parse(req.body.deliveryDiscounts);
+  const imageUrl = req.file?.path;
+  const deliveryFees = JSON.parse(req.body.deliveryFees);
+  const deliveryDiscounts = JSON.parse(req.body.deliveryDiscounts);
   const {
     storeName,
     storeAddress,
@@ -633,12 +633,11 @@ export async function createPost(req, res) {
     categoryId,
     recruitment,
     meetingLocation,
+    communityId,
   } = req.body;
 
   try {
     console.log(req.body);
-    console.log(deliveryFees);
-    console.log(deliveryDiscounts);
     // 1. 게시글 등록
     const newPost = await prisma.post.create({
       data: {
@@ -649,7 +648,7 @@ export async function createPost(req, res) {
         categoryId: +categoryId,
         recruitment: +recruitment,
         meetingLocation,
-        communityId: 1,
+        communityId: +communityId,
         authorId: req.user.id,
       },
     });
