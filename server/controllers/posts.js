@@ -130,7 +130,6 @@ function getNextDiscountInfos(
 export async function getPostsByCommunityId(req, res, next) {
   try {
     const { communityId } = req.query;
-    console.log('홈 커뮤니티 데이터', communityId);
 
     if (!communityId) {
       res.status(400);
@@ -167,6 +166,7 @@ export async function getPostsByCommunityId(req, res, next) {
               select: {
                 price: true,
                 quantity: true,
+                userId: true,
               },
             },
           },
@@ -247,7 +247,6 @@ export async function getPostsByCommunityId(req, res, next) {
 
 export async function getPostById(req, res) {
   const { id } = req.params;
-  console.log('포스트 아이디', id);
 
   try {
     const post = await prisma.post.findUnique({
@@ -286,7 +285,6 @@ export async function getPostById(req, res) {
     });
 
     const totalOrderPrice = getTotalOrderPrice(post.deliveryPot.orders);
-
     const appliedDeliveryFeeInfo = getApplicableDeliveryFeeInfo(
       post.deliveryFees,
       totalOrderPrice
@@ -339,6 +337,114 @@ export async function getPostById(req, res) {
     };
 
     res.status(200).send(transformedPost);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'get posts error' });
+  }
+}
+
+export async function getPostByLiked(req, res) {
+  try {
+    const posts = await prisma.postLike.findMany({
+      where: {
+        userId: req.user.id,
+        liked: true,
+      },
+      select: {
+        post: {
+          select: {
+            id: true,
+            storeName: true,
+            storeAddress: true,
+            imageUrl: true,
+            orderLink: true,
+            recruitment: true,
+            meetingLocation: true,
+            deliveryDiscounts: true,
+            category: {
+              select: { name: true, id: true },
+            },
+            author: {
+              select: { profile: { select: { imageUrl: true } } },
+            },
+            deliveryPot: {
+              select: {
+                id: true,
+                orders: { select: { id: true } },
+                _count: {
+                  select: { participants: true },
+                },
+              },
+            },
+            deliveryFees: true,
+            _count: {
+              select: { deliveryDiscounts: true },
+            },
+          },
+        },
+      },
+    });
+
+    const transformedposts = [];
+
+    for (const post of posts) {
+      const totalOrderPrice = getTotalOrderPrice(post.post.deliveryPot.orders);
+
+      const appliedDeliveryFeeInfo = getApplicableDeliveryFeeInfo(
+        post.post.deliveryFees,
+        totalOrderPrice
+      );
+
+      const nextDeliveryFeeInfo = getNextDeliveryFeeInfos(
+        post.post.deliveryFees,
+        appliedDeliveryFeeInfo,
+        totalOrderPrice
+      );
+
+      const appliedDiscountInfo = getAppliedDiscountInfo(
+        post.post.deliveryDiscounts,
+        totalOrderPrice
+      );
+
+      const nextDiscountInfos = getNextDiscountInfos(
+        post.post.deliveryDiscounts,
+        appliedDiscountInfo,
+        totalOrderPrice
+      );
+
+      const orderedUserCount = getOrderedUserCount(
+        post.post.deliveryPot.orders
+      );
+
+      const deliveryFeePerPerson =
+        appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
+
+      const transformedpost = {
+        id: post.post.id,
+        storeName: post.post.storeName,
+        storeAddress: post.post.storeAddress,
+        imageUrl: post.post.imageUrl,
+        orderLink: post.post.orderLink,
+        categoryId: post.post.category.id,
+        category: post.post.category.name,
+        potMasterProfileImg: post.post.author.profile
+          ? post.post.author.profile.imageUrl
+          : null,
+        participantsCount: post.post.deliveryPot._count.participants,
+        recruitment: post.post.recruitment,
+        meetingLocation: post.post.meetingLocation,
+        orderedUserCount,
+        totalOrderPrice,
+        appliedDeliveryFeeInfo,
+        nextDeliveryFeeInfo,
+        appliedDiscountInfo,
+        nextDiscountInfos,
+        deliveryFeePerPerson,
+        potId: post.post.deliveryPot.id,
+      };
+      transformedposts.push(transformedpost);
+    }
+    res.status(200).send(transformedposts);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'get posts error' });
@@ -404,7 +510,6 @@ export async function getPostByName(req, res) {
 
 export async function getPostByCategoryId(req, res) {
   const { categoryId, communityId } = req.query;
-  console.log('카테고리 아이디, 커뮤니티 아이디', categoryId, communityId);
 
   try {
     const posts = await prisma.post.findMany({
@@ -431,7 +536,13 @@ export async function getPostByCategoryId(req, res) {
         },
         deliveryPot: {
           select: {
-            orders: true,
+            orders: {
+              select: {
+                price: true,
+                quantity: true,
+                userId: true,
+              },
+            },
             _count: {
               select: { participants: true },
             },
@@ -471,9 +582,11 @@ export async function getPostByCategoryId(req, res) {
       );
 
       const orderedUserCount = getOrderedUserCount(post.deliveryPot.orders);
+      console.log('post.deliveryPot.orders', post.deliveryPot.orders);
 
       const deliveryFeePerPerson =
         appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
+      console.log('주문 수', deliveryFeePerPerson);
 
       const transformedPost = {
         id: post.id,
@@ -499,9 +612,8 @@ export async function getPostByCategoryId(req, res) {
       };
 
       result.push(transformedPost);
+      console.log('appliedDeliveryFeeInfo', appliedDeliveryFeeInfo);
     }
-
-    console.log(result);
     res.status(200).send(result);
   } catch (error) {
     console.error(error);

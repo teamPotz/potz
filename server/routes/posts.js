@@ -12,12 +12,14 @@ import {
   getPostById,
   getPostByName,
   updateGetPost,
+  getPostByLiked,
 } from '../controllers/posts.js';
 
 const router = Router();
 router.get('/', verifyAuth, getPostsByCommunityId);
 router.get('/search', getPostByName);
 router.get('/category', getPostByCategoryId);
+router.get('/liked', getPostByLiked);
 router.post('/', verifyAuth, fileUpload.single('image'), createPost);
 router
   .route('/:id/update')
