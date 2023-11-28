@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { createMessage, updateOrderMessage } from '../services/messages.js';
 
 const prisma = new PrismaClient();
 
@@ -15,23 +16,17 @@ export async function createOrder(req, res, next) {
         quantity: +quantity,
         price: +price,
       },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
     });
 
+    const orderMessage = await createMessage(
+      'ORDER',
+      potId,
+      req.user.id,
+      order
+    );
+
     const io = req.app.get('io');
-    io.of('/chat')
-      .to(potId.toString())
-      .emit('message', {
-        type: 'order',
-        ...order,
-      });
+    io.of('/chat').to(potId.toString()).emit('message', orderMessage);
 
     console.log('order message sent');
     res.status(201).json(order);
@@ -60,6 +55,7 @@ export async function deleteOrder(req, res, next) {
 // 메뉴 확인
 export async function confirmOrder(req, res, next) {
   const { orderId } = req.params;
+  const { messageId } = req.body;
 
   try {
     // 1. check if order exists
@@ -86,38 +82,38 @@ export async function confirmOrder(req, res, next) {
       throw new Error('only pot master can confirm order');
     }
 
-    // 3. update order
-    const order = await prisma.deliveryOrder.update({
-      where: { id: +orderId },
-      data: { orderConfirmed: true },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-          },
+    // 3. 주문확인 트랜잭션(주문확인처리->주문메시지 수정->주문확인메시지 생성)
+    let orderConfirmMessage;
+    await prisma.$transaction(async (tx) => {
+      // 3-1. update order
+      const order = await prisma.deliveryOrder.update({
+        where: { id: +orderId },
+        data: { orderConfirmed: true },
+        select: {
+          id: true,
+          orderConfirmed: true,
         },
-      },
+      });
+
+      // 3-2. update order message
+      await updateOrderMessage(messageId, true);
+
+      // 3-3. create order confirm message
+      orderConfirmMessage = await createMessage(
+        'ORDER_CONFIRM',
+        potId,
+        req.user.id,
+        order
+      );
     });
 
-    const orderConfirmMessage = {
-      type: 'order_confirm',
-      ...order,
-    };
-
-    // 4. send order confirm message
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', orderConfirmMessage);
 
-    console.log('order confirmed');
+    console.log('order confirm message sent');
     res.status(201).json(orderConfirmMessage);
   } catch (error) {
     console.error(error);
     next(error);
   }
-}
-
-// 입금 확인
-export async function confirmDeposit(req, res, next) {
-  // ...
 }

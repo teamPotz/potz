@@ -1,51 +1,27 @@
 import { PrismaClient } from '@prisma/client';
 import { getSocketId } from '../services/users.js';
+import { createMessage } from '../services/messages.js';
 
 const prisma = new PrismaClient();
 
 export async function sendMessage(req, res, next) {
   try {
-    const { potId, content } = req.body;
+    const { type, potId, content } = req.body;
+    console.log(type, potId, content);
 
     if (!potId || !content) {
       res.status(400);
       throw new Error('no potId or content');
     }
 
-    const message = await prisma.message.create({
-      data: {
-        sender: {
-          connect: { id: req.user.id },
-        },
-        content,
-        deliveryPot: {
-          connect: { id: potId },
-        },
-      },
-      include: {
-        sender: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            profile: {
-              select: { imageUrl: true },
-            },
-          },
-        },
-      },
-    });
-
-    const newMessage = {
-      type: 'text',
-      ...message,
-    };
+    const message = await createMessage(type, potId, req.user.id, content);
+    console.log(message);
 
     const io = req.app.get('io');
-    io.of('/chat').to(potId.toString()).emit('message', newMessage);
+    io.of('/chat').to(potId.toString()).emit('message', message);
 
-    console.log('text message sent');
-    res.status(201).json(newMessage);
+    console.log('message sent');
+    res.status(201).json(message);
   } catch (error) {
     console.error(error);
     next(error);
@@ -73,9 +49,7 @@ export async function getMessages(req, res, next) {
       },
     });
 
-    const newMessages = messages.map((m) => ({ type: 'text', ...m }));
-
-    res.status(200).json(newMessages);
+    res.status(200).json(messages);
   } catch (error) {
     console.error(error);
     next(error);
