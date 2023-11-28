@@ -25,7 +25,11 @@ function Login() {
     navigate('/user-interests');
   };
 
-  const { user } = useAuth();
+  const { user, getUserInfo } = useAuth();
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
   useEffect(() => {
     if (user) {

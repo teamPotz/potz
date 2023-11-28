@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import COLOR from '../../../utility/Color';
 import Font from '../../../utility/Font';
-import CartIcon from '../assets/CartIcon';
 import ButtonBg from '../../ButtonBG';
 
 const FontBig = styled.p`
@@ -45,16 +44,18 @@ const MessageWrapper = styled.div`
   margin-left: ${(props) => (props.$own ? 'auto' : 'none')};
 `;
 
+const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
+
 const Title = ({ children }) => {
   return (
     <div style={styles.title}>
-      <CartIcon fill={COLOR.POTZ_PINK_400} />
+      <img src={`${PF}icons/money.svg`} />
       <FontBig>{children}</FontBig>
     </div>
   );
 };
 
-const MenuImage = ({ imageUrl }) => {
+const DepositImage = ({ imageUrl }) => {
   return (
     <img
       style={styles.imageStyle}
@@ -66,35 +67,42 @@ const MenuImage = ({ imageUrl }) => {
   );
 };
 
-function OrderMessage({ message, own, isPotMaster, confirmOrder }) {
+const maskName = (name) => {
+  if (name.length <= 2) {
+    return name;
+  }
+
+  return name[0] + '*'.repeat(name.length - 2) + name.at(-1);
+};
+
+function DepositMessage({ message, own, isPotMaster, confirmDeposit }) {
   const {
-    id: orderId,
-    price,
+    id: depositId,
+    depositor,
+    amount,
     imageUrl,
-    menuName,
-    quantity,
-    orderConfirmed,
+    depositConfirmed,
   } = message.content;
 
   return (
     <MessageWrapper $own={own}>
-      <Title>{message.sender.name}님의 메뉴 선정</Title>
-      {imageUrl && <MenuImage imageUrl={imageUrl} />}
-      <div>{menuName}</div>
-      <div>총 금액 {+price * +quantity}원</div>
+      <Title>{message.sender.name}님의 입금 인증</Title>
+      {imageUrl && <DepositImage imageUrl={imageUrl} />}
+      <div>입금자 {maskName(depositor)}</div>
+      <div>입금액 {+amount}원</div>
       {isPotMaster && (
         <ButtonBg
           backgroundColor={COLOR.POTZ_PINK_DEFAULT}
           hoverColor={COLOR.POTZ_PINK_600}
           fontColor={COLOR.WHITE}
-          onClick={() => confirmOrder(orderId, message.id)}
-          isDisabled={orderConfirmed}
+          onClick={() => confirmDeposit(depositId, message.id)}
+          isDisabled={depositConfirmed}
         >
-          {orderConfirmed ? '확인 완료' : '메뉴 확인'}
+          {depositConfirmed ? '확인 완료' : '입금 확인'}
         </ButtonBg>
       )}
     </MessageWrapper>
   );
 }
 
-export default OrderMessage;
+export default DepositMessage;

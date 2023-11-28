@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import COLOR from '../../../utility/Color';
 import Font from '../../../utility/Font';
-import CartIcon from '../assets/CartIcon';
+
+const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 
 const MessageWrapper = styled.div`
   background-color: ${COLOR.WHITE};
@@ -47,24 +48,31 @@ const styles = {
   },
 };
 
-function OrderConfirmMessage({ sender, own }) {
+function DepositConfirmMessage({ sender, own }) {
   return (
     <MessageWrapper $own={own}>
       <div style={styles.box}>
         <div style={styles.title}>
-          <CartIcon fill={COLOR.POTZ_PINK_400} />
-          <FontBig>메뉴 확인</FontBig>
+          <img
+            src={`${PF}icons/money.svg`}
+            style={{
+              color: COLOR.POTZ_PINK_400,
+              width: '24px',
+              height: '24px',
+            }}
+          />
+          <FontBig>입금확인</FontBig>
         </div>
         <div style={styles.content}>
-          <img src='/images/graphicImg/CategoryBurger.png' />
+          <img src={`${PF}icons/money.svg`} />
         </div>
         <div>
           <span style={{ color: COLOR.POTZ_PINK_DEFAULT }}>{sender.name}</span>
-          님의 배달 메뉴 확인 완료!
+          님의 입금 확인 완료!
         </div>
       </div>
     </MessageWrapper>
   );
 }
 
-export default OrderConfirmMessage;
+export default DepositConfirmMessage;

@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useReducer } from 'react';
 const AuthContext = createContext();
 
 const initialState = {
-  user: JSON.parse(localStorage.getItem('user')) || null,
+  user: null,
   isFetching: false,
   error: false,
 };
@@ -122,10 +122,6 @@ function AuthProvider({ children }) {
       dispatch({ type: 'get_user_info_failure' });
     }
   }
-
-  useEffect(() => {
-    localStorage.setItem('user', JSON.stringify(state.user));
-  }, [state.user]);
 
   return (
     <AuthContext.Provider

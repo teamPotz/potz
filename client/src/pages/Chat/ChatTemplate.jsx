@@ -128,16 +128,16 @@ function Chat() {
         <MessageBox isMyMessage={false}>
           반가워요<div>12:14</div>
         </MessageBox>
-        <OrderMessage isMyMessage={true} />
+        {/* <OrderMessage isMyMessage={true} /> */}
         <MessageBox isMyMessage={false}>
           2000원 더 모이면 3000원 할인 쿠폰을 사용할 수 있다는데 어떻게
           하실래요?<div>12:15</div>
         </MessageBox>
-        <OrderConfirmMesage isMyMessage={false} />
+        {/* <OrderConfirmMesage isMyMessage={false} /> */}
         <MessageBox isMyMessage={false}>
           반가워요<div>12:14</div>
         </MessageBox>
-        <OrderMessage isMyMessage={true} />
+        {/* <OrderMessage isMyMessage={true} /> */}
         <MessageBox isMyMessage={false}>
           2000원 더 모이면 3000원 할인 쿠폰을 사용할 수 있다는데 어떻게
           하실래요?<div>12:15</div>
@@ -154,7 +154,7 @@ function Chat() {
           2000원 더 모이면 3000원 할인 쿠폰을 사용할 수 있다는데 어떻게
           하실래요?<div>12:15</div>
         </MessageBox>
-        <OrderConfirmMesage isMyMessage={false} />
+        {/* <OrderConfirmMesage isMyMessage={false} /> */}
       </div>
       <ChatNavBar isBangJang={BangJang} />
     </div>

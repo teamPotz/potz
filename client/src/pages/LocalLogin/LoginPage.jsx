@@ -26,7 +26,11 @@ function LoginPage() {
   const [signUpName, setSignUpName] = useState('');
 
   const navigate = useNavigate();
-  const { user, login, signUp } = useAuth();
+  const { user, login, signUp, getUserInfo } = useAuth();
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
   useEffect(() => {
     if (user) navigate('/', { replace: true });
