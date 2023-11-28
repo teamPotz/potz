@@ -13,7 +13,6 @@ const LikedCompWrapper = styled.div`
   justify-content: start;
   cursor: grab;
   transition: all 0.3s ease;
-  margin-bottom: 14px;
   font-family: ${Font.FontKor};
 
   &:hover {
@@ -23,8 +22,8 @@ const LikedCompWrapper = styled.div`
 
 const ButtonContainer = styled.button`
   display: flex;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   justify-content: center;
   align-items: center;
   border-radius: 50%;
@@ -58,11 +57,11 @@ const HeartIconClicked = () => {
 const LikedComp = (props) => {
   let navigate = useNavigate();
 
-  let { postData } = props;
+  let { postData, getDeletedData } = props;
   console.log('좋아요한 포스트 데이터', postData);
   let postId = postData.id;
 
-  const handleLikeToggle = async (postId) => {
+  const handleLikeToggle = async () => {
     try {
       //서버로 좋아요 데이터 업데이트
       try {
@@ -75,6 +74,9 @@ const LikedComp = (props) => {
         );
         const data = await response.json();
         console.log('좋아요 업데이트', data);
+
+        //좋아요 취소한 게시글 state 관리 함수
+        getDeletedData(data);
         alert('찜 목록을 수정했어요.😋');
       } catch (error) {
         console.error(error);
@@ -86,6 +88,7 @@ const LikedComp = (props) => {
 
   const clickHandler = (event) => {
     event.stopPropagation();
+    handleLikeToggle();
   };
 
   const textOverflow = {
@@ -140,8 +143,8 @@ const LikedComp = (props) => {
 
   const likedStyle = {
     position: 'relative',
-    top: '68px',
-    left: '100px',
+    top: '62px',
+    left: '102px',
     textDecoration: 'underline',
     color: COLOR.WHITE,
     background: 'none',

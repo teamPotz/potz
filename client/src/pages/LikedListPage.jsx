@@ -45,6 +45,27 @@ function LikedList() {
     }
   }, [communityId]);
 
+  //좋아요 취소한 게시글 state 업데이트
+  const getDeletedData = (data) => {
+    console.log('받아온 삭제 게시물 데이터', data);
+    if (data) {
+      //받아온 삭제 게시물 postDatas에서 찾기
+      const foundPost = findLikeStateByPostId(data);
+      console.log('찾은 포스트', foundPost);
+
+      //받아온 삭제 게시물 postDatas에서 제거하기
+      const updatedPostDatas = postDatas.filter(
+        (postData) => postData.id !== data.postId
+      );
+      setPostDatas(updatedPostDatas);
+    }
+  };
+
+  //받아온 삭제 게시물 postDatas에서 찾기
+  const findLikeStateByPostId = (data) => {
+    return postDatas.find((postData) => postData.id === data.postId);
+  };
+
   const potzContainerStyle = {
     position: 'relative', // potz_container를 relative로 설정합니다.
     minHeight: '100vh', // 최소 높이를 화면 높이(100vh)로 설정합니다.
@@ -92,6 +113,17 @@ function LikedList() {
     color: COLOR.GRAY_400,
   };
 
+  const alertStyle = {
+    marginTop: '40px',
+    fontFamily: Font.FontKor,
+    fontWeight: '700',
+    color: COLOR.POTZ_PINK_DEFAULT,
+    display: 'flex',
+    justifyContent: 'center',
+    padding: '20px',
+    background: COLOR.WHITE,
+  };
+
   return (
     <div className='potz_container' style={backgroundStyle}>
       <div style={potzContainerStyle}>
@@ -120,25 +152,18 @@ function LikedList() {
         <div style={homeContentesContainer}>
           {/* 찜 한 가게 데이터가 없는 경우 */}
           {postDatas && postDatas.length < 1 ? (
-            <div
-              style={{
-                marginTop: '40px',
-                fontFamily: Font.FontKor,
-                fontWeight: '700',
-                color: COLOR.POTZ_PINK_DEFAULT,
-                display: 'flex',
-                justifyContent: 'center',
-                padding: '20px',
-                background: COLOR.WHITE,
-              }}
-            >
-              🍣 아직 찜 하신 가게가 없어요 🍣
-            </div>
+            <div style={alertStyle}>🍣 아직 찜 하신 가게가 없어요 🍣</div>
           ) : null}
           {/* 찜 한 가게 데이터가 있는 경우 */}
           {postDatas &&
             postDatas.map((postData, index) => {
-              return <LikedComp key={index} postData={postData}></LikedComp>;
+              return (
+                <LikedComp
+                  key={index}
+                  getDeletedData={getDeletedData}
+                  postData={postData}
+                ></LikedComp>
+              );
             })}
         </div>
         <div style={navbarStyle}>
