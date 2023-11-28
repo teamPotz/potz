@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
 import COLOR from '../../utility/Color';
 import { useNavigate } from 'react-router-dom';
 import ButtonBg from '../../components/ButtonBG';
@@ -27,11 +26,15 @@ function LoginPage() {
   const [signUpName, setSignUpName] = useState('');
 
   const navigate = useNavigate();
-  const { isAuthenticated, signUp, login } = useAuth();
+  const { user, login, signUp, getUserInfo } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/authorize', { replace: true });
-  }, [isAuthenticated, navigate]);
+    getUserInfo();
+  }, []);
+
+  useEffect(() => {
+    if (user) navigate('/', { replace: true });
+  }, [user, navigate]);
 
   async function handleSignUp() {
     if (!signUpEmail || !signUpPassword || !signUpName) {
@@ -50,70 +53,60 @@ function LoginPage() {
   }
 
   return (
-    <Container className='background'>
-      <Row className='row1'>
-        <Col className='col1'>
-          <div className='side_container'></div>
-        </Col>
-        <Col className='col2'>
-          <div className='potz_container'>
-            <div className='contents_container' style={style1}>
-              <Logo />
-              <div className='btn_container' style={style3}>
-                <input
-                  type='email'
-                  placeholder='email'
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <input
-                  type='password'
-                  placeholder='password'
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <div onClick={handleLogin}>
-                  <ButtonBg
-                    backgroundColor={COLOR.POTZ_PINK_200}
-                    hoverColor={COLOR.POTZ_PINK_300}
-                    fontColor={COLOR.BLACK}
-                  >
-                    로그인
-                  </ButtonBg>
-                </div>
-              </div>
-              <div className='btn_container' style={style3}>
-                <input
-                  type='email'
-                  placeholder='email'
-                  onChange={(e) => setSignUpEmail(e.target.value)}
-                />
-                <input
-                  type='password'
-                  placeholder='password'
-                  onChange={(e) => setSignUpPassword(e.target.value)}
-                />
-                <input
-                  type='text'
-                  placeholder='name'
-                  onChange={(e) => setSignUpName(e.target.value)}
-                />
-                <div onClick={handleSignUp}>
-                  <ButtonBg
-                    backgroundColor={COLOR.POTZ_PINK_200}
-                    hoverColor={COLOR.POTZ_PINK_300}
-                    fontColor={COLOR.BLACK}
-                  >
-                    회원가입
-                  </ButtonBg>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Col>
-        <Col className='col3'>
-          <div className='side_container'></div>
-        </Col>
-      </Row>
-    </Container>
+    <div className='potz_container'>
+      <div className='contents_container' style={style1}>
+        <Logo />
+        <div className='btn_container' style={style3}>
+          <input
+            type='email'
+            placeholder='email'
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type='password'
+            placeholder='password'
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {/* <div onClick={handleLogin}> */}
+          <ButtonBg
+            backgroundColor={COLOR.POTZ_PINK_200}
+            hoverColor={COLOR.POTZ_PINK_300}
+            fontColor={COLOR.BLACK}
+            onClick={handleLogin}
+          >
+            로그인
+          </ButtonBg>
+          {/* </div> */}
+        </div>
+        <div className='btn_container' style={style3}>
+          <input
+            type='email'
+            placeholder='email'
+            onChange={(e) => setSignUpEmail(e.target.value)}
+          />
+          <input
+            type='password'
+            placeholder='password'
+            onChange={(e) => setSignUpPassword(e.target.value)}
+          />
+          <input
+            type='text'
+            placeholder='name'
+            onChange={(e) => setSignUpName(e.target.value)}
+          />
+          {/* <div onClick={handleSignUp}> */}
+          <ButtonBg
+            backgroundColor={COLOR.POTZ_PINK_200}
+            hoverColor={COLOR.POTZ_PINK_300}
+            fontColor={COLOR.BLACK}
+            onClick={handleSignUp}
+          >
+            회원가입
+          </ButtonBg>
+          {/* </div> */}
+        </div>
+      </div>
+    </div>
   );
 }
 

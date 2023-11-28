@@ -22,6 +22,7 @@ model User {
   email                      String?              @unique
   password                   String?
   kakaoId                    String?              @unique
+  googleId                   String?              @unique
   name                       String
   profile                    UserProfile?
   posts                      Post[]
@@ -36,6 +37,7 @@ model User {
   SearchResult               SearchResult[]
   createdAt                  DateTime             @default(now())
   updatedAt                  DateTime             @updatedAt
+  deposits                   Deposit[]
 }
 
 // 사용자 프로필
@@ -177,6 +179,7 @@ model DeliveryPot {
   post               Post                @relation(fields: [postId], references: [id])
   postId             Int                 @unique
   orders             DeliveryOrder[]
+  deposits           Deposit[]
   messages           Message[]
   deliveryPotHistory DeliveryPotHistory?
   createdAt          DateTime            @default(now())
@@ -185,19 +188,32 @@ model DeliveryPot {
 
 // 배달 주문
 model DeliveryOrder {
+  id             Int         @id @default(autoincrement())
+  deliveryPot    DeliveryPot @relation(fields: [deliveryPotId], references: [id])
+  deliveryPotId  Int
+  user           User        @relation(fields: [userId], references: [id])
+  userId         Int
+  menuName       String
+  quantity       Int
+  price          Decimal
+  imageUrl       String?
+  orderConfirmed Boolean     @default(false)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+// 입금
+model Deposit {
   id               Int         @id @default(autoincrement())
-  deliveryPot      DeliveryPot @relation(fields: [deliveryPotId], references: [id])
-  deliveryPotId    Int
   user             User        @relation(fields: [userId], references: [id])
   userId           Int
-  menuName         String
-  quantity         Int
-  price            Int
+  depositor        String
+  deliveryPot      DeliveryPot @relation(fields: [deliveryPotId], references: [id])
+  deliveryPotId    Int
+  amount           Int
   imageUrl         String?
-  orderConfirmed   Boolean     @default(false)
   depositConfirmed Boolean     @default(false)
   createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
 }
 
 // 배달팟 완료 이력
@@ -219,14 +235,26 @@ model SearchResult {
   userId  Int
 }
 
+// 채팅 메시지
 model Message {
   id            Int         @id @default(autoincrement())
+  type          MessageType @default(TEXT)
   sender        User        @relation(fields: [senderId], references: [id])
   senderId      Int
-  content       String
+  content       Json
   deliveryPot   DeliveryPot @relation(fields: [deliveryPotId], references: [id])
   deliveryPotId Int
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   // readBy  User[]
+}
+
+enum MessageType {
+  SYSTEM
+  TEXT
+  IMAGE
+  ORDER
+  ORDER_CONFIRM
+  DEPOSIT
+  DEPOSIT_CONFIRM
 }

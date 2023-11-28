@@ -4,31 +4,33 @@ import Font from '../../../utility/Font';
 
 const TextMessageWrapper = styled.div`
   background-color: ${(props) =>
-    props.isMyMessage ? `${COLOR.POTZ_PINK_500}` : `${COLOR.WHITE}`};
+    props.$own ? `${COLOR.POTZ_PINK_500}` : `${COLOR.WHITE}`};
   border-radius: 14px 14px 14px 14px;
   width: auto;
-  max-width: 276.5px;
-  padding: 4.66667px 14px;
-  margin-left: ${(props) => (props.isMyMessage ? 'auto' : 'none')};
-  margin-right: ${(props) => (props.isMyMessage ? 'none' : 'auto')};
+  max-width: 276px;
+  padding: 4px 14px;
+  margin-left: ${(props) => (props.$own ? 'auto' : 'none')};
+  margin-right: ${(props) => (props.$own ? 'none' : 'auto')};
   font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: 400;
-  font-size: 16.3333px;
-  color: ${(props) =>
-    props.isMyMessage ? `${COLOR.WHITE}` : `${COLOR.BLACK}`};
+  font-size: 16px;
+  color: ${(props) => (props.$own ? `${COLOR.WHITE}` : `${COLOR.BLACK}`)};
   & > div {
-    font-size: 14px;
-    margin-right: ${(props) => (props.isMyMessage ? 'auto' : 'none')};
-    display: flex;
-    align-items: center;
-    justify-content: ${(props) => (props.isMyMessage ? 'none' : 'flex-end')};
+    font-size: 12px;
+    // display: flex;
+    // align-items: center;
+    // margin-right: ${(props) => (props.$own ? 'auto' : 'none')};
+    // justify-content: ${(props) => (props.$own ? 'none' : 'flex-end')};
   }
 `;
 
-function TextMessage({ content, isMyMessage }) {
+function TextMessage({ message, own }) {
   return (
-    <TextMessageWrapper isMyMessage={isMyMessage}>{content}</TextMessageWrapper>
+    <TextMessageWrapper $own={own}>
+      {message.content.message}
+      <div>{message.createdAt}</div>
+    </TextMessageWrapper>
   );
 }
 

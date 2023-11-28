@@ -1,5 +1,5 @@
-import COLOR from '../../../utility/Color';
 import styled from 'styled-components';
+import COLOR from '../../../utility/Color';
 import Font from '../../../utility/Font';
 import CartIcon from '../assets/CartIcon';
 import ButtonBg from '../../ButtonBG';
@@ -24,24 +24,25 @@ const styles = {
   imageStyle: {
     objectFit: 'cover',
     width: '240.33px',
-    // height: '148.17px',
+    height: '148.17px',
     boxSizing: 'border-box',
     border: `1.16667px solid #EDEDED`,
     borderRadius: '10px',
+    cursor: 'pointer',
   },
 };
 
-const OrderMessageWrapper = styled.div`
-  width: 277.67px;
-  max-height: 308px;
-  padding: 11.6667px 18.6667px 18.6667px;
+const MessageWrapper = styled.div`
   background-color: ${COLOR.WHITE};
+  width: 278px;
+  max-height: 400px;
+  padding: 12px 18px 18px;
   border-radius: 14px;
   box-sizing: border-box;
-  gap: 11.67px;
+  gap: 12px;
   display: flex;
   flex-direction: column;
-  margin-left: ${(props) => (props.isMyMessage ? 'auto' : 'none')};
+  margin-left: ${(props) => (props.$own ? 'auto' : 'none')};
 `;
 
 const Title = ({ children }) => {
@@ -53,27 +54,32 @@ const Title = ({ children }) => {
   );
 };
 
-function OrderMessage({
-  orderId,
-  user,
-  menuName,
-  imageUrl,
-  quantity,
-  price,
-  isMyMessage,
-  isPotMaster,
-  confirmOrder,
-  isOrderConfirmed,
-}) {
+const MenuImage = ({ imageUrl }) => {
   return (
-    <OrderMessageWrapper isMyMessage={isMyMessage}>
-      <Title>{user.name}님의 메뉴 선정</Title>
-      {imageUrl && (
-        <img
-          style={styles.imageStyle}
-          src={`http://localhost:5000/images/${imageUrl}`}
-        />
-      )}
+    <img
+      style={styles.imageStyle}
+      src={`http://localhost:5000/images/${imageUrl}`}
+      onClick={() =>
+        window.open(`http://localhost:5000/images/${imageUrl}`, '_blank')
+      }
+    />
+  );
+};
+
+function OrderMessage({ message, own, isPotMaster, confirmOrder }) {
+  const {
+    id: orderId,
+    price,
+    imageUrl,
+    menuName,
+    quantity,
+    orderConfirmed,
+  } = message.content;
+
+  return (
+    <MessageWrapper $own={own}>
+      <Title>{message.sender.name}님의 메뉴 선정</Title>
+      {imageUrl && <MenuImage imageUrl={imageUrl} />}
       <div>{menuName}</div>
       <div>총 금액 {+price * +quantity}원</div>
       {isPotMaster && (
@@ -81,13 +87,13 @@ function OrderMessage({
           backgroundColor={COLOR.POTZ_PINK_DEFAULT}
           hoverColor={COLOR.POTZ_PINK_600}
           fontColor={COLOR.WHITE}
-          onClick={() => confirmOrder(orderId)}
-          isDisabled={isOrderConfirmed}
+          onClick={() => confirmOrder(orderId, message.id)}
+          isDisabled={orderConfirmed}
         >
-          {isOrderConfirmed ? '확인 완료' : '메뉴 확인'}
+          {orderConfirmed ? '확인 완료' : '메뉴 확인'}
         </ButtonBg>
       )}
-    </OrderMessageWrapper>
+    </MessageWrapper>
   );
 }
 

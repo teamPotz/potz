@@ -1,36 +1,34 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Font from '../utility/Font';
 import COLOR from '../utility/Color';
 import CategorySearch from '../components/categorySearch';
 import logoImg from '../../public/images/Logo/Potz_Logo.png';
+import { socket } from '../../socket';
+import { useChat } from '../contexts/ChatContext';
+import { useAuth } from '../contexts/AuthContext';
 
-const Divider = styled.div`
-  margin-top: 40px;
-  margin-bottom: 18px;
-  background-color: ${COLOR.POTZ_PINK_100};
-  height: 10px;
-  width: 100%;
-  & hr {
-    background: ${COLOR.GRAY_200};
-    height: 1px;
-    border: 0;
-  }
-`;
-
-const Particiate = styled.div`
-  background-color: ${COLOR.POTZ_PINK_100};
-  height: 60px;
-  width: 100%;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  gap: 80px;
-  font-family: ${Font.FontKor};
-  font-weight: 700;
-  color: ${COLOR.GRAY_400};
-`;
+const DividerProvider = (displayWidth) => {
+  console.log('화면크기', displayWidth.displayWidth);
+  const Divider = styled.div`
+    margin-top: 40px;
+    margin-bottom: 18px;
+    background-color: ${COLOR.POTZ_PINK_100};
+    height: 10px;
+    width: ${displayWidth.displayWidth}px;
+    & hr {
+      background: ${COLOR.GRAY_200};
+      height: 1px;
+      border: 0;
+    }
+  `;
+  return (
+    <Divider>
+      <hr />
+    </Divider>
+  );
+};
 
 const ButtonWrap = styled.button`
   display: flex;
@@ -191,21 +189,6 @@ const EnterIcon = () => {
   );
 };
 
-const imgContainer = {
-  maxHeight: '420px',
-  marginBottom: '20px',
-};
-
-const TopStyle = {
-  position: 'relative',
-  bottom: '410px',
-  left: '0px',
-  width: '100%',
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-};
-
 const linkStyle = {
   position: 'relative',
   bottom: '100px',
@@ -280,14 +263,16 @@ const storeFont = {
 };
 
 const fontStyle1 = {
+  marginLeft: '28px',
   fontFamily: Font.FontKor,
   fontSize: '16px',
   color: COLOR.GRAY_400,
 };
 
 const fontStyle2 = {
+  fontFamily: Font.FontKor,
   marginLeft: '8px',
-  color: COLOR.GRAY_500,
+  color: COLOR.POTZ_PINK_DEFAULT,
 };
 
 const fontStyle3 = {
@@ -307,16 +292,41 @@ const coloredFont = {
   color: COLOR.POTZ_PINK_DEFAULT,
 };
 
-function DetailContents(props) {
-  let communityId = localStorage.getItem('communityDataID');
-  let { postDatas } = props;
+function DetailContents({ postDatas }) {
+  const communityId = localStorage.getItem('communityDataID');
   console.log('받은 postDatas', postDatas);
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
-  const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
   const [categoryPostData, setCategoryPostData] = useState();
-  const navigate = useNavigate();
   const categoryId = postDatas.categoryId;
   console.log(categoryId);
+
+  const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
+
+  const TopStyle = {
+    position: 'relative',
+    bottom: '410px',
+    left: '0px',
+    maxWidth: '420px',
+    width: displayWidth ? displayWidth : '420px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  };
+
+  const navbarStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '28px',
+    alignItems: 'end',
+    position: 'fixed',
+    bottom: 0,
+    maxWidth: '420px',
+    width: '100%',
+  };
+
+  const { user } = useAuth();
+  const { joinPot } = useChat();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const ReSizeHandler = () => {
@@ -351,47 +361,56 @@ function DetailContents(props) {
 
     // 비동기 함수를 useEffect 내부에서 직접 호출
     fetchCategoryPostData();
-  }, [categoryId]);
+  }, [categoryId, communityId]);
 
   const enterChatRoom = async () => {
-    try {
-      const res = await fetch('http://localhost:5000/delivery-pots/join', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ potId: postDatas.deliveryPot.id }),
-      });
-      if (!res.ok) {
-        throw new Error('enter chat room error');
-      }
-      const data = await res.json();
-      navigate(`/chats/${postDatas.id}`, {
-        state: { storeName: postDatas.storeName },
-      });
-    } catch (error) {
-      console.error(error);
-    }
+    const { potId, storeName } = postDatas;
+    // console.log('potId', potId);
+    // joinPot(potId, user, socket);
+
+    navigate(`/chats/${potId}`, {
+      state: { storeName },
+    });
   };
 
-  const navbarStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '28px',
-    alignItems: 'end',
-    position: 'fixed',
-    bottom: 0,
+  const imgStyle = {
     maxWidth: '420px',
     width: displayWidth ? displayWidth : '420px',
+    height: '420px',
+  };
+
+  const participants = {
+    backgroundColor: COLOR.POTZ_PINK_100,
+    height: '60px',
+    maxWidth: '364px',
+    width: displayWidth ? displayWidth - 56 : '364px',
+    borderRadius: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '76px',
+    fontFamily: Font.FontKor,
+    fontWeight: '700',
+    color: COLOR.GRAY_400,
+  };
+
+  const imgContainer = {
+    maxWidth: '420px',
+    width: displayWidth ? displayWidth - 56 : '420px',
+    maxHeight: '420px',
+    marginBottom: '20px',
+  };
+
+  const backgroundStyles = {
+    maxWidth: '420px',
+    width: displayWidth ? displayWidth - 56 : '420px',
+    marginLeft: '28px',
   };
 
   return (
-    <div className='potz_container' style={backgroundStyle}>
+    <div style={backgroundStyle}>
       <div style={imgContainer}>
         <img
-          width={420}
-          height={420}
+          style={imgStyle}
           src={`http://localhost:5000${postDatas.imageUrl}`}
         />
         <div style={TopStyle}>
@@ -414,88 +433,90 @@ function DetailContents(props) {
           </a>
         </div>
       </div>
-      <div>
-        <div className='contents_container'>
-          <div style={storeFont}>
-            <span>{postDatas.storeName}</span>
-          </div>
-          <div style={marginBottomStyle}>
-            <div style={fontStyleLink2}>
-              <span>{postDatas.category.name}</span>
-            </div>
-            <div style={fontStyle}>
-              <span>만날 장소</span>
-              <span>{postDatas.meetingLocation}</span>
-            </div>
-            <div style={fontStyle}>
-              <span>모인 금액</span>
-              <div>
-                <span>{postDatas.totalOrderPrice}</span>
-                <span>원</span>
-              </div>
-            </div>
-          </div>
 
-          <Particiate>
-            {postDatas.potMasterProfileImg ? (
-              <img
-                width={46}
-                height={46}
-                src={'http://localhost:5000/' + postDatas.potMasterProfileImg}
-                style={paddingStyle}
-              />
-            ) : (
-              <img width={38} height={38} src={logoImg} style={paddingStyle} />
-            )}
-            <div>
-              <span style={fontColored}>{postDatas.participantsCount}</span>
-              <span style={fontColored}>/</span>
-              <span style={fontColored}>{postDatas.recruitment}</span>
-              <span>명 참여중</span>
-            </div>
-          </Particiate>
+      <div style={backgroundStyles}>
+        <div style={storeFont}>
+          <span>{postDatas.storeName}</span>
         </div>
-        <Divider>
-          <hr />
-        </Divider>
-        <div className='contents_container'>
-          <div style={fontStyle1}>
-            <span>지금 모집중인</span>
-            <span style={fontStyle2}>{postDatas.category.name}</span>
+        <div style={marginBottomStyle}>
+          <div style={fontStyleLink2}>
+            <span>{postDatas.category.name}</span>
+          </div>
+          <div style={fontStyle}>
+            <span>만날 장소</span>
+            <span>{postDatas.meetingLocation}</span>
+          </div>
+          <div style={fontStyle}>
+            <span>모인 금액</span>
+            <div>
+              <span>{postDatas.totalOrderPrice}</span>
+              <span>원</span>
+            </div>
           </div>
         </div>
-        {categoryPostData ? (
-          <CategorySearch categoryPostData={categoryPostData}></CategorySearch>
-        ) : null}
-        <div style={navbarStyle}>
-          <nav style={navStyles}>
-            <div style={navFontContainer}>
-              <div style={fontStyle3}>
-                <span style={coloredFont}>
-                  {postDatas.deliveryFeePerPerson ? (
-                    <span>{postDatas.deliveryFeePerPerson}</span>
-                  ) : (
-                    <span>무료</span>
-                  )}
-                </span>
-                {postDatas.participantsCount ? (
-                  <span>원씩 배달</span>
-                ) : (
-                  <span>배달</span>
-                )}
-              </div>
-              <div style={fontStyle4}>
-                <span>원래 배달비</span>
-                {postDatas.appliedDeliveryFeeInfo ? (
-                  <span>{postDatas.appliedDeliveryFeeInfo.fee}원</span>
-                ) : null}
-              </div>
-            </div>
-            <EnterStyle onClick={enterChatRoom}>
-              <EnterIcon />
-            </EnterStyle>
-          </nav>
+
+        <div style={participants}>
+          {postDatas.potMasterProfileImg ? (
+            <img
+              width={46}
+              height={46}
+              src={'http://localhost:5000/' + postDatas.potMasterProfileImg}
+              style={paddingStyle}
+            />
+          ) : (
+            <img width={38} height={38} src={logoImg} style={paddingStyle} />
+          )}
+          <div>
+            <span style={fontColored}>{postDatas.participantsCount}</span>
+            <span style={fontColored}>/</span>
+            <span style={fontColored}>{postDatas.recruitment}</span>
+            <span>명 참여중</span>
+          </div>
         </div>
+      </div>
+      {displayWidth ? (
+        <DividerProvider displayWidth={displayWidth}></DividerProvider>
+      ) : null}
+      <div>
+        <div style={fontStyle1}>
+          <span>지금 모집중인</span>
+          <span style={fontStyle2}>{postDatas.category}</span>
+        </div>
+      </div>
+      {categoryPostData && displayWidth ? (
+        <CategorySearch
+          displayWidth={displayWidth}
+          categoryPostData={categoryPostData}
+        ></CategorySearch>
+      ) : null}
+      <div style={navbarStyle}>
+        <nav style={navStyles}>
+          <div style={navFontContainer}>
+            <div style={fontStyle3}>
+              <span style={coloredFont}>
+                {postDatas.deliveryFeePerPerson ? (
+                  <span>{postDatas.deliveryFeePerPerson}</span>
+                ) : (
+                  <span>무료</span>
+                )}
+              </span>
+              {postDatas.participantsCount ? (
+                <span>원씩 배달</span>
+              ) : (
+                <span>배달</span>
+              )}
+            </div>
+            <div style={fontStyle4}>
+              <span>원래 배달비</span>
+              {postDatas.appliedDeliveryFeeInfo ? (
+                <span>{postDatas.appliedDeliveryFeeInfo.fee}원</span>
+              ) : null}
+            </div>
+          </div>
+          <EnterStyle onClick={enterChatRoom}>
+            <EnterIcon />
+          </EnterStyle>
+        </nav>
       </div>
     </div>
   );

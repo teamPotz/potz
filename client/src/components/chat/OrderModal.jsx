@@ -83,9 +83,7 @@ const Footer = styled.div`
 
 function OrderModal({
   closeModal,
-  orderFormData,
-  previewImage,
-  handleFileChange,
+  formData,
   handleFormChange,
   sendOrderMessage,
 }) {
@@ -96,8 +94,8 @@ function OrderModal({
       <ModalContainer>
         <div style={{ marginTop: '60px', marginBottom: '60px' }}>
           <ImageFileInput
-            imgUrl={previewImage}
-            onChange={handleFileChange}
+            file={formData.file}
+            onChange={handleFormChange}
             width='361px'
             height='224px'
           />
@@ -110,7 +108,7 @@ function OrderModal({
             <Input
               placeholder='이름'
               name='menuName'
-              value={orderFormData.menuName}
+              value={formData.menuName}
               onChange={handleFormChange}
             />
           </Item>
@@ -120,7 +118,7 @@ function OrderModal({
             <Input
               placeholder='몇 개'
               name='quantity'
-              value={orderFormData.quantity}
+              value={formData.quantity}
               onChange={handleFormChange}
             />
           </Item>
@@ -130,12 +128,13 @@ function OrderModal({
             <Input
               placeholder='얼마'
               name='price'
-              value={orderFormData.price}
+              value={formData.price}
               onChange={handleFormChange}
             />
           </Item>
         </div>
       </ModalContainer>
+
       <Footer>
         <ButtonBg
           backgroundColor={COLOR.POTZ_PINK_DEFAULT}

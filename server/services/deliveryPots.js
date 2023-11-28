@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 export async function checkPotExists(potId) {
   const potExists = await prisma.deliveryPot.findUnique({
     where: {
-      id: potId,
+      id: +potId,
     },
   });
   return potExists ? true : false;
@@ -25,10 +25,10 @@ export async function checkUserJoined(potId, userId) {
 
 export async function joinPot(potId, userId) {
   const result = await prisma.deliveryPot.update({
-    where: { id: potId },
+    where: { id: +potId },
     data: {
       participants: {
-        connect: { id: userId },
+        connect: { id: +userId },
       },
     },
     include: {

@@ -1,16 +1,30 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import COLOR from '../../utility/Color.js';
 import GoBack from '../../components/goBack.jsx';
 import ChatMenu from '../../components/chat/ChatMenu.jsx';
 import ChatInput from '../../components/chat/ChatInput.jsx';
-import MessageContainer from './MessageContainer.jsx';
-
-import { useAuth } from '../../contexts/AuthContext.jsx';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { socket } from '../../../socket.js';
+import MessageContainer from '../../components/chat/messages/MessageContainer.jsx';
 import OrderModal from '../../components/chat/OrderModal.jsx';
+import DepositModal from '../../components/chat/DepositModal.jsx';
+
 import { useChat } from '../../contexts/ChatContext.jsx';
+import { useAuth } from '../../contexts/AuthContext.jsx';
+import { socket } from '../../../socket.js';
 // import { io } from 'socket.io-client';
+
+const initialOrderData = {
+  file: null,
+  menuName: '',
+  quantity: null,
+  price: null,
+};
+
+const initialDepositData = {
+  file: null,
+  depositor: '',
+  amount: null,
+};
 
 function Chat() {
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -21,25 +35,18 @@ function Chat() {
   const [isLoadingGetMessage, setIsLoadingGetMessage] = useState(false);
   const [isLoadingSendMessage, setisLoadingSendMessage] = useState(false);
   const [openMenuBar, setOpenMenuBar] = useState(false);
+
   const [openOrderModal, setOpenOrderModal] = useState(false);
-  const [orderFormData, setOrderFormData] = useState({
-    file: null,
-    menuName: '',
-    quantity: 0,
-    price: 0,
-  });
-  const [previewImage, setPreviewImage] = useState(null);
+  const [orderFormData, setOrderFormData] = useState(initialOrderData);
+
+  const [openDepositModal, setOpenDepositModal] = useState(false);
+  const [depositFormData, setDepositFormData] = useState(initialDepositData);
 
   const { state } = useLocation();
   const { potId } = useParams();
-  const navigate = useNavigate();
   const { user } = useAuth();
-  const { leavePot, setSelectedPot } = useChat();
-
-  // todo : potId로 pot 정보불러오기
-  async function fetchPotInfos() {
-    // 팟이름, 카테고리id? img?
-  }
+  const { joinPot, leavePot, setSelectedPot } = useChat();
+  const navigate = useNavigate();
 
   async function fetchMessages() {
     setIsLoadingGetMessage(true);
@@ -69,8 +76,8 @@ function Chat() {
         credentials: 'include',
         body: JSON.stringify({
           potId: +potId,
-          type: 'text',
-          content: newMessage,
+          type: 'TEXT',
+          content: { message: newMessage },
         }),
       });
       if (!res.ok) {
@@ -83,6 +90,18 @@ function Chat() {
       setisLoadingSendMessage(false);
       setNewMessage('');
     }
+  }
+
+  // order message
+  async function handleOrderFormChange(e) {
+    const { type, name, value } = e.target;
+
+    if (type === 'file') {
+      const file = e.target.files[0];
+      setOrderFormData((prev) => ({ ...prev, file }));
+    }
+
+    setOrderFormData((prev) => ({ ...prev, [name]: value }));
   }
 
   async function sendOrderMessage() {
@@ -116,61 +135,129 @@ function Chat() {
       }
       const data = await res.json();
       setOpenOrderModal(false);
-      setOrderFormData({
-        file: null,
-        menuName: '',
-        quantity: 0,
-        price: 0,
-      });
-      setPreviewImage(null);
+      setOrderFormData(initialOrderData);
     } catch (error) {
       console.error(error);
     }
   }
 
-  async function handleOrderFileChange(e) {
-    const file = e.target.files[0];
-    setOrderFormData((prev) => ({ ...prev, file }));
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setPreviewImage(reader.result);
-    };
-  }
-
-  async function handleOrderFormChange(e) {
-    const { name, value } = e.target;
-    setOrderFormData((prev) => ({ ...prev, [name]: value }));
-  }
-
-  function setConfirmOrder(orderId) {
-    setMessages((prevMessages) =>
-      prevMessages.map((message) =>
-        message.id === orderId && message.type === 'order'
-          ? { ...message, orderConfirmed: true }
-          : message
-      )
-    );
-  }
-
-  async function confirmOrder(orderId) {
+  async function confirmOrder(orderId, messageId) {
     if (!isPotMaster) {
       return alert('메뉴 확인은 방장만 할 수 있습니다.');
     }
     try {
       const res = await fetch(
-        `http://localhost:5000/orders/${orderId}/order-confirm`,
+        `http://localhost:5000/orders/${orderId}/confirm`,
         {
           method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           credentials: 'include',
+          body: JSON.stringify({ messageId }),
         }
       );
       if (!res.ok) {
         throw new Error('confirm order error');
       }
       const data = await res.json();
-      setConfirmOrder(data.id);
+
+      // update message
+      setMessages((prevMessages) =>
+        prevMessages.map((message) =>
+          message.id === messageId
+            ? {
+                ...message,
+                content: { ...message.content, orderConfirmed: true },
+              }
+            : message
+        )
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // deposit message
+  async function handleDepositFormChange(e) {
+    const { type, name, value } = e.target;
+
+    if (type === 'file') {
+      const file = e.target.files[0];
+      setDepositFormData((prev) => ({ ...prev, file }));
+    }
+
+    setDepositFormData((prev) => ({ ...prev, [name]: value }));
+  }
+
+  async function sendDepositMessage() {
+    const { file, depositor, amount } = depositFormData;
+
+    if (!depositor || !amount) {
+      alert('이미지 외 모든 필드를 작성해주세요.');
+      return;
+    }
+    if (!Number.isInteger(+amount)) {
+      alert('입금액은 정수로 적어주세요');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('potId', potId);
+    formData.append('depositor', depositor);
+    formData.append('amount', amount);
+    formData.append('image', file);
+
+    try {
+      const res = await fetch('http://localhost:5000/deposits/', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error('send deposit message error');
+      }
+      const data = await res.json();
+      setOpenDepositModal(false);
+      setDepositFormData(initialDepositData);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function confirmDeposit(orderId, messageId) {
+    if (!isPotMaster) {
+      return alert('입금 확인은 방장만 할 수 있습니다.');
+    }
+    try {
+      const res = await fetch(
+        `http://localhost:5000/deposits/${orderId}/confirm`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ messageId }),
+        }
+      );
+      if (!res.ok) {
+        throw new Error('confirm deposit error');
+      }
+      const data = await res.json();
+
+      // update message
+      setMessages((prevMessages) =>
+        prevMessages.map((message) =>
+          message.id === messageId
+            ? {
+                ...message,
+                content: { ...message.content, depositConfirmed: true },
+              }
+            : message
+        )
+      );
     } catch (error) {
       console.error(error);
     }
@@ -195,6 +282,7 @@ function Chat() {
 
   useEffect(() => {
     async function connectRoom() {
+      await joinPot(potId, user, socket);
       await fetchMessages();
 
       // socket.connect();
@@ -245,7 +333,10 @@ function Chat() {
   }
 
   return (
-    <div className='potz_container'>
+    <div
+      className='potz_container'
+      style={{ backgroundColor: COLOR.POTZ_PINK_200 }}
+    >
       <GoBack text={state?.storeName} />
 
       {/* test buttons */}
@@ -257,7 +348,7 @@ function Chat() {
         </div>
         <div>
           <button onClick={() => setOpenOrderModal(true)}>메뉴 선택</button>
-          <button onClick={() => setOpenOrderModal(true)}>입금 인증</button>
+          <button onClick={() => setOpenDepositModal(true)}>입금 인증</button>
           <button
             onClick={() => {
               leavePot(potId, user, socket);
@@ -269,12 +360,15 @@ function Chat() {
         </div>
       </div>
 
-      <MessageContainer
-        messages={messages}
-        isMenuBarOpened={openMenuBar}
-        isPotMaster={isPotMaster}
-        confirmOrder={confirmOrder}
-      />
+      <div>
+        <MessageContainer
+          messages={messages}
+          isMenuBarOpened={openMenuBar}
+          isPotMaster={isPotMaster}
+          confirmOrder={confirmOrder}
+          confirmDeposit={confirmDeposit}
+        />
+      </div>
 
       {openMenuBar && (
         <ChatMenu isPotMaster={isPotMaster} leavePot={leavePot} />
@@ -291,11 +385,18 @@ function Chat() {
       {openOrderModal && (
         <OrderModal
           closeModal={() => setOpenOrderModal(false)}
-          orderFormData={orderFormData}
-          previewImage={previewImage}
-          handleFileChange={handleOrderFileChange}
+          formData={orderFormData}
           handleFormChange={handleOrderFormChange}
           sendOrderMessage={sendOrderMessage}
+        />
+      )}
+
+      {openDepositModal && (
+        <DepositModal
+          closeModal={() => setOpenDepositModal(false)}
+          formData={depositFormData}
+          handleFormChange={handleDepositFormChange}
+          sendDepositMessage={sendDepositMessage}
         />
       )}
     </div>

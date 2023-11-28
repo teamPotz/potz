@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import LikedComp from './LikedComp';
 
 const CategorySearch = (props) => {
-  let { categoryPostData } = props;
+  let { categoryPostData, displayWidth } = props;
   console.log('카테고리별 포스트 데이터', categoryPostData);
+  console.log('화면 크기', displayWidth);
 
   //DOM 요소의 가로 스크롤 길이를 저장하기 위해 DOM 참조
   const scroll = useRef(null);
@@ -37,8 +38,10 @@ const CategorySearch = (props) => {
   const CategorySearchStyle = styled.div`
     margin-bottom: 88px;
     margin-left: 28px;
+    margin-right: 56px;
     overflow: auto;
-    width: 100%;
+    max-width: 420px;
+    width: ${displayWidth - 56}px;
     display: flex;
     gap: 14px;
 
@@ -51,18 +54,24 @@ const CategorySearch = (props) => {
     }
   `;
 
+  const backStyle = {
+    width: displayWidth,
+  };
+
   return (
-    <CategorySearchStyle
-      onMouseDown={onDragStart}
-      onMouseMove={onDragMove}
-      onMouseUp={onDragEnd}
-      onMouseLeave={onDragEnd}
-      ref={scroll}
-    >
-      {categoryPostData.map((postData, index) => {
-        return <LikedComp key={index} postData={postData}></LikedComp>;
-      })}
-    </CategorySearchStyle>
+    <div style={backStyle}>
+      <CategorySearchStyle
+        onMouseDown={onDragStart}
+        onMouseMove={onDragMove}
+        onMouseUp={onDragEnd}
+        onMouseLeave={onDragEnd}
+        ref={scroll}
+      >
+        {categoryPostData.map((postData, index) => {
+          return <LikedComp key={index} postData={postData}></LikedComp>;
+        })}
+      </CategorySearchStyle>
+    </div>
   );
 };
 

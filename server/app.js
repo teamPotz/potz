@@ -17,6 +17,7 @@ import userRouter from './routes/users.js';
 import categoryRouter from './routes/categories.js';
 import searchHistoryRouter from './routes/searchHistory.js';
 import deliveryPots from './routes/deliveryPots.js';
+import deposits from './routes/deposits.js';
 import messagesRouter from './routes/messages.js';
 
 import { notFound, errorHandler } from './middlewares/error.js';
@@ -61,8 +62,9 @@ app.use('/community-types', communityTypeRouter);
 app.use('/users', userRouter);
 app.use('/categories', categoryRouter);
 app.use('/search-history', searchHistoryRouter);
-app.use('/messages', messagesRouter);
 app.use('/delivery-pots', deliveryPots);
+app.use('/deposits', deposits);
+app.use('/messages', messagesRouter);
 
 app.use(notFound);
 app.use(errorHandler);

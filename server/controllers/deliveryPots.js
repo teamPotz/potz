@@ -5,6 +5,7 @@ import {
   leavePot,
 } from '../services/deliveryPots.js';
 import { PrismaClient } from '@prisma/client';
+import { createMessage } from '../services/messages.js';
 const prisma = new PrismaClient();
 
 export async function getDeliveryPots(req, res, next) {
@@ -44,31 +45,27 @@ export async function joinDeliveryPot(req, res, next) {
     }
 
     // 1. pot 존재 여부 확인
-    const potExists = await checkPotExists(+potId);
+    const potExists = await checkPotExists(potId);
     if (!potExists) {
       throw new Error(`deliveryPot id #${potId} not found`);
     }
 
     // 2. 이미 join된 pot인지 확인
-    // const userAlreadyJoined = await checkUserJoined(+potId, req.user.id);
-    // if (userAlreadyJoined) {
-    //   return res.status(200).json({ message: 'already joined' });
-    // }
-
-    // todo: 이미 join되었어도 방정보 출력해주기
+    const userAlreadyJoined = await checkUserJoined(potId, req.user.id);
+    if (userAlreadyJoined) {
+      return res.status(200).json(userAlreadyJoined);
+    }
 
     // 3. join pot
-    const result = await joinPot(+potId, req.user.id);
+    const result = await joinPot(potId, req.user.id);
 
-    // 4. send message to other participants
+    // 4. create system message
+    const systemMessage = await createMessage('SYSTEM', potId, req.user.id, {
+      message: `${req.user.name}님이 입장했습니다.`,
+    });
+
     const io = req.app.get('io');
-    io.of('/chat')
-      .to(potId.toString())
-      .emit('message', {
-        sender: 'system',
-        type: 'text',
-        content: `${req.user.name}님이 입장했습니다.`,
-      });
+    io.of('/chat').to(potId.toString()).emit('message', systemMessage);
 
     res.status(200).json(result);
   } catch (error) {
@@ -85,21 +82,20 @@ export async function leaveDeliveryPot(req, res, next) {
       throw new Error('missing potId in request');
     }
 
-    const potExists = await checkPotExists(+potId);
+    const potExists = await checkPotExists(potId);
     if (!potExists) {
       throw new Error(`deliveryPot id #${potId} not found`);
     }
 
-    const result = await leavePot(+potId, req.user.id);
+    const result = await leavePot(potId, req.user.id);
+
+    // create system message
+    const systemMessage = await createMessage('SYSTEM', potId, req.user.id, {
+      message: `${req.user.name}님이 퇴장했습니다.`,
+    });
 
     const io = req.app.get('io');
-    io.of('/chat')
-      .to(potId.toString())
-      .emit('message', {
-        type: 'text',
-        sender: 'system',
-        content: `${req.user.name}님이 퇴장했습니다.`,
-      });
+    io.of('/chat').to(potId.toString()).emit('message', systemMessage);
 
     res.status(200).json(result);
   } catch (error) {

@@ -1,38 +1,49 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useReducer,
-  useState,
-} from 'react';
+import { createContext, useContext, useEffect, useReducer } from 'react';
 
 const AuthContext = createContext();
 
 const initialState = {
   user: null,
-  isAuthenticated: false,
+  isFetching: false,
+  error: false,
 };
 
-function reducer(state, action) {
+function authReducer(state, action) {
   switch (action.type) {
-    case 'login':
-    case 'signUp':
-    case 'get_user_info':
-      return { ...state, user: action.payload, isAuthenticated: true };
-    case 'logout':
-      return { ...state, user: null, isAuthenticated: false };
+    case 'LOGIN_START':
+    case 'get_user_info_start':
+      return {
+        ...state,
+        user: null,
+        isFetching: true,
+        error: false,
+      };
+    case 'LOGIN_SUCCESS':
+    case 'SIGNUP':
+    case 'get_user_info_success':
+      return {
+        ...state,
+        user: action.payload,
+        isFetching: false,
+        error: false,
+      };
+    case 'LOGIN_FAILURE':
+    case 'get_user_info_failure':
+      return {
+        ...state,
+        user: null,
+        isFetching: false,
+        error: true,
+      };
+    case 'LOGOUT':
+      return { ...state, user: null, isFetching: false, error: false };
     default:
       throw new Error('unkown action');
   }
 }
 
 function AuthProvider({ children }) {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [{ user, isAuthenticated }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
+  const [state, dispatch] = useReducer(authReducer, initialState);
 
   async function signUp(email, password, name) {
     try {
@@ -47,7 +58,7 @@ function AuthProvider({ children }) {
       const data = await res.json();
       console.log(data);
       if (res.ok) {
-        dispatch({ type: 'signUp', payload: data });
+        dispatch({ type: 'SIGNUP', payload: data });
       }
     } catch (error) {
       console.error(error);
@@ -55,6 +66,7 @@ function AuthProvider({ children }) {
   }
 
   async function login(email, password) {
+    dispatch({ type: 'LOGIN_START' });
     try {
       const res = await fetch('http://localhost:5000/auth/login', {
         method: 'POST',
@@ -69,9 +81,10 @@ function AuthProvider({ children }) {
       }
       const data = await res.json();
       console.log(data);
-      dispatch({ type: 'login', payload: data });
+      dispatch({ type: 'LOGIN_SUCCESS', payload: data });
     } catch (error) {
       console.error(error);
+      dispatch({ type: 'LOGIN_FAILURE', payload: error });
     }
   }
 
@@ -86,7 +99,7 @@ function AuthProvider({ children }) {
       }
       const data = await res.json();
       console.log(data);
-      dispatch({ type: 'logout' });
+      dispatch({ type: 'LOGOUT' });
       localStorage.clear();
     } catch (error) {
       console.error(error);
@@ -94,39 +107,32 @@ function AuthProvider({ children }) {
   }
 
   async function getUserInfo() {
+    dispatch({ type: 'get_user_info_start' });
     try {
-      setIsLoading(true);
       const res = await fetch('http://localhost:5000/auth/', {
         credentials: 'include',
       });
       const data = await res.json();
       console.log(data);
       if (res.ok) {
-        dispatch({ type: 'get_user_info', payload: data });
+        dispatch({ type: 'get_user_info_success', payload: data });
       }
     } catch (error) {
       console.error(error);
-      dispatch({ type: 'logout' });
-    } finally {
-      setIsLoading(false);
+      dispatch({ type: 'get_user_info_failure' });
     }
   }
-
-  useEffect(() => {
-    getUserInfo();
-  }, []);
 
   return (
     <AuthContext.Provider
       value={{
-        user,
-        isAuthenticated,
+        user: state.user,
+        isFetching: state.isFetching,
+        error: state.error,
         signUp,
         login,
         logout,
         getUserInfo,
-        isLoading,
-        setIsLoading,
       }}
     >
       {children}
