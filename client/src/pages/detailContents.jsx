@@ -371,7 +371,8 @@ function DetailContents({ postDatas }) {
 
   const enterChatRoom = async () => {
     const { potId, storeName } = postDatas;
-    joinPot(potId, user, socket);
+    // console.log('potId', potId);
+    // joinPot(potId, user, socket);
 
     navigate(`/chats/${potId}`, {
       state: { storeName },
