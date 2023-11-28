@@ -9,23 +9,28 @@ export default function (server, app) {
   app.set('io', io);
   const chat = io.of('/chat');
 
-  const users = [];
+  let users = [];
+
+  function addUser(userId, socketId) {
+    const userExists = users.some((user) => user.userId === userId);
+    if (userExists) return;
+
+    users.push({ userId, socketId });
+  }
+
+  function removeUser(socketId) {
+    users = users.filter((user) => user.socketId === socketId);
+  }
 
   chat.on('connection', (socket) => {
     // console.log(socket.request.headers.referer);
     app.set('socket', socket);
     console.log(`${socket.id} connected to chat namespace`);
 
-    // socket.on('test', (data) => console.log(data));
-
-    // socket.on('setUserId', async (userId) => {
-    //   try {
-    //     const result = await setSocketId(userId, socket.id);
-    //     // console.log(result);
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // });
+    socket.on('setUserId', (userId) => {
+      addUser(userId, socket.id);
+      console.log('users', users);
+    });
 
     socket.on('join', async ({ potId, user }) => {
       socket.join(potId);
@@ -44,6 +49,8 @@ export default function (server, app) {
 
     socket.on('disconnect', () => {
       console.log(`${socket.id} disconnected`);
+      removeUser(socket.id);
+      console.log('users', users);
       // todo : 연결상태 종료
       // socket.to(socket.potId).emit('exit', {
       //   sender: 'system',

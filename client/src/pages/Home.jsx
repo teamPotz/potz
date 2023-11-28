@@ -43,7 +43,7 @@ function Home() {
   useEffect(() => {
     socket.connect();
 
-    // socket.emit('setUserId', user.id);
+    socket.emit('setUserId', user.id);
   }, []);
 
   useEffect(() => {
