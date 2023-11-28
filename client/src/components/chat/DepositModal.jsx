@@ -5,7 +5,6 @@ import BackNavBar from '../../components/ui/BackNavBar';
 import ImageFileInput from '../form/ImageFileInput';
 import ButtonBg from '../ButtonBG';
 import CartIcon from './assets/CartIcon';
-import PieIcon from './assets/PieIcon';
 import MoneyIcon from './assets/MoneyIcon';
 
 const ModalBackground = styled.div`
@@ -81,15 +80,15 @@ const Footer = styled.div`
   margin-bottom: 28px;
 `;
 
-function OrderModal({
+function DepositModal({
   closeModal,
   formData,
   handleFormChange,
-  sendOrderMessage,
+  sendDepositMessage,
 }) {
   return (
     <ModalBackground>
-      <BackNavBar title='메뉴와 금액 전송하기' onClick={closeModal} />
+      <BackNavBar title='입금 인증하기' onClick={closeModal} />
 
       <ModalContainer>
         <div style={{ marginTop: '60px', marginBottom: '60px' }}>
@@ -104,31 +103,21 @@ function OrderModal({
         <div style={{ borderTop: `0.58px solid ${COLOR.GRAY_200}` }}>
           <Item>
             <CartIcon fill={COLOR.POTZ_PINK_500} />
-            <FontMd color={COLOR.GRAY_500}>내가 선택한 메뉴</FontMd>
+            <FontMd color={COLOR.GRAY_500}>입금자명</FontMd>
             <Input
               placeholder='이름'
-              name='menuName'
-              value={formData.menuName}
-              onChange={handleFormChange}
-            />
-          </Item>
-          <Item>
-            <PieIcon fill={COLOR.POTZ_PINK_500} />
-            <FontMd color={COLOR.GRAY_500}>주문할 음식 갯수</FontMd>
-            <Input
-              placeholder='몇 개'
-              name='quantity'
-              value={formData.quantity}
+              name='depositor'
+              value={formData.depositor}
               onChange={handleFormChange}
             />
           </Item>
           <Item>
             <MoneyIcon fill={COLOR.POTZ_PINK_500} />
-            <FontMd color={COLOR.GRAY_500}>메뉴 1개당 금액</FontMd>
+            <FontMd color={COLOR.GRAY_500}>입금액</FontMd>
             <Input
               placeholder='얼마'
-              name='price'
-              value={formData.price}
+              name='amount'
+              value={formData.amount}
               onChange={handleFormChange}
             />
           </Item>
@@ -140,7 +129,7 @@ function OrderModal({
           backgroundColor={COLOR.POTZ_PINK_DEFAULT}
           hoverColor={COLOR.POTZ_PINK_600}
           fontColor={COLOR.WHITE}
-          onClick={sendOrderMessage}
+          onClick={sendDepositMessage}
         >
           전송하기
         </ButtonBg>
@@ -149,4 +138,4 @@ function OrderModal({
   );
 }
 
-export default OrderModal;
+export default DepositModal;

@@ -23,10 +23,10 @@ function ChatProvider({ children }) {
     }
   }
 
-  async function joinPot(pot, user, socket) {
+  async function joinPot(potId, user, socket) {
     try {
       const res = await fetch(
-        `http://localhost:5000/delivery-pots/${pot.id}/join`,
+        `http://localhost:5000/delivery-pots/${potId}/join`,
         {
           method: 'PATCH',
           credentials: 'include',
@@ -36,11 +36,11 @@ function ChatProvider({ children }) {
         throw new Error('enter chat room error');
       }
       const data = await res.json();
-      socket.emit('join', { potId: pot.id, user });
-      setSelectedPot(pot);
-      setJoinedPots((prevPots) =>
-        prevPots.find((p) => p.id === pot.id) ? prevPots : [...prevPots, pot]
-      );
+      socket.emit('join', { potId: potId, user });
+      // setSelectedPot(pot);
+      // setJoinedPots((prevPots) =>
+      // prevPots.find((p) => p.id === pot.id) ? prevPots : [...prevPots, pot]
+      // );
     } catch (error) {
       console.error(error);
     }

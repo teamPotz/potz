@@ -1,9 +1,11 @@
+import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import COLOR from '../../../utility/Color.js';
-import OrderMessage from './OrderMessage.jsx';
 import TextMessage from './TextMessage.jsx';
+import OrderMessage from './OrderMessage.jsx';
 import OrderConfirmMessage from './OrderConfirmMessage.jsx';
-import { useEffect, useRef } from 'react';
+import DepositMessage from './DepositMessage.jsx';
+import DepositConfirmMessage from './DepositConfirmMessage.jsx';
 import { useAuth } from '../../../contexts/AuthContext.jsx';
 
 const MessageContainerWrapper = styled.div`
@@ -26,6 +28,7 @@ function MessageContainer({
   isMenuBarOpened,
   isPotMaster,
   confirmOrder,
+  confirmDeposit,
 }) {
   const scrollRef = useRef();
   const { user } = useAuth();
@@ -38,39 +41,61 @@ function MessageContainer({
     <MessageContainerWrapper ismenubaropend={isMenuBarOpened.toString()}>
       {messages.map((message) => {
         switch (message.type) {
-          case 'text':
+          case 'SYSTEM':
+            return <div key={message.id}>{message.content.message}</div>;
+          case 'TEXT':
             return (
               <div ref={scrollRef}>
                 <TextMessage
-                  key={`m-${message.id}`}
-                  content={message.content}
+                  key={message.id}
+                  message={message}
                   own={message.sender.id === user.id}
                 />
               </div>
             );
-          case 'order':
+          case 'ORDER':
             return (
-              <OrderMessage
-                key={`o-${message.id}`}
-                orderId={message.id}
-                user={message.user}
-                imageUrl={message.imageUrl}
-                menuName={message.menuName}
-                quantity={message.quantity}
-                price={message.price}
-                isPotMaster={isPotMaster}
-                confirmOrder={confirmOrder}
-                isOrderConfirmed={message.orderConfirmed}
-                own={message.user.id === user.id}
-              />
+              <div ref={scrollRef}>
+                <OrderMessage
+                  key={message.id}
+                  message={message}
+                  isPotMaster={isPotMaster}
+                  confirmOrder={confirmOrder}
+                  own={message.sender.id === user.id}
+                />
+              </div>
             );
-          case 'order_confirm':
+          case 'ORDER_CONFIRM':
             return (
-              <OrderConfirmMessage
-                key={`oc-${message.id}`}
-                user={message.user}
-                own={message.user.id === user.id}
-              />
+              <div ref={scrollRef}>
+                <OrderConfirmMessage
+                  key={message.id}
+                  sender={message.sender}
+                  own={message.sender.id === user.id}
+                />
+              </div>
+            );
+          case 'DEPOSIT':
+            return (
+              <div ref={scrollRef}>
+                <DepositMessage
+                  key={message.id}
+                  message={message}
+                  isPotMaster={isPotMaster}
+                  confirmDeposit={confirmDeposit}
+                  own={message.sender.id === user.id}
+                />
+              </div>
+            );
+          case 'DEPOSIT_CONFIRM':
+            return (
+              <div ref={scrollRef}>
+                <DepositConfirmMessage
+                  key={message.id}
+                  sender={message.sender}
+                  own={message.sender.id === user.id}
+                />
+              </div>
             );
           default:
             return null;
