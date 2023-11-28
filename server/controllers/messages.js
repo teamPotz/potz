@@ -7,7 +7,6 @@ const prisma = new PrismaClient();
 export async function sendMessage(req, res, next) {
   try {
     const { type, potId, content } = req.body;
-    console.log(type, potId, content);
 
     if (!potId || !content) {
       res.status(400);
@@ -15,7 +14,6 @@ export async function sendMessage(req, res, next) {
     }
 
     const message = await createMessage(type, potId, req.user.id, content);
-    console.log(message);
 
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', message);

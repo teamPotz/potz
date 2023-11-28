@@ -38,7 +38,6 @@ export async function getDeliveryPots(req, res, next) {
 
 export async function joinDeliveryPot(req, res, next) {
   const { potId } = req.params;
-  console.log(potId);
   try {
     if (!potId) {
       res.status(400);
