@@ -3,8 +3,8 @@ import GoBack from '../components/goBack';
 import { useAuth } from '../contexts/AuthContext';
 import Font from '../utility/Font';
 import COLOR from '../utility/Color';
-import LikedComp from '../components/LikedComp';
 import { useEffect, useState } from 'react';
+import BigdataStore from '../components/bigdataStore';
 
 const PaddingTop = styled.div`
   padding-top: ${(props) => props.padding};
@@ -43,16 +43,40 @@ const styles = {
   },
 };
 
+//주문 데이터 가격 평균값
+const CalculateAvg = (datas) => {
+  let orderPrices = [];
+  datas.map((data) => {
+    data.deliveryPot.orders.map((order) => {
+      const price = order.price * order.quantity;
+      orderPrices.push(price);
+    });
+  });
+  let sum = 0;
+  orderPrices.map((orderPrice) => {
+    sum += orderPrice;
+  });
+  return sum / orderPrices.length;
+};
+
+//지금까지 주문한 카테고리 이력의 배열을 구하고 최빈 카테고리 구하기
+const ModeCategory = (datas) => {
+  let categoryHistoryArr = [];
+  datas.map((data) => {
+    categoryHistoryArr.push(data.deliveryPot.post.categoryId);
+  });
+  const value = findFrequency(categoryHistoryArr);
+  return value;
+};
+
 //카테고리 배열에서 최빈 카테고리 구하는 함수
 const findFrequency = (arr) => {
   const frequency = {};
   arr.forEach((element) => {
     frequency[element] = (frequency[element] || 0) + 1;
   });
-
   let mode;
   let maxFrequency = 0;
-
   for (const key in frequency) {
     if (frequency[key] > maxFrequency) {
       mode = key;
@@ -62,27 +86,19 @@ const findFrequency = (arr) => {
   return mode;
 };
 
+//선택한 카테고리에서 랜덤 가게 두개 추출
+const getRandomArray = (arr) => {
+  const shuffleArray = arr.sort(() => Math.random() - 0.5);
+  const randomArray = shuffleArray.splice(0, 2);
+  return randomArray;
+};
+
 function MyBigData() {
   const [datas, setDatas] = useState([]);
   const [orderCategory, setOrderCategory] = useState([]);
   const [postDatas, setPostDatas] = useState([]);
-  const categories = [
-    '버거·샌드위치',
-    '카페·디저트',
-    '한식',
-    '초밥·회',
-    '중식·아시안',
-    '피자',
-    '치킨',
-    '샐러드',
-  ];
-
-  // //랜덤 데이터 두개 추출
-  // const getRandomArray = (arr) => {
-  //   const shuffleArray = arr.sort(() => Math.random() - 0.5);
-  //   const randomArray = shuffleArray.splice(0, 2);
-  //   return randomArray;
-  // };
+  const [average, setAverage] = useState('');
+  const [selectCategory, setSelectCategory] = useState('');
 
   useEffect(() => {
     const fetchUserOrderData = async () => {
@@ -92,7 +108,16 @@ function MyBigData() {
           credentials: 'include',
         });
         const data = await response.json();
+        const average = CalculateAvg(data[0].deliveryPotHistoryAsMember);
+        const mode = ModeCategory(data[0].deliveryPotHistoryAsMember);
+        console.log(
+          '지금까지 주문한 데이터: ',
+          data[0].deliveryPotHistoryAsMember
+        );
+
         setDatas(data[0].deliveryPotHistoryAsMember);
+        setAverage(average);
+        setSelectCategory(mode);
       } catch (error) {
         console.error(error);
       }
@@ -100,71 +125,53 @@ function MyBigData() {
     fetchUserOrderData();
   }, []);
 
+  //카테고리 이름, 이미지 가져오기
+  const [categoryName, setCategoryName] = useState([]);
   useEffect(() => {
-    console.log('지금까지 주문한 데이터: ', datas);
-  }, [datas]);
+    const getCategoryName = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/categories`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+        const categories = await response.json();
+        setCategoryName([
+          categories[selectCategory - 1].name,
+          categories[selectCategory - 1].imageUrl,
+        ]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getCategoryName();
+  }, [selectCategory]);
 
-  //주문 데이터 가격 배열화 & 평균값
-  const [orderPrices, setOrderPrices] = useState([]);
-  const [average, setAverage] = useState('');
+  //최빈 카테고리에서 랜덤 식당 가져오기
   useEffect(() => {
-    datas.map((data) => {
-      data.deliveryPot.orders.map((order) => {
-        const sum = order.price * order.quantity;
-        setOrderPrices((prev) => [...prev, sum]);
-      });
-    });
-  }, [datas]);
+    if (selectCategory !== '') {
+      const getCategoriesData = async () => {
+        try {
+          const res = await fetch(
+            `http://localhost:5000/categories/${selectCategory}`,
+            {
+              method: 'GET',
+              credentials: 'include',
+            }
+          );
+          const data = await res.json();
+          const selectStore = getRandomArray(data.posts);
+          setPostDatas(selectStore);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      getCategoriesData();
+    }
+  }, [selectCategory]);
+
   useEffect(() => {
-    let sum = 0;
-    orderPrices.map((orderPrice) => {
-      sum += orderPrice;
-    });
-    setAverage(sum / orderPrices.length);
-  }, [orderPrices]);
-
-
-  //지금까지 주문한 카테고리 이력의 배열
-  const [historyCategory, setHistoryCategory] = useState([]);
-  const [selectCategory, setSelectCategory] = useState('');
-  useEffect(() => {
-    datas.map((data) => {
-      setHistoryCategory((prev) => [...prev, data.deliveryPot.post.categoryId]);
-    });
-  }, [datas]);
-
-  //최빈 카테고리 구하기
-  useEffect(() => {
-    const value = findFrequency(historyCategory);
-    setSelectCategory(value);
-  }, [historyCategory]);
-
-  // useEffect(() => {
-  //   const getCategoriesData = async() => {
-  //     try {
-  //       const res = await fetch(`http://localhost:5000/categories/${selectCategory}`, {
-  //         method: 'GET',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //         credentials: 'include',
-  //       });
-  //       const data = await res.json();
-  //       setPostDatas(data.posts);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  //   getCategoriesData();
-  // }, [selectCategory]);
-
-  // useEffect(() => {
-  //   if (postDatas) {
-  //     // console.log(postDatas);
-  //     // console.log(postDatas.length);
-  //     getRandomArray(postDatas);
-  //   }
-  // }, [postDatas]);
+    console.log(postDatas);
+  }, [postDatas]);
 
   const { user } = useAuth();
 
@@ -175,35 +182,29 @@ function MyBigData() {
         <PaddingTop padding='37.33px'>
           <FontBg>{user.name}님의 선호 카테고리는</FontBg>
           <br></br>{' '}
-          <FontBg color={COLOR.POTZ_PINK_DEFAULT}>
-            {categories[selectCategory - 1]}
-          </FontBg>
+          <FontBg color={COLOR.POTZ_PINK_DEFAULT}>{categoryName[0]}</FontBg>
           <FontBg> 네요!</FontBg>
         </PaddingTop>
 
         <PaddingTop padding='24.5px'>
           <img
             style={styles.bigImg}
-            src='public/images/graphicImg/categorySushi.png'
+            src={`http://localhost:5000/${categoryName[1]}`}
           ></img>
         </PaddingTop>
 
         <PaddingTop padding='23.33px'>
-          {average ? (
-            <FontSm>평균 {average}원을 선택했어요.</FontSm>
-          ) : (
-            <FontSm>아직 팟즈를 이용해보신 적이 없네요..</FontSm>
-          )}
+          <FontSm>평균 {average}원을 선택했어요.</FontSm>
           <p></p>
           <FontBg>비슷한 가격대의 우리동네</FontBg>
           <br></br>
-          <FontBg color={COLOR.POTZ_PINK_DEFAULT}>{categories[selectCategory - 1]}</FontBg>
+          <FontBg color={COLOR.POTZ_PINK_DEFAULT}>{categoryName[0]}</FontBg>
           <FontBg> 맛집을 추천할게요.</FontBg>
         </PaddingTop>
 
         <PaddingTop padding='46.67px'>
           <div style={styles.homeContentesContainer}>
-            {/* {postDatas.length < 1 ? (
+            {postDatas && postDatas.length < 1 ? (
               <div
                 style={{
                   marginTop: '40px',
@@ -216,13 +217,16 @@ function MyBigData() {
                   background: COLOR.WHITE,
                 }}
               >
-                🍣 현재 선호카테고리에 가게가 없네요.. 🍣
+                🍣 현재 선호카테고리에 가게가 없어요.. 🍣
               </div>
             ) : null}
 
-            {postDatas.map((postData, index) => {
-              return <LikedComp key={index} postData={postData}></LikedComp>;
-            })} */}
+            {postDatas &&
+              postDatas.map((postData, index) => {
+                return (
+                  <BigdataStore key={index} postData={postData}></BigdataStore>
+                );
+              })}
           </div>
         </PaddingTop>
       </div>
