@@ -94,11 +94,10 @@ const getRandomArray = (arr) => {
 };
 
 function MyBigData() {
-  const [datas, setDatas] = useState([]);
-  const [orderCategory, setOrderCategory] = useState([]);
   const [postDatas, setPostDatas] = useState([]);
   const [average, setAverage] = useState('');
   const [selectCategory, setSelectCategory] = useState('');
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchUserOrderData = async () => {
@@ -114,8 +113,6 @@ function MyBigData() {
           '지금까지 주문한 데이터: ',
           data[0].deliveryPotHistoryAsMember
         );
-
-        setDatas(data[0].deliveryPotHistoryAsMember);
         setAverage(average);
         setSelectCategory(mode);
       } catch (error) {
@@ -169,66 +166,73 @@ function MyBigData() {
     }
   }, [selectCategory]);
 
-  useEffect(() => {
-    console.log(postDatas);
-  }, [postDatas]);
-
-  const { user } = useAuth();
-
   return (
     <div className='potz_container'>
       <GoBack text={'내 맛집 빅데이터'}></GoBack>
       <div className='contents_container' style={styles.background}>
-        <PaddingTop padding='37.33px'>
-          <FontBg>{user.name}님의 선호 카테고리는</FontBg>
-          <br></br>{' '}
-          <FontBg color={COLOR.POTZ_PINK_DEFAULT}>{categoryName[0]}</FontBg>
-          <FontBg> 네요!</FontBg>
-        </PaddingTop>
+        {average ? (
+          <div>
+            <PaddingTop padding='37.33px'>
+              <FontBg>{user.name}님의 선호 카테고리는</FontBg>
+              <br></br>{' '}
+              <FontBg color={COLOR.POTZ_PINK_DEFAULT}>{categoryName[0]}</FontBg>
+              <FontBg> 네요!</FontBg>
+            </PaddingTop>
 
-        <PaddingTop padding='24.5px'>
-          <img
-            style={styles.bigImg}
-            src={`http://localhost:5000/${categoryName[1]}`}
-          ></img>
-        </PaddingTop>
+            <PaddingTop padding='24.5px'>
+              <img
+                style={styles.bigImg}
+                src={`http://localhost:5000/${categoryName[1]}`}
+              ></img>
+            </PaddingTop>
 
-        <PaddingTop padding='23.33px'>
-          <FontSm>평균 {average}원을 선택했어요.</FontSm>
-          <p></p>
-          <FontBg>비슷한 가격대의 우리동네</FontBg>
-          <br></br>
-          <FontBg color={COLOR.POTZ_PINK_DEFAULT}>{categoryName[0]}</FontBg>
-          <FontBg> 맛집을 추천할게요.</FontBg>
-        </PaddingTop>
+            <PaddingTop padding='23.33px'>
+              <FontSm>평균 {average}원을 선택했어요.</FontSm>
+              <p></p>
+              <FontBg>비슷한 가격대의 우리동네</FontBg>
+              <br></br>
+              <FontBg color={COLOR.POTZ_PINK_DEFAULT}>{categoryName[0]}</FontBg>
+              <FontBg> 맛집을 추천할게요.</FontBg>
+            </PaddingTop>
 
-        <PaddingTop padding='46.67px'>
-          <div style={styles.homeContentesContainer}>
-            {postDatas && postDatas.length < 1 ? (
-              <div
-                style={{
-                  marginTop: '40px',
-                  fontFamily: Font.FontKor,
-                  fontWeight: '700',
-                  color: COLOR.POTZ_PINK_DEFAULT,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  padding: '20px',
-                  background: COLOR.WHITE,
-                }}
-              >
-                🍣 현재 선호카테고리에 가게가 없어요.. 🍣
+            <PaddingTop padding='46.67px'>
+              <div style={styles.homeContentesContainer}>
+                {postDatas && postDatas.length < 1 ? (
+                  <div
+                    style={{
+                      marginTop: '40px',
+                      fontFamily: Font.FontKor,
+                      fontWeight: '700',
+                      color: COLOR.POTZ_PINK_DEFAULT,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      padding: '20px',
+                      background: COLOR.WHITE,
+                    }}
+                  >
+                    🍣 현재 선호카테고리에 가게가 없어요.. 🍣
+                  </div>
+                ) : null}
+
+                {postDatas &&
+                  postDatas.map((postData, index) => {
+                    return (
+                      <BigdataStore
+                        key={index}
+                        postData={postData}
+                      ></BigdataStore>
+                    );
+                  })}
               </div>
-            ) : null}
-
-            {postDatas &&
-              postDatas.map((postData, index) => {
-                return (
-                  <BigdataStore key={index} postData={postData}></BigdataStore>
-                );
-              })}
+            </PaddingTop>
           </div>
-        </PaddingTop>
+        ) : (
+          <PaddingTop padding='37.33px'>
+            <FontBg>
+              아직 팟즈를 사용하지 않으셨네요. 지금 바로 주문하세요!
+            </FontBg>
+          </PaddingTop>
+        )}
       </div>
     </div>
   );
