@@ -5,6 +5,7 @@ import TagPlaceSM from './TagPlaceSM';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import HomeAlert from './homeAlertModal';
+import HomeDiscountModal from './homeDiscountModal';
 
 const HomeContentsWrapper = styled.div`
   height: 150px;
@@ -194,7 +195,9 @@ const linkStyle = {
 
 const HomeContents = ({ postDatas }) => {
   let [visible, setVisible] = useState(false);
+  let [visible2, setVisible2] = useState(false);
   let [contentPostId, setContentPostId] = useState();
+  let [discountPostId, setDiscountPostId] = useState();
 
   console.log('첫 랜더링을 위해 받아온 데이터', postDatas);
 
@@ -315,15 +318,17 @@ const HomeContents = ({ postDatas }) => {
                   <HeartIcon />
                 )}
               </ButtonContainer>
-              {post.hasDiscount ? (
-                <ButtonContainer
-                  onClick={(event) => {
-                    event.stopPropagation();
-                  }}
-                >
-                  <SaleIcon />
-                </ButtonContainer>
-              ) : null}
+
+              <ButtonContainer
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setVisible2(!visible2);
+                  setDiscountPostId(post.id);
+                }}
+              >
+                <SaleIcon />
+              </ButtonContainer>
+
               {/* 우선은 2회 이상 만든 사람에게 왕관 붙여줌 */}
               <ButtonContainer
                 onClick={(event) => {
@@ -346,6 +351,23 @@ const HomeContents = ({ postDatas }) => {
           potMasterHistoryCount={
             postDatas.find((post) => post.id === contentPostId)
               ?.potMasterHistoryCount
+          }
+        />
+      ) : null}
+      {visible2 ? (
+        <HomeDiscountModal
+          setVisible2={setVisible2}
+          discountInfo={
+            postDatas.find((post) => post.id === discountPostId)
+              ?.nextDiscountInfos
+          }
+          totalOrderPrice={
+            postDatas.find((post) => post.id === discountPostId)
+              ?.totalOrderPrice
+          }
+          nextDeliveryFeeInfo={
+            postDatas.find((post) => post.id === discountPostId)
+              ?.nextDeliveryFeeInfo
           }
         />
       ) : null}
