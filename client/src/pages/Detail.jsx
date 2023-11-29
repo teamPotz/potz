@@ -16,6 +16,7 @@ function Detail() {
             `http://localhost:5000/posts/${postID.id}`,
             {
               method: 'GET',
+              credentials: 'include',
             }
           );
           const data = await response.json();
