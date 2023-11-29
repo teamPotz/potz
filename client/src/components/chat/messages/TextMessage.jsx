@@ -1,6 +1,18 @@
 import styled from 'styled-components';
 import COLOR from '../../../utility/Color';
 import Font from '../../../utility/Font';
+import timeAgoFormat from '../../../utility/timeAgo.js';
+
+function TextMessage({ message, own }) {
+  return (
+    <TextMessageWrapper $own={own}>
+      {message.content.message}
+      <div>
+        {timeAgoFormat(message.createdAt, 'ko')} | read {message.readBy?.length}
+      </div>
+    </TextMessageWrapper>
+  );
+}
 
 const TextMessageWrapper = styled.div`
   background-color: ${(props) =>
@@ -24,14 +36,5 @@ const TextMessageWrapper = styled.div`
     // justify-content: ${(props) => (props.$own ? 'none' : 'flex-end')};
   }
 `;
-
-function TextMessage({ message, own }) {
-  return (
-    <TextMessageWrapper $own={own}>
-      {message.content.message}
-      <div>{message.createdAt}</div>
-    </TextMessageWrapper>
-  );
-}
 
 export default TextMessage;
