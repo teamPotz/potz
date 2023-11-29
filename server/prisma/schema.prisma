@@ -33,11 +33,12 @@ model User {
   orders                     DeliveryOrder[]
   deliveryPotHistoryAsMaster DeliveryPotHistory[]
   deliveryPotHistoryAsMember DeliveryPotHistory[] @relation(name: "ParticipantsRelationHistory")
-  messages                   Message[]
+  messages                   Message[]            @relation(name: "sendMessages")
   SearchResult               SearchResult[]
   createdAt                  DateTime             @default(now())
   updatedAt                  DateTime             @updatedAt
   deposits                   Deposit[]
+  readMessages               Message[]            @relation(name: "readMessages")
 }
 
 // 사용자 프로필
@@ -239,14 +240,14 @@ model SearchResult {
 model Message {
   id            Int         @id @default(autoincrement())
   type          MessageType @default(TEXT)
-  sender        User        @relation(fields: [senderId], references: [id])
+  sender        User        @relation(name: "sendMessages", fields: [senderId], references: [id])
   senderId      Int
   content       Json
   deliveryPot   DeliveryPot @relation(fields: [deliveryPotId], references: [id])
   deliveryPotId Int
+  readBy        User[]      @relation(name: "readMessages")
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-  // readBy  User[]
 }
 
 enum MessageType {
