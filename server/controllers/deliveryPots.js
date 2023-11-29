@@ -1,11 +1,16 @@
+import { PrismaClient } from '@prisma/client';
 import {
   checkPotExists,
   checkUserJoined,
   joinPot,
   leavePot,
 } from '../services/deliveryPots.js';
-import { PrismaClient } from '@prisma/client';
-import { createMessage } from '../services/messages.js';
+import {
+  createMessage,
+  getMessagesByPotId,
+  readAllMessages,
+} from '../services/messages.js';
+
 const prisma = new PrismaClient();
 
 export async function getDeliveryPots(req, res, next) {
@@ -21,10 +26,34 @@ export async function getDeliveryPots(req, res, next) {
           },
         },
         messages: {
+          select: {
+            sender: {
+              select: { name: true },
+            },
+            type: true,
+            content: true,
+            createdAt: true,
+          },
           orderBy: {
             createdAt: 'desc',
           },
           take: 1,
+        },
+        _count: {
+          select: {
+            participants: true,
+            messages: {
+              where: {
+                NOT: {
+                  readBy: {
+                    some: {
+                      id: req.user.id,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       },
     });
@@ -50,6 +79,13 @@ export async function joinDeliveryPot(req, res, next) {
       throw new Error(`deliveryPot id #${potId} not found`);
     }
 
+    // 방의 모든 메시지 읽음 처리
+    await readAllMessages(potId, req.user.id);
+
+    // todo : emit 읽음 이벤트 전달
+    const io = req.app.get('io');
+    io.of('/chat').to(potId.toString()).emit('updateCountAll', req.user.id);
+
     // 2. 이미 join된 pot인지 확인
     const userAlreadyJoined = await checkUserJoined(potId, req.user.id);
     if (userAlreadyJoined) {
@@ -64,8 +100,15 @@ export async function joinDeliveryPot(req, res, next) {
       message: `${req.user.name}님이 입장했습니다.`,
     });
 
-    const io = req.app.get('io');
+    // const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', systemMessage);
+
+    // todo : communityId 별로 namesapce 나눠서 보내기
+    io.of('/room').emit('updateUserList', {
+      potId,
+      participants: result._count.participants,
+      message: systemMessage,
+    });
 
     res.status(200).json(result);
   } catch (error) {
@@ -97,6 +140,13 @@ export async function leaveDeliveryPot(req, res, next) {
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', systemMessage);
 
+    // todo : communityId 별로 namesapce 나눠서 보내기
+    io.of('/room').emit('updateUserList', {
+      potId,
+      participants: result._count.participants,
+      message: systemMessage,
+    });
+
     res.status(200).json(result);
   } catch (error) {
     console.error(error);
@@ -114,6 +164,18 @@ export async function getPotMasterId(req, res, next) {
       },
     });
     res.status(200).json(potMasterId);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}
+
+export async function getPotMessages(req, res, next) {
+  const { potId } = req.params;
+
+  try {
+    const messages = await getMessagesByPotId(potId);
+    res.status(200).json(messages);
   } catch (error) {
     console.error(error);
     next(error);

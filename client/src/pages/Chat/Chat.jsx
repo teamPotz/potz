@@ -45,15 +45,16 @@ function Chat() {
   const { state } = useLocation();
   const { potId } = useParams();
   const { user } = useAuth();
-  const { joinPot, leavePot, setSelectedPot } = useChat();
+  const { joinPot, leavePot } = useChat();
   const navigate = useNavigate();
 
   async function fetchMessages() {
     setIsLoadingGetMessage(true);
     try {
-      const res = await fetch(`http://localhost:5000/messages/${potId}`, {
-        credentials: 'include',
-      });
+      const res = await fetch(
+        `http://localhost:5000/delivery-pots/${potId}/messages`,
+        { credentials: 'include' }
+      );
       const data = await res.json();
       // console.log(data);
       setMessages(data);
@@ -64,6 +65,7 @@ function Chat() {
     }
   }
 
+  // text message
   async function sendTextMessage() {
     if (!newMessage) return;
     if (isLoadingSendMessage) return;
@@ -235,9 +237,7 @@ function Chat() {
         `http://localhost:5000/deposits/${orderId}/confirm`,
         {
           method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({ messageId }),
         }
@@ -285,21 +285,55 @@ function Chat() {
       await joinPot(potId, user, socket);
       await fetchMessages();
 
-      // socket.connect();
+      socket.connect();
       // socket.emit('setUserId', user.id);
-      // socket.on('connect', () => setIsConnected(true));
-      // socket.on('disconnect', () => setIsConnected(false));
+      socket.on('connect', () => setIsConnected(true));
+      socket.on('disconnect', () => setIsConnected(false));
 
+      // 메시지 수신
       socket.on('message', (data) => {
         console.log('message', data);
         setMessages((prevMessages) => [...prevMessages, data]);
+
+        // 읽음 처리 emit
+        socket.emit('readMessage', {
+          potId,
+          messageId: data.id,
+          userId: user.id,
+        });
       });
+
+      // 메시지 읽음
+      socket.on('updateCount', ({ messageId, readBy, readCount }) => {
+        console.log({ messageId, readBy, readCount });
+        // update message
+        setMessages((prevMessages) =>
+          prevMessages.map((m) => (m.id === messageId ? { ...m, readBy } : m))
+        );
+      });
+
+      // 메시지 전부 읽음(방 진입 시)
+      socket.on('updateCountAll', (userId) => {
+        console.log(userId);
+        // update message
+        setMessages((prevMessages) =>
+          prevMessages.map((m) => ({
+            ...m,
+            readBy: [...new Set([...m.readBy, userId])],
+          }))
+        );
+      });
+
       socket.emit('join', { potId, user });
     }
 
     connectRoom();
 
-    return () => setSelectedPot(null);
+    return () => {
+      //  setSelectedPot(null);
+      socket.disconnect();
+      setIsConnected(false);
+    };
   }, []);
 
   // check PotMaster
@@ -379,6 +413,7 @@ function Chat() {
         setNewMessage={setNewMessage}
         sendMessage={sendTextMessage}
         isConnected={isConnected}
+        isMenuBarOpened={openMenuBar}
         toggleMenuBar={() => setOpenMenuBar((prev) => !prev)}
       />
 

@@ -1,8 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-import { getSocketId } from '../services/users.js';
 import { createMessage } from '../services/messages.js';
-
-const prisma = new PrismaClient();
 
 export async function sendMessage(req, res, next) {
   try {
@@ -14,40 +10,19 @@ export async function sendMessage(req, res, next) {
     }
 
     const message = await createMessage(type, potId, req.user.id, content);
+    // console.log(message);
 
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', message);
 
-    console.log('message sent');
-    res.status(201).json(message);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-}
-
-export async function getMessages(req, res, next) {
-  try {
-    const { id } = req.params;
-
-    const messages = await prisma.message.findMany({
-      where: { deliveryPotId: +id },
-      include: {
-        sender: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            profile: {
-              select: { imageUrl: true },
-            },
-          },
-        },
-        deliveryPot: true,
-      },
+    // todo : communityId 별로 namesapce 나눠서 보내기
+    io.of('/room').emit('updateLastMessage', {
+      potId,
+      message,
     });
 
-    res.status(200).json(messages);
+    console.log('message sent');
+    res.status(201).json(message);
   } catch (error) {
     console.error(error);
     next(error);

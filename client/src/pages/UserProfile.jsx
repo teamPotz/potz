@@ -21,8 +21,8 @@ const Box = styled.div`
     svg {
       cursor: grab;
       transition: all 0.2s ease;
-      &:hover{
-        transform: ${props => props.noTransform ? 'none' : 'scale(1.18)'};
+      &:hover {
+        transform: ${(props) => (props.noTransform ? 'none' : 'scale(1.18)')};
       }
     }
   }
@@ -196,7 +196,7 @@ function UserProfile() {
         <Box height={'227.33px'} align={'column'}>
           <Profile1>
             <img
-              src={user.profile.imageUrl}
+              src={user.profile?.imageUrl}
               style={{
                 width: '70px',
                 height: '70px',
@@ -208,7 +208,7 @@ function UserProfile() {
               <span>
                 <FontBig>{user.name}</FontBig>
                 <FontSm color={`${COLOR.GRAY_500}`}>
-                  {user.profile.address}
+                  {user.profile?.address}
                 </FontSm>
               </span>
               <svg

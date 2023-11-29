@@ -24,3 +24,6 @@ PATCH http://localhost:5000/communities/2/join
 ### confirm order
 PATCH http://localhost:5000/orders/1/order-confirm
 Content-Type: application/json
+
+### GET post
+GET http://localhost:5000/posts?communityId=1

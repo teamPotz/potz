@@ -7,3 +7,7 @@ const URL =
     : 'http://localhost:5000/chat';
 
 export const socket = io(URL, { autoConnect: false });
+
+export const roomSocket = io('http://localhost:5000/room', {
+  autoConnect: false,
+});

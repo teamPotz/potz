@@ -34,7 +34,7 @@ const fileUpload = multer({
     const error = isValid ? null : new Error('mime 유형이 잘못됨💥');
     cb(error, isValid);
   },
-  limits: { fileSize: 50 * 1024 * 1024 },
+  limits: { fileSize: 10 * 1024 * 1024 },
 });
 
 export default fileUpload;
