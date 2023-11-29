@@ -41,6 +41,49 @@ export async function getUserDataById(req, res) {
   }
 }
 
+export async function getUserCommunitiesById(req, res) {
+  try {
+    const userData = await prisma.User.findMany({
+      where: {
+        id: req.user.id,
+      },
+      select: {
+        communities: {
+          select: {
+            community: {
+              select: {
+                id: true,
+                name: true,
+                imageUrl: true,
+                communityTypes: {
+                  select: {
+                    communityType: {
+                      select: {
+                        id: true,
+                        name: true,
+                      },
+                    },
+                  },
+                },
+                _count: {
+                  select: {
+                    members: true,
+                    posts: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    res.status(200).send(userData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'get userData error' });
+  }
+}
+
 export async function getUserOrderDataById(req, res) {
   try {
     const userData = await prisma.User.findMany({
@@ -56,18 +99,18 @@ export async function getUserOrderDataById(req, res) {
                 post: {
                   select: {
                     categoryId: true,
-                  }
+                  },
                 },
                 orders: {
                   select: {
                     price: true,
                     quantity: true,
-                  }
-                }
-              }
-            }
-          }
-        }
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
     res.status(200).send(userData);
