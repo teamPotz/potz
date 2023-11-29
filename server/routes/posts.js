@@ -24,8 +24,8 @@ router.post('/', verifyAuth, fileUpload.single('image'), createPost);
 router
   .route('/:id/update')
   .get(verifyAuth, updateGetPost)
-  .patch(fileUpload.single('image'), verifyAuth, updatePost);
-router.route('/:id').get(verifyAuth, getPostById).patch(verifyAuth, deletePost);
+  .patch(verifyAuth, fileUpload.single('image'), updatePost);
+router.route('/:id').get(verifyAuth, getPostById).patch(deletePost);
 router.patch('/:id/like', verifyAuth, toggleLike);
 
 export default router;
