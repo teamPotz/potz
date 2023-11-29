@@ -131,9 +131,11 @@ function CreatePost() {
 
   let Address = false;
   let name = false;
+  let communityid = false;
   if (location.state !== null) {
     name = location.state.name;
     Address = location.state.address;
+    communityid = location.state.communityId;
   }
 
   const [toggleLimit, setToggleLimit] = useState(false);
@@ -147,6 +149,7 @@ function CreatePost() {
     categoryId,
     recruitment,
     meetingLocation,
+    communityId,
     deliveryFees,
     deliveryDiscounts,
     file
@@ -158,6 +161,7 @@ function CreatePost() {
     formData.append('categoryId', categoryId);
     formData.append('recruitment', recruitment);
     formData.append('meetingLocation', meetingLocation);
+    formData.append('communityId', communityId);
     formData.append('deliveryFees', deliveryFees);
     formData.append('deliveryDiscounts', deliveryDiscounts);
     formData.append('image', file);
@@ -169,6 +173,8 @@ function CreatePost() {
         credentials: 'include',
       });
       const data = await res.json();
+      alert('등록이 완료되었습니다.');
+      navigate('/');
       console.log(data);
     } catch (error) {
       console.log(error);
@@ -330,6 +336,7 @@ function CreatePost() {
             const categoryId = categoryid;
             const recruitment = e.target.recruitment.value;
             const meetingLocation = e.target.meetingLocation.value;
+            const communityId = communityid;
             const deliveryFees = processData('deliveryFee', e);
             const deliveryDiscounts = processData('deliveryDiscount', e);
             const file = e.target.image.files[0];
@@ -342,12 +349,9 @@ function CreatePost() {
                 if (
                   storeName &&
                   storeAddress &&
-                  orderLink &&
                   categoryId &&
                   recruitment &&
-                  meetingLocation &&
-                  file &&
-                  (deliveryFees || deliveryDiscounts)
+                  meetingLocation
                 ) {
                   createPost(
                     storeName,
@@ -356,12 +360,13 @@ function CreatePost() {
                     categoryId,
                     recruitment,
                     meetingLocation,
+                    communityId,
                     deliveryFees,
                     deliveryDiscounts,
                     file
                   );
                 } else {
-                  alert('모든 내용을 입력해주세요.');
+                  alert('가게이름, 가게주소, 카테고리, 마감인원수, 만날장소는 필수 요소입니다.');
                 }
               } else {
                 alert('마감 인원수에는 숫자만 입력 가능합니다.');
@@ -442,6 +447,7 @@ function CreatePost() {
                       navigate('/getaddress', {
                         state: {
                           routeName: '/create-post',
+                          communityId: location.state.communityId,
                         },
                       })
                     }
