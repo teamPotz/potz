@@ -253,6 +253,7 @@ function UserProfile() {
         </div>
         <div>
           <svg
+            onClick={() => navigate('/my-bigdata')}
             width='29'
             height='29'
             viewBox='0 0 29 29'

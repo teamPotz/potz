@@ -9,40 +9,6 @@ export async function getCategory(req, res) {
         name: true,
         imageUrl: true,
         displayOrder: true,
-        posts: {
-          select: {
-            storeName: true,
-            imageUrl: true,
-            id: true,
-            storeAddress: true,
-            orderLink: true,
-            category: true,
-            recruitment: true,
-            meetingLocation: true,
-            deliveryFees: true,
-            deliveryDiscounts: true,
-            likedByUsers: {
-              where: { userId: req.user.id, liked: true },
-            },
-            communityId: true,
-            deliveryPot: {
-              select: {
-                participants: true,
-                orders: true,
-              },
-            },
-            author: {
-              select: {
-                profile: {
-                  select: {
-                    imageUrl: true,
-                  },
-                },
-                createdDeliveryPots: true,
-              },
-            },
-          },
-        },
       },
     });
 
@@ -98,6 +64,7 @@ export async function getCategoryById(req, res) {
         id: +id,
       },
     });
+
     res.status(200).send(categories);
   } catch (error) {
     console.error(error);

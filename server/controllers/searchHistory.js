@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function getSearchHistory(req, res) {
-  console.log('get', req.user);
+  // console.log('get', req.user);
   try {
     const communityTypes = await prisma.searchResult.findMany({
       where: {
@@ -24,8 +24,8 @@ export async function getSearchHistory(req, res) {
 
 export async function createSearchHistory(req, res) {
   const { keyword } = req.body;
-  console.log('키워드', keyword);
-  console.log('create', req.user);
+  // console.log('키워드', keyword);
+  // console.log('create', req.user);
 
   try {
     //todo: userId 1 대신 로그인 유저 데이터 id 넣기
@@ -45,7 +45,7 @@ export async function createSearchHistory(req, res) {
 }
 
 export async function deleteSearchHistory(req, res) {
-  console.log('delete', req.user);
+  // console.log('delete', req.user);
   try {
     const deletedSearchData = await prisma.searchResult.deleteMany({
       where: {

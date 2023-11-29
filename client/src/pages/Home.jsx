@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import COLOR from '../utility/Color';
 import NavBarHomePage from '../components/NavBarHomePage';
 import HomeContents from '../components/HomeContentsComp';
@@ -32,8 +32,10 @@ function Home() {
   let navigate = useNavigate();
   const [communityDatas, setCommunityDatas] = useState();
   const [postDatas, setPostDatas] = useState();
-
-  const communityId = localStorage.getItem('communityDataID');
+  const communityIds = useParams();
+  console.log('communityIds', communityIds.id);
+  localStorage.setItem('communityDataID', communityIds.id);
+  const communityId = communityIds.id;
 
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);

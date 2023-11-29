@@ -203,6 +203,8 @@ function UpdatePost() {
         credentials: 'include',
       });
       const data = await res.json();
+      alert('수정이 완료되었습니다.');
+      navigate('/');
       console.log(data);
     } catch (error) {
       console.log(error);

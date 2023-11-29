@@ -276,6 +276,7 @@ function LandingMap() {
                         state: {
                           name: result.place_name,
                           address: result.address_name,
+                          communityId: location.state.communityId,
                         },
                       });
                     }}
