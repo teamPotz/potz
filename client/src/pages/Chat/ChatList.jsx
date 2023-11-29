@@ -14,28 +14,24 @@ function ChatList() {
   const location = useLocation();
   const { user } = useAuth();
 
-  async function getDeliveryPots() {
-    try {
-      const res = await fetch('http://localhost:5000/delivery-pots', {
-        credentials: 'include',
-      });
-      if (!res.ok) {
-        throw new Error('get delivery pots error');
-      }
-      const data = await res.json();
-      console.log(data);
-      setDeliveryPots(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
   useEffect(() => {
+    async function getDeliveryPots() {
+      try {
+        const res = await fetch('http://localhost:5000/delivery-pots', {
+          credentials: 'include',
+        });
+        if (!res.ok) {
+          throw new Error('get delivery pots error');
+        }
+        const data = await res.json();
+        console.log(data);
+        setDeliveryPots(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
     getDeliveryPots();
   }, []);
-
-  useEffect(() => {
-    location.state === 'exit' && getDeliveryPots();
-  }, [location.state]);
 
   useEffect(() => {
     roomSocket.connect();
