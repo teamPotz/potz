@@ -5,12 +5,13 @@ import NavBar from '../../components/ui/NavBar';
 import { useAuth } from '../../contexts/AuthContext';
 import { roomSocket } from '../../../socket.js';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import timeAgoFormat from '../../utility/timeAgo.js';
 
 function ChatList() {
   const [deliveryPots, setDeliveryPots] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
 
   useEffect(() => {
@@ -68,8 +69,6 @@ function ChatList() {
       roomSocket.disconnect();
     };
   }, []);
-
-  useEffect(() => console.log(deliveryPots), [deliveryPots]);
 
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
