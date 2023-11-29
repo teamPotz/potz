@@ -111,8 +111,15 @@ function getNextDiscountInfos(
   currentDiscountInfo,
   totalOrderPrice
 ) {
+  // 할인 정보 자체가 없는 경우
   if (deliveryDiscountInfos?.length <= 0) {
     return null;
+  }
+  // 현재 적용된 할인정보가 없는 경우
+  if (!currentDiscountInfo) {
+    return deliveryDiscountInfos
+      .sort((a, b) => a.minAmount - b.minAmount)
+      .at(0);
   }
   // 1. 최소금액 조건이 현재 주문액보다 크면서 할인금액이 현재보다 큰 할인조건 filter
   // 2. 최소금액 작은순으로 sort
@@ -138,6 +145,7 @@ export async function getPostsByCommunityId(req, res, next) {
 
     const posts = await prisma.post.findMany({
       where: {
+        isDeleted: false,
         communityId: +communityId,
       },
       orderBy: {
@@ -147,7 +155,10 @@ export async function getPostsByCommunityId(req, res, next) {
         id: true,
         storeName: true,
         author: {
-          select: { _count: { select: { deliveryPotHistoryAsMaster: true } } },
+          select: {
+            id: true,
+            _count: { select: { deliveryPotHistoryAsMaster: true } },
+          },
         },
         imageUrl: true,
         orderLink: true,
@@ -251,6 +262,7 @@ export async function getPostById(req, res) {
   try {
     const post = await prisma.post.findUnique({
       where: {
+        isDeleted: false,
         id: +id,
       },
       select: {
@@ -266,7 +278,7 @@ export async function getPostById(req, res) {
           select: { name: true, id: true },
         },
         author: {
-          select: { profile: { select: { imageUrl: true } } },
+          select: { id: true, profile: { select: { imageUrl: true } } },
         },
         deliveryPot: {
           select: {
@@ -323,6 +335,7 @@ export async function getPostById(req, res) {
       potMasterProfileImg: post.author.profile
         ? post.author.profile.imageUrl
         : null,
+      authorId: post.author.id,
       participantsCount: post.deliveryPot._count.participants,
       recruitment: post.recruitment,
       meetingLocation: post.meetingLocation,
@@ -344,6 +357,9 @@ export async function getPostById(req, res) {
 }
 
 export async function getPostByLiked(req, res) {
+  let { communityId } = req.query;
+  console.log(communityId);
+
   try {
     const posts = await prisma.postLike.findMany({
       where: {
@@ -353,6 +369,8 @@ export async function getPostByLiked(req, res) {
       select: {
         post: {
           select: {
+            isDeleted: true,
+            communityId: true,
             id: true,
             storeName: true,
             storeAddress: true,
@@ -385,9 +403,17 @@ export async function getPostByLiked(req, res) {
       },
     });
 
+    const filteredPosts = posts.filter(
+      (like) =>
+        like.post.communityId === parseInt(communityId, 10) &&
+        like.post.isDeleted === false
+    );
+
+    console.log(filteredPosts);
+
     const transformedposts = [];
 
-    for (const post of posts) {
+    for (const post of filteredPosts) {
       const totalOrderPrice = getTotalOrderPrice(post.post.deliveryPot.orders);
 
       const appliedDeliveryFeeInfo = getApplicableDeliveryFeeInfo(
@@ -456,86 +482,36 @@ export async function getPostByName(req, res) {
   console.log(key, communityId);
 
   try {
-    const post = await prisma.post.findMany({
+    const posts = await prisma.post.findMany({
       where: {
+        isDeleted: false,
         communityId: parseInt(communityId, 10),
         storeName: {
           contains: key,
         },
       },
       select: {
-        storeName: true,
-        imageUrl: true,
         id: true,
+        storeName: true,
         storeAddress: true,
+        imageUrl: true,
         orderLink: true,
-        category: true,
         recruitment: true,
         meetingLocation: true,
-        deliveryFees: true,
         deliveryDiscounts: true,
         likedByUsers: {
           where: { userId: req.user.id, liked: true },
         },
-        communityId: true,
-        deliveryPot: {
-          select: {
-            participants: true,
-            orders: {
-              select: {
-                price: true,
-                quantity: true,
-              },
-            },
-          },
-        },
-        author: {
-          select: {
-            profile: {
-              select: {
-                imageUrl: true,
-              },
-            },
-            createdDeliveryPots: true,
-          },
-        },
-      },
-    });
-    res.status(200).send(post);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'get posts error' });
-  }
-}
-
-export async function getPostByCategoryId(req, res) {
-  const { categoryId, communityId } = req.query;
-
-  try {
-    const posts = await prisma.post.findMany({
-      where: {
-        communityId: parseInt(communityId, 10),
-        category: {
-          id: +categoryId,
-        },
-      },
-      select: {
-        id: true,
-        storeName: true,
-        storeAddress: true,
-        imageUrl: true,
-        orderLink: true,
-        recruitment: true,
-        meetingLocation: true,
-        deliveryDiscounts: true,
         category: {
           select: { name: true, id: true },
         },
         author: {
           select: { profile: { select: { imageUrl: true } } },
         },
+
         deliveryPot: {
           select: {
+            participants: true,
             orders: {
               select: {
                 price: true,
@@ -554,6 +530,8 @@ export async function getPostByCategoryId(req, res) {
         },
       },
     });
+
+    console.log(posts);
 
     const result = [];
     for (const post of posts) {
@@ -609,6 +587,130 @@ export async function getPostByCategoryId(req, res) {
         appliedDiscountInfo,
         nextDiscountInfos,
         deliveryFeePerPerson,
+        liked: post.likedByUsers.length > 0,
+      };
+
+      result.push(transformedPost);
+      console.log('appliedDeliveryFeeInfo', appliedDeliveryFeeInfo);
+    }
+    res.status(200).send(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'get posts error' });
+  }
+}
+
+export async function getPostByCategoryId(req, res) {
+  const { categoryId, communityId } = req.query;
+  console.log(categoryId, communityId);
+
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        isDeleted: false,
+        communityId: parseInt(communityId, 10),
+        category: {
+          id: parseInt(categoryId),
+        },
+      },
+      select: {
+        id: true,
+        storeName: true,
+        storeAddress: true,
+        imageUrl: true,
+        orderLink: true,
+        recruitment: true,
+        meetingLocation: true,
+        deliveryDiscounts: true,
+        likedByUsers: {
+          where: { userId: req.user.id, liked: true },
+        },
+        category: {
+          select: { name: true, id: true },
+        },
+        author: {
+          select: { profile: { select: { imageUrl: true } } },
+        },
+
+        deliveryPot: {
+          select: {
+            participants: true,
+            orders: {
+              select: {
+                price: true,
+                quantity: true,
+                userId: true,
+              },
+            },
+            _count: {
+              select: { participants: true },
+            },
+          },
+        },
+        deliveryFees: true,
+        _count: {
+          select: { deliveryDiscounts: true },
+        },
+      },
+    });
+
+    console.log(posts);
+
+    const result = [];
+    for (const post of posts) {
+      const totalOrderPrice = getTotalOrderPrice(post.deliveryPot.orders);
+
+      const appliedDeliveryFeeInfo = getApplicableDeliveryFeeInfo(
+        post.deliveryFees,
+        totalOrderPrice
+      );
+
+      const nextDeliveryFeeInfo = getNextDeliveryFeeInfos(
+        post.deliveryFees,
+        appliedDeliveryFeeInfo,
+        totalOrderPrice
+      );
+
+      const appliedDiscountInfo = getAppliedDiscountInfo(
+        post.deliveryDiscounts,
+        totalOrderPrice
+      );
+
+      const nextDiscountInfos = getNextDiscountInfos(
+        post.deliveryDiscounts,
+        appliedDiscountInfo,
+        totalOrderPrice
+      );
+
+      const orderedUserCount = getOrderedUserCount(post.deliveryPot.orders);
+      console.log('post.deliveryPot.orders', post.deliveryPot.orders);
+
+      const deliveryFeePerPerson =
+        appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
+      console.log('주문 수', deliveryFeePerPerson);
+
+      const transformedPost = {
+        id: post.id,
+        storeName: post.storeName,
+        storeAddress: post.storeAddress,
+        imageUrl: post.imageUrl,
+        orderLink: post.orderLink,
+        categoryId: post.category.id,
+        category: post.category.name,
+        potMasterProfileImg: post.author.profile
+          ? post.author.profile.imageUrl
+          : null,
+        participantsCount: post.deliveryPot._count.participants,
+        recruitment: post.recruitment,
+        meetingLocation: post.meetingLocation,
+        orderedUserCount,
+        totalOrderPrice,
+        appliedDeliveryFeeInfo,
+        nextDeliveryFeeInfo,
+        appliedDiscountInfo,
+        nextDiscountInfos,
+        deliveryFeePerPerson,
+        liked: post.likedByUsers.length > 0,
       };
 
       result.push(transformedPost);
@@ -801,12 +903,24 @@ export async function updatePost(req, res) {
 
 export async function deletePost(req, res) {
   const { id } = req.params;
-  const postDeleteWithUserId = await prisma.post.delete({
-    where: {
-      postId: +id,
-      authorId: req.user.id,
-    },
-  });
+  console.log(id);
+
+  try {
+    const deletedPost = await prisma.post.update({
+      where: {
+        id: parseInt(id),
+        authorId: req.user.id,
+      },
+      data: {
+        isDeleted: true,
+      },
+    });
+    res.status(201).send(deletedPost);
+    console.log('데이터 삭제 완료');
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'create communities error' });
+  }
 }
 
 /// 찜하기, 찜 취소하기

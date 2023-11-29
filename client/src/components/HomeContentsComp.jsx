@@ -2,8 +2,9 @@ import styled from 'styled-components';
 import Font from '../utility/Font';
 import COLOR from '../utility/Color';
 import TagPlaceSM from './TagPlaceSM';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import HomeAlert from './homeAlertModal';
 
 const HomeContentsWrapper = styled.div`
   height: 150px;
@@ -16,8 +17,8 @@ const HomeContentsWrapper = styled.div`
   transition: all 0.3s ease;
 
   &:hover {
-    transform: scale(1.04);
-    border-color: ${COLOR.POTZ_PINK_100};
+    transform: scale(1.02);
+    backgound-color: ${COLOR.POTZ_PINK_100};
   }
 `;
 
@@ -30,8 +31,11 @@ const ButtonContainer = styled.button`
   border: none;
   background-color: ${COLOR.WHITE};
   cursor: grab;
+  transition: all 0.6s ease;
   &:hover {
-    background: ${COLOR.POTZ_PINK_100};
+    svg path {
+      transform: scale(1.1);
+    }
   }
 `;
 
@@ -189,7 +193,11 @@ const linkStyle = {
 };
 
 const HomeContents = ({ postDatas }) => {
+  let [visible, setVisible] = useState(false);
+  let [author, setAuthor] = useState();
+
   console.log('첫 랜더링을 위해 받아온 데이터', postDatas);
+
   const navigate = useNavigate();
 
   //postDatas 배열에서 좋아요 데이터와 id 데이터만 따로 추출해서 배열로 관리
@@ -236,7 +244,8 @@ const HomeContents = ({ postDatas }) => {
 
   return (
     <div style={homeContentesContainer}>
-      {postDatas.map((post, index) => {
+      {visible ? <HomeAlert setVisible={setVisible}></HomeAlert> : null}
+      {postDatas.map((post) => {
         const likeState = findLikeStateByPostId(post.id);
         return (
           <HomeContentsWrapper
@@ -311,6 +320,13 @@ const HomeContents = ({ postDatas }) => {
                 <ButtonContainer
                   onClick={(event) => {
                     event.stopPropagation();
+                    console.log('ButtonContainer clicked', !visible);
+                    setVisible(!visible);
+                    // setAuthor({
+                    //   neededPrice:
+                    //     post.nextDiscountInfos.minAmount - post.totalOrderPrice,
+                    //   discount: post.nextDiscountInfos.maxDiscountAmount,
+                    // });
                   }}
                 >
                   <SaleIcon></SaleIcon>
@@ -320,6 +336,8 @@ const HomeContents = ({ postDatas }) => {
               <ButtonContainer
                 onClick={(event) => {
                   event.stopPropagation();
+                  console.log('ButtonContainer clicked', !visible);
+                  setVisible(!visible);
                 }}
               >
                 {post.potMasterHistoryCount >= 2 ? (
