@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import COLOR from '../../utility/Color';
-import Font from '../../utility/Font';
 import NavBar from '../../components/ui/NavBar';
 import { useAuth } from '../../contexts/AuthContext';
 import { roomSocket } from '../../../socket.js';
@@ -11,7 +10,6 @@ import timeAgoFormat from '../../utility/timeAgo.js';
 function ChatList() {
   const [deliveryPots, setDeliveryPots] = useState([]);
   const navigate = useNavigate();
-  const location = useLocation();
   const { user } = useAuth();
 
   useEffect(() => {
@@ -190,7 +188,6 @@ const Title = styled.div`
   background-color: ${COLOR.WHITE};
   position: fixed;
   top: 0;
-  font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: 700;
   font-size: 18.6667px;
@@ -239,7 +236,6 @@ const UnreadCounter = styled.div`
   height: 18px;
   background-color: ${COLOR.POTZ_PINK_DEFAULT};
   border-radius: 0.8rem;
-  font-family: 'Noto Sans CJK KR';
   font-style: normal;
   font-weight: 700;
   font-size: 0.74rem;
@@ -257,13 +253,11 @@ const AlarmMessage = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
 `;
 const FontBig = styled.p`
-  font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: 500;
   font-size: 16.3333px;
@@ -271,7 +265,6 @@ const FontBig = styled.p`
   margin: 0;
 `;
 const FontMd = styled.p`
-  font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: 500;
   font-size: 14px;

@@ -7,7 +7,6 @@
 
 import styled from 'styled-components';
 import COLOR from '../../utility/Color';
-import Font from '../../utility/Font';
 
 const Wrapper = styled.div`
   display: flex;
@@ -41,7 +40,6 @@ const Icon = styled.div`
 
 const Text = styled.div`
   height: 21px;
-  font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: 400;
   font-size: 13px;

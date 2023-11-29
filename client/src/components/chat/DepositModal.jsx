@@ -122,7 +122,6 @@ const Item = styled.div`
 `;
 
 const FontMd = styled.span`
-  font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: 400;
   font-size: 16.33px;
@@ -137,7 +136,6 @@ const Input = styled.input`
   &::placeholder {
     color: ${COLOR.POTZ_PINK_300};
   }
-  font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: 400;
   font-size: 16.33px;
