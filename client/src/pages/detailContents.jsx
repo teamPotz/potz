@@ -6,6 +6,8 @@ import COLOR from '../utility/Color';
 import CategorySearch from '../components/categorySearch';
 import logoImg from '../../public/images/Logo/Potz_Logo.png';
 import { socket } from '../../socket';
+import SelectCompForEveryone from '../components/SelectCompForEveryone.jsx';
+import SelectComp from '../components/selectComp';
 import { useChat } from '../contexts/ChatContext';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -293,6 +295,9 @@ const coloredFont = {
 };
 
 function DetailContents({ postDatas }) {
+  const { user } = useAuth();
+  console.log('user', user);
+
   const communityId = localStorage.getItem('communityDataID');
   console.log('받은 postDatas', postDatas);
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
@@ -301,6 +306,7 @@ function DetailContents({ postDatas }) {
   console.log(categoryId);
 
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
+  const [visible, setVisible] = useState(false);
 
   const TopStyle = {
     position: 'relative',
@@ -324,8 +330,6 @@ function DetailContents({ postDatas }) {
     width: '100%',
   };
 
-  const { user } = useAuth();
-  const { joinPot } = useChat();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -359,7 +363,6 @@ function DetailContents({ postDatas }) {
       }
     }
 
-    // 비동기 함수를 useEffect 내부에서 직접 호출
     fetchCategoryPostData();
   }, [categoryId, communityId]);
 
@@ -406,8 +409,19 @@ function DetailContents({ postDatas }) {
     marginLeft: '28px',
   };
 
+  const selectHandler = () => {
+    setVisible(true);
+  };
+
   return (
     <div style={backgroundStyle}>
+      {user.id === postDatas.authorId ? (
+        visible ? (
+          <SelectComp postId={postDatas.id} setVisible={setVisible} />
+        ) : null
+      ) : visible ? (
+        <SelectCompForEveryone postId={postDatas.id} setVisible={setVisible} />
+      ) : null}
       <div style={imgContainer}>
         <img
           style={imgStyle}
@@ -421,7 +435,7 @@ function DetailContents({ postDatas }) {
             <ButtonWrap>
               <SaleIcon />
             </ButtonWrap>
-            <ButtonWrap style={marginRightStyle}>
+            <ButtonWrap onClick={selectHandler} style={marginRightStyle}>
               <BurgerIcon />
             </ButtonWrap>
           </div>
@@ -433,7 +447,6 @@ function DetailContents({ postDatas }) {
           </a>
         </div>
       </div>
-
       <div style={backgroundStyles}>
         <div style={storeFont}>
           <span>{postDatas.storeName}</span>

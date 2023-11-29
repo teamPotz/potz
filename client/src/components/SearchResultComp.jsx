@@ -42,13 +42,52 @@ const SearchResultComp = (props) => {
 
   console.log('홈 컨텐츠 데이터', result);
 
-  let [like, setLike] = useState(null);
+  //postDatas 배열에서 좋아요 데이터와 id 데이터만 따로 추출해서 배열로 관리
+  const [likeStates, setLikeStates] = useState(
+    result.map((res) => ({ liked: res.liked, id: res.id }))
+  );
 
   useEffect(() => {
-    //클릭에 따라 서버에 업데이트
-    console.log('좋아요 클릭에 따라 true false 상태 저장', like);
-    setLike(like);
-  }, [like]);
+    console.log('Like States:', likeStates);
+  }, [likeStates]);
+
+  //postId와 일치하는 likeState 찾기
+  const findLikeStateByPostId = (postId) => {
+    return likeStates.find((likeState) => likeState.id === postId);
+  };
+
+  const handleLikeToggle = async (postId) => {
+    console.log(postId);
+    try {
+      //서버로 좋아요 데이터 업데이트
+      try {
+        const response = await fetch(
+          `http://localhost:5000/posts/${postId}/like`,
+          {
+            method: 'PATCH',
+            credentials: 'include',
+          }
+        );
+        const data = await response.json();
+        console.log('좋아요 업데이트', data);
+        alert('찜 목록을 수정했어요.😋');
+      } catch (error) {
+        console.error(error);
+      }
+
+      //화면 출력
+      setLikeStates((prevLikeStates) =>
+        prevLikeStates.map((prevState) =>
+          //클릭한 버튼이 속한 post의 Id가 postDatas의 post Id와 같을 경우에 liked 값을 이전 값과 반대로 토글함
+          prevState.id === postId
+            ? { ...prevState, liked: !prevState.liked }
+            : prevState
+        )
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const HeartIcon = () => {
     return (
@@ -206,23 +245,22 @@ const SearchResultComp = (props) => {
   return (
     <div style={homeContentesContainer}>
       {result.map((res) => {
+        const likeState = findLikeStateByPostId(res.id);
         return (
           <HomeContentsWrapper
-            onClick={() => {
-              navigate(`/posts/${res.id}`);
-            }}
             key={res.id}
+            onClick={() => navigate(`/posts/${res.id}`)}
           >
             <div>
               <div style={tagStyle}>
-                <TagPlaceSM>{res.category.name}</TagPlaceSM>
+                <TagPlaceSM>{res.category}</TagPlaceSM>
               </div>
               <img
                 width={112}
                 height={112}
                 style={imgStyle}
                 src={`http://localhost:5000${res.imageUrl}`}
-              ></img>
+              />
             </div>
             <div style={fontWrapper}>
               <div style={fontContainer}>
@@ -231,14 +269,13 @@ const SearchResultComp = (props) => {
                 </div>
                 <div style={fontStyle2}>
                   <span style={coloredfont}>
-                    {res.deliveryFees?.[0]?.fee ? (
-                      res.deliveryFees?.[0]?.fee /
-                      res.deliveryPot.participants.length
+                    {res.deliveryFeePerPerson ? (
+                      <span>{res.deliveryFeePerPerson}</span>
                     ) : (
                       <span>무료</span>
                     )}
                   </span>
-                  {res.deliveryFees?.[0]?.fee ? (
+                  {res.deliveryFeePerPerson ? (
                     <span>원씩 배달</span>
                   ) : (
                     <span>배달</span>
@@ -254,9 +291,9 @@ const SearchResultComp = (props) => {
               </div>
               <div style={fontstyle4}>
                 <div>
-                  <span>{res.recruitment}</span>
+                  <span>{res.participantsCount}</span>
                   <span>/</span>
-                  <span>{res.deliveryPot.participants.length}</span>
+                  <span>{res.recruitment}</span>
                   <span>명</span>
                 </div>
                 <div>
@@ -266,40 +303,17 @@ const SearchResultComp = (props) => {
             </div>
             <div style={buttonContainer}>
               <ButtonContainer
-                onClick={(event) => {
-                  event.stopPropagation();
-                  //true -> false / false -> true
-                  if (res.likedByUsers[0]) {
-                    setLike(false);
-                  } else {
-                    setLike(true);
-                  }
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLikeToggle(res.id);
                 }}
               >
-                {res.likedByUsers[0] ? (
-                  <HeartIconClicked></HeartIconClicked>
+                {/* findLikeStateByPostId 함수로 찾은 postid와 같은 id를 가진 객체 */}
+                {likeStates && likeState.liked ? (
+                  <HeartIconClicked />
                 ) : (
-                  <HeartIcon></HeartIcon>
+                  <HeartIcon />
                 )}
-              </ButtonContainer>
-              {res.deliveryDiscounts.length > 0 ? (
-                <ButtonContainer
-                  onClick={(event) => {
-                    event.stopPropagation();
-                  }}
-                >
-                  <SaleIcon></SaleIcon>
-                </ButtonContainer>
-              ) : null}
-              {/* 우선은 2회 이상 만든 사람에게 왕관 붙여줌 */}
-              <ButtonContainer
-                onClick={(event) => {
-                  event.stopPropagation();
-                }}
-              >
-                {res.author.createdDeliveryPots.length >= 2 ? (
-                  <CrownIcon></CrownIcon>
-                ) : null}
               </ButtonContainer>
             </div>
           </HomeContentsWrapper>

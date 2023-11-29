@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import styled from 'styled-components';
-import LikedComp from './LikedComp';
+import CategoryListComp from './CategoryComp';
 
 const CategorySearch = (props) => {
   let { categoryPostData, displayWidth } = props;
@@ -68,7 +68,12 @@ const CategorySearch = (props) => {
         ref={scroll}
       >
         {categoryPostData.map((postData, index) => {
-          return <LikedComp key={index} postData={postData}></LikedComp>;
+          return (
+            <CategoryListComp
+              key={index}
+              postData={postData}
+            ></CategoryListComp>
+          );
         })}
       </CategorySearchStyle>
     </div>
