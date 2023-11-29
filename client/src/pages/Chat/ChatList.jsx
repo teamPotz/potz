@@ -5,32 +5,37 @@ import NavBar from '../../components/ui/NavBar';
 import { useAuth } from '../../contexts/AuthContext';
 import { roomSocket } from '../../../socket.js';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import timeAgoFormat from '../../utility/timeAgo.js';
 
 function ChatList() {
   const [deliveryPots, setDeliveryPots] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
 
-  useEffect(() => {
-    async function getDeliveryPots() {
-      try {
-        const res = await fetch('http://localhost:5000/delivery-pots', {
-          credentials: 'include',
-        });
-        if (!res.ok) {
-          throw new Error('get delivery pots error');
-        }
-        const data = await res.json();
-        console.log(data);
-        setDeliveryPots(data);
-      } catch (error) {
-        console.error(error);
+  async function getDeliveryPots() {
+    try {
+      const res = await fetch('http://localhost:5000/delivery-pots', {
+        credentials: 'include',
+      });
+      if (!res.ok) {
+        throw new Error('get delivery pots error');
       }
+      const data = await res.json();
+      console.log(data);
+      setDeliveryPots(data);
+    } catch (error) {
+      console.error(error);
     }
+  }
+  useEffect(() => {
     getDeliveryPots();
   }, []);
+
+  useEffect(() => {
+    location.state === 'exit' && getDeliveryPots();
+  }, [location.state]);
 
   useEffect(() => {
     roomSocket.connect();
@@ -68,8 +73,6 @@ function ChatList() {
       roomSocket.disconnect();
     };
   }, []);
-
-  useEffect(() => console.log(deliveryPots), [deliveryPots]);
 
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);

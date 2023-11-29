@@ -386,7 +386,7 @@ function Chat() {
           <button
             onClick={() => {
               leavePot(potId, user, socket);
-              navigate(-1);
+              navigate('/chats', { state: 'exit' });
             }}
           >
             퇴장
