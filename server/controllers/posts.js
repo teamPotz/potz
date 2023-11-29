@@ -623,7 +623,7 @@ export async function getPostByCategoryId(req, res) {
 
 //create post
 export async function createPost(req, res) {
-  const imageUrl = req.file?.path;
+  const imageUrl = req.file?.filename || null;
   const deliveryFees = JSON.parse(req.body.deliveryFees);
   const deliveryDiscounts = JSON.parse(req.body.deliveryDiscounts);
   const {
@@ -720,7 +720,7 @@ export async function updateGetPost(req, res) {
 
 export async function updatePost(req, res) {
   const { id } = req.params;
-  let imageUrl = req.file?.path;
+  let imageUrl = req.file?.filename || null;
   let deliveryFees = JSON.parse(req.body.deliveryFees);
   let deliveryDiscounts = JSON.parse(req.body.deliveryDiscounts);
   const {
