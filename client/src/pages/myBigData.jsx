@@ -195,7 +195,7 @@ function MyBigData() {
               <FontBg> 맛집을 추천할게요.</FontBg>
             </PaddingTop>
 
-            <PaddingTop padding='46.67px'>
+            
               <div style={styles.homeContentesContainer}>
                 {postDatas && postDatas.length < 1 ? (
                   <div
@@ -224,7 +224,7 @@ function MyBigData() {
                     );
                   })}
               </div>
-            </PaddingTop>
+           
           </div>
         ) : (
           <PaddingTop padding='37.33px'>
