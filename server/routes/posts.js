@@ -17,15 +17,15 @@ import {
 
 const router = Router();
 router.get('/', verifyAuth, getPostsByCommunityId);
-router.get('/search', getPostByName);
-router.get('/category', getPostByCategoryId);
-router.get('/liked', getPostByLiked);
+router.get('/search', verifyAuth, getPostByName);
+router.get('/category', verifyAuth, getPostByCategoryId);
+router.get('/liked', verifyAuth, getPostByLiked);
 router.post('/', verifyAuth, fileUpload.single('image'), createPost);
 router
   .route('/:id/update')
-  .get(updateGetPost)
-  .patch(fileUpload.single('image'), updatePost);
-router.route('/:id').get(getPostById).patch(deletePost);
-router.patch('/:id/like', toggleLike);
+  .get(verifyAuth, updateGetPost)
+  .patch(fileUpload.single('image'), verifyAuth, updatePost);
+router.route('/:id').get(verifyAuth, getPostById).patch(verifyAuth, deletePost);
+router.patch('/:id/like', verifyAuth, toggleLike);
 
 export default router;
