@@ -40,11 +40,11 @@ function Home() {
 
   const { user } = useAuth();
 
-  useEffect(() => {
-    socket.connect();
+  // useEffect(() => {
+  //   socket.connect();
 
-    socket.emit('setUserId', user.id);
-  }, []);
+  //   socket.emit('setUserId', user.id);
+  // }, []);
 
   useEffect(() => {
     const ReSizeHandler = () => {

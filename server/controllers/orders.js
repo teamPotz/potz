@@ -28,6 +28,9 @@ export async function createOrder(req, res, next) {
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', orderMessage);
 
+    // todo : communityId 별로 namesapce 나눠서 보내기
+    io.of('/room').emit('updateLastMessage', { potId, message: orderMessage });
+
     console.log('order message sent');
     res.status(201).json(order);
   } catch (error) {
@@ -109,6 +112,12 @@ export async function confirmOrder(req, res, next) {
 
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', orderConfirmMessage);
+
+    // todo : communityId 별로 namesapce 나눠서 보내기
+    io.of('/room').emit('updateLastMessage', {
+      potId,
+      message: orderConfirmMessage,
+    });
 
     console.log('order confirm message sent');
     res.status(201).json(orderConfirmMessage);
