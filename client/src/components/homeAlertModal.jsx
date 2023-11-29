@@ -68,9 +68,11 @@ const backgroundStyle = {
 };
 
 function HomeAlert(props) {
-  let { setVisible, author } = props;
+  let { setVisible, potMasterHistoryCount } = props;
 
-  console.log(author);
+  if (potMasterHistoryCount) {
+    console.log('author 경력', potMasterHistoryCount);
+  }
 
   return (
     <div style={backgroundStyle}>
@@ -86,7 +88,8 @@ function HomeAlert(props) {
           지금까지 <span style={coloredFont}>방장 경력</span>이
         </div>
         <div>
-          총 <span style={coloredFont}>104</span>회인 방장님의 글이에요.
+          총 <span style={coloredFont}>{potMasterHistoryCount}</span>회인
+          방장님의 글이에요.
         </div>
       </OrderMessageWrapper>
     </div>

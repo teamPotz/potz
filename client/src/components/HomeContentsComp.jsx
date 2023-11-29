@@ -5,6 +5,7 @@ import TagPlaceSM from './TagPlaceSM';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import HomeAlert from './homeAlertModal';
+import HomeDiscountModal from './homeDiscountModal';
 
 const HomeContentsWrapper = styled.div`
   height: 150px;
@@ -194,7 +195,9 @@ const linkStyle = {
 
 const HomeContents = ({ postDatas }) => {
   let [visible, setVisible] = useState(false);
-  let [author, setAuthor] = useState();
+  let [visible2, setVisible2] = useState(false);
+  let [contentPostId, setContentPostId] = useState();
+  let [discountPostId, setDiscountPostId] = useState();
 
   console.log('첫 랜더링을 위해 받아온 데이터', postDatas);
 
@@ -244,7 +247,6 @@ const HomeContents = ({ postDatas }) => {
 
   return (
     <div style={homeContentesContainer}>
-      {visible ? <HomeAlert setVisible={setVisible}></HomeAlert> : null}
       {postDatas.map((post) => {
         const likeState = findLikeStateByPostId(post.id);
         return (
@@ -316,38 +318,59 @@ const HomeContents = ({ postDatas }) => {
                   <HeartIcon />
                 )}
               </ButtonContainer>
-              {post.hasDiscount ? (
-                <ButtonContainer
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    console.log('ButtonContainer clicked', !visible);
-                    setVisible(!visible);
-                    // setAuthor({
-                    //   neededPrice:
-                    //     post.nextDiscountInfos.minAmount - post.totalOrderPrice,
-                    //   discount: post.nextDiscountInfos.maxDiscountAmount,
-                    // });
-                  }}
-                >
-                  <SaleIcon></SaleIcon>
-                </ButtonContainer>
-              ) : null}
+
+              <ButtonContainer
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setVisible2(!visible2);
+                  setDiscountPostId(post.id);
+                }}
+              >
+                <SaleIcon />
+              </ButtonContainer>
+
               {/* 우선은 2회 이상 만든 사람에게 왕관 붙여줌 */}
               <ButtonContainer
                 onClick={(event) => {
                   event.stopPropagation();
                   console.log('ButtonContainer clicked', !visible);
+                  console.log('방장 경력');
+                  setContentPostId(post.id);
                   setVisible(!visible);
                 }}
               >
-                {post.potMasterHistoryCount >= 2 ? (
-                  <CrownIcon></CrownIcon>
-                ) : null}
+                {post.potMasterHistoryCount >= 1 ? <CrownIcon /> : null}
               </ButtonContainer>
             </div>
           </HomeContentsWrapper>
         );
       })}
+      {visible ? (
+        <HomeAlert
+          setVisible={setVisible}
+          potMasterHistoryCount={
+            postDatas.find((post) => post.id === contentPostId)
+              ?.potMasterHistoryCount
+          }
+        />
+      ) : null}
+      {visible2 ? (
+        <HomeDiscountModal
+          setVisible2={setVisible2}
+          discountInfo={
+            postDatas.find((post) => post.id === discountPostId)
+              ?.nextDiscountInfos
+          }
+          totalOrderPrice={
+            postDatas.find((post) => post.id === discountPostId)
+              ?.totalOrderPrice
+          }
+          nextDeliveryFeeInfo={
+            postDatas.find((post) => post.id === discountPostId)
+              ?.nextDeliveryFeeInfo
+          }
+        />
+      ) : null}
     </div>
   );
 };
