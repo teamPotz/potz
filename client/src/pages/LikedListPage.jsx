@@ -28,10 +28,13 @@ function LikedList() {
       console.log('커뮤니티 아이디 num', communityId);
       const fetchCommunityData = async () => {
         try {
-          const response = await fetch('http://localhost:5000/posts/liked', {
-            method: 'GET',
-            credentials: 'include',
-          });
+          const response = await fetch(
+            `http://localhost:5000/posts/liked?communityId=${communityId}`,
+            {
+              method: 'GET',
+              credentials: 'include',
+            }
+          );
 
           const data = await response.json();
           console.log('좋아요한 post 데이터', data);

@@ -25,7 +25,7 @@ router
   .route('/:id/update')
   .get(updateGetPost)
   .patch(fileUpload.single('image'), updatePost);
-router.route('/:id').get(getPostById).delete(deletePost);
+router.route('/:id').get(getPostById).patch(deletePost);
 router.patch('/:id/like', toggleLike);
 
 export default router;
