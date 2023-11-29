@@ -23,7 +23,6 @@ const TextMessageWrapper = styled.div`
   padding: 4px 14px;
   margin-left: ${(props) => (props.$own ? 'auto' : 'none')};
   margin-right: ${(props) => (props.$own ? 'none' : 'auto')};
-  font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: 400;
   font-size: 16px;

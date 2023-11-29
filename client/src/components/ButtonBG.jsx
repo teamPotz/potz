@@ -1,8 +1,6 @@
 import styled from 'styled-components';
-import Font from '../utility/Font';
 
 const ButtonBgStyle = styled.button`
-  font-family: ${Font.FontKor};
   font-size: 16px;
   font-style: normal;
   font-weight: 500;

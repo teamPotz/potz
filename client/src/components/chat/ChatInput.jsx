@@ -87,13 +87,13 @@ const Input = styled.input`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 9.33333px 14px 9.33333px 14px;
+  padding: 10px 14px 10px 14px;
   gap: 105px;
   width: 291.67px;
   // height: 43.17px;
   height: 25px;
   background: ${COLOR.GRAY_100};
-  border-radius: 50.1667px;
+  border-radius: 50px;
   border: none;
 
   transition: 0.2s;
@@ -102,7 +102,6 @@ const Input = styled.input`
     background: ${COLOR.GRAY_200};
   }
 
-  font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: 400;
   font-size: 16.3333px;

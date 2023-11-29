@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import COLOR from '../../../utility/Color';
-import Font from '../../../utility/Font';
 
 const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 
@@ -15,7 +14,6 @@ const MessageWrapper = styled.div`
 `;
 
 const FontBig = styled.p`
-  font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: 550;
   font-size: 16px;
