@@ -16,15 +16,15 @@ export default function () {
         try {
           const user = await prisma.user.findUnique({
             where: { email },
-            // include: {
-            //   profile: true,
-            //   communities: {
-            //     select: {
-            //       communityId: true,
-            //       joinedAt: true,
-            //     },
-            //   },
-            // },
+            include: {
+              profile: true,
+              // communities: {
+              //   select: {
+              //     communityId: true,
+              //     joinedAt: true,
+              //   },
+              // },
+            },
           });
 
           if (!user || !(await bcrypt.compare(password, user.password))) {

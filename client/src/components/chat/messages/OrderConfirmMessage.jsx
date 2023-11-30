@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import COLOR from '../../../utility/Color';
-import Font from '../../../utility/Font';
 import CartIcon from '../assets/CartIcon';
 
 const MessageWrapper = styled.div`
@@ -14,7 +13,6 @@ const MessageWrapper = styled.div`
 `;
 
 const FontBig = styled.p`
-  font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: 550;
   font-size: 16px;

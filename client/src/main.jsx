@@ -121,10 +121,7 @@ const router = createBrowserRouter([
         path: '/category',
         element: <CategoryPage />,
       },
-      {
-        path: '/category-search',
-        element: <CategorySearch />,
-      },
+
       {
         path: '/liked-list',
         element: <LikedList />,

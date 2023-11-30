@@ -1,5 +1,5 @@
 const Font = {
-    FontKor : 'Noto Sans CJK KR'
-}
+  FontKor: 'Noto Sans KR',
+};
 
 export default Font;

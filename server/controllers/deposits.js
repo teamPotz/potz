@@ -28,6 +28,12 @@ export async function createDeposit(req, res, next) {
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', depositMessage);
 
+    // todo : communityId 별로 namesapce 나눠서 보내기
+    io.of('/room').emit('updateLastMessage', {
+      potId,
+      message: depositMessage,
+    });
+
     console.log('deposit message sent');
     res.status(201).json(deposit);
   } catch (error) {
@@ -93,6 +99,12 @@ export async function confirmDeposit(req, res, next) {
 
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', depositConfirmMessage);
+
+    // todo : communityId 별로 namesapce 나눠서 보내기
+    io.of('/room').emit('updateLastMessage', {
+      potId,
+      message: depositConfirmMessage,
+    });
 
     console.log('deposit confirm message sent');
     res.status(201).json(depositConfirmMessage);

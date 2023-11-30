@@ -28,13 +28,30 @@ const CategoryBtn = (props) => {
   return (
     <FoodWrapper
       onClick={() => {
-        navigate('/category-search', {
-          state: {
-            categoryID: category.id,
-            categoryName: category.name,
-            categoryImg: category.imageUrl,
-          },
-        });
+        const fetchSearchData = async () => {
+          try {
+            const response = await fetch(
+              `http://localhost:5000/posts/category?categoryId=${
+                category.id
+              }&communityId=${localStorage.getItem('communityDataID')}`,
+              {
+                method: 'GET',
+                credentials: 'include',
+              }
+            );
+            const data = await response.json();
+            console.log('검색 데이터', data);
+            navigate('/result', {
+              state: {
+                result: data,
+                searchVal: category.name,
+              },
+            });
+          } catch (error) {
+            console.error(error);
+          }
+        };
+        fetchSearchData();
       }}
     >
       <img

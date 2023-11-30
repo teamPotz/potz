@@ -8,6 +8,7 @@ import logoImg from '../../public/images/Logo/Potz_Logo.png';
 import { socket } from '../../socket';
 import SelectCompForEveryone from '../components/SelectCompForEveryone.jsx';
 import SelectComp from '../components/selectComp';
+import HomeDiscountModal from '../components/homeDiscountModal.jsx';
 import { useChat } from '../contexts/ChatContext';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -307,6 +308,7 @@ function DetailContents({ postDatas }) {
 
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
   const [visible, setVisible] = useState(false);
+  const [visible2, setVisible2] = useState(false);
 
   const TopStyle = {
     position: 'relative',
@@ -413,8 +415,20 @@ function DetailContents({ postDatas }) {
     setVisible(true);
   };
 
+  const discountInfoHandler = () => {
+    setVisible2(true);
+  };
+
   return (
     <div style={backgroundStyle}>
+      {visible2 ? (
+        <HomeDiscountModal
+          discountInfo={postDatas.nextDiscountInfos}
+          totalOrderPrice={postDatas.totalOrderPrice}
+          setVisible2={setVisible2}
+          nextDeliveryFeeInfo={postDatas.nextDeliveryFeeInfo}
+        ></HomeDiscountModal>
+      ) : null}
       {user.id === postDatas.authorId ? (
         visible ? (
           <SelectComp postId={postDatas.id} setVisible={setVisible} />
@@ -432,7 +446,7 @@ function DetailContents({ postDatas }) {
             <BackIcon />
           </ButtonWrap>
           <div style={{ display: 'flex' }}>
-            <ButtonWrap>
+            <ButtonWrap onClick={discountInfoHandler}>
               <SaleIcon />
             </ButtonWrap>
             <ButtonWrap onClick={selectHandler} style={marginRightStyle}>

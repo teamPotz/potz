@@ -50,7 +50,7 @@ const SearchEmptyModal = (props) => {
       <ModalWrapper>
         <div>
           <span style={coloredFont}>{searchVal}</span>
-          <span style={fontStyle}>검색어가 비어있어요.</span>
+          <span style={fontStyle}> 검색 결과가 비어있어요.</span>
         </div>
         <span style={fontStyle2}>새로운 모집글을 직접 작성해보세요.</span>
         <ButtonSm
