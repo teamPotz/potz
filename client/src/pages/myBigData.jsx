@@ -97,6 +97,9 @@ function MyBigData() {
   const [postDatas, setPostDatas] = useState([]);
   const [average, setAverage] = useState('');
   const [selectCategory, setSelectCategory] = useState('');
+  const [myRegionCommunity, setMyRegionCommunity] = useState([]);
+  const [myLocalPosts, setMyLocalPosts] = useState([]);
+  const [results, setResults] = useState([]);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -143,6 +146,57 @@ function MyBigData() {
     getCategoryName();
   }, [selectCategory]);
 
+  //내 주변 공동체
+  useEffect(() => {
+    async function fetchMyRegionCommunity() {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/communities/search?latitude=${user.profile.latitude}&longitude=${user.profile.longitude}`,
+          {
+            method: 'GET',
+            credentials: 'include',
+          }
+        );
+        const data = await response.json();
+        console.log('내 주변 공동체', data);
+        setMyRegionCommunity(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchMyRegionCommunity();
+  }, []);
+
+  //주변 공동체에서 post데이터 추출
+  useEffect(() => {
+    if (myRegionCommunity) {
+      const fetchPostfromLocalCommunity = (myRegions) => {
+        let posts = [];
+        try {
+          myRegions.map(async (myRegion) => {
+            const id = myRegion.id;
+            const response = await fetch(
+              `http://localhost:5000/communities/${id}`,
+              {
+                method: 'GET',
+                credentials: 'include',
+              }
+            );
+            const data = await response.json();
+            if (data.posts.length !== 0) {
+              posts.push(...data.posts);
+            }
+          });
+          console.log('내 주변 가게: ', posts);
+          setMyLocalPosts(posts);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      fetchPostfromLocalCommunity(myRegionCommunity);
+    }
+  }, [myRegionCommunity]);
+
   //최빈 카테고리에서 랜덤 식당 가져오기
   useEffect(() => {
     if (selectCategory !== '') {
@@ -165,6 +219,17 @@ function MyBigData() {
       getCategoriesData();
     }
   }, [selectCategory]);
+
+  //최빈 카테고리 식당 && 주변 공동체 식당
+  useEffect(() => {
+    if (myLocalPosts && postDatas) {
+      const commonElements = postDatas.filter((postData) =>
+        myLocalPosts.find((myLocalPost) => myLocalPost.id === postData.id)
+      );
+      const result = getRandomArray(commonElements);
+      setResults(result);
+    }
+  }, [myLocalPosts, postDatas]);
 
   return (
     <div className='potz_container'>
@@ -195,41 +260,38 @@ function MyBigData() {
               <FontBg> 맛집을 추천할게요.</FontBg>
             </PaddingTop>
 
-            
-              <div style={styles.homeContentesContainer}>
-                {postDatas && postDatas.length < 1 ? (
-                  <div
-                    style={{
-                      marginTop: '40px',
-                      fontFamily: Font.FontKor,
-                      fontWeight: '700',
-                      color: COLOR.POTZ_PINK_DEFAULT,
-                      display: 'flex',
-                      justifyContent: 'center',
-                      padding: '20px',
-                      background: COLOR.WHITE,
-                    }}
-                  >
-                    🍣 현재 선호카테고리에 가게가 없어요.. 🍣
-                  </div>
-                ) : null}
+            <div style={styles.homeContentesContainer}>
+              {results && results.length < 1 ? (
+                <div
+                  style={{
+                    marginTop: '40px',
+                    fontFamily: Font.FontKor,
+                    fontWeight: '700',
+                    color: COLOR.POTZ_PINK_DEFAULT,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    padding: '20px',
+                    background: COLOR.WHITE,
+                  }}
+                >
+                  🍣 현재 선호카테고리에 가게가 없어요.. 🍣
+                </div>
+              ) : null}
 
-                {postDatas &&
-                  postDatas.map((postData, index) => {
-                    return (
-                      <BigdataStore
-                        key={index}
-                        postData={postData}
-                      ></BigdataStore>
-                    );
-                  })}
-              </div>
-           
+              {results &&
+                results.map((result, index) => {
+                  return (
+                    <BigdataStore key={index} postData={result}></BigdataStore>
+                  );
+                })}
+            </div>
           </div>
         ) : (
           <PaddingTop padding='37.33px'>
             <FontBg>
-              아직 팟즈를 사용하지 않으셨네요. 지금 바로 주문하세요!
+              아직 팟즈를 사용하지 않으셨네요.
+              <br />
+              지금 바로 주문하세요!
             </FontBg>
           </PaddingTop>
         )}

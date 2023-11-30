@@ -105,6 +105,7 @@ export async function getCommunityById(req, res) {
             },
           },
         },
+        posts: true,
         _count: {
           select: { members: true },
         },

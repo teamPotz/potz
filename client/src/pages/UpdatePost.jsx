@@ -717,7 +717,7 @@ function UpdatePost() {
               hoverColor={COLOR.POTZ_PINK_600}
               fontColor={COLOR.WHITE}
             >
-              등록하기
+              수정하기
             </ButtonBg>
           </div>
         </form>
