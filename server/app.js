@@ -19,7 +19,6 @@ import searchHistoryRouter from './routes/searchHistory.js';
 import deliveryPots from './routes/deliveryPots.js';
 import deposits from './routes/deposits.js';
 import messagesRouter from './routes/messages.js';
-
 import { notFound, errorHandler } from './middlewares/error.js';
 
 const app = express();

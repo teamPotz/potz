@@ -45,6 +45,11 @@ export async function joinPot(potId, userId) {
         },
         take: 1,
       },
+      _count: {
+        select: {
+          participants: true,
+        },
+      },
     },
   });
 
@@ -57,6 +62,13 @@ export async function leavePot(potId, userId) {
     data: {
       participants: {
         disconnect: { id: userId },
+      },
+    },
+    include: {
+      _count: {
+        select: {
+          participants: true,
+        },
       },
     },
   });

@@ -1,102 +1,8 @@
 import styled from 'styled-components';
 import COLOR from '../../utility/Color';
 import Font from '../../utility/Font';
-// import DeleteImg from '../../../public/images/components/delete-icon.png';
-// import SendImg from '../../../public/images/components/send-icon.png';
 
-const chatInputBoxStyle = {
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'center',
-  // alignItems: 'center',
-  position: 'fixed',
-  width: '420px',
-  height: '61.83px',
-  bottom: '0',
-  background: `${COLOR.WHITE}`,
-};
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  // gap: 16.67px;
-  gap: 6px;
-  position: relative;
-  width: 420px;
-  height: 62.33px;
-  margin: 28px;
-  margin-top: 0px;
-`;
-
-const Input = styled.input`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 9.33333px 14px 9.33333px 14px;
-  gap: 105px;
-  width: 291.67px;
-  // height: 43.17px;
-  height: 25px;
-  background: ${COLOR.GRAY_100};
-  border-radius: 50.1667px;
-  border: none;
-
-  transition: 0.2s;
-  &:focus {
-    outline: none;
-    background: ${COLOR.GRAY_200};
-  }
-
-  font-family: ${Font.FontKor};
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16.3333px;
-  line-height: 150%;
-  color: ${COLOR.GRAY_500};
-`;
-
-const SideButton = styled.button`
-  background-color: ${COLOR.WHITE};
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.2s;
-  &:hover {
-    transform: scale(1.1);
-  }
-`;
-
-const CloseIcon = () => {
-  return (
-    <svg
-      width='21'
-      height='21'
-      viewBox='0 0 21 21'
-      fill='none'
-      xmlns='http://www.w3.org/2000/svg'
-    >
-      <path
-        d='M19.4824 1.75098L1.33335 19.9'
-        stroke='black'
-        strokeWidth='1.75'
-        strokeLinecap='round'
-        strokeLinejoin='round'
-      />
-      <path
-        d='M1.3335 1.75098L19.4826 19.9'
-        stroke='black'
-        strokeWidth='1.75'
-        strokeLinecap='round'
-        strokeLinejoin='round'
-      />
-    </svg>
-  );
-};
+const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 
 const SendIcon = () => {
   return (
@@ -122,13 +28,20 @@ function ChatInput({
   setNewMessage,
   sendMessage,
   isConnected,
+  isMenuBarOpened,
   toggleMenuBar,
 }) {
   return (
     <div style={chatInputBoxStyle}>
       <Wrapper>
         <SideButton onClick={toggleMenuBar}>
-          <CloseIcon />
+          <img
+            src={`${PF}icons/close.svg`}
+            style={{
+              rotate: isMenuBarOpened ? '' : '45deg',
+              transition: '0.2s ease-in-out',
+            }}
+          />
         </SideButton>
         <Input
           type='text'
@@ -145,5 +58,70 @@ function ChatInput({
     </div>
   );
 }
+
+const chatInputBoxStyle = {
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'center',
+  position: 'fixed',
+  width: '420px',
+  height: '61.83px',
+  bottom: '0',
+  background: `${COLOR.WHITE}`,
+};
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  // gap: 16.67px;
+  gap: 6px;
+  position: relative;
+  width: 420px;
+  height: 62.33px;
+  margin: 28px;
+  margin-top: 0px;
+`;
+
+const Input = styled.input`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px 14px 10px 14px;
+  gap: 105px;
+  width: 291.67px;
+  // height: 43.17px;
+  height: 25px;
+  background: ${COLOR.GRAY_100};
+  border-radius: 50px;
+  border: none;
+
+  transition: 0.2s;
+  &:focus {
+    outline: none;
+    background: ${COLOR.GRAY_200};
+  }
+
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16.3333px;
+  line-height: 150%;
+  color: ${COLOR.GRAY_500};
+`;
+
+const SideButton = styled.button`
+  background-color: ${COLOR.WHITE};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
 
 export default ChatInput;

@@ -1,10 +1,8 @@
 import styled from 'styled-components';
-import Font from '../utility/Font';
 
 //<ButtonBg backgroundColor={COLOR.YELLOW} hoverColor = {COLOR.POTZ_PINK_DEFAULT} fontColor={COLOR.WHITE}>children</ButtonBg>
 
 const ButtonBgStyle = styled.button`
-  font-family: ${Font.FontKor};
   font-size: 16px;
   font-style: normal;
   font-weight: 500;

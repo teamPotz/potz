@@ -210,7 +210,7 @@ function UserProfile() {
               <span>
                 <FontBig>{user.name}</FontBig>
                 <FontSm color={`${COLOR.GRAY_500}`}>
-                  {user.profile.address}
+                  {user.profile?.address}
                 </FontSm>
               </span>
               <svg

@@ -1,11 +1,214 @@
 import styled from 'styled-components';
 import COLOR from '../../utility/Color';
-import Font from '../../utility/Font';
 import NavBar from '../../components/ui/NavBar';
 import { useAuth } from '../../contexts/AuthContext';
-import { socket } from '../../../socket.js';
+import { roomSocket } from '../../../socket.js';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import timeAgoFormat from '../../utility/timeAgo.js';
+
+const LastMessage = ({ message }) => {
+  let lastMessage;
+  switch (message.type) {
+    case 'SYSTEM':
+      lastMessage = message.content.message;
+      break;
+    case 'TEXT':
+      lastMessage = `${message.sender.name}: ${message.content.message}`;
+      break;
+    case 'ORDER':
+      lastMessage = `${message.sender.name}님의 메뉴 선택`;
+      break;
+    case 'ORDER_CONFIRM':
+      lastMessage = `${message.sender.name}님의 메뉴 확인 완료!`;
+      break;
+    case 'DEPOSIT':
+      lastMessage = `${message.sender.name}님의 입금 인증`;
+      break;
+    case 'DEPOSIT_CONFIRM':
+      lastMessage = `${message.sender.name}님의 입금 확인 완료!`;
+      break;
+    default:
+      break;
+  }
+
+  return lastMessage;
+};
+
+function ChatList() {
+  const [deliveryPots, setDeliveryPots] = useState([]);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    async function getDeliveryPots() {
+      try {
+        const res = await fetch('http://localhost:5000/delivery-pots', {
+          credentials: 'include',
+        });
+        if (!res.ok) {
+          throw new Error('get delivery pots error');
+        }
+        const data = await res.json();
+        console.log(data);
+        setDeliveryPots(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    getDeliveryPots();
+  }, []);
+
+  useEffect(() => {
+    roomSocket.connect();
+
+    roomSocket.on('updateLastMessage', ({ potId, message }) => {
+      console.log('lastMessage', { potId, message });
+      setDeliveryPots((prevPots) => [
+        ...prevPots.map((p) =>
+          p.id === +potId
+            ? {
+                ...p,
+                messages: [message],
+                _count: {
+                  ...p._count,
+                  messages: p._count.messages + 1,
+                },
+              }
+            : p
+        ),
+      ]);
+    });
+
+    roomSocket.on('updateUserList', ({ potId, participants, message }) => {
+      console.log('updateList', { potId, participants, message });
+      setDeliveryPots((prevPots) => [
+        ...prevPots.map((p) =>
+          p.id === +potId
+            ? {
+                ...p,
+                messages: [message],
+                _count: {
+                  ...p._count,
+                  participants,
+                },
+              }
+            : p
+        ),
+      ]);
+    });
+
+    return () => {
+      roomSocket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => console.log(deliveryPots), []);
+
+  // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
+  const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const ReSizeHandler = () => {
+      setdisplayWidth(window.innerWidth);
+    };
+
+    //윈도우 리사이즈가 일어나면 콜백 호출
+    window.addEventListener('resize', ReSizeHandler);
+
+    return () => {
+      window.removeEventListener('resize', ReSizeHandler);
+    };
+  }, []);
+
+  const navbarStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '28px',
+    alignItems: 'end',
+    position: 'fixed',
+    bottom: 0,
+    maxWidth: '420px',
+    width: displayWidth ? displayWidth : '420px',
+  };
+
+  return (
+    <div className='potz_container' style={styles.background}>
+      <Title>배달팟 채팅 목록</Title>
+      <div style={styles.sideTitle}>
+        <FontMd color={`${COLOR.GRAY_400}`}>
+          지금 참여중인 배달팟 채팅 {deliveryPots.length}
+        </FontMd>
+        <svg
+          width='7'
+          height='6'
+          viewBox='0 0 7 6'
+          fill='none'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          <path
+            d='M3.51469 2.3038L5.86667 4.94845C5.99115 5.08759 6.15954 5.16569 6.33507 5.16569C6.51059 5.16569 6.67899 5.08759 6.80347 4.94845C6.86574 4.879 6.91517 4.79637 6.9489 4.70533C6.98263 4.61429 7 4.51665 7 4.41802C7 4.3194 6.98263 4.22175 6.9489 4.13072C6.91517 4.03968 6.86574 3.95705 6.80347 3.8876L3.98641 0.720007C3.92465 0.649985 3.85117 0.594407 3.7702 0.556479C3.68924 0.518551 3.6024 0.499023 3.51469 0.499023C3.42698 0.499023 3.34014 0.518551 3.25918 0.556479C3.17821 0.594407 3.10473 0.649984 3.04297 0.720007L0.192687 3.8876C0.13111 3.95741 0.082393 4.0402 0.0493291 4.13122C0.0162657 4.22224 -0.000494666 4.3197 1.0777e-05 4.41802C-0.000494675 4.51634 0.0162657 4.61381 0.0493291 4.70483C0.082393 4.79585 0.13111 4.87864 0.192687 4.94845C0.317171 5.08759 0.485564 5.16569 0.66109 5.16569C0.836615 5.16569 1.00501 5.08759 1.12949 4.94845L3.51469 2.3038Z'
+            fill='#808080'
+          />
+        </svg>
+      </div>
+
+      <div style={styles.content}>
+        {deliveryPots.map((pot) => (
+          <Chat
+            key={pot.id}
+            onClick={() =>
+              navigate(`/chats/${pot.id}`, {
+                state: { storeName: pot.post.storeName },
+              })
+            }
+          >
+            <Content1>
+              <img
+                style={{ width: '70px', height: '100%' }}
+                src={`http://localhost:5000${pot.post.imageUrl}`}
+              />
+              <div>
+                <div style={styles.space}>
+                  <FontBig>{pot.post.storeName}</FontBig>
+                  {pot._count.messages > 0 && (
+                    <UnreadCounter>{pot._count.messages}</UnreadCounter>
+                  )}
+                </div>
+                <div style={styles.rowFlex}>
+                  <GreenDot />
+                  <FontMd color={`${COLOR.GRAY_400}`}>
+                    <span>{pot._count.participants}명 참여중</span>
+                    <span> | </span>
+                    <span>
+                      {timeAgoFormat(pot.messages?.at(0).createdAt, 'ko')}
+                    </span>
+                  </FontMd>
+                </div>
+                <div style={styles.rowFlex}>
+                  <FontMd color={`${COLOR.GRAY_400}`}>
+                    {pot.messages && (
+                      <LastMessage message={pot.messages.at(0)} />
+                    )}
+                  </FontMd>
+                </div>
+              </div>
+            </Content1>
+            <Content2>
+              <BellIcon />
+              <FontMd color={`${COLOR.BLACK}`}>방장 요청사항</FontMd>
+              <FontMd color={`${COLOR.BLACK}`}>n개</FontMd>
+              <AlarmMessage>정산해요</AlarmMessage>
+            </Content2>
+          </Chat>
+        ))}
+      </div>
+      <div style={navbarStyle}>
+        <NavBar />
+      </div>
+    </div>
+  );
+}
 
 const Title = styled.div`
   display: flex;
@@ -18,7 +221,6 @@ const Title = styled.div`
   background-color: ${COLOR.WHITE};
   position: fixed;
   top: 0;
-  font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: 700;
   font-size: 18.6667px;
@@ -62,15 +264,14 @@ const GreenDot = styled.div`
   background-color: ${COLOR.GREEN};
   border-radius: 50%;
 `;
-const Alarm = styled.div`
-  width: 30.33px;
-  height: 18.67px;
+const UnreadCounter = styled.div`
+  width: 30px;
+  height: 18px;
   background-color: ${COLOR.POTZ_PINK_DEFAULT};
-  border-radius: 11.6667px;
-  font-family: 'Noto Sans CJK KR';
+  border-radius: 0.8rem;
   font-style: normal;
   font-weight: 700;
-  font-size: 11.6667px;
+  font-size: 0.74rem;
   color: ${COLOR.WHITE};
   display: flex;
   align-items: center;
@@ -85,13 +286,11 @@ const AlarmMessage = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
 `;
 const FontBig = styled.p`
-  font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: 500;
   font-size: 16.3333px;
@@ -99,7 +298,6 @@ const FontBig = styled.p`
   margin: 0;
 `;
 const FontMd = styled.p`
-  font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -165,133 +363,5 @@ const BellIcon = () => {
     </svg>
   );
 };
-
-function ChatList() {
-  const [deliveryPots, setDeliveryPots] = useState([]);
-  const navigate = useNavigate();
-  const { user } = useAuth();
-
-  useEffect(() => {
-    async function getDeliveryPots() {
-      try {
-        const res = await fetch('http://localhost:5000/delivery-pots', {
-          credentials: 'include',
-        });
-        if (!res.ok) {
-          throw new Error('get delivery pots error');
-        }
-        const data = await res.json();
-        console.log(data);
-        setDeliveryPots(data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    getDeliveryPots();
-  }, []);
-
-  useEffect(() => {
-    socket.connect();
-    // socket.on('connect', () => setIsConnected(true));
-    // socket.on('disconnect', () => setIsConnected(false));
-
-    return () => {
-      // socket.off('connect', () => setIsConnected(true));
-      // socket.disconnect();
-    };
-  });
-
-  // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
-  const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const ReSizeHandler = () => {
-      setdisplayWidth(window.innerWidth);
-    };
-
-    //윈도우 리사이즈가 일어나면 콜백 호출
-    window.addEventListener('resize', ReSizeHandler);
-
-    return () => {
-      window.removeEventListener('resize', ReSizeHandler);
-    };
-  }, []);
-
-  const navbarStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '28px',
-    alignItems: 'end',
-    position: 'fixed',
-    bottom: 0,
-    maxWidth: '420px',
-    width: displayWidth ? displayWidth : '420px',
-  };
-
-  return (
-    <div className='potz_container' style={styles.background}>
-      <Title>배달팟 채팅 목록</Title>
-      <div style={styles.sideTitle}>
-        <FontMd color={`${COLOR.GRAY_400}`}>
-          지금 참여중인 배달팟 채팅 {deliveryPots.length}
-        </FontMd>
-        <svg
-          width='7'
-          height='6'
-          viewBox='0 0 7 6'
-          fill='none'
-          xmlns='http://www.w3.org/2000/svg'
-        >
-          <path
-            d='M3.51469 2.3038L5.86667 4.94845C5.99115 5.08759 6.15954 5.16569 6.33507 5.16569C6.51059 5.16569 6.67899 5.08759 6.80347 4.94845C6.86574 4.879 6.91517 4.79637 6.9489 4.70533C6.98263 4.61429 7 4.51665 7 4.41802C7 4.3194 6.98263 4.22175 6.9489 4.13072C6.91517 4.03968 6.86574 3.95705 6.80347 3.8876L3.98641 0.720007C3.92465 0.649985 3.85117 0.594407 3.7702 0.556479C3.68924 0.518551 3.6024 0.499023 3.51469 0.499023C3.42698 0.499023 3.34014 0.518551 3.25918 0.556479C3.17821 0.594407 3.10473 0.649984 3.04297 0.720007L0.192687 3.8876C0.13111 3.95741 0.082393 4.0402 0.0493291 4.13122C0.0162657 4.22224 -0.000494666 4.3197 1.0777e-05 4.41802C-0.000494675 4.51634 0.0162657 4.61381 0.0493291 4.70483C0.082393 4.79585 0.13111 4.87864 0.192687 4.94845C0.317171 5.08759 0.485564 5.16569 0.66109 5.16569C0.836615 5.16569 1.00501 5.08759 1.12949 4.94845L3.51469 2.3038Z'
-            fill='#808080'
-          />
-        </svg>
-      </div>
-
-      <div className='contents_container'></div>
-      <div style={styles.content}>
-        {deliveryPots.map((pot) => (
-          <Chat
-            key={pot.id}
-            onClick={() =>
-              navigate(`/chats/${pot.id}`, {
-                state: { storeName: pot.post.storeName },
-              })
-            }
-          >
-            <Content1>
-              <img
-                style={{ width: '70px' }}
-                src={`http://localhost:5000${pot.post.imageUrl}`}
-              />
-              <div>
-                <div style={styles.space}>
-                  <FontBig>{pot.post.storeName}</FontBig>
-                  <Alarm>n</Alarm>
-                </div>
-                <div style={styles.rowFlex}>
-                  <GreenDot />
-                  <FontMd color={`${COLOR.GRAY_400}`}>
-                    n명 참여중 | n분 전
-                  </FontMd>
-                </div>
-              </div>
-            </Content1>
-            <Content2>
-              <BellIcon />
-              <FontMd color={`${COLOR.BLACK}`}>방장 요청사항</FontMd>
-              <FontMd color={`${COLOR.BLACK}`}>n개</FontMd>
-              <AlarmMessage>정산해요</AlarmMessage>
-            </Content2>
-          </Chat>
-        ))}
-      </div>
-      <div style={navbarStyle}>
-        <NavBar />
-      </div>
-    </div>
-  );
-}
 
 export default ChatList;
