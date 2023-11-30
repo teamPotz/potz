@@ -41,46 +41,21 @@ export async function getUserDataById(req, res) {
   }
 }
 
-export async function getUserCommunitiesById(req, res) {
+export async function deleteUserCommunity(req, res) {
+  console.log('탈퇴할 커뮤니티id:', req.body);
   try {
-    const userData = await prisma.User.findMany({
+    const deleteCommunity = await prisma.CommunitiesOnUsers.delete({
       where: {
-        id: req.user.id,
-      },
-      select: {
-        communities: {
-          select: {
-            community: {
-              select: {
-                id: true,
-                name: true,
-                imageUrl: true,
-                communityTypes: {
-                  select: {
-                    communityType: {
-                      select: {
-                        id: true,
-                        name: true,
-                      },
-                    },
-                  },
-                },
-                _count: {
-                  select: {
-                    members: true,
-                    posts: true,
-                  },
-                },
-              },
-            },
-          },
+        userId_communityId: {
+          communityId: req.body.communityId,
+          userId: req.user.id,
         },
       },
     });
-    res.status(200).send(userData);
+    res.status(201).send(deleteCommunity);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get userData error' });
+    res.status(500).json({ message: 'delete user-community error' });
   }
 }
 

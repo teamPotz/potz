@@ -154,15 +154,15 @@ const router = createBrowserRouter([
         element: <UserProfile />,
       },
       {
-        path: '/my-bigdata',
+        path: 'my-page/bigdata',
         element: <MyBigData/>,
+      },
+      {
+        path: 'my-page/communites',
+        element: <MyCommunitySettings/>
       },
       { path: '/chats/', element: <ChatList /> },
       { path: '/chats/:potId', element: <Chat /> },
-      {
-        path: 'my-communites',
-        element: <MyCommunitySettings/>
-      }
     ],
   },
 ]);
