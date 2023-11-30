@@ -34,10 +34,14 @@ export async function getDeliveryPots(req, res, next) {
             content: true,
             createdAt: true,
           },
-          orderBy: {
-            createdAt: 'desc',
-          },
+          orderBy: { createdAt: 'desc' },
           take: 1,
+        },
+        status: {
+          select: {
+            id: true,
+            status: true,
+          },
         },
         _count: {
           select: {
@@ -176,6 +180,130 @@ export async function getPotMessages(req, res, next) {
   try {
     const messages = await getMessagesByPotId(potId);
     res.status(200).json(messages);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}
+
+export async function setPotStatus(req, res, next) {
+  const { potId } = req.params;
+  const { status } = req.body;
+
+  try {
+    // 1. 방장 여부 확인
+    const existingPot = await prisma.deliveryPot.findUnique({
+      where: { id: +potId },
+    });
+    if (!existingPot) {
+      throw new Error(`cant find delivery pot #${potId}`);
+    }
+    if (existingPot.potMasterId !== req.user.id) {
+      throw new Error('only pot master can confirm order');
+    }
+
+    // 2. 이미 해당 상태인지 체크
+    const checkStatus = await prisma.deliveryPot.findUnique({
+      where: {
+        id: +potId,
+        status: { some: { status } },
+      },
+    });
+    if (checkStatus) {
+      throw new Error(`already in ${status} status`);
+    }
+
+    // 3. update status
+    const pot = await prisma.deliveryPot.update({
+      where: { id: +potId },
+      data: {
+        status: {
+          create: {
+            status,
+          },
+        },
+      },
+      include: {
+        status: true,
+        post: {
+          select: {
+            meetingLocation: true,
+          },
+        },
+        potMaster: {
+          select: {
+            profile: {
+              select: {
+                accountHolderName: true,
+                accountNumber: true,
+                bankName: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // 4. create request message
+    let message;
+    switch (status) {
+      case 'MENU_REQUEST':
+        message = '각자 메뉴를 선택해주세요.';
+        break;
+      // todo : set 배달비 to current deiveryFee
+      // todo : append pot master's account info
+      case 'DEPOSIT_REQUEST':
+        if (!pot.potMaster.profile) {
+          throw new Error('계좌정보가 입력되지 않았습니다.');
+        }
+        const { bankName, accountNumber, accountHolderName } =
+          pot.potMaster.profile;
+        message = `각자 메뉴가격+{배달비} 원씩 보내주세요. ${bankName} ${accountNumber} ${accountHolderName}`;
+        break;
+      case 'PICKUP_REQUEST':
+        message = `배달이 완료되었습니다. ${pot.post.meetingLocation}으로 나와주세요.`;
+        break;
+
+      default:
+        break;
+    }
+    const requestMessage = await createMessage('REQUEST', potId, req.user.id, {
+      message,
+    });
+
+    // send message to chatroom
+    const io = req.app.get('io');
+    io.of('/chat').to(potId.toString()).emit('message', requestMessage);
+
+    // send message to chatlist
+    io.of('/room').emit('updateLastMessage', {
+      potId: +potId,
+      message: requestMessage,
+    });
+
+    io.of('/room').emit('updateStatus', {
+      potId: +potId,
+      status: { id: pot.status.id, status },
+    });
+
+    console.log('request message sent');
+    res.status(201).json(requestMessage);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}
+
+export async function cancelPotStatus(req, res, next) {
+  const { potId } = req.params;
+  const { status } = req.body;
+
+  try {
+    const pot = await prisma.deliveryPotStatus.deleteMany({
+      // where: { potId: +potId, status },
+      where: { potId: +potId },
+    });
+    res.status(200).json(pot);
   } catch (error) {
     console.error(error);
     next(error);

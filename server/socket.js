@@ -1,6 +1,4 @@
 import { Server } from 'socket.io';
-import { getParticipantsByPotId } from './services/deliveryPots.js';
-import { getSocketId, setSocketId } from './services/users.js';
 import { readMessage } from './services/messages.js';
 
 export default function (server, app) {
@@ -11,32 +9,32 @@ export default function (server, app) {
   const chat = io.of('/chat');
   const room = io.of('/room');
 
-  let users = [];
-  const usersByRoom = {};
+  // let users = [];
+  // function addUser(userId, socketId) {
+  //   const userExists = users.some((user) => user.userId === userId);
+  //   if (userExists) return;
 
-  function addUser(userId, socketId) {
-    const userExists = users.some((user) => user.userId === userId);
-    if (userExists) return;
+  //   users.push({ userId, socketId });
+  // }
 
-    users.push({ userId, socketId });
-  }
+  // function removeUser(socketId) {
+  //   users = users.filter((user) => user.socketId === socketId);
+  // }
 
-  function removeUser(socketId) {
-    users = users.filter((user) => user.socketId === socketId);
-  }
+  // const usersByRoom = {};
+  // function joinRoom(potId, userId, socketId) {
+  //   const userJoined = usersByRoom[potId]?.some(
+  //     (user) => user.userId === userId
+  //   );
+  //   if (userJoined) return;
 
-  function joinRoom(potId, userId, socketId) {
-    const userJoined = usersByRoom[potId]?.some(
-      (user) => user.userId === userId
-    );
-    if (userJoined) return;
+  //   if (!usersByRoom[potId]) {
+  //     usersByRoom[potId] = [];
+  //   }
+  //   usersByRoom[potId].push({ socketId: socketId, userId: userId });
+  // }
 
-    if (!usersByRoom[potId]) {
-      usersByRoom[potId] = [];
-    }
-    usersByRoom[potId].push({ socketId: socketId, userId: userId });
-  }
-
+  // room namespace
   room.on('connection', (socket) => {
     console.log(`${socket.id} connected to room namespace`);
 
@@ -45,6 +43,7 @@ export default function (server, app) {
     });
   });
 
+  // chat namespace
   chat.on('connection', (socket) => {
     // console.log(socket.request.headers.referer);
     app.set('socket', socket);
@@ -62,8 +61,8 @@ export default function (server, app) {
 
       // joinRoom(potId, user.id, socket.id);
 
-      // console.log(usersByRoom);
       // room.emit('updateUserlist', usersByRoom);
+      // console.log(usersByRoom);
 
       // const participants = socket.adapter.rooms.get(potId).size;
       // console.log({ potId, participants });
@@ -79,7 +78,6 @@ export default function (server, app) {
         chat.to(potId).emit('updateCount', {
           messageId,
           readBy: message.readBy,
-          // readCount: message._count.readBy,
         });
       } catch (error) {
         console.error(error);
