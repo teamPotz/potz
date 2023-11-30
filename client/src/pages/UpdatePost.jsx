@@ -204,7 +204,7 @@ function UpdatePost() {
       });
       const data = await res.json();
       alert('수정이 완료되었습니다.');
-      navigate('/');
+      navigate(`/posts/${id}`);
       console.log(data);
     } catch (error) {
       console.log(error);

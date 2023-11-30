@@ -174,7 +174,7 @@ function CreatePost() {
       });
       const data = await res.json();
       alert('등록이 완료되었습니다.');
-      navigate('/');
+      navigate(`/community/${communityId}`);
       console.log(data);
     } catch (error) {
       console.log(error);
