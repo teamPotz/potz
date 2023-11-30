@@ -120,10 +120,7 @@ const router = createBrowserRouter([
         path: '/category',
         element: <CategoryPage />,
       },
-      {
-        path: '/category-search',
-        element: <CategorySearch />,
-      },
+
       {
         path: '/liked-list',
         element: <LikedList />,
@@ -154,7 +151,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/my-bigdata',
-        element: <MyBigData/>,
+        element: <MyBigData />,
       },
       { path: '/chats/', element: <ChatList /> },
       { path: '/chats/:potId', element: <Chat /> },
