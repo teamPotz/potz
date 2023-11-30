@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import COLOR from '../../utility/Color';
-import Font from '../../utility/Font';
 import BackNavBar from '../../components/ui/BackNavBar';
 import ImageFileInput from '../form/ImageFileInput';
 import ButtonBg from '../ButtonBG';
