@@ -194,7 +194,11 @@ function UserProfile() {
         <Box height={'227.33px'} align={'column'}>
           <Profile1>
             <img
-              src={`http://localhost:5000/${user.profile.imageUrl}`}
+              src={
+                user.profile.imageUrl.startsWith('https')
+                  ? user.profile.imageUrl
+                  : `http://localhost:5000/${user.profile.imageUrl}`
+              }
               style={{
                 width: '70px',
                 height: '70px',

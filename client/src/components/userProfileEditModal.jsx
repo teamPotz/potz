@@ -146,7 +146,11 @@ function UserProfileEditModal(props) {
           ) : (
             <img
               style={profilfeImgStyle}
-              src={`http://localhost:5000/${user.profile.imageUrl}`}
+              src={
+                user.profile.imageUrl.startsWith('https')
+                  ? user.profile.imageUrl
+                  : `http://localhost:5000/${user.profile.imageUrl}`
+              }
             ></img>
           )}
           <div style={fontStyle}>{user.name}</div>
