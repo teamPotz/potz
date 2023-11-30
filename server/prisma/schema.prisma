@@ -43,15 +43,17 @@ model User {
 
 // 사용자 프로필
 model UserProfile {
-  id            Int      @id @default(autoincrement())
-  imageUrl      String?
-  address       String?
-  latitude      Float?
-  longitude     Float?
-  accountNumber String?
-  user          User     @relation(fields: [userId], references: [id])
-  userId        Int      @unique
-  updatedAt     DateTime @updatedAt
+  id                Int      @id @default(autoincrement())
+  imageUrl          String?
+  address           String?
+  latitude          Float?
+  longitude         Float?
+  accountHolderName String?
+  accountNumber     String?
+  bankName          String?
+  user              User     @relation(fields: [userId], references: [id])
+  userId            Int      @unique
+  updatedAt         DateTime @updatedAt
 }
 
 // 공동체
@@ -183,9 +185,19 @@ model DeliveryPot {
   orders             DeliveryOrder[]
   deposits           Deposit[]
   messages           Message[]
+  status             DeliveryPotStatus[]
   deliveryPotHistory DeliveryPotHistory?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
+}
+
+model DeliveryPotStatus {
+  id          Int           @id @default(autoincrement())
+  status      PotStatusType
+  deliveryPot DeliveryPot   @relation(fields: [potId], references: [id])
+  potId       Int
+
+  @@unique([potId, status])
 }
 
 // 배달 주문
@@ -255,8 +267,15 @@ enum MessageType {
   SYSTEM
   TEXT
   IMAGE
+  REQUEST
   ORDER
   ORDER_CONFIRM
   DEPOSIT
   DEPOSIT_CONFIRM
+}
+
+enum PotStatusType {
+  MENU_REQUEST
+  DEPOSIT_REQUEST
+  PICKUP_REQUEST
 }
