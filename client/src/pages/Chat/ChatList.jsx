@@ -4,8 +4,36 @@ import NavBar from '../../components/ui/NavBar';
 import { useAuth } from '../../contexts/AuthContext';
 import { roomSocket } from '../../../socket.js';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import timeAgoFormat from '../../utility/timeAgo.js';
+
+const LastMessage = ({ message }) => {
+  let lastMessage;
+  switch (message.type) {
+    case 'SYSTEM':
+      lastMessage = message.content.message;
+      break;
+    case 'TEXT':
+      lastMessage = `${message.sender.name}: ${message.content.message}`;
+      break;
+    case 'ORDER':
+      lastMessage = `${message.sender.name}님의 메뉴 선택`;
+      break;
+    case 'ORDER_CONFIRM':
+      lastMessage = `${message.sender.name}님의 메뉴 확인 완료!`;
+      break;
+    case 'DEPOSIT':
+      lastMessage = `${message.sender.name}님의 입금 인증`;
+      break;
+    case 'DEPOSIT_CONFIRM':
+      lastMessage = `${message.sender.name}님의 입금 확인 완료!`;
+      break;
+    default:
+      break;
+  }
+
+  return lastMessage;
+};
 
 function ChatList() {
   const [deliveryPots, setDeliveryPots] = useState([]);
@@ -33,9 +61,6 @@ function ChatList() {
 
   useEffect(() => {
     roomSocket.connect();
-    // roomSocket.on('updateUserlist', (data) => {
-    //   console.log('userlist', data);
-    // });
 
     roomSocket.on('updateLastMessage', ({ potId, message }) => {
       console.log('lastMessage', { potId, message });
@@ -45,7 +70,10 @@ function ChatList() {
             ? {
                 ...p,
                 messages: [message],
-                _count: { ...p._count, messages: p._count.messages + 1 },
+                _count: {
+                  ...p._count,
+                  messages: p._count.messages + 1,
+                },
               }
             : p
         ),
@@ -57,7 +85,14 @@ function ChatList() {
       setDeliveryPots((prevPots) => [
         ...prevPots.map((p) =>
           p.id === +potId
-            ? { ...p, _count: { participants }, messages: [message] }
+            ? {
+                ...p,
+                messages: [message],
+                _count: {
+                  ...p._count,
+                  participants,
+                },
+              }
             : p
         ),
       ]);
@@ -67,6 +102,8 @@ function ChatList() {
       roomSocket.disconnect();
     };
   }, []);
+
+  useEffect(() => console.log(deliveryPots), []);
 
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
@@ -150,13 +187,9 @@ function ChatList() {
                 </div>
                 <div style={styles.rowFlex}>
                   <FontMd color={`${COLOR.GRAY_400}`}>
-                    {
-                      pot.messages && (
-                        <LastMessage message={pot.messages.at(0)} />
-                      )
-                      // pot.messages.at(0).content?.message}
-                      // pot.messages.at(0).type
-                    }
+                    {pot.messages && (
+                      <LastMessage message={pot.messages.at(0)} />
+                    )}
                   </FontMd>
                 </div>
               </div>
@@ -329,34 +362,6 @@ const BellIcon = () => {
       />
     </svg>
   );
-};
-
-const LastMessage = ({ message }) => {
-  let lastMessage;
-  switch (message.type) {
-    case 'SYSTEM':
-      lastMessage = message.content.message;
-      break;
-    case 'TEXT':
-      lastMessage = `${message.sender.name}: ${message.content.message}`;
-      break;
-    case 'ORDER':
-      lastMessage = `${message.sender.name}님의 메뉴 선택`;
-      break;
-    case 'ORDER_CONFIRM':
-      lastMessage = `${message.sender.name}님의 메뉴 확인 완료!`;
-      break;
-    case 'DEPOSIT':
-      lastMessage = `${message.sender.name}님의 입금 인증`;
-      break;
-    case 'DEPOSIT_CONFIRM':
-      lastMessage = `${message.sender.name}님의 입금 확인 완료!`;
-      break;
-    default:
-      break;
-  }
-
-  return lastMessage;
 };
 
 export default ChatList;
