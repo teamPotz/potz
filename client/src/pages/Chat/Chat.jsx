@@ -48,23 +48,6 @@ function Chat() {
   const { joinPot, leavePot } = useChat();
   const navigate = useNavigate();
 
-  async function fetchMessages() {
-    setIsLoadingGetMessage(true);
-    try {
-      const res = await fetch(
-        `http://localhost:5000/delivery-pots/${potId}/messages`,
-        { credentials: 'include' }
-      );
-      const data = await res.json();
-      // console.log(data);
-      setMessages(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoadingGetMessage(false);
-    }
-  }
-
   // text message
   async function sendTextMessage() {
     if (!newMessage) return;
@@ -263,78 +246,73 @@ function Chat() {
     }
   }
 
-  // useEffect(() => {
-  //   socket.connect();
-  //   socket.on('connect', () => setIsConnected(true));
-  //   socket.on('disconnect', () => setIsConnected(false));
-  //   socket.emit('join', { potId, user });
-
-  //   socket.on('message', (data) => {
-  //     console.log('message', data);
-  //     setMessages((prevMessages) => [...prevMessages, data]);
-  //   });
-
-  //   // return () => {
-  //   //   socket.off('connect', () => setIsConnected(true));
-  //   //   socket.disconnect();
-  //   // };
-  // }, []);
-
   useEffect(() => {
-    async function connectRoom() {
-      await joinPot(potId, user, socket);
-      await fetchMessages();
+    socket.connect();
+    socket.on('connect', () => setIsConnected(true));
+    socket.on('disconnect', () => setIsConnected(false));
 
-      socket.connect();
-      // socket.emit('setUserId', user.id);
-      socket.on('connect', () => setIsConnected(true));
-      socket.on('disconnect', () => setIsConnected(false));
+    // 메시지 수신
+    socket.on('message', (data) => {
+      console.log('message', data);
+      setMessages((prevMessages) => [...prevMessages, data]);
 
-      // 메시지 수신
-      socket.on('message', (data) => {
-        console.log('message', data);
-        setMessages((prevMessages) => [...prevMessages, data]);
-
-        // 읽음 처리 emit
-        socket.emit('readMessage', {
-          potId,
-          messageId: data.id,
-          userId: user.id,
-        });
+      // 읽음 처리 emit
+      socket.emit('readMessage', {
+        potId,
+        messageId: data.id,
+        userId: user.id,
       });
+    });
 
-      // 메시지 읽음
-      socket.on('updateCount', ({ messageId, readBy, readCount }) => {
-        console.log({ messageId, readBy, readCount });
-        // update message
-        setMessages((prevMessages) =>
-          prevMessages.map((m) => (m.id === messageId ? { ...m, readBy } : m))
-        );
-      });
+    // 메시지 읽음
+    socket.on('updateCount', ({ messageId, readBy }) => {
+      console.log({ messageId, readBy });
+      setMessages((prevMessages) =>
+        prevMessages.map((m) => (m.id === messageId ? { ...m, readBy } : m))
+      );
+    });
 
-      // 메시지 전부 읽음(방 진입 시)
-      socket.on('updateCountAll', (userId) => {
-        console.log(userId);
-        // update message
-        setMessages((prevMessages) =>
-          prevMessages.map((m) => ({
-            ...m,
-            readBy: [...new Set([...m.readBy, userId])],
-          }))
-        );
-      });
+    // 메시지 전부 읽음(방 진입 시)
+    socket.on('updateCountAll', (userId) => {
+      console.log(userId);
+      setMessages((prevMessages) =>
+        prevMessages.map((m) => ({
+          ...m,
+          readBy: [...new Set([...m.readBy, userId])],
+        }))
+      );
+    });
 
-      socket.emit('join', { potId, user });
-    }
-
-    connectRoom();
-
+    socket.emit('join', { potId, user });
     return () => {
-      //  setSelectedPot(null);
       socket.disconnect();
       setIsConnected(false);
     };
-  }, []);
+  }, [potId, user]);
+
+  useEffect(() => {
+    joinPot(potId, user, socket);
+  }, [potId, user, joinPot]);
+
+  useEffect(() => {
+    async function fetchMessages() {
+      setIsLoadingGetMessage(true);
+      try {
+        const res = await fetch(
+          `http://localhost:5000/delivery-pots/${potId}/messages`,
+          { credentials: 'include' }
+        );
+        const data = await res.json();
+        // console.log(data);
+        setMessages(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoadingGetMessage(false);
+      }
+    }
+    fetchMessages();
+  }, [potId]);
 
   // check PotMaster
   useEffect(() => {
@@ -360,11 +338,6 @@ function Chat() {
     }
     getPotMasterId();
   }, [potId, user]);
-
-  {
-    /* <button onClick={() => socket.connect()}>Connect</button> */
-    /* <button onClick={() => socket.disconnect()}>disConnect</button> */
-  }
 
   return (
     <div
