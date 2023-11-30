@@ -5,13 +5,16 @@ import {
   getUserData,
   getUserDataById,
   getUserOrderDataById,
+  deleteUserCommunity,
   updateUserById,
 } from '../controllers/users.js';
+
 
 const router = Router();
 router.get('/', getUserData);
 router.get('/', verifyAuth, getUserData);
 router.get('/user-info', verifyAuth, getUserDataById);
+router.patch('/user-community/delete', verifyAuth, deleteUserCommunity);
 router.get('/user-order', verifyAuth, getUserOrderDataById);
 router.patch(
   '/update-profile',

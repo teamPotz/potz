@@ -121,11 +121,11 @@ const styles = {
 };
 
 const text = [
-  '내 공동체 관리',
-  '알림 설정',
-  '참여 내역',
-  '결제 내역',
-  '이벤트 및 공지사항',
+  ['내 공동체 관리', '/my-page/communites'],
+  ['알림 설정'],
+  ['참여 내역'],
+  ['결제 내역'],
+  ['이벤트 및 공지사항'],
 ];
 
 function UserProfile() {
@@ -253,7 +253,7 @@ function UserProfile() {
         </div>
         <div>
           <svg
-            onClick={() => navigate('/my-bigdata')}
+            onClick={() => navigate('/my-page/bigdata')}
             width='29'
             height='29'
             viewBox='0 0 29 29'
@@ -357,11 +357,12 @@ function UserProfile() {
               <Box height={'61.83px'}>
                 <div>
                   <FontMd weight={400} color={COLOR.BLACK}>
-                    {text}
+                    {text[0]}
                   </FontMd>
                 </div>
                 <div>
                   <svg
+                    onClick={() => navigate(text[1])}
                     width='29'
                     height='29'
                     viewBox='0 0 29 29'

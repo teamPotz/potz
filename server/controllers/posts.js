@@ -853,7 +853,6 @@ export async function updatePost(req, res) {
         categoryId: +categoryId,
         recruitment: +recruitment,
         meetingLocation,
-        communityId: 1,
       };
     }
     const updatePost = await prisma.post.update({
