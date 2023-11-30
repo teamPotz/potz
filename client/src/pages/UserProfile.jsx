@@ -16,7 +16,6 @@ const Box = styled.div`
   height: ${(props) => props.height};
   justify-content: space-between;
   background-color: ${COLOR.WHITE};
-  gap: 21px;
   div {
     margin: 28px;
     svg {

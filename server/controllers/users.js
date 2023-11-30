@@ -79,7 +79,7 @@ export async function getUserOrderDataById(req, res) {
 
 export async function updateUserById(req, res) {
   console.log(req.user.id);
-  console.log(req.file.path);
+  console.log(req.file);
   console.log(req.body.userName);
   const imgUrl = req.file.path.replace('uploads', '');
 

@@ -180,7 +180,7 @@ const LikedComp = (props) => {
           width={150}
           height={150}
           style={imgStyle}
-          src={`http://localhost:5000/${postData.imageUrl}`}
+          src={`http://localhost:5000/images/${postData.imageUrl}`}
         ></img>
       </div>
       <div>
