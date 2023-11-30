@@ -53,6 +53,8 @@ function MessageContainer({
                 />
               </div>
             );
+          case 'REQUEST':
+            return <div key={message.id}>{message.content.message}</div>;
           case 'ORDER':
             return (
               <div ref={scrollRef}>

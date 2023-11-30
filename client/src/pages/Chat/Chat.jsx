@@ -246,6 +246,43 @@ function Chat() {
     }
   }
 
+  // set status
+  async function setStatus(status) {
+    if (!isPotMaster) {
+      return alert('방장만 할 수 있습니다.');
+    }
+
+    if (
+      status === 'DEPOSIT_REQUEST' &&
+      (!user.profile?.bankName ||
+        !user.profile?.accountNumber ||
+        !user.profile?.accountHolderName)
+    ) {
+      return alert('계좌정보가 없습니다.');
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:5000/delivery-pots/${potId}/status`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ status }),
+        }
+      );
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData?.message);
+      }
+      const data = await res.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+      alert(error);
+    }
+  }
+
   useEffect(() => {
     socket.connect();
     socket.on('connect', () => setIsConnected(true));
@@ -349,9 +386,9 @@ function Chat() {
       {/* test buttons */}
       <div style={{ position: 'fixed', top: '70px' }}>
         <div>
-          <button>메뉴요청</button>
-          <button>정산요청</button>
-          <button>수령요청</button>
+          <button onClick={() => setStatus('MENU_REQUEST')}>메뉴요청</button>
+          <button onClick={() => setStatus('DEPOSIT_REQUEST')}>입금요청</button>
+          <button onClick={() => setStatus('PICKUP_REQUEST')}>수령요청</button>
         </div>
         <div>
           <button onClick={() => setOpenOrderModal(true)}>메뉴 선택</button>
