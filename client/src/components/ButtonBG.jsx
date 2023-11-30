@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+//<ButtonBg backgroundColor={COLOR.YELLOW} hoverColor = {COLOR.POTZ_PINK_DEFAULT} fontColor={COLOR.WHITE}>children</ButtonBg>
+
 const ButtonBgStyle = styled.button`
   font-size: 16px;
   font-style: normal;
