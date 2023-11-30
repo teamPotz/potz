@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import ButtonBg from '../components/ButtonBG';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import UserProfileEditModal from '../components/userProfileEditModal';
 
 const Box = styled.div`
   display: flex;
@@ -15,7 +16,6 @@ const Box = styled.div`
   height: ${(props) => props.height};
   justify-content: space-between;
   background-color: ${COLOR.WHITE};
-  gap: 21px;
   div {
     margin: 28px;
     svg {
@@ -120,18 +120,20 @@ const styles = {
 };
 
 const text = [
-  '내 공동체 관리',
-  '알림 설정',
-  '참여 내역',
-  '결제 내역',
-  '이벤트 및 공지사항',
+  ['내 공동체 관리', '/my-page/communites'],
+  ['알림 설정'],
+  ['참여 내역'],
+  ['결제 내역'],
+  ['이벤트 및 공지사항'],
 ];
 
 function UserProfile() {
   const { user, logout } = useAuth();
+  console.log(user);
   const navigate = useNavigate();
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const ReSizeHandler = () => {
@@ -166,37 +168,36 @@ function UserProfile() {
     width: displayWidth ? displayWidth : '420px',
   };
 
+  const profileEditHandler = () => {
+    setVisible(true);
+  };
+
   return (
     <div className='potz_container' style={styles.background}>
+      {visible ? (
+        <UserProfileEditModal
+          user={user}
+          setVisible={setVisible}
+        ></UserProfileEditModal>
+      ) : null}
       <div className='contents_container'></div>
       <div style={styles.topBar}>
         <Box height={'70px'}>
           <div>
             <FontBig>마이 팟즈</FontBig>
           </div>
-          <div>
-            <svg
-              width='29'
-              height='28'
-              viewBox='0 0 29 28'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path
-                fillRule='evenodd'
-                clipRule='evenodd'
-                d='M24.1351 15.844C24.5524 16.0657 24.8743 16.4157 25.1008 16.7657C25.542 17.489 25.5062 18.3757 25.077 19.1573L24.2424 20.5573C23.8013 21.304 22.9786 21.7707 22.1321 21.7707C21.7148 21.7707 21.2498 21.654 20.8682 21.4207C20.5582 21.2223 20.2006 21.1523 19.819 21.1523C18.6387 21.1523 17.6491 22.1207 17.6133 23.2757C17.6133 24.6173 16.5164 25.6673 15.1453 25.6673H13.5238C12.1407 25.6673 11.0438 24.6173 11.0438 23.2757C11.02 22.1207 10.0304 21.1523 8.85002 21.1523C8.45656 21.1523 8.09888 21.2223 7.80081 21.4207C7.41928 21.654 6.94236 21.7707 6.53699 21.7707C5.67854 21.7707 4.85587 21.304 4.41472 20.5573L3.59205 19.1573C3.1509 18.399 3.12706 17.489 3.5682 16.7657C3.75897 16.4157 4.11665 16.0657 4.52203 15.844C4.85587 15.6807 5.07048 15.4123 5.27317 15.0973C5.86931 14.094 5.51162 12.7757 4.49818 12.1807C3.31782 11.5157 2.93629 10.034 3.61589 8.87898L4.41472 7.50232C5.10625 6.34732 6.58468 5.93898 7.77696 6.61565C8.81425 7.17565 10.1615 6.80232 10.7696 5.81065C10.9604 5.48398 11.0677 5.13398 11.0438 4.78398C11.02 4.32898 11.1511 3.89732 11.3777 3.54732C11.8188 2.82398 12.6176 2.35732 13.488 2.33398H15.1691C16.0514 2.33398 16.8502 2.82398 17.2914 3.54732C17.506 3.89732 17.6491 4.32898 17.6133 4.78398C17.5895 5.13398 17.6968 5.48398 17.8875 5.81065C18.4956 6.80232 19.8429 7.17565 20.8921 6.61565C22.0724 5.93898 23.5628 6.34732 24.2424 7.50232L25.0412 8.87898C25.7328 10.034 25.3512 11.5157 24.1589 12.1807C23.1455 12.7757 22.7878 14.094 23.3959 15.0973C23.5866 15.4123 23.8013 15.6807 24.1351 15.844ZM10.96 14.012C10.96 15.8436 12.4742 17.302 14.346 17.302C16.2179 17.302 17.6964 15.8436 17.6964 14.012C17.6964 12.1803 16.2179 10.7103 14.346 10.7103C12.4742 10.7103 10.96 12.1803 10.96 14.012Z'
-                fill='#373737'
-              />
-            </svg>
-          </div>
+          <div></div>
         </Box>
       </div>
       <div style={styles.content}>
         <Box height={'227.33px'} align={'column'}>
           <Profile1>
             <img
-              src={user.profile?.imageUrl}
+              src={
+                user.profile.imageUrl.startsWith('https')
+                  ? user.profile.imageUrl
+                  : `http://localhost:5000/${user.profile.imageUrl}`
+              }
               style={{
                 width: '70px',
                 height: '70px',
@@ -212,18 +213,16 @@ function UserProfile() {
                 </FontSm>
               </span>
               <svg
-                width='29'
-                height='29'
-                viewBox='0 0 29 29'
+                onClick={profileEditHandler}
+                width='28'
+                height='28'
+                viewBox='0 0 24 24'
                 fill='none'
                 xmlns='http://www.w3.org/2000/svg'
               >
                 <path
-                  d='M10.25 6.16764L18.4167 14.3343L10.25 22.501'
-                  stroke='#373737'
-                  strokeWidth='1.75'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
+                  d='M19.4437 8.51767L10.4945 20.5866C10.0838 21.1346 9.47856 21.4429 8.83007 21.4543L5.26337 21.5C5.06883 21.5 4.9067 21.363 4.86347 21.1689L4.05286 17.5037C3.91235 16.83 4.05286 16.1335 4.46357 15.5969L10.808 7.03332C10.916 6.8963 11.1106 6.87461 11.2403 6.97623L13.9099 9.19133C14.0828 9.33977 14.3206 9.4197 14.5692 9.38544C15.0988 9.31693 15.4555 8.81454 15.4014 8.27789C15.369 8.00386 15.2393 7.77549 15.0664 7.60422C15.0123 7.55855 12.4724 5.43479 12.4724 5.43479C12.3103 5.29778 12.2779 5.04658 12.4076 4.87645L13.4127 3.51656C14.3422 2.27199 15.9635 2.15781 17.2712 3.24253L18.7736 4.48709C19.3896 4.98949 19.8003 5.65174 19.9409 6.34824C20.103 7.11439 19.93 7.86684 19.4437 8.51767Z'
+                  fill='black'
                 />
               </svg>
             </div>
@@ -253,7 +252,7 @@ function UserProfile() {
         </div>
         <div>
           <svg
-            onClick={() => navigate('/my-bigdata')}
+            onClick={() => navigate('/my-page/bigdata')}
             width='29'
             height='29'
             viewBox='0 0 29 29'
@@ -357,11 +356,12 @@ function UserProfile() {
               <Box height={'61.83px'}>
                 <div>
                   <FontMd weight={400} color={COLOR.BLACK}>
-                    {text}
+                    {text[0]}
                   </FontMd>
                 </div>
                 <div>
                   <svg
+                    onClick={() => navigate(text[1])}
                     width='29'
                     height='29'
                     viewBox='0 0 29 29'

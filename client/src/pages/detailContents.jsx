@@ -439,7 +439,7 @@ function DetailContents({ postDatas }) {
       <div style={imgContainer}>
         <img
           style={imgStyle}
-          src={`http://localhost:5000${postDatas.imageUrl}`}
+          src={`http://localhost:5000/images/${postDatas.imageUrl}`}
         />
         <div style={TopStyle}>
           <ButtonWrap onClick={() => navigate(-1)} style={marginLeftStyle}>

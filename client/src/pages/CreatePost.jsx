@@ -174,7 +174,7 @@ function CreatePost() {
       });
       const data = await res.json();
       alert('등록이 완료되었습니다.');
-      navigate('/');
+      navigate(`/community/${communityId}`);
       console.log(data);
     } catch (error) {
       console.log(error);
@@ -366,7 +366,9 @@ function CreatePost() {
                     file
                   );
                 } else {
-                  alert('가게이름, 가게주소, 카테고리, 마감인원수, 만날장소는 필수 요소입니다.');
+                  alert(
+                    '가게이름, 가게주소, 카테고리, 마감인원수, 만날장소는 필수 요소입니다.'
+                  );
                 }
               } else {
                 alert('마감 인원수에는 숫자만 입력 가능합니다.');
@@ -652,7 +654,8 @@ function CreatePost() {
               </div>
             </Button>
             <Button height={`${74.67 + 34.33 * (deliveryDiscountCount - 1)}px`}>
-              {deliveryDiscountsWidth[0]?.header && deliveryDiscountsWidth[0]?.footer ? (
+              {deliveryDiscountsWidth[0]?.header &&
+              deliveryDiscountsWidth[0]?.footer ? (
                 <svg
                   width='28'
                   height='29'

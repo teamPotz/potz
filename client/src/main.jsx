@@ -31,6 +31,7 @@ import Entercommunity from './pages/EnterCommunity.jsx';
 import { ChatProvider } from './contexts/ChatContext.jsx';
 import AuthorizeUser from './pages/authorize.jsx';
 import MyBigData from './pages/myBigData.jsx';
+import MyCommunitySettings from './pages/myCommunitySetting.jsx';
 
 const router = createBrowserRouter([
   {
@@ -120,10 +121,7 @@ const router = createBrowserRouter([
         path: '/category',
         element: <CategoryPage />,
       },
-      {
-        path: '/category-search',
-        element: <CategorySearch />,
-      },
+
       {
         path: '/liked-list',
         element: <LikedList />,
@@ -153,8 +151,12 @@ const router = createBrowserRouter([
         element: <UserProfile />,
       },
       {
-        path: '/my-bigdata',
+        path: 'my-page/bigdata',
         element: <MyBigData/>,
+      },
+      {
+        path: 'my-page/communites',
+        element: <MyCommunitySettings/>
       },
       { path: '/chats/', element: <ChatList /> },
       { path: '/chats/:potId', element: <Chat /> },
