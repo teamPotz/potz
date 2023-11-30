@@ -201,7 +201,11 @@ function UserProfileEditModal(props) {
           </div>
           <div>
             <label style={lableStyle}>프로필 이름 변경</label>
-            <input name='userName' style={inputStyle}></input>
+            <input
+              name='userName'
+              placeholder={user.name}
+              style={inputStyle}
+            ></input>
           </div>
           <ButtonBg
             type='submit'

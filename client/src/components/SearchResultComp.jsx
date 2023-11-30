@@ -62,7 +62,7 @@ const SearchResultComp = (props) => {
       //서버로 좋아요 데이터 업데이트
       try {
         const response = await fetch(
-          `http://localhost:5000/posts/${postId}/like`,
+          `http://localhost:5000/posts${postId}/like`,
           {
             method: 'PATCH',
             credentials: 'include',
@@ -259,7 +259,7 @@ const SearchResultComp = (props) => {
                 width={112}
                 height={112}
                 style={imgStyle}
-                src={`http://localhost:5000${res.imageUrl}`}
+                src={`http://localhost:5000/images/${res.imageUrl}`}
               />
             </div>
             <div style={fontWrapper}>

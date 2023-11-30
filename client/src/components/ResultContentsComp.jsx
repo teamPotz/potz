@@ -210,7 +210,7 @@ const ResultContentsComp = ({ postDatas }) => {
                 width={112}
                 height={112}
                 style={imgStyle}
-                src={`http://localhost:5000${post.imageUrl}`}
+                src={`http://localhost:5000/images/${post.imageUrl}`}
               />
             </div>
             <div style={fontWrapper}>
