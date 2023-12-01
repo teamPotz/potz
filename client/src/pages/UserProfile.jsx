@@ -99,7 +99,7 @@ function UserProfile() {
         </NavComp>
       </div>
       <div style={styles.content}>
-        <Box2 height={'227.33px'} align={'column'}>
+        <Box2 height={'227px'} align={'column'}>
           <Profile1>
             {!user.profile?.imageUrl ? (
               <img
