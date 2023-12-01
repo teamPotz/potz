@@ -78,8 +78,12 @@ export async function getUserOrderDataById(req, res) {
                 },
                 orders: {
                   select: {
+                    menuName: true,
+                    userId: true,
                     price: true,
                     quantity: true,
+                    imageUrl: true,
+                    updatedAt: true,
                   },
                 },
               },
@@ -95,10 +99,44 @@ export async function getUserOrderDataById(req, res) {
   }
 }
 
+export async function updateUserAccountById(req, res) {
+  console.log(req.body);
+
+  const accountOwner = req.body.accountOwner;
+  const account = req.body.account;
+  const bankName = req.body.bankName;
+
+  try {
+    const userAccount = await prisma.userProfile.upsert({
+      where: {
+        userId: req.user.id,
+      },
+      update: {
+        accountHolderName: accountOwner,
+        accountNumber: account,
+        bankName: bankName,
+      },
+      create: {
+        accountHolderName: accountOwner,
+        accountNumber: account,
+        bankName: bankName,
+        userId: req.user.id,
+      },
+    });
+
+    res.status(200).send(userAccount);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'get userData error' });
+  }
+}
+
 export async function updateUserById(req, res) {
   console.log(req.user.id);
   console.log(req.file);
   console.log(req.body.userName);
+  console.log(req.body);
+
   const imgUrl = req.file.path.replace('uploads', '');
 
   try {
@@ -108,10 +146,23 @@ export async function updateUserById(req, res) {
       },
       data: {
         name: req.body.userName,
-        profile: { update: { imageUrl: imgUrl } },
       },
     });
-    res.status(200).send(userData);
+
+    const userProfile = await prisma.userProfile.upsert({
+      where: {
+        userId: req.user.id,
+      },
+      update: {
+        imageUrl: imgUrl,
+      },
+      create: {
+        userId: req.user.id,
+        imageUrl: imgUrl,
+      },
+    });
+
+    res.status(200).send({ userData, userProfile });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'get userData error' });

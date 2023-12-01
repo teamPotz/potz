@@ -4,9 +4,12 @@ import Font from '../utility/Font';
 import NavBar from '../components/ui/NavBar';
 import { useAuth } from '../contexts/AuthContext';
 import ButtonBg from '../components/ButtonBG';
+import defaultProfile from '../../public/images/Logo/Potz_Logo.png';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserProfileEditModal from '../components/userProfileEditModal';
+import UserAccountUpdateModal from '../components/userAccountUpdateModal';
+import TagPlaceSM from '../components/TagPlaceSM';
 
 const Box = styled.div`
   display: flex;
@@ -71,10 +74,21 @@ const FontMd = styled.span`
   font-family: ${Font.FontKor};
   font-style: normal;
   font-weight: ${(props) => props.weight};
-  font-size: 16.3333px;
+  font-size: 16px;
   color: ${(props) => props.color};
   margin: 0;
   white-space: nowrap;
+  filter: ${(props) => (props.blur ? 'blur(5px)' : 'none')};
+  transition: 0.2s;
+`;
+const FontMd2 = styled.span`
+  display: flex;
+  gap: 12px;
+  font-family: ${Font.FontKor};
+  font-style: normal;
+  font-weight: ${(props) => props.weight};
+  font-size: 16px;
+  color: ${(props) => props.color};
   filter: ${(props) => (props.blur ? 'blur(5px)' : 'none')};
   transition: 0.2s;
 `;
@@ -122,8 +136,8 @@ const styles = {
 const text = [
   ['내 공동체 관리', '/my-page/communites'],
   ['알림 설정'],
-  ['참여 내역'],
-  ['결제 내역'],
+  ['참여 내역', '/my-page/order-history'],
+  ['결제 내역', '/my-page/order-history'],
   ['이벤트 및 공지사항'],
 ];
 
@@ -134,6 +148,7 @@ function UserProfile() {
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
   const [visible, setVisible] = useState(false);
+  const [visible2, setVisible2] = useState(false);
 
   useEffect(() => {
     const ReSizeHandler = () => {
@@ -168,12 +183,36 @@ function UserProfile() {
     width: displayWidth ? displayWidth : '420px',
   };
 
+  const accountStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+  };
+
+  const containerStyle = {
+    margin: '0px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    marginTop: '4px',
+    marginBottom: '4px',
+  };
+
   const profileEditHandler = () => {
     setVisible(true);
   };
 
+  const userAcocuntModalHandler = () => {
+    setVisible2(true);
+  };
+
   return (
     <div className='potz_container' style={styles.background}>
+      {visible2 ? (
+        <UserAccountUpdateModal
+          user={user}
+          setVisible={setVisible2}
+        ></UserAccountUpdateModal>
+      ) : null}
       {visible ? (
         <UserProfileEditModal
           user={user}
@@ -192,19 +231,31 @@ function UserProfile() {
       <div style={styles.content}>
         <Box height={'227.33px'} align={'column'}>
           <Profile1>
-            <img
-              src={
-                user.profile?.imageUrl.startsWith('https')
-                  ? user.profile?.imageUrl
-                  : `http://localhost:5000/${user.profile?.imageUrl}`
-              }
-              style={{
-                width: '70px',
-                height: '70px',
-                borderRadius: '50%',
-                objectFit: 'cover',
-              }}
-            />
+            {!user.profile ? (
+              <img
+                src={defaultProfile}
+                style={{
+                  width: '70px',
+                  height: '70px',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                }}
+              />
+            ) : (
+              <img
+                src={
+                  user.profile?.imageUrl.startsWith('http')
+                    ? user.profile?.imageUrl
+                    : `http://localhost:5000/${user.profile?.imageUrl}`
+                }
+                style={{
+                  width: '70px',
+                  height: '70px',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                }}
+              />
+            )}
             <div>
               <span>
                 <FontBig>{user.name}</FontBig>
@@ -227,6 +278,7 @@ function UserProfile() {
               </svg>
             </div>
           </Profile1>
+          <br></br>
           <Profile2>
             <div>
               <FontMd weight={500} color={`${COLOR.GRAY_400}`}>
@@ -272,13 +324,21 @@ function UserProfile() {
 
       <div style={styles.contentBox}>
         <Box height={'91px'} noTransform={true}>
-          <div>
-            <FontMd color={COLOR.BLACK} weight={400}>
-              간편 입력 계좌 번호
-            </FontMd>
-            <FontMd color={COLOR.GRAY_400} weight={400} blur={blur}>
-              1234-12345-1234-1234 {user.name}
-            </FontMd>
+          <div style={accountStyle}>
+            <div style={containerStyle}>
+              <span>간편 입력 계좌 번호</span>
+              <div style={{ margin: '0px' }} onClick={userAcocuntModalHandler}>
+                <TagPlaceSM>등록하기</TagPlaceSM>
+              </div>
+            </div>
+
+            {user.profile ? (
+              <FontMd2 color={COLOR.GRAY_400} weight={400} blur={blur}>
+                {user.profile.bankName}
+                {user.profile.accountNumber}
+                {user.profile.accountHolderName}
+              </FontMd2>
+            ) : null}
           </div>
           <div onClick={blurHandler} style={{ cursor: 'pointer' }}>
             <svg

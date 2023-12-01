@@ -7,8 +7,8 @@ import {
   getUserOrderDataById,
   deleteUserCommunity,
   updateUserById,
+  updateUserAccountById,
 } from '../controllers/users.js';
-
 
 const router = Router();
 router.get('/', getUserData);
@@ -22,5 +22,5 @@ router.patch(
   fileUpload.single('image'),
   updateUserById
 );
-
+router.patch('/update-account', verifyAuth, updateUserAccountById);
 export default router;
