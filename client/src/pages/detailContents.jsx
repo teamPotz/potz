@@ -1,16 +1,241 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import Font from '../utility/Font';
-import COLOR from '../utility/Color';
-import CategorySearch from '../components/categorySearch';
+import COLOR from '../utility/Color.js';
+import CategorySearch from '../components/categorySearch.jsx';
 import logoImg from '../../public/images/Logo/Potz_Logo.png';
-import { socket } from '../../socket';
 import SelectCompForEveryone from '../components/SelectCompForEveryone.jsx';
-import SelectComp from '../components/selectComp';
+import SelectComp from '../components/selectComp.jsx';
 import HomeDiscountModal from '../components/homeDiscountModal.jsx';
-import { useChat } from '../contexts/ChatContext';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext.jsx';
+
+function DetailContents({ postDatas }) {
+  const communityId = localStorage.getItem('communityDataID');
+  const [categoryPostData, setCategoryPostData] = useState();
+  const [visible, setVisible] = useState(false);
+  const [visible2, setVisible2] = useState(false);
+  const { categoryId, potId } = postDatas;
+
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
+  const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
+  const TopStyle = {
+    position: 'relative',
+    bottom: '410px',
+    left: '0px',
+    maxWidth: '420px',
+    width: displayWidth ? displayWidth : '420px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  };
+  useEffect(() => {
+    const ReSizeHandler = () => {
+      setdisplayWidth(window.innerWidth);
+    };
+
+    //윈도우 리사이즈가 일어나면 콜백 호출
+    window.addEventListener('resize', ReSizeHandler);
+
+    return () => {
+      window.removeEventListener('resize', ReSizeHandler);
+    };
+  }, []);
+
+  useEffect(() => {
+    async function fetchCategoryPostData() {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/posts/category?categoryId=${categoryId}&communityId=${communityId}`,
+          { credentials: 'include' }
+        );
+        const data = await response.json();
+        // console.log('해당 카테고리 데이터', data);
+        setCategoryPostData(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchCategoryPostData();
+  }, [categoryId, communityId]);
+
+  const imgStyle = {
+    maxWidth: '420px',
+    width: displayWidth ? displayWidth : '420px',
+    height: '420px',
+  };
+
+  const participants = {
+    backgroundColor: COLOR.POTZ_PINK_100,
+    height: '60px',
+    maxWidth: '364px',
+    width: displayWidth ? displayWidth - 56 : '364px',
+    borderRadius: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '76px',
+    fontWeight: '700',
+    color: COLOR.GRAY_400,
+  };
+
+  const imgContainer = {
+    maxWidth: '420px',
+    width: displayWidth ? displayWidth - 56 : '420px',
+    maxHeight: '420px',
+    marginBottom: '20px',
+  };
+
+  const backgroundStyles = {
+    maxWidth: '420px',
+    width: displayWidth ? displayWidth - 56 : '420px',
+    marginLeft: '28px',
+  };
+
+  const selectHandler = () => {
+    setVisible(true);
+  };
+
+  const discountInfoHandler = () => {
+    setVisible2(true);
+  };
+
+  return (
+    <div style={backgroundStyle}>
+      {visible2 && (
+        <HomeDiscountModal
+          discountInfo={postDatas.nextDiscountInfos}
+          totalOrderPrice={postDatas.totalOrderPrice}
+          setVisible2={setVisible2}
+          nextDeliveryFeeInfo={postDatas.nextDeliveryFeeInfo}
+        />
+      )}
+      {user.id === postDatas.authorId ? (
+        visible ? (
+          <SelectComp postId={postDatas.id} setVisible={setVisible} />
+        ) : null
+      ) : visible ? (
+        <SelectCompForEveryone postId={postDatas.id} setVisible={setVisible} />
+      ) : null}
+      <div style={imgContainer}>
+        <img
+          style={imgStyle}
+          src={
+            postDatas.imageUrl
+              ? `http://localhost:5000${postDatas.imageUrl}`
+              : logoImg
+          }
+        />
+        <div style={TopStyle}>
+          <ButtonWrap onClick={() => navigate(-1)} style={marginLeftStyle}>
+            <BackIcon />
+          </ButtonWrap>
+          <div style={{ display: 'flex' }}>
+            <ButtonWrap onClick={discountInfoHandler}>
+              <SaleIcon />
+            </ButtonWrap>
+            <ButtonWrap onClick={selectHandler} style={marginRightStyle}>
+              <BurgerIcon />
+            </ButtonWrap>
+          </div>
+        </div>
+        <div style={linkStyle}>
+          <LinkIcon />
+          <a style={fontStyleLink} href={postDatas.orderLink}>
+            <span>배달앱 링크 바로가기</span>
+          </a>
+        </div>
+      </div>
+      <div style={backgroundStyles}>
+        <div style={storeFont}>
+          <span>{postDatas.storeName}</span>
+        </div>
+        <div style={marginBottomStyle}>
+          <div style={fontStyleLink2}>
+            <span>{postDatas.category.name}</span>
+          </div>
+          <div style={fontStyle}>
+            <span>만날 장소</span>
+            <span>{postDatas.meetingLocation}</span>
+          </div>
+          <div style={fontStyle}>
+            <span>모인 금액</span>
+            <div>
+              <span>{postDatas.totalOrderPrice}</span>
+              <span>원</span>
+            </div>
+          </div>
+        </div>
+
+        <div style={participants}>
+          {postDatas.potMasterProfileImg ? (
+            <img
+              width={46}
+              height={46}
+              src={'http://localhost:5000/' + postDatas.potMasterProfileImg}
+              style={paddingStyle}
+            />
+          ) : (
+            <img width={38} height={38} src={logoImg} style={paddingStyle} />
+          )}
+          <div>
+            <span style={fontColored}>{postDatas.participantsCount}</span>
+            <span style={fontColored}>/</span>
+            <span style={fontColored}>{postDatas.recruitment}</span>
+            <span>명 참여중</span>
+          </div>
+        </div>
+      </div>
+      {displayWidth ? (
+        <DividerProvider displayWidth={displayWidth}></DividerProvider>
+      ) : null}
+      <div>
+        <div style={fontStyle1}>
+          <span>지금 모집중인</span>
+          <span style={fontStyle2}>{postDatas.category}</span>
+        </div>
+      </div>
+      {categoryPostData && displayWidth ? (
+        <CategorySearch
+          displayWidth={displayWidth}
+          categoryPostData={categoryPostData}
+        />
+      ) : null}
+
+      <div style={navbarStyle}>
+        <nav style={navStyles}>
+          <div style={navFontContainer}>
+            <div style={fontStyle3}>
+              <span style={coloredFont}>
+                {postDatas.deliveryFeePerPerson ? (
+                  <span>{postDatas.deliveryFeePerPerson}</span>
+                ) : (
+                  <span>무료</span>
+                )}
+              </span>
+              {postDatas.participantsCount ? (
+                <span>원씩 배달</span>
+              ) : (
+                <span>배달</span>
+              )}
+            </div>
+            <div style={fontStyle4}>
+              <span>원래 배달비</span>
+              {postDatas.appliedDeliveryFeeInfo ? (
+                <span>{postDatas.appliedDeliveryFeeInfo.fee}원</span>
+              ) : null}
+            </div>
+          </div>
+          <EnterStyle onClick={() => navigate(`/chats/${potId}`)}>
+            <EnterIcon />
+          </EnterStyle>
+        </nav>
+      </div>
+    </div>
+  );
+}
 
 const DividerProvider = (displayWidth) => {
   console.log('화면크기', displayWidth.displayWidth);
@@ -62,7 +287,6 @@ const EnterStyle = styled.div`
 `;
 
 const backgroundStyle = {
-  fontFamily: Font.FontKor,
   backgroundColor: COLOR.WHITE,
 };
 
@@ -239,7 +463,6 @@ const navStyles = {
 const navFontContainer = {
   display: 'flex',
   flexDirection: 'column',
-  fontFamily: Font.FontKor,
 };
 
 const marginLeftStyle = {
@@ -267,13 +490,11 @@ const storeFont = {
 
 const fontStyle1 = {
   marginLeft: '28px',
-  fontFamily: Font.FontKor,
   fontSize: '16px',
   color: COLOR.GRAY_400,
 };
 
 const fontStyle2 = {
-  fontFamily: Font.FontKor,
   marginLeft: '8px',
   color: COLOR.POTZ_PINK_DEFAULT,
 };
@@ -295,258 +516,15 @@ const coloredFont = {
   color: COLOR.POTZ_PINK_DEFAULT,
 };
 
-function DetailContents({ postDatas }) {
-  const { user } = useAuth();
-  console.log('user', user);
-
-  const communityId = localStorage.getItem('communityDataID');
-  console.log('받은 postDatas', postDatas);
-  // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
-  const [categoryPostData, setCategoryPostData] = useState();
-  const categoryId = postDatas.categoryId;
-  console.log(categoryId);
-
-  const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
-  const [visible, setVisible] = useState(false);
-  const [visible2, setVisible2] = useState(false);
-
-  const TopStyle = {
-    position: 'relative',
-    bottom: '410px',
-    left: '0px',
-    maxWidth: '420px',
-    width: displayWidth ? displayWidth : '420px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  };
-
-  const navbarStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '28px',
-    alignItems: 'end',
-    position: 'fixed',
-    bottom: 0,
-    maxWidth: '420px',
-    width: '100%',
-  };
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const ReSizeHandler = () => {
-      setdisplayWidth(window.innerWidth);
-    };
-
-    //윈도우 리사이즈가 일어나면 콜백 호출
-    window.addEventListener('resize', ReSizeHandler);
-
-    return () => {
-      window.removeEventListener('resize', ReSizeHandler);
-    };
-  }, []);
-
-  useEffect(() => {
-    async function fetchCategoryPostData() {
-      try {
-        const response = await fetch(
-          `http://localhost:5000/posts/category?categoryId=${categoryId}&communityId=${communityId}`,
-          {
-            method: 'GET',
-            credentials: 'include',
-          }
-        );
-        const data = await response.json();
-        console.log('해당 카테고리 데이터', data);
-        setCategoryPostData(data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    fetchCategoryPostData();
-  }, [categoryId, communityId]);
-
-  const enterChatRoom = async () => {
-    const { potId, storeName } = postDatas;
-    // console.log('potId', potId);
-    // joinPot(potId, user, socket);
-
-    navigate(`/chats/${potId}`, {
-      state: { storeName },
-    });
-  };
-
-  const imgStyle = {
-    maxWidth: '420px',
-    width: displayWidth ? displayWidth : '420px',
-    height: '420px',
-  };
-
-  const participants = {
-    backgroundColor: COLOR.POTZ_PINK_100,
-    height: '60px',
-    maxWidth: '364px',
-    width: displayWidth ? displayWidth - 56 : '364px',
-    borderRadius: '20px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '76px',
-    fontFamily: Font.FontKor,
-    fontWeight: '700',
-    color: COLOR.GRAY_400,
-  };
-
-  const imgContainer = {
-    maxWidth: '420px',
-    width: displayWidth ? displayWidth - 56 : '420px',
-    maxHeight: '420px',
-    marginBottom: '20px',
-  };
-
-  const backgroundStyles = {
-    maxWidth: '420px',
-    width: displayWidth ? displayWidth - 56 : '420px',
-    marginLeft: '28px',
-  };
-
-  const selectHandler = () => {
-    setVisible(true);
-  };
-
-  const discountInfoHandler = () => {
-    setVisible2(true);
-  };
-
-  return (
-    <div style={backgroundStyle}>
-      {visible2 ? (
-        <HomeDiscountModal
-          discountInfo={postDatas.nextDiscountInfos}
-          totalOrderPrice={postDatas.totalOrderPrice}
-          setVisible2={setVisible2}
-          nextDeliveryFeeInfo={postDatas.nextDeliveryFeeInfo}
-        ></HomeDiscountModal>
-      ) : null}
-      {user.id === postDatas.authorId ? (
-        visible ? (
-          <SelectComp postId={postDatas.id} setVisible={setVisible} />
-        ) : null
-      ) : visible ? (
-        <SelectCompForEveryone postId={postDatas.id} setVisible={setVisible} />
-      ) : null}
-      <div style={imgContainer}>
-        <img
-          style={imgStyle}
-          src={`http://localhost:5000/images/${postDatas.imageUrl}`}
-        />
-        <div style={TopStyle}>
-          <ButtonWrap onClick={() => navigate(-1)} style={marginLeftStyle}>
-            <BackIcon />
-          </ButtonWrap>
-          <div style={{ display: 'flex' }}>
-            <ButtonWrap onClick={discountInfoHandler}>
-              <SaleIcon />
-            </ButtonWrap>
-            <ButtonWrap onClick={selectHandler} style={marginRightStyle}>
-              <BurgerIcon />
-            </ButtonWrap>
-          </div>
-        </div>
-        <div style={linkStyle}>
-          <LinkIcon />
-          <a style={fontStyleLink} href={postDatas.orderLink}>
-            <span>배달앱 링크 바로가기</span>
-          </a>
-        </div>
-      </div>
-      <div style={backgroundStyles}>
-        <div style={storeFont}>
-          <span>{postDatas.storeName}</span>
-        </div>
-        <div style={marginBottomStyle}>
-          <div style={fontStyleLink2}>
-            <span>{postDatas.category.name}</span>
-          </div>
-          <div style={fontStyle}>
-            <span>만날 장소</span>
-            <span>{postDatas.meetingLocation}</span>
-          </div>
-          <div style={fontStyle}>
-            <span>모인 금액</span>
-            <div>
-              <span>{postDatas.totalOrderPrice}</span>
-              <span>원</span>
-            </div>
-          </div>
-        </div>
-
-        <div style={participants}>
-          {postDatas.potMasterProfileImg ? (
-            <img
-              width={46}
-              height={46}
-              src={'http://localhost:5000/' + postDatas.potMasterProfileImg}
-              style={paddingStyle}
-            />
-          ) : (
-            <img width={38} height={38} src={logoImg} style={paddingStyle} />
-          )}
-          <div>
-            <span style={fontColored}>{postDatas.participantsCount}</span>
-            <span style={fontColored}>/</span>
-            <span style={fontColored}>{postDatas.recruitment}</span>
-            <span>명 참여중</span>
-          </div>
-        </div>
-      </div>
-      {displayWidth ? (
-        <DividerProvider displayWidth={displayWidth}></DividerProvider>
-      ) : null}
-      <div>
-        <div style={fontStyle1}>
-          <span>지금 모집중인</span>
-          <span style={fontStyle2}>{postDatas.category}</span>
-        </div>
-      </div>
-      {categoryPostData && displayWidth ? (
-        <CategorySearch
-          displayWidth={displayWidth}
-          categoryPostData={categoryPostData}
-        ></CategorySearch>
-      ) : null}
-      <div style={navbarStyle}>
-        <nav style={navStyles}>
-          <div style={navFontContainer}>
-            <div style={fontStyle3}>
-              <span style={coloredFont}>
-                {postDatas.deliveryFeePerPerson ? (
-                  <span>{postDatas.deliveryFeePerPerson}</span>
-                ) : (
-                  <span>무료</span>
-                )}
-              </span>
-              {postDatas.participantsCount ? (
-                <span>원씩 배달</span>
-              ) : (
-                <span>배달</span>
-              )}
-            </div>
-            <div style={fontStyle4}>
-              <span>원래 배달비</span>
-              {postDatas.appliedDeliveryFeeInfo ? (
-                <span>{postDatas.appliedDeliveryFeeInfo.fee}원</span>
-              ) : null}
-            </div>
-          </div>
-          <EnterStyle onClick={enterChatRoom}>
-            <EnterIcon />
-          </EnterStyle>
-        </nav>
-      </div>
-    </div>
-  );
-}
+const navbarStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '28px',
+  alignItems: 'end',
+  position: 'fixed',
+  bottom: 0,
+  maxWidth: '420px',
+  width: '100%',
+};
 
 export default DetailContents;

@@ -1,17 +1,18 @@
-import { useState, useEffect } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import styled from 'styled-components';
 import COLOR from '../../utility/Color.js';
-import GoBack from '../../components/goBack.jsx';
 import ChatMenu from '../../components/chat/ChatMenu.jsx';
 import ChatInput from '../../components/chat/ChatInput.jsx';
 import MessageContainer from '../../components/chat/messages/MessageContainer.jsx';
 import OrderModal from '../../components/chat/OrderModal.jsx';
 import DepositModal from '../../components/chat/DepositModal.jsx';
+const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 
 import { useChat } from '../../contexts/ChatContext.jsx';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { socket } from '../../../socket.js';
-// import { io } from 'socket.io-client';
+import UserAccountUpdateModal from '../../components/userAccountUpdateModal.jsx';
 
 const initialOrderData = {
   file: null,
@@ -28,24 +29,23 @@ const initialDepositData = {
 
 function Chat() {
   const [isConnected, setIsConnected] = useState(socket.connected);
+  const [deliveryPot, setDeliveryPot] = useState();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-
-  const [isPotMaster, setIsPotMaster] = useState(false);
   const [isLoadingGetMessage, setIsLoadingGetMessage] = useState(false);
   const [isLoadingSendMessage, setisLoadingSendMessage] = useState(false);
   const [openMenuBar, setOpenMenuBar] = useState(false);
 
+  // modals
   const [openOrderModal, setOpenOrderModal] = useState(false);
   const [orderFormData, setOrderFormData] = useState(initialOrderData);
-
   const [openDepositModal, setOpenDepositModal] = useState(false);
   const [depositFormData, setDepositFormData] = useState(initialDepositData);
+  const [openAccountModal, setOpenAccountModal] = useState(false);
 
-  const { state } = useLocation();
   const { potId } = useParams();
   const { user } = useAuth();
-  const { joinPot, leavePot } = useChat();
+  const { leavePot } = useChat();
   const navigate = useNavigate();
 
   // text message
@@ -77,7 +77,7 @@ function Chat() {
     }
   }
 
-  // order message
+  // order messages
   async function handleOrderFormChange(e) {
     const { type, name, value } = e.target;
 
@@ -163,7 +163,7 @@ function Chat() {
     }
   }
 
-  // deposit message
+  // deposit messages
   async function handleDepositFormChange(e) {
     const { type, name, value } = e.target;
 
@@ -246,7 +246,7 @@ function Chat() {
     }
   }
 
-  // set status
+  // set pot status
   async function setStatus(status) {
     if (!isPotMaster) {
       return alert('방장만 할 수 있습니다.');
@@ -258,7 +258,9 @@ function Chat() {
         !user.profile?.accountNumber ||
         !user.profile?.accountHolderName)
     ) {
-      return alert('계좌정보가 없습니다.');
+      alert('계좌정보를 먼저 등록해주세요.');
+      setOpenAccountModal(true);
+      return;
     }
 
     try {
@@ -283,6 +285,36 @@ function Chat() {
     }
   }
 
+  async function closePot() {
+    if (!isPotMaster) {
+      return alert('방장만 할 수 있습니다.');
+    }
+    if (!confirm(`${deliveryPot?.post.storeName}의 모집을 마감하시겠습니까?`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:5000/delivery-pots/${potId}/close`,
+        {
+          method: 'PATCH',
+          credentials: 'include',
+        }
+      );
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData?.message);
+      }
+      const data = await res.json();
+      setDeliveryPot((prev) => ({ ...prev, closed: data.closed }));
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+      alert(error);
+    }
+  }
+
+  // socket
   useEffect(() => {
     socket.connect();
     socket.on('connect', () => setIsConnected(true));
@@ -320,6 +352,12 @@ function Chat() {
       );
     });
 
+    // 방 정보 업데이트
+    socket.on('updatePot', (data) => {
+      console.log(data);
+      setDeliveryPot((prev) => ({ ...prev, ...data }));
+    });
+
     socket.emit('join', { potId, user });
     return () => {
       socket.disconnect();
@@ -327,9 +365,30 @@ function Chat() {
     };
   }, [potId, user]);
 
+  // join pot
   useEffect(() => {
-    joinPot(potId, user, socket);
-  }, [potId, user, joinPot]);
+    async function joinPot() {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/delivery-pots/${potId}/join`,
+          {
+            method: 'PATCH',
+            credentials: 'include',
+          }
+        );
+        if (!res.ok) {
+          throw new Error('enter chat room error');
+        }
+        const data = await res.json();
+        console.log(data);
+        setDeliveryPot(data);
+        socket.emit('join', { potId, user });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    joinPot();
+  }, [potId, user]);
 
   useEffect(() => {
     async function fetchMessages() {
@@ -351,101 +410,175 @@ function Chat() {
     fetchMessages();
   }, [potId]);
 
-  // check PotMaster
-  useEffect(() => {
-    async function getPotMasterId() {
-      try {
-        const res = await fetch(
-          `http://localhost:5000/delivery-pots/${potId}/pot-master`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-          }
-        );
-        if (!res.ok) {
-          throw new Error('get potMasterId error');
-        }
-        const data = await res.json();
-        setIsPotMaster(data.potMasterId === user.id);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    getPotMasterId();
-  }, [potId, user]);
+  const isPotMaster = useMemo(
+    () => deliveryPot?.potMaster.id === user.id,
+    [deliveryPot, user]
+  );
 
   return (
-    <div
-      className='potz_container'
-      style={{ backgroundColor: COLOR.POTZ_PINK_200 }}
-    >
-      <GoBack text={state?.storeName} />
+    <>
+      <TopNavBar>
+        <div style={{ display: 'flex' }} onClick={() => navigate(-1)}>
+          <BackArrowIcon />
+          <div style={{ display: 'flex', marginRight: '0.6rem' }}>
+            <img
+              style={{
+                height: '36px',
+                width: '36px',
+                borderRadius: '0.8rem',
+                objectFit: 'cover',
+              }}
+              src={
+                deliveryPot?.post.imageUrl
+                  ? `http://localhost:5000/${deliveryPot?.post.imageUrl}`
+                  : `${PF}Logo/Potz_Logo.png`
+              }
+            />
+          </div>
+          <div>
+            <div>{deliveryPot?.post.storeName}</div>
+            <div style={{ fontSize: '0.8rem', color: COLOR.GRAY_400 }}>
+              방장 : {deliveryPot?.potMaster.name}
+            </div>
+          </div>
+        </div>
+        <div
+          style={{
+            color: deliveryPot?.closed
+              ? `${COLOR.GRAY_200}`
+              : `${COLOR.POTZ_PINK_500}`,
+            cursor: deliveryPot?.closed ? 'default' : 'pointer',
+            paddingRight: '20px',
+          }}
+          onClick={!deliveryPot?.closed && closePot}
+        >
+          {deliveryPot?.closed ? '마감됨' : '마감'}
+        </div>
+      </TopNavBar>
 
-      {/* test buttons */}
-      <div style={{ position: 'fixed', top: '70px' }}>
-        <div>
-          <button onClick={() => setStatus('MENU_REQUEST')}>메뉴요청</button>
-          <button onClick={() => setStatus('DEPOSIT_REQUEST')}>입금요청</button>
-          <button onClick={() => setStatus('PICKUP_REQUEST')}>수령요청</button>
+      <div
+        className='potz_container'
+        style={{ backgroundColor: COLOR.POTZ_PINK_200 }}
+      >
+        {/* <GoBack text={state?.storeName} /> */}
+        {/* test buttons */}
+        <div style={{ position: 'fixed', top: '70px' }}>
+          <div>
+            <button onClick={() => setStatus('MENU_REQUEST')}>메뉴요청</button>
+            <button onClick={() => setStatus('DEPOSIT_REQUEST')}>
+              입금요청
+            </button>
+            <button onClick={() => setStatus('PICKUP_REQUEST')}>
+              수령요청
+            </button>
+          </div>
+          <div>
+            <button onClick={() => setOpenOrderModal(true)}>메뉴 선택</button>
+            <button onClick={() => setOpenDepositModal(true)}>입금 인증</button>
+            <button
+              onClick={() => {
+                leavePot(potId, user, socket);
+                navigate('/');
+              }}
+            >
+              퇴장
+            </button>
+          </div>
         </div>
         <div>
-          <button onClick={() => setOpenOrderModal(true)}>메뉴 선택</button>
-          <button onClick={() => setOpenDepositModal(true)}>입금 인증</button>
-          <button
-            onClick={() => {
-              leavePot(potId, user, socket);
-              navigate('/');
-            }}
-          >
-            퇴장
-          </button>
+          <MessageContainer
+            messages={messages}
+            isMenuBarOpened={openMenuBar}
+            isPotMaster={isPotMaster}
+            confirmOrder={confirmOrder}
+            confirmDeposit={confirmDeposit}
+          />
         </div>
-      </div>
-
-      <div>
-        <MessageContainer
-          messages={messages}
+        {openMenuBar && (
+          <ChatMenu isPotMaster={isPotMaster} leavePot={leavePot} />
+        )}
+        <ChatInput
+          newMessage={newMessage}
+          setNewMessage={setNewMessage}
+          sendMessage={sendTextMessage}
+          isConnected={isConnected}
           isMenuBarOpened={openMenuBar}
-          isPotMaster={isPotMaster}
-          confirmOrder={confirmOrder}
-          confirmDeposit={confirmDeposit}
+          toggleMenuBar={() => setOpenMenuBar((prev) => !prev)}
         />
+        {openOrderModal && (
+          <OrderModal
+            closeModal={() => setOpenOrderModal(false)}
+            formData={orderFormData}
+            handleFormChange={handleOrderFormChange}
+            sendOrderMessage={sendOrderMessage}
+          />
+        )}
+        {openDepositModal && (
+          <DepositModal
+            closeModal={() => setOpenDepositModal(false)}
+            formData={depositFormData}
+            handleFormChange={handleDepositFormChange}
+            sendDepositMessage={sendDepositMessage}
+          />
+        )}
+        {openAccountModal && (
+          <UserAccountUpdateModal
+            setVisible={setOpenAccountModal}
+            user={user}
+          />
+        )}
       </div>
-
-      {openMenuBar && (
-        <ChatMenu isPotMaster={isPotMaster} leavePot={leavePot} />
-      )}
-
-      <ChatInput
-        newMessage={newMessage}
-        setNewMessage={setNewMessage}
-        sendMessage={sendTextMessage}
-        isConnected={isConnected}
-        isMenuBarOpened={openMenuBar}
-        toggleMenuBar={() => setOpenMenuBar((prev) => !prev)}
-      />
-
-      {openOrderModal && (
-        <OrderModal
-          closeModal={() => setOpenOrderModal(false)}
-          formData={orderFormData}
-          handleFormChange={handleOrderFormChange}
-          sendOrderMessage={sendOrderMessage}
-        />
-      )}
-
-      {openDepositModal && (
-        <DepositModal
-          closeModal={() => setOpenDepositModal(false)}
-          formData={depositFormData}
-          handleFormChange={handleDepositFormChange}
-          sendDepositMessage={sendDepositMessage}
-        />
-      )}
-    </div>
+    </>
   );
 }
+
+const TopNavBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 420px;
+  height: 70px;
+  box-shadow: 0px 1px 2.3px rgba(0, 0, 0, 0.08);
+  background-color: ${COLOR.WHITE};
+  position: fixed;
+  top: 0;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18.6px;
+  font-color: ${COLOR.BLACK};
+  & svg {
+    cursor: pointer;
+    margin: 18px;
+    margin-right: 14px;
+    &:hover {
+      transform: scale(1.18);
+      transition: 0.2s ease-in-out;
+    }
+  }
+  & div {
+    // margin-top: 3px;
+    align-self: center;
+  }
+`;
+
+const BackArrowIcon = () => {
+  return (
+    <svg
+      width='28'
+      height='28'
+      viewBox='0 0 28 28'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+    >
+      <path
+        d='M18.7495 22.1673L10.5828 14.0007L18.7495 5.83398'
+        stroke='black'
+        strokeWidth='1.75'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+      />
+    </svg>
+  );
+};
 
 export default Chat;

@@ -3,7 +3,6 @@ import LikedComp from '../components/LikedComp';
 import COLOR from '../utility/Color';
 import Font from '../utility/Font';
 import NavBar from '../components/ui/NavBar';
-import TagPlaceSM from '../components/TagPlaceSM';
 
 function LikedList() {
   let communityId = localStorage.getItem('communityDataID');
@@ -30,10 +29,7 @@ function LikedList() {
         try {
           const response = await fetch(
             `http://localhost:5000/posts/liked?communityId=${communityId}`,
-            {
-              method: 'GET',
-              credentials: 'include',
-            }
+            { credentials: 'include' }
           );
 
           const data = await response.json();

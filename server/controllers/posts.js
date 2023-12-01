@@ -111,8 +111,7 @@ export async function getPostById(req, res) {
 }
 
 export async function getPostByLiked(req, res) {
-  let { communityId } = req.query;
-  console.log(communityId);
+  const { communityId } = req.query;
 
   try {
     const posts = await prisma.postLike.findMany({
@@ -314,11 +313,9 @@ export async function getPostByName(req, res) {
       );
 
       const orderedUserCount = getOrderedUserCount(post.deliveryPot.orders);
-      console.log('post.deliveryPot.orders', post.deliveryPot.orders);
 
       const deliveryFeePerPerson =
         appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
-      console.log('주문 수', deliveryFeePerPerson);
 
       const transformedPost = {
         id: post.id,
@@ -441,7 +438,6 @@ export async function getPostByCategoryId(req, res) {
 
       const deliveryFeePerPerson =
         appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
-      console.log('주문 수', deliveryFeePerPerson);
 
       const transformedPost = {
         id: post.id,

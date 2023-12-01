@@ -43,22 +43,6 @@ const styles = {
   },
 };
 
-//주문 데이터 가격 평균값
-const CalculateAvg = (datas) => {
-  let orderPrices = [];
-  datas.map((data) => {
-    data.deliveryPot.orders.map((order) => {
-      const price = order.price * order.quantity;
-      orderPrices.push(price);
-    });
-  });
-  let sum = 0;
-  orderPrices.map((orderPrice) => {
-    sum += orderPrice;
-  });
-  return sum / orderPrices.length;
-};
-
 //지금까지 주문한 카테고리 이력의 배열을 구하고 최빈 카테고리 구하기
 const ModeCategory = (datas) => {
   let categoryHistoryArr = [];
@@ -124,6 +108,24 @@ function MyBigData() {
     };
     fetchUserOrderData();
   }, []);
+
+  //주문 데이터 가격 평균값
+  const CalculateAvg = (datas) => {
+    let orderPrices = [];
+    datas.map((data) => {
+      data.deliveryPot.orders.map((order) => {
+        if(order.userId === user.id){
+          const price = order.price * order.quantity;
+          orderPrices.push(price);
+        }
+      });
+    });
+    let sum = 0;
+    orderPrices.map((orderPrice) => {
+      sum += orderPrice;
+    });
+    return sum / orderPrices.length;
+  };
 
   //카테고리 이름, 이미지 가져오기
   const [categoryName, setCategoryName] = useState([]);
