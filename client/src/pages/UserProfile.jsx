@@ -8,7 +8,6 @@ import defaultProfile from '../../public/images/Logo/Potz_Logo.png';
 import UserProfileEditModal from '../components/userProfileEditModal';
 import UserAccountUpdateModal from '../components/userAccountUpdateModal';
 import TagPlaceSM from '../components/TagPlaceSM';
-import logoImg from '../../public/images/Logo/Potz_Logo.png';
 import { useAuth } from '../contexts/AuthContext';
 
 const text = [
@@ -102,7 +101,7 @@ function UserProfile() {
       <div style={styles.content}>
         <Box2 height={'227.33px'} align={'column'}>
           <Profile1>
-            {!user.profile ? (
+            {!user.profile?.imageUrl ? (
               <img
                 src={defaultProfile}
                 style={{
@@ -117,9 +116,7 @@ function UserProfile() {
                 src={
                   user.profile?.imageUrl?.startsWith('http')
                     ? user.profile?.imageUrl
-                    : user.profile?.imageUrl
-                    ? `http://localhost:5000/${user.profile.imageUrl}`
-                    : logoImg
+                    : `http://localhost:5000/${user.profile.imageUrl}`
                 }
                 style={{
                   width: '70px',
