@@ -10,28 +10,19 @@ export async function checkPotExists(potId) {
   return potExists ? true : false;
 }
 
-export async function checkUserJoined(potId, userId) {
-  const userAlreadyJoined = await prisma.deliveryPot.findUnique({
+export async function enterPot(potId, userId) {
+  // 1. 이미 join된 pot인지 확인
+  const pot = await prisma.deliveryPot.findUnique({
     where: {
       id: +potId,
       participants: {
         some: { id: +userId },
       },
     },
-  });
-
-  return userAlreadyJoined ? true : false;
-}
-
-export async function joinPot(potId, userId) {
-  const result = await prisma.deliveryPot.update({
-    where: { id: +potId },
-    data: {
-      participants: {
-        connect: { id: +userId },
-      },
-    },
     include: {
+      potMaster: {
+        select: { id: true, name: true },
+      },
       post: {
         select: {
           id: true,
@@ -39,12 +30,38 @@ export async function joinPot(potId, userId) {
           imageUrl: true,
         },
       },
-      messages: {
-        orderBy: {
-          createdAt: 'desc',
-        },
-        take: 1,
+    },
+  });
+
+  if (pot) {
+    return { pot, alreadyJoined: true };
+  }
+
+  // 2. join 안된 pot인 경우 등록
+  const joinedPot = await prisma.deliveryPot.update({
+    where: { id: +potId },
+    data: {
+      participants: {
+        connect: { id: +userId },
       },
+    },
+    include: {
+      potMaster: {
+        select: { id: true, name: true },
+      },
+      post: {
+        select: {
+          id: true,
+          storeName: true,
+          imageUrl: true,
+        },
+      },
+      // messages: {
+      //   orderBy: {
+      //     createdAt: 'desc',
+      //   },
+      //   take: 1,
+      // },
       _count: {
         select: {
           participants: true,
@@ -53,7 +70,7 @@ export async function joinPot(potId, userId) {
     },
   });
 
-  return result;
+  return { pot: joinedPot, alreadyJoined: false };
 }
 
 export async function leavePot(potId, userId) {

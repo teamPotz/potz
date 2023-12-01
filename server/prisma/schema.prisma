@@ -174,7 +174,6 @@ model PostLike {
 }
 
 // 배달팟
-// todo : add status column : 정산 요청(정산해요), 메뉴선정 요청(메뉴 골라주세요), 수령 요청(배달 왔어요)
 model DeliveryPot {
   id                 Int                 @id @default(autoincrement())
   potMaster          User                @relation(fields: [potMasterId], references: [id])
@@ -187,10 +186,12 @@ model DeliveryPot {
   messages           Message[]
   status             DeliveryPotStatus[]
   deliveryPotHistory DeliveryPotHistory?
+  closed             Boolean             @default(false)
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
 }
 
+// 배달팟 상태(방장 요청사항): 메뉴선택 요청, 입금 요청, 수령 요청
 model DeliveryPotStatus {
   id          Int           @id @default(autoincrement())
   status      PotStatusType
