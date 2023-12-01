@@ -4,8 +4,8 @@ import { io } from 'socket.io-client';
 const URL =
   import.meta.env.NODE_ENV === 'production'
     ? undefined
-    : 'http://localhost:5000/';
+    : 'http://localhost:5000';
 
-export const socket = io(`${URL}chat`, { autoConnect: false });
-
-export const roomSocket = io(`${URL}room`, { autoConnect: false });
+export const socket = io(`${URL}/chat`, { autoConnect: false });
+export const roomSocket = io(`${URL}/room`, { autoConnect: false });
+export const communitySocket = io(`${URL}/community`, { autoConnect: false });
