@@ -2,8 +2,6 @@ import styled from 'styled-components';
 import COLOR from '../utility/Color';
 import Font from '../utility/Font';
 import ButtonBg from './ButtonBG';
-import { useState } from 'react';
-import defaultProfile from '../../public/images/Logo/Potz_Logo.png';
 
 const OrderMessageWrapper = styled.div`
   font-family: ${Font.FontKor};
@@ -12,7 +10,7 @@ const OrderMessageWrapper = styled.div`
   width: 277px;
   height: auto;
   max-height: 308px;
-  padding: 32px 24px 32px;
+  padding: 32px 24px;
   background-color: ${COLOR.WHITE};
   border-radius: 14px;
   gap: 11.67px;
@@ -68,25 +66,6 @@ const backgroundStyle = {
   zIndex: 1000,
 };
 
-const profilfeImgStyle = {
-  borderRadius: '50%',
-  width: '100px',
-  height: '100px',
-};
-
-const containerStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: '20px',
-};
-
-const fontStyle = {
-  fontSize: '24px',
-  fontFamily: Font.FontKor,
-  fontWeight: '700',
-};
-
 const formStyle = {
   marginTop: '24px',
   display: 'flex',
@@ -108,18 +87,26 @@ const inputStyle = {
   borderRadius: '12px',
 };
 
-function UserProfileEditModal(props) {
+function UserAccountUpdateModal(props) {
   let { setVisible, user } = props;
-  let [selectImg, setSelectImg] = useState();
 
   //프로필 편집데이터 전송
-  async function userProfileModal(formData) {
-    console.log('formData', formData);
+  async function userAccountUpdate(bankName, account, accountOwner) {
+    console.log('formData', bankName, account, accountOwner);
+
+    const userData = {
+      bankName,
+      account,
+      accountOwner,
+    };
     try {
-      const res = await fetch(`http://localhost:5000/users/update-profile`, {
+      const res = await fetch(`http://localhost:5000/users/update-account`, {
         method: 'PATCH',
         credentials: 'include',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
       });
       const data = await res.json();
       console.log(data);
@@ -141,72 +128,60 @@ function UserProfileEditModal(props) {
         <IconClose></IconClose>
       </div>
       <OrderMessageWrapper>
-        <div style={containerStyle}>
-          {selectImg ? (
-            <img style={profilfeImgStyle} src={selectImg}></img>
-          ) : (
-            <img
-              style={profilfeImgStyle}
-              src={
-                user.profile?.imageUrl?.startsWith('http')
-                  ? user.profile.imageUrl
-                  : user.profile?.imageUrl
-                  ? `http://localhost:5000/${user.profile.imageUrl}`
-                  : defaultProfile
-              }
-            ></img>
-          )}
-          <div style={fontStyle}>{user.name}</div>
-        </div>
-
         <form
           style={formStyle}
           onSubmit={(e) => {
             e.preventDefault();
-            const file = e.target.image.files[0];
-            const userName = e.target.querySelector(
-              'input[name="userName"]'
+
+            const bankName = e.target.querySelector(
+              'input[name="bankName"]'
+            ).value;
+            const account = e.target.querySelector(
+              'input[name="account"]'
+            ).value;
+            const accountOwner = e.target.querySelector(
+              'input[name="accountOwner"]'
             ).value;
 
-            console.log('file, userName', file, userName);
+            console.log(bankName, account, accountOwner);
 
-            if (!file || !userName) {
-              alert('파일 선택과 입력창을 모두 채워주세요.');
+            if (!bankName || !account || !accountOwner) {
+              alert('입력창을 모두 채워주세요.');
               return;
             } else {
-              const formData = new FormData();
-              formData.append('image', file);
-              formData.append('userName', userName);
-
-              userProfileModal(formData);
+              userAccountUpdate(bankName, account, accountOwner);
             }
           }}
-          encType='multipart/form-data'
         >
           <div>
-            <label style={lableStyle}>프로필 이미지 변경</label>
-            <input
-              name='image'
-              type='file'
-              accept='image/*'
-              onChange={(e) => {
-                e.preventDefault();
-                const image = e.target.files[0];
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                  setSelectImg(reader.result);
-                };
-                if (image) {
-                  reader.readAsDataURL(image);
-                }
+            <div
+              style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                marginBottom: '12px',
+                marginTop: '24px',
               }}
-            ></input>
-          </div>
-          <div>
-            <label style={lableStyle}>프로필 이름 변경</label>
+            >
+              간편 입력 계좌번호 등록
+            </div>
+            <label style={lableStyle}>계좌번호</label>
             <input
-              name='userName'
-              placeholder={user.name}
+              name='account'
+              placeholder='계좌번호를 입력해주세요.'
+              style={inputStyle}
+            ></input>
+            <label style={lableStyle}>은행</label>
+
+            <input
+              name='bankName'
+              placeholder='입력하신 계좌번호의 은행.'
+              style={inputStyle}
+            ></input>
+            <label style={lableStyle}>예금주명</label>
+
+            <input
+              name='accountOwner'
+              placeholder='입력하신 계좌번호의 예금주명'
               style={inputStyle}
             ></input>
           </div>
@@ -224,4 +199,4 @@ function UserProfileEditModal(props) {
   );
 }
 
-export default UserProfileEditModal;
+export default UserAccountUpdateModal;
