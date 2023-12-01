@@ -5,68 +5,21 @@ export default function (server, app) {
   const io = new Server(server, {
     cors: { origin: 'http://localhost:5173' },
   });
+
   app.set('io', io);
   const chat = io.of('/chat');
   const room = io.of('/room');
-
-  // let users = [];
-  // function addUser(userId, socketId) {
-  //   const userExists = users.some((user) => user.userId === userId);
-  //   if (userExists) return;
-
-  //   users.push({ userId, socketId });
-  // }
-
-  // function removeUser(socketId) {
-  //   users = users.filter((user) => user.socketId === socketId);
-  // }
-
-  // const usersByRoom = {};
-  // function joinRoom(potId, userId, socketId) {
-  //   const userJoined = usersByRoom[potId]?.some(
-  //     (user) => user.userId === userId
-  //   );
-  //   if (userJoined) return;
-
-  //   if (!usersByRoom[potId]) {
-  //     usersByRoom[potId] = [];
-  //   }
-  //   usersByRoom[potId].push({ socketId: socketId, userId: userId });
-  // }
-
-  // room namespace
-  room.on('connection', (socket) => {
-    console.log(`${socket.id} connected to room namespace`);
-
-    socket.on('disconnect', () => {
-      console.log(`${socket.id} disconnected from room namespace`);
-    });
-  });
+  const community = io.of('/community');
 
   // chat namespace
   chat.on('connection', (socket) => {
-    // console.log(socket.request.headers.referer);
-    app.set('socket', socket);
     console.log(`${socket.id} connected to chat namespace`);
-
-    // socket.on('setUserId', (userId) => {
-    //   addUser(userId, socket.id);
-    //   console.log('users', users);
-    // });
+    // console.log(socket.request.headers.referer);
 
     // 채팅방 입장
     socket.on('join', ({ potId, user }) => {
       socket.join(potId);
       console.log(`${socket.id}(${user.name}, ${user.id}) joined pot ${potId}`);
-
-      // joinRoom(potId, user.id, socket.id);
-
-      // room.emit('updateUserlist', usersByRoom);
-      // console.log(usersByRoom);
-
-      // const participants = socket.adapter.rooms.get(potId).size;
-      // console.log({ potId, participants });
-      // room.emit('participants', { potId, participants });
     });
 
     socket.on('readMessage', async ({ potId, messageId, userId }) => {
@@ -131,6 +84,31 @@ export default function (server, app) {
       //   sender: 'system',
       //   content: `${socket.name}님이 퇴장하셨습니다.`,
       // });
+    });
+  });
+
+  // room namespace
+  room.on('connection', (socket) => {
+    console.log(`${socket.id} connected to room namespace`);
+
+    socket.on('disconnect', () => {
+      console.log(`${socket.id} disconnected from room namespace`);
+    });
+  });
+
+  // community namespace
+  community.on('connection', (socket) => {
+    console.log(`${socket.id} connected to community namespace`);
+
+    socket.on('join', ({ communityId, user }) => {
+      socket.join(communityId);
+      console.log(
+        `${socket.id}(${user.name}, ${user.id}) joined community ${communityId}`
+      );
+    });
+
+    socket.on('disconnect', () => {
+      console.log(`${socket.id} disconnected from community namespace`);
     });
   });
 

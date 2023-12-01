@@ -86,7 +86,6 @@ export async function joinDeliveryPot(req, res, next) {
     // 방의 모든 메시지 읽음 처리
     await readAllMessages(potId, req.user.id);
 
-    // todo : emit 읽음 이벤트 전달
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('updateCountAll', req.user.id);
 
@@ -104,10 +103,8 @@ export async function joinDeliveryPot(req, res, next) {
       message: `${req.user.name}님이 입장했습니다.`,
     });
 
-    // const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', systemMessage);
 
-    // todo : communityId 별로 namesapce 나눠서 보내기
     io.of('/room').emit('updateUserList', {
       potId,
       participants: result._count.participants,

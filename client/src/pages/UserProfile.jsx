@@ -194,9 +194,9 @@ function UserProfile() {
           <Profile1>
             <img
               src={
-                user.profile.imageUrl.startsWith('https')
-                  ? user.profile.imageUrl
-                  : `http://localhost:5000/${user.profile.imageUrl}`
+                user.profile?.imageUrl.startsWith('https')
+                  ? user.profile?.imageUrl
+                  : `http://localhost:5000/${user.profile?.imageUrl}`
               }
               style={{
                 width: '70px',
