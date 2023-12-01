@@ -6,8 +6,6 @@ function Detail() {
   const [postDatas, setPostDatas] = useState();
   const postID = useParams();
 
-  console.log('포스트 아이디', postID);
-
   useEffect(() => {
     if (postID.id !== null) {
       const fetchCommunityData = async () => {
@@ -33,10 +31,7 @@ function Detail() {
 
   return (
     <div className='potz_container'>
-      {postDatas ? console.log('포스트 데이터즈', postDatas) : null}
-      {postDatas ? (
-        <DetailContents postDatas={postDatas}></DetailContents>
-      ) : null}
+      {postDatas && <DetailContents postDatas={postDatas} />}
     </div>
   );
 }

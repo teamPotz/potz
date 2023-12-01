@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import Font from '../utility/Font.js';
 import COLOR from '../utility/Color.js';
 import CategorySearch from '../components/categorySearch.jsx';
 import logoImg from '../../public/images/Logo/Potz_Logo.png';
@@ -11,14 +10,13 @@ import HomeDiscountModal from '../components/homeDiscountModal.jsx';
 import { useAuth } from '../contexts/AuthContext.jsx';
 
 function DetailContents({ postDatas }) {
-  const { user } = useAuth();
   const communityId = localStorage.getItem('communityDataID');
-  const { categoryId, potId } = postDatas;
   const [categoryPostData, setCategoryPostData] = useState();
-
   const [visible, setVisible] = useState(false);
   const [visible2, setVisible2] = useState(false);
+  const { categoryId, potId } = postDatas;
 
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
@@ -54,7 +52,7 @@ function DetailContents({ postDatas }) {
           { credentials: 'include' }
         );
         const data = await response.json();
-        console.log('해당 카테고리 데이터', data);
+        // console.log('해당 카테고리 데이터', data);
         setCategoryPostData(data);
       } catch (error) {
         console.error(error);
@@ -63,11 +61,6 @@ function DetailContents({ postDatas }) {
 
     fetchCategoryPostData();
   }, [categoryId, communityId]);
-
-  const enterChatRoom = async () => {
-    // const { potId } = postDatas;
-    navigate(`/chats/${potId}`);
-  };
 
   const imgStyle = {
     maxWidth: '420px',
@@ -84,7 +77,6 @@ function DetailContents({ postDatas }) {
     display: 'flex',
     alignItems: 'center',
     gap: '76px',
-    fontFamily: Font.FontKor,
     fontWeight: '700',
     color: COLOR.GRAY_400,
   };
@@ -130,7 +122,11 @@ function DetailContents({ postDatas }) {
       <div style={imgContainer}>
         <img
           style={imgStyle}
-          src={`http://localhost:5000/images/${postDatas.imageUrl}`}
+          src={
+            postDatas.imageUrl
+              ? `http://localhost:5000${postDatas.imageUrl}`
+              : logoImg
+          }
         />
         <div style={TopStyle}>
           <ButtonWrap onClick={() => navigate(-1)} style={marginLeftStyle}>
@@ -205,8 +201,9 @@ function DetailContents({ postDatas }) {
         <CategorySearch
           displayWidth={displayWidth}
           categoryPostData={categoryPostData}
-        ></CategorySearch>
+        />
       ) : null}
+
       <div style={navbarStyle}>
         <nav style={navStyles}>
           <div style={navFontContainer}>
@@ -231,7 +228,7 @@ function DetailContents({ postDatas }) {
               ) : null}
             </div>
           </div>
-          <EnterStyle onClick={enterChatRoom}>
+          <EnterStyle onClick={() => navigate(`/chats/${potId}`)}>
             <EnterIcon />
           </EnterStyle>
         </nav>
@@ -290,7 +287,6 @@ const EnterStyle = styled.div`
 `;
 
 const backgroundStyle = {
-  fontFamily: Font.FontKor,
   backgroundColor: COLOR.WHITE,
 };
 
@@ -467,7 +463,6 @@ const navStyles = {
 const navFontContainer = {
   display: 'flex',
   flexDirection: 'column',
-  fontFamily: Font.FontKor,
 };
 
 const marginLeftStyle = {
@@ -495,13 +490,11 @@ const storeFont = {
 
 const fontStyle1 = {
   marginLeft: '28px',
-  fontFamily: Font.FontKor,
   fontSize: '16px',
   color: COLOR.GRAY_400,
 };
 
 const fontStyle2 = {
-  fontFamily: Font.FontKor,
   marginLeft: '8px',
   color: COLOR.POTZ_PINK_DEFAULT,
 };
