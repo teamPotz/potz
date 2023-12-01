@@ -6,6 +6,7 @@ import COLOR from '../../utility/Color';
 import PotStatus from '../../components/chat/PotStatus.jsx';
 import NavBar from '../../components/ui/NavBar';
 import { roomSocket } from '../../../socket.js';
+const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 
 function ChatList() {
   const [deliveryPots, setDeliveryPots] = useState([]);
@@ -143,7 +144,11 @@ function ChatList() {
                   height: '100%',
                   borderRadius: '0.8rem',
                 }}
-                src={`http://localhost:5000${pot.post.imageUrl}`}
+                src={
+                  pot.post.imageUrl
+                    ? `http://localhost:5000${pot.post.imageUrl}`
+                    : `${PF}Logo/Potz_Logo.png`
+                }
               />
               <div>
                 <div style={styles.space}>
@@ -157,9 +162,10 @@ function ChatList() {
                   <GreenDot />
                   <FontMd color={`${COLOR.GRAY_400}`}>
                     <span>{pot._count.participants}명 참여중</span>
-                    <span> | </span>
                     <span>
-                      {timeAgoFormat(pot.messages?.at(0).createdAt, 'ko')}
+                      {pot.messages.length > 0 &&
+                        ` | ` +
+                          timeAgoFormat(pot.messages.at(0).createdAt, 'ko')}
                     </span>
                   </FontMd>
                 </div>
@@ -172,7 +178,7 @@ function ChatList() {
                   }}
                 >
                   <FontMd color={`${COLOR.GRAY_400}`}>
-                    {lastMessage(pot.messages.at(0))}
+                    {pot.messages.length > 0 && lastMessage(pot.messages.at(0))}
                   </FontMd>
                 </div>
               </div>
