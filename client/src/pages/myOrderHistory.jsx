@@ -108,7 +108,7 @@ function MyOrderHistory() {
     let arr = [];
     datas.map((data) => {
       data.deliveryPot.orders.map((order) => {
-        if (order.userId === user.id) {
+        if (order.orderConfirmed && (order.userId === user.id)) {
           console.log('내가 한 주문', order);
           arr.push(order);
         }
