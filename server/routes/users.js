@@ -22,5 +22,5 @@ router.patch(
   fileUpload.single('image'),
   updateUserById
 );
-router.patch('/update-account', updateUserAccountById);
+router.patch('/update-account', verifyAuth, updateUserAccountById);
 export default router;
