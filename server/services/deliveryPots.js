@@ -30,6 +30,9 @@ export async function enterPot(potId, userId) {
           imageUrl: true,
         },
       },
+      status: {
+        select: { id: true, status: true },
+      },
     },
   });
 

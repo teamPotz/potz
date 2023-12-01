@@ -7,12 +7,12 @@ import ChatInput from '../../components/chat/ChatInput.jsx';
 import MessageContainer from '../../components/chat/messages/MessageContainer.jsx';
 import OrderModal from '../../components/chat/OrderModal.jsx';
 import DepositModal from '../../components/chat/DepositModal.jsx';
-const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
-
+import UserAccountUpdateModal from '../../components/userAccountUpdateModal.jsx';
 import { useChat } from '../../contexts/ChatContext.jsx';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { socket } from '../../../socket.js';
-import UserAccountUpdateModal from '../../components/userAccountUpdateModal.jsx';
+
+const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 
 const initialOrderData = {
   file: null,
@@ -365,9 +365,9 @@ function Chat() {
     };
   }, [potId, user]);
 
-  // join pot
+  // enter pot
   useEffect(() => {
-    async function joinPot() {
+    async function enterPot() {
       try {
         const res = await fetch(
           `http://localhost:5000/delivery-pots/${potId}/join`,
@@ -387,7 +387,7 @@ function Chat() {
         console.error(error);
       }
     }
-    joinPot();
+    enterPot();
   }, [potId, user]);
 
   useEffect(() => {
@@ -417,7 +417,7 @@ function Chat() {
 
   return (
     <>
-      <TopNavBar>
+      <TopNavBarWrapper>
         <div style={{ display: 'flex' }} onClick={() => navigate(-1)}>
           <BackArrowIcon />
           <div style={{ display: 'flex', marginRight: '0.6rem' }}>
@@ -454,24 +454,14 @@ function Chat() {
         >
           {deliveryPot?.closed ? '마감됨' : '마감'}
         </div>
-      </TopNavBar>
+      </TopNavBarWrapper>
 
       <div
         className='potz_container'
         style={{ backgroundColor: COLOR.POTZ_PINK_200 }}
       >
-        {/* <GoBack text={state?.storeName} /> */}
         {/* test buttons */}
         <div style={{ position: 'fixed', top: '70px' }}>
-          <div>
-            <button onClick={() => setStatus('MENU_REQUEST')}>메뉴요청</button>
-            <button onClick={() => setStatus('DEPOSIT_REQUEST')}>
-              입금요청
-            </button>
-            <button onClick={() => setStatus('PICKUP_REQUEST')}>
-              수령요청
-            </button>
-          </div>
           <div>
             <button onClick={() => setOpenOrderModal(true)}>메뉴 선택</button>
             <button onClick={() => setOpenDepositModal(true)}>입금 인증</button>
@@ -495,7 +485,12 @@ function Chat() {
           />
         </div>
         {openMenuBar && (
-          <ChatMenu isPotMaster={isPotMaster} leavePot={leavePot} />
+          <ChatMenu
+            isPotMaster={isPotMaster}
+            setStatus={setStatus}
+            setOpenOrderModal={setOpenOrderModal}
+            setOpenDepositModal={setOpenDepositModal}
+          />
         )}
         <ChatInput
           newMessage={newMessage}
@@ -532,7 +527,7 @@ function Chat() {
   );
 }
 
-const TopNavBar = styled.div`
+const TopNavBarWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -546,6 +541,7 @@ const TopNavBar = styled.div`
   font-weight: 700;
   font-size: 18.6px;
   font-color: ${COLOR.BLACK};
+  z-index: 100;
   & svg {
     cursor: pointer;
     margin: 18px;

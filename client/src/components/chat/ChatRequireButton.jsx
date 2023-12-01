@@ -1,12 +1,16 @@
-{
-  /* 사용 방법
-<ChatRequireButton imageURL={"images/components/icon-coin-mono.png"} text={'정산 요청'}></ChatRequireButton>
-<ChatRequireButton imageURL={"images/components/Union.png"} text={'메뉴 요청'}></ChatRequireButton>
-<ChatRequireButton imageURL={"images/components/Arrow - Right Square.png"} text={'수령 요청'}></ChatRequireButton> */
-}
-
 import styled from 'styled-components';
 import COLOR from '../../utility/Color';
+
+const ChatRequireButton = ({ title, imageUrl, onClick }) => {
+  return (
+    <Wrapper onClick={onClick}>
+      <Icon>
+        <img src={imageUrl} style={{ width: '28px', height: '28px' }} />
+      </Icon>
+      <Text>{title}</Text>
+    </Wrapper>
+  );
+};
 
 const Wrapper = styled.div`
   display: flex;
@@ -58,14 +62,5 @@ const Text = styled.div`
 //   width: 28px;
 //   height: 28px;
 // `;
-
-const ChatRequireButton = ({ title, onClick }) => {
-  return (
-    <Wrapper onClick={onClick}>
-      <Icon>{/* <Coin /> */}</Icon>
-      <Text>{title}</Text>
-    </Wrapper>
-  );
-};
 
 export default ChatRequireButton;

@@ -8,21 +8,6 @@ import DepositMessage from './DepositMessage.jsx';
 import DepositConfirmMessage from './DepositConfirmMessage.jsx';
 import { useAuth } from '../../../contexts/AuthContext.jsx';
 
-const MessageContainerWrapper = styled.div`
-  background-color: ${COLOR.POTZ_PINK_200};
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 10px;
-  // margin-bottom: ${(props) => (props.ismenubaropend ? '142px' : '10px')};
-  flex: 1;
-  overflow-y: auto;
-  padding: 15px;
-  padding-top: 74px;
-  padding-bottom: 74px;
-  // height: 100vh;
-`;
-
 function MessageContainer({
   messages,
   isMenuBarOpened,
@@ -45,27 +30,25 @@ function MessageContainer({
             return <div key={message.id}>{message.content.message}</div>;
           case 'TEXT':
             return (
-              <div ref={scrollRef}>
-                <TextMessage
-                  key={message.id}
-                  message={message}
-                  own={message.sender.id === user.id}
-                />
-              </div>
+              <TextMessageWrapper
+                $own={message.sender.id === user.id}
+                ref={scrollRef}
+              >
+                <TextMessage key={message.id} message={message} />
+              </TextMessageWrapper>
             );
           case 'REQUEST':
             return <div key={message.id}>{message.content.message}</div>;
           case 'ORDER':
             return (
-              <div ref={scrollRef}>
-                <OrderMessage
-                  key={message.id}
-                  message={message}
-                  isPotMaster={isPotMaster}
-                  confirmOrder={confirmOrder}
-                  own={message.sender.id === user.id}
-                />
-              </div>
+              <OrderMessage
+                key={message.id}
+                ref={scrollRef}
+                message={message}
+                isPotMaster={isPotMaster}
+                confirmOrder={confirmOrder}
+                own={message.sender.id === user.id}
+              />
             );
           case 'ORDER_CONFIRM':
             return (
@@ -106,5 +89,35 @@ function MessageContainer({
     </MessageContainerWrapper>
   );
 }
+
+const MessageContainerWrapper = styled.div`
+  background-color: ${COLOR.POTZ_PINK_200};
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  // margin-bottom: ${(props) => (props.ismenubaropend ? '142px' : '10px')};
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+  padding-top: 74px;
+  padding-bottom: 74px;
+  // height: 100vh;
+`;
+
+const TextMessageWrapper = styled.div`
+  background-color: ${(props) =>
+    props.$own ? `${COLOR.POTZ_PINK_500}` : `${COLOR.WHITE}`};
+  color: ${(props) => (props.$own ? `${COLOR.WHITE}` : `${COLOR.BLACK}`)};
+  border-radius: 14px;
+  width: auto;
+  max-width: 276px;
+  padding: 4px 14px;
+  margin-left: ${(props) => (props.$own ? 'auto' : 'none')};
+  margin-right: ${(props) => (props.$own ? 'none' : 'auto')};
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+`;
 
 export default MessageContainer;

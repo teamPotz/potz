@@ -2,6 +2,26 @@ import styled from 'styled-components';
 import COLOR from '../../../utility/Color';
 import CartIcon from '../assets/CartIcon';
 
+function OrderConfirmMessage({ sender, own }) {
+  return (
+    <MessageWrapper $own={own}>
+      <div style={styles.box}>
+        <div style={styles.title}>
+          <CartIcon fill={COLOR.POTZ_PINK_400} />
+          <FontBig>메뉴 확인</FontBig>
+        </div>
+        <div style={styles.content}>
+          <img src='/images/graphicImg/CategoryBurger.png' />
+        </div>
+        <div>
+          <span style={{ color: COLOR.POTZ_PINK_DEFAULT }}>{sender.name}</span>
+          님의 배달 메뉴 확인 완료!
+        </div>
+      </div>
+    </MessageWrapper>
+  );
+}
+
 const MessageWrapper = styled.div`
   background-color: ${COLOR.WHITE};
   width: 278px;
@@ -44,25 +64,5 @@ const styles = {
     justifyContent: 'center',
   },
 };
-
-function OrderConfirmMessage({ sender, own }) {
-  return (
-    <MessageWrapper $own={own}>
-      <div style={styles.box}>
-        <div style={styles.title}>
-          <CartIcon fill={COLOR.POTZ_PINK_400} />
-          <FontBig>메뉴 확인</FontBig>
-        </div>
-        <div style={styles.content}>
-          <img src='/images/graphicImg/CategoryBurger.png' />
-        </div>
-        <div>
-          <span style={{ color: COLOR.POTZ_PINK_DEFAULT }}>{sender.name}</span>
-          님의 배달 메뉴 확인 완료!
-        </div>
-      </div>
-    </MessageWrapper>
-  );
-}
 
 export default OrderConfirmMessage;
