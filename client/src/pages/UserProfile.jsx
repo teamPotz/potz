@@ -1,184 +1,15 @@
-import COLOR from '../utility/Color';
-import styled from 'styled-components';
-import Font from '../utility/Font';
-import NavBar from '../components/ui/NavBar';
-import { useAuth } from '../contexts/AuthContext';
-import ButtonBg from '../components/ButtonBG';
-import defaultProfile from '../../public/images/Logo/Potz_Logo.png';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import COLOR from '../utility/Color';
+import NavBar from '../components/ui/NavBar';
+import ButtonBg from '../components/ButtonBG';
+import defaultProfile from '../../public/images/Logo/Potz_Logo.png';
 import UserProfileEditModal from '../components/userProfileEditModal';
 import UserAccountUpdateModal from '../components/userAccountUpdateModal';
 import TagPlaceSM from '../components/TagPlaceSM';
-
-const Box = styled.div`
-  display: flex;
-  flex-direction: ${(props) => props.align};
-  align-items: center;
-  width: 100%;
-  height: ${(props) => props.height};
-  justify-content: space-between;
-  background-color: ${COLOR.WHITE};
-  div {
-    margin: 28px;
-    svg {
-      cursor: grab;
-      transition: all 0.2s ease;
-      &:hover {
-        transform: ${(props) => (props.noTransform ? 'none' : 'scale(1.18)')};
-      }
-    }
-  }
-  p {
-    margin: 0px;
-  }
-`;
-
-const Box2 = styled.div`
-  display: flex;
-  flex-direction: ${(props) => props.align};
-  align-items: center;
-  height: ${(props) => props.height};
-  justify-content: space-between;
-  background-color: ${COLOR.WHITE};
-  div {
-    svg {
-      cursor: grab;
-      transition: all 0.2s ease;
-      &:hover {
-        transform: ${(props) => (props.noTransform ? 'none' : 'scale(1.18)')};
-      }
-    }
-  }
-  p {
-    margin: 0px;
-  }
-`;
-
-const NavComp = styled.div`
-  display: flex;
-  padding-left: 28px;
-  flex-direction: ${(props) => props.align};
-  align-items: center;
-  height: ${(props) => props.height};
-  justify-content: space-between;
-  background-color: ${COLOR.WHITE};
-  div {
-    svg {
-      cursor: grab;
-      transition: all 0.2s ease;
-      &:hover {
-        transform: ${(props) => (props.noTransform ? 'none' : 'scale(1.18)')};
-      }
-    }
-  }
-  p {
-    margin: 0px;
-  }
-`;
-
-const Profile1 = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 21px;
-  align-items: center;
-  height: 70px;
-  margin: 28px;
-  div {
-    margin: 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    width: 276.5px;
-  }
-`;
-
-const Profile2 = styled.div`
-  margin-top: 14px;
-  display: flex;
-  align-items: center;
-  width: 363px;
-  height: auto;
-  padding: 12px 0px;
-  transform: translateY(-46px);
-  background-color: ${COLOR.GRAY_100};
-  border-radius: 9px;
-  div {
-    margin-left: 12px;
-  }
-`;
-const FontBig = styled.p`
-  font-family: ${Font.FontKor};
-  font-style: normal;
-  font-weight: 700;
-  font-size: 18.6667px;
-  color: ${COLOR.BLACK};
-  margin: 0;
-  white-space: nowrap;
-`;
-const FontMd = styled.span`
-  font-family: ${Font.FontKor};
-  font-style: normal;
-  font-weight: ${(props) => props.weight};
-  font-size: 16px;
-  color: ${(props) => props.color};
-  margin: 0;
-  white-space: nowrap;
-  filter: ${(props) => (props.blur ? 'blur(5px)' : 'none')};
-  transition: 0.2s;
-`;
-const FontMd2 = styled.span`
-  display: flex;
-  gap: 12px;
-  font-family: ${Font.FontKor};
-  font-style: normal;
-  font-weight: ${(props) => props.weight};
-  font-size: 16px;
-  color: ${(props) => props.color};
-  filter: ${(props) => (props.blur ? 'blur(5px)' : 'none')};
-  transition: 0.2s;
-`;
-const FontSm = styled.span`
-  font-family: ${Font.FontKor};
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  color: ${COLOR.GRAY_500};
-  margin: 0;
-  white-space: nowrap;
-`;
-const styles = {
-  background: {
-    backgroundColor: `${COLOR.POTZ_PINK_100}`,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '9.33px',
-  },
-  topBar: {
-    width: '420px',
-    position: 'fixed',
-    top: 0,
-    boxShadow: '0px 1.16667px 2.33333px rgba(0, 0, 0, 0.08)',
-  },
-  content: {
-    marginTop: '60.67px',
-  },
-  navBar: {
-    position: 'fixed',
-    bottom: 0,
-    width: '420px',
-  },
-  verticalAlign: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  contentBox: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1.5px',
-  },
-};
+import logoImg from '../../public/images/Logo/Potz_Logo.png';
+import { useAuth } from '../contexts/AuthContext';
 
 const text = [
   ['내 공동체 관리', '/my-page/communites'],
@@ -188,14 +19,14 @@ const text = [
 ];
 
 function UserProfile() {
-  const { user, logout } = useAuth();
-  console.log(user);
-  const navigate = useNavigate();
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
   const [visible, setVisible] = useState(false);
   const [visible2, setVisible2] = useState(false);
   const [blur, setBlur] = useState(true);
   const [potNum, setPotNum] = useState();
+
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const profileEditHandler = () => {
     setVisible(true);
@@ -203,14 +34,6 @@ function UserProfile() {
 
   const userAcocuntModalHandler = () => {
     setVisible2(true);
-  };
-
-  const blurHandler = () => {
-    if (blur) {
-      setBlur(false);
-    } else {
-      setBlur(true);
-    }
   };
 
   useEffect(() => {
@@ -225,6 +48,17 @@ function UserProfile() {
       window.removeEventListener('resize', ReSizeHandler);
     };
   }, []);
+
+  const navbarStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '28px',
+    alignItems: 'end',
+    position: 'fixed',
+    bottom: 0,
+    maxWidth: '420px',
+    width: displayWidth ? displayWidth : '420px',
+  };
 
   // 커뮤니티 데이터
   useEffect(() => {
@@ -248,57 +82,13 @@ function UserProfile() {
     fetchCommunityData();
   }, []);
 
-  const myPageStyle = {
-    paddingLeft: '28px',
-    paddingRight: '28px',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '60px',
-  };
-
-  const navbarStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '28px',
-    alignItems: 'end',
-    position: 'fixed',
-    bottom: 0,
-    maxWidth: '420px',
-    width: displayWidth ? displayWidth : '420px',
-  };
-
-  const accountStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-  };
-
-  const containerStyle = {
-    margin: '0px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    marginTop: '4px',
-    marginBottom: '4px',
-  };
-
-  const coloredFont = {
-    color: COLOR.POTZ_PINK_DEFAULT,
-  };
-
   return (
     <div className='potz_container' style={styles.background}>
       {visible2 ? (
-        <UserAccountUpdateModal
-          user={user}
-          setVisible={setVisible2}
-        ></UserAccountUpdateModal>
+        <UserAccountUpdateModal user={user} setVisible={setVisible2} />
       ) : null}
       {visible ? (
-        <UserProfileEditModal
-          user={user}
-          setVisible={setVisible}
-        ></UserProfileEditModal>
+        <UserProfileEditModal user={user} setVisible={setVisible} />
       ) : null}
 
       <div style={styles.topBar}>
@@ -327,7 +117,9 @@ function UserProfile() {
                 src={
                   user.profile?.imageUrl?.startsWith('http')
                     ? user.profile?.imageUrl
-                    : `http://localhost:5000/${user.profile?.imageUrl}`
+                    : user.profile?.imageUrl
+                    ? `http://localhost:5000/${user.profile.imageUrl}`
+                    : logoImg
                 }
                 style={{
                   width: '70px',
@@ -444,7 +236,10 @@ function UserProfile() {
               </FontMd2>
             ) : null}
           </div>
-          <div onClick={blurHandler} style={{ cursor: 'pointer' }}>
+          <div
+            onClick={() => setBlur((prev) => !prev)}
+            style={{ cursor: 'pointer' }}
+          >
             <svg
               width='64'
               height='44'
@@ -567,5 +362,197 @@ function UserProfile() {
     </div>
   );
 }
+
+const Box = styled.div`
+  display: flex;
+  flex-direction: ${(props) => props.align};
+  align-items: center;
+  width: 100%;
+  height: ${(props) => props.height};
+  justify-content: space-between;
+  background-color: ${COLOR.WHITE};
+  div {
+    margin: 28px;
+    svg {
+      cursor: grab;
+      transition: all 0.2s ease;
+      &:hover {
+        transform: ${(props) => (props.noTransform ? 'none' : 'scale(1.18)')};
+      }
+    }
+  }
+  p {
+    margin: 0px;
+  }
+`;
+
+const Box2 = styled.div`
+  display: flex;
+  flex-direction: ${(props) => props.align};
+  align-items: center;
+  height: ${(props) => props.height};
+  justify-content: space-between;
+  background-color: ${COLOR.WHITE};
+  div {
+    svg {
+      cursor: grab;
+      transition: all 0.2s ease;
+      &:hover {
+        transform: ${(props) => (props.noTransform ? 'none' : 'scale(1.18)')};
+      }
+    }
+  }
+  p {
+    margin: 0px;
+  }
+`;
+
+const NavComp = styled.div`
+  display: flex;
+  padding-left: 28px;
+  flex-direction: ${(props) => props.align};
+  align-items: center;
+  height: ${(props) => props.height};
+  justify-content: space-between;
+  background-color: ${COLOR.WHITE};
+  div {
+    svg {
+      cursor: grab;
+      transition: all 0.2s ease;
+      &:hover {
+        transform: ${(props) => (props.noTransform ? 'none' : 'scale(1.18)')};
+      }
+    }
+  }
+  p {
+    margin: 0px;
+  }
+`;
+
+const Profile1 = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 21px;
+  align-items: center;
+  height: 70px;
+  margin: 28px;
+  div {
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 276.5px;
+  }
+`;
+
+const Profile2 = styled.div`
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  width: 363px;
+  height: auto;
+  padding: 12px 0px;
+  transform: translateY(-46px);
+  background-color: ${COLOR.GRAY_100};
+  border-radius: 9px;
+  div {
+    margin-left: 12px;
+  }
+`;
+const FontBig = styled.p`
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18.6667px;
+  color: ${COLOR.BLACK};
+  margin: 0;
+  white-space: nowrap;
+`;
+const FontMd = styled.span`
+  font-style: normal;
+  font-weight: ${(props) => props.weight};
+  font-size: 16px;
+  color: ${(props) => props.color};
+  margin: 0;
+  white-space: nowrap;
+  filter: ${(props) => (props.blur ? 'blur(5px)' : 'none')};
+  transition: 0.2s;
+`;
+const FontMd2 = styled.span`
+  display: flex;
+  gap: 12px;
+  font-style: normal;
+  font-weight: ${(props) => props.weight};
+  font-size: 16px;
+  color: ${(props) => props.color};
+  filter: ${(props) => (props.blur ? 'blur(5px)' : 'none')};
+  transition: 0.2s;
+`;
+const FontSm = styled.span`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  color: ${COLOR.GRAY_500};
+  margin: 0;
+  white-space: nowrap;
+`;
+const styles = {
+  background: {
+    backgroundColor: `${COLOR.POTZ_PINK_100}`,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '9.33px',
+  },
+  topBar: {
+    width: '420px',
+    position: 'fixed',
+    top: 0,
+    boxShadow: '0px 1.16667px 2.33333px rgba(0, 0, 0, 0.08)',
+  },
+  content: {
+    marginTop: '60.67px',
+  },
+  navBar: {
+    position: 'fixed',
+    bottom: 0,
+    width: '420px',
+  },
+  verticalAlign: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  contentBox: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1.5px',
+  },
+};
+
+const myPageStyle = {
+  paddingLeft: '28px',
+  paddingRight: '28px',
+  height: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  marginBottom: '60px',
+};
+
+const accountStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+};
+
+const containerStyle = {
+  margin: '0px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '10px',
+  marginTop: '4px',
+  marginBottom: '4px',
+};
+
+const coloredFont = {
+  color: COLOR.POTZ_PINK_DEFAULT,
+};
 
 export default UserProfile;
