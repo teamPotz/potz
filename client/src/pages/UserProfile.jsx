@@ -325,7 +325,7 @@ function UserProfile() {
             ) : (
               <img
                 src={
-                  user.profile?.imageUrl.startsWith('http')
+                  user.profile?.imageUrl?.startsWith('http')
                     ? user.profile?.imageUrl
                     : `http://localhost:5000/${user.profile?.imageUrl}`
                 }

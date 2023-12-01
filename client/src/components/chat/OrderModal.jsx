@@ -15,7 +15,7 @@ function OrderModal({
 }) {
   return (
     <ModalBackground>
-      <BackNavBar title='메뉴와 금액 전송하기' onClick={closeModal} />
+      <BackNavBar title='메뉴 선택하기' onClick={closeModal} />
 
       <ModalContainer>
         <div style={{ marginTop: '60px', marginBottom: '60px' }}>
@@ -39,22 +39,22 @@ function OrderModal({
             />
           </Item>
           <Item>
-            <PieIcon fill={COLOR.POTZ_PINK_500} />
-            <FontMd color={COLOR.GRAY_500}>주문할 음식 갯수</FontMd>
-            <Input
-              placeholder='몇 개'
-              name='quantity'
-              value={formData.quantity}
-              onChange={handleFormChange}
-            />
-          </Item>
-          <Item>
             <MoneyIcon fill={COLOR.POTZ_PINK_500} />
             <FontMd color={COLOR.GRAY_500}>메뉴 1개당 금액</FontMd>
             <Input
               placeholder='얼마'
               name='price'
               value={formData.price}
+              onChange={handleFormChange}
+            />
+          </Item>
+          <Item>
+            <PieIcon fill={COLOR.POTZ_PINK_500} />
+            <FontMd color={COLOR.GRAY_500}>주문할 음식 갯수</FontMd>
+            <Input
+              placeholder='몇 개'
+              name='quantity'
+              value={formData.quantity}
               onChange={handleFormChange}
             />
           </Item>

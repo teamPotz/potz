@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import COLOR from '../../../utility/Color';
 import CartIcon from '../assets/CartIcon';
 import ButtonBg from '../../ButtonBG';
+import { useEffect, useRef } from 'react';
 
 const FontBig = styled.p`
   font-style: normal;
@@ -65,6 +66,12 @@ const MenuImage = ({ imageUrl }) => {
 };
 
 function OrderMessage({ message, own, isPotMaster, confirmOrder }) {
+  const scrollRef = useRef();
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behaviour: 'smooth' });
+  }, [message]);
+
   const {
     id: orderId,
     price,
@@ -75,7 +82,7 @@ function OrderMessage({ message, own, isPotMaster, confirmOrder }) {
   } = message.content;
 
   return (
-    <MessageWrapper $own={own}>
+    <MessageWrapper $own={own} ref={scrollRef}>
       <Title>{message.sender.name}님의 메뉴 선정</Title>
       {imageUrl && <MenuImage imageUrl={imageUrl} />}
       <div>{menuName}</div>
