@@ -124,7 +124,7 @@ function DetailContents({ postDatas }) {
           style={imgStyle}
           src={
             postDatas.imageUrl
-              ? `http://localhost:5000${postDatas.imageUrl}`
+              ? `http://localhost:5000/images/${postDatas.imageUrl}`
               : logoImg
           }
         />
