@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import CategoryListComp from './CategoryComp';
 
 const CategorySearch = (props) => {
-  let { categoryPostData, displayWidth } = props;
+  const { categoryPostData, displayWidth } = props;
   console.log('카테고리별 포스트 데이터', categoryPostData);
   console.log('화면 크기', displayWidth);
 
@@ -68,12 +68,7 @@ const CategorySearch = (props) => {
         ref={scroll}
       >
         {categoryPostData.map((postData, index) => {
-          return (
-            <CategoryListComp
-              key={index}
-              postData={postData}
-            ></CategoryListComp>
-          );
+          return <CategoryListComp key={index} postData={postData} />;
         })}
       </CategorySearchStyle>
     </div>
