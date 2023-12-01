@@ -182,7 +182,7 @@ const styles = {
 
 const text = [
   ['내 공동체 관리', '/my-page/communites'],
-  ['알림 내역 관리', '/alarm],
+  ['알림 내역 관리', '/alarm'],
   ['참여 내역', '/my-page/order-history'],
   ['결제 내역', '/my-page/order-history'],
 ];
