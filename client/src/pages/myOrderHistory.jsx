@@ -4,6 +4,7 @@ import COLOR from '../utility/Color';
 import Font from '../utility/Font';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 
 const BoxComp = styled.div`
   width: 327px;
@@ -16,6 +17,11 @@ const BoxComp = styled.div`
   border-radius: 7px;
   background: ${COLOR.WHITE};
   box-shadow: 0px 3.5px 8.167px 0px rgba(0, 0, 0, 0.07);
+  transition: all 0.2s ease;
+  &:hover{
+    transform: scale(1.05);
+    cursor: grab;
+  }
 `;
 
 const FontBg = styled.div`
@@ -64,7 +70,6 @@ const styles = {
     height: '80px',
     borderRadius: '4px',
     objectFit: 'cover',
-    // backgroundColor: COLOR.POTZ_PINK_600,
   },
   alignDirectionCol: {
     display: 'flex',
@@ -88,7 +93,7 @@ function MyOrderHistory() {
           credentials: 'include',
         });
         const data = await response.json();
-        console.log(data[0].deliveryPotHistoryAsMember);
+        console.log('내가 가입한 배달팟', data[0].deliveryPotHistoryAsMember);
         setMyOrders(myOrderdata(data[0].deliveryPotHistoryAsMember));
       } catch (error) {
         console.error(error);
@@ -103,16 +108,13 @@ function MyOrderHistory() {
     datas.map((data) => {
       data.deliveryPot.orders.map((order) => {
         if (order.userId === user.id) {
+          console.log('내가 한 주문', order);
           arr.push(order);
         }
       });
     });
     return arr;
   };
-
-  useEffect(() => {
-    console.log('내가 한 주문', myOrders);
-  }, [myOrders]);
 
   return (
     <div className='potz_container' style={styles.background}>
@@ -122,13 +124,20 @@ function MyOrderHistory() {
           myOrders.map((myOrder, index) => {
             return (
               <BoxComp key={index}>
-                <img src={myOrder.imageUrl} style={styles.image}></img>
+                <img
+                  src={
+                    myOrder.imageUrl
+                      ? `http://localhost:5000/${myOrder.imageUrl}`
+                      : `${PF}Logo/Potz_Logo.png`
+                  }
+                  style={styles.image}
+                ></img>
                 <AlignColumn>
                   <FontSm>주문날짜 : {myOrder.updatedAt}</FontSm>
                   <div>
                     <FontBg>{myOrder.menuName}</FontBg>
                     <FontSm color={COLOR.GRAY_400}>
-                      갯수 {myOrder.quantity} | 주문가격 {myOrder.price}
+                      갯수 {myOrder.quantity} | 주문가격 {myOrder.price}원
                     </FontSm>
                   </div>
                   <FontMd>

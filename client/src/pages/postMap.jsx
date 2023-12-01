@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import COLOR from '../utility/Color';
+const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 
 function PostMap(props) {
   const [info, setInfo] = useState();
@@ -10,7 +11,6 @@ function PostMap(props) {
     lat: 37.56421,
     lon: 127.00169,
   });
-  const [position, setPosition] = useState();
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -68,14 +68,6 @@ function PostMap(props) {
     }
   }, [map, props.latlon]);
 
-  const MapClickEventWithMarker = (_t, mouseEvent) => {
-    setPosition({
-      lat: mouseEvent.latLng.getLat(),
-      lng: mouseEvent.latLng.getLng(),
-    });
-    console.log(mouseEvent);
-  };
-
   return (
     <>
       <Map
@@ -84,17 +76,28 @@ function PostMap(props) {
         level={3}
         onCreate={setMap}
         isPanto={true}
-        onClick={MapClickEventWithMarker}
       >
-        {position && <MapMarker position={position} />}
         {markers.map((marker) => (
           <MapMarker
             key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
             position={marker.position}
             onClick={() => setInfo(marker)}
+            image={{
+              src: `${PF}Logo/Potz_Logo.png`,
+              size: {
+                width: 30,
+                height: 30,
+              },
+              options: {
+                offset: {
+                  x: 15,
+                  y: 69,
+                },
+              },
+            }}
           >
             {info && info.content === marker.content && (
-              <div style={{ color: `${COLOR.BLACK}` }}>{marker.content}</div>
+              <div style={{ color: `${COLOR.BLACK}`, padding: '4px' }}>{marker.content}</div>
             )}
           </MapMarker>
         ))}
