@@ -79,7 +79,7 @@ export default function (server, app) {
       // const participants = socket.adapter.rooms.get(potId).size;
       // console.log({ potId, participants });
       // room.emit('participants', { potId, participants });
-      // todo : 연결상태 종료
+
       // socket.to(socket.potId).emit('exit', {
       //   sender: 'system',
       //   content: `${socket.name}님이 퇴장하셨습니다.`,
