@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import DetailContents from './detailContents';
+import DetailContents from './DetailContents';
 
 function Detail() {
   const [postDatas, setPostDatas] = useState();

@@ -1,8 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import {
   checkPotExists,
-  checkUserJoined,
-  joinPot,
+  enterPot,
   leavePot,
 } from '../services/deliveryPots.js';
 import {
@@ -83,35 +82,34 @@ export async function joinDeliveryPot(req, res, next) {
       throw new Error(`deliveryPot id #${potId} not found`);
     }
 
-    // 방의 모든 메시지 읽음 처리
+    // 2. 방의 모든 메시지 읽음 처리
     await readAllMessages(potId, req.user.id);
 
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('updateCountAll', req.user.id);
 
-    // 2. 이미 join된 pot인지 확인
-    const userAlreadyJoined = await checkUserJoined(potId, req.user.id);
-    if (userAlreadyJoined) {
-      return res.status(200).json(userAlreadyJoined);
+    // 3. enter pot
+    const { pot, alreadyJoined } = await enterPot(potId, req.user.id);
+
+    // 4. 처음 들어가는 방인경우 시스템 메시지 전송, 참여자수 udate
+    if (!alreadyJoined) {
+      // create system message
+      const systemMessage = await createMessage('SYSTEM', potId, req.user.id, {
+        message: `${req.user.name}님이 입장했습니다.`,
+      });
+
+      // send system message
+      io.of('/chat').to(potId.toString()).emit('message', systemMessage);
+
+      // send userlist
+      io.of('/room').emit('updateUserList', {
+        potId,
+        participants: pot._count.participants,
+        message: systemMessage,
+      });
     }
 
-    // 3. join pot
-    const result = await joinPot(potId, req.user.id);
-
-    // 4. create system message
-    const systemMessage = await createMessage('SYSTEM', potId, req.user.id, {
-      message: `${req.user.name}님이 입장했습니다.`,
-    });
-
-    io.of('/chat').to(potId.toString()).emit('message', systemMessage);
-
-    io.of('/room').emit('updateUserList', {
-      potId,
-      participants: result._count.participants,
-      message: systemMessage,
-    });
-
-    res.status(200).json(result);
+    res.status(200).json(pot);
   } catch (error) {
     console.error(error);
     next(error);
@@ -188,29 +186,25 @@ export async function setPotStatus(req, res, next) {
   const { status } = req.body;
 
   try {
-    // 1. 방장 여부 확인
     const existingPot = await prisma.deliveryPot.findUnique({
       where: { id: +potId },
+      select: { potMasterId: true, status: true },
     });
+    // 1. 존재 여부, 방장여부, 이미 해당 상태인지 확인
     if (!existingPot) {
       throw new Error(`cant find delivery pot #${potId}`);
     }
     if (existingPot.potMasterId !== req.user.id) {
       throw new Error('only pot master can confirm order');
     }
-
-    // 2. 이미 해당 상태인지 체크
-    const checkStatus = await prisma.deliveryPot.findUnique({
-      where: {
-        id: +potId,
-        status: { some: { status } },
-      },
-    });
-    if (checkStatus) {
+    const alreadyInStatus = existingPot.status?.some(
+      (s) => s.status === status
+    );
+    if (alreadyInStatus) {
       throw new Error(`already in ${status} status`);
     }
 
-    // 3. update status
+    // 2. update status
     const pot = await prisma.deliveryPot.update({
       where: { id: +potId },
       data: {
@@ -278,6 +272,7 @@ export async function setPotStatus(req, res, next) {
       message: requestMessage,
     });
 
+    // send pot status
     io.of('/room').emit('updateStatus', {
       potId: +potId,
       status: { id: pot.status.id, status },
@@ -300,6 +295,43 @@ export async function cancelPotStatus(req, res, next) {
       // where: { potId: +potId, status },
       where: { potId: +potId },
     });
+    res.status(200).json(pot);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}
+
+export async function closeDeliveryPot(req, res, next) {
+  const { potId } = req.params;
+
+  try {
+    // 1. 존재 여부, 방장 여부, 이미 마감됐는지 확인
+    const existingPot = await prisma.deliveryPot.findUnique({
+      where: { id: +potId },
+    });
+    if (!existingPot) {
+      throw new Error(`cant find delivery pot #${potId}`);
+    }
+    if (existingPot.potMasterId !== req.user.id) {
+      throw new Error('only pot master can confirm order');
+    }
+    // if (existingPot.closed) {
+    //   throw new Error(`already closed`);
+    // }
+
+    // 2. close pot
+    const pot = await prisma.deliveryPot.update({
+      where: { id: +potId },
+      data: { closed: true },
+    });
+
+    // 3. send updated status
+    const io = req.app.get('io');
+    io.of('/chat')
+      .to(potId.toString())
+      .emit('updatePot', { closed: pot.closed });
+
     res.status(200).json(pot);
   } catch (error) {
     console.error(error);

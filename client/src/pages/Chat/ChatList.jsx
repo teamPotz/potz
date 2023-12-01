@@ -127,6 +127,7 @@ function ChatList() {
         </FontMd>
         <FoldButton />
       </div>
+
       <div style={styles.content}>
         {deliveryPots.map((pot) => (
           <Chat
