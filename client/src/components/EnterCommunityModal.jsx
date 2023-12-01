@@ -121,7 +121,11 @@ const EnterCommunityModal = () => {
               공동체 가입하기
             </ButtonSm>
           </div>
-          <div>
+          <div
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
             <ButtonSm
               backgroundColor={COLOR.POTZ_PINK_200}
               hoverColor={COLOR.POTZ_PINK_300}
