@@ -24,5 +24,6 @@ router.patch(
   updateUserById
 );
 router.patch('/update-account', verifyAuth, updateUserAccountById);
-export default router;
 router.get('/user-delivery-histories', verifyAuth, getUserDeliveryPotHistory);
+
+export default router;
