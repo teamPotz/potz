@@ -9,6 +9,11 @@ import {
   getMessagesByPotId,
   readAllMessages,
 } from '../services/messages.js';
+import {
+  getTotalOrderPrice,
+  getOrderedUserCount,
+  getApplicableDeliveryFeeInfo,
+} from '../utils/deliveryCalculator.js';
 
 const prisma = new PrismaClient();
 
@@ -139,7 +144,6 @@ export async function leaveDeliveryPot(req, res, next) {
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', systemMessage);
 
-    // todo : communityId 별로 namesapce 나눠서 보내기
     io.of('/room').emit('updateUserList', {
       potId,
       participants: result._count.participants,
@@ -147,22 +151,6 @@ export async function leaveDeliveryPot(req, res, next) {
     });
 
     res.status(200).json(result);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-}
-
-export async function getPotMasterId(req, res, next) {
-  const { potId } = req.params;
-  try {
-    const potMasterId = await prisma.deliveryPot.findUnique({
-      where: { id: +potId },
-      select: {
-        potMasterId: true,
-      },
-    });
-    res.status(200).json(potMasterId);
   } catch (error) {
     console.error(error);
     next(error);
@@ -219,6 +207,14 @@ export async function setPotStatus(req, res, next) {
         post: {
           select: {
             meetingLocation: true,
+            deliveryFees: true,
+          },
+        },
+        orders: {
+          select: {
+            price: true,
+            quantity: true,
+            userId: true,
           },
         },
         potMaster: {
@@ -241,15 +237,31 @@ export async function setPotStatus(req, res, next) {
       case 'MENU_REQUEST':
         message = '각자 메뉴를 선택해주세요.';
         break;
-      // todo : set 배달비 to current deiveryFee
-      // todo : append pot master's account info
       case 'DEPOSIT_REQUEST':
         if (!pot.potMaster.profile) {
           throw new Error('계좌정보가 입력되지 않았습니다.');
         }
+
         const { bankName, accountNumber, accountHolderName } =
           pot.potMaster.profile;
-        message = `각자 메뉴가격+{배달비} 원씩 보내주세요. ${bankName} ${accountNumber} ${accountHolderName}`;
+
+        // 현재 배달팟에서 주문 신청한 메뉴의 총 가격
+        const totalOrderPrice = getTotalOrderPrice(pot.orders);
+
+        // 현재 배달팟에서 주문 신청한 사람 수
+        const orderedUserCount = getOrderedUserCount(pot.orders);
+
+        // 적용된 배달비 정보
+        const appliedDeliveryFeeInfo = getApplicableDeliveryFeeInfo(
+          pot.post.deliveryFees,
+          totalOrderPrice
+        );
+
+        // 1인당 배달비
+        const deliveryFeePerPerson =
+          appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
+
+        message = `각자 메뉴가격+배달비(${deliveryFeePerPerson}원) 씩 보내주세요. ${bankName} ${accountNumber} ${accountHolderName}`;
         break;
       case 'PICKUP_REQUEST':
         message = `배달이 완료되었습니다. ${pot.post.meetingLocation}으로 나와주세요.`;
@@ -316,9 +328,9 @@ export async function closeDeliveryPot(req, res, next) {
     if (existingPot.potMasterId !== req.user.id) {
       throw new Error('only pot master can confirm order');
     }
-    // if (existingPot.closed) {
-    //   throw new Error(`already closed`);
-    // }
+    if (existingPot.closed) {
+      throw new Error(`already closed`);
+    }
 
     // 2. close pot
     const pot = await prisma.deliveryPot.update({
