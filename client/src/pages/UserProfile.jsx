@@ -136,8 +136,8 @@ const styles = {
 const text = [
   ['내 공동체 관리', '/my-page/communites'],
   ['알림 설정'],
-  ['참여 내역'],
-  ['결제 내역'],
+  ['참여 내역', '/my-page/order-history'],
+  ['결제 내역', '/my-page/order-history'],
   ['이벤트 및 공지사항'],
 ];
 

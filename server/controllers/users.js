@@ -78,8 +78,12 @@ export async function getUserOrderDataById(req, res) {
                 },
                 orders: {
                   select: {
+                    menuName: true,
+                    userId: true,
                     price: true,
                     quantity: true,
+                    imageUrl: true,
+                    updatedAt: true,
                   },
                 },
               },
