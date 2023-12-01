@@ -23,7 +23,7 @@ const GoBackButtonStyle = styled.div`
   font-size: 18.6667px;
   line-height: 150%;
   font-color: ${COLOR.BLACK};
-  z-index: 1;
+  z-index: 1000;
   & svg {
     cursor: grab;
     margin: 28px;
