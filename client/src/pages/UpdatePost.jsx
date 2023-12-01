@@ -416,6 +416,17 @@ function UpdatePost() {
               >
                 {selectImg ? (
                   <div />
+                ) : getData.imageUrl ? (
+                  <img
+                    style={{
+                      border: 'none',
+                      width: '65.33px',
+                      height: '65.33px',
+                      objectFit: 'cover',
+                      borderRadius: '9.33333px',
+                    }}
+                    src={`http://localhost:5000/images/${getData.imageUrl}`}
+                  />
                 ) : (
                   <svg
                     width='21'

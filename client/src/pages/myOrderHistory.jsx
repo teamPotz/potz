@@ -94,7 +94,8 @@ function MyOrderHistory() {
         });
         const data = await response.json();
         console.log('내가 가입한 배달팟', data[0].deliveryPotHistoryAsMember);
-        setMyOrders(myOrderdata(data[0].deliveryPotHistoryAsMember));
+        const result = lastestFunc(myOrderdata(data[0].deliveryPotHistoryAsMember));
+        setMyOrders(result);
       } catch (error) {
         console.error(error);
       }
@@ -116,6 +117,12 @@ function MyOrderHistory() {
     return arr;
   };
 
+  //최신순으로 정렬
+  const lastestFunc = (datas) => {
+    const sortedData = datas.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+    return sortedData;
+  }
+
   return (
     <div className='potz_container' style={styles.background}>
       <GoBack text='결제 내역'></GoBack>
@@ -127,7 +134,7 @@ function MyOrderHistory() {
                 <img
                   src={
                     myOrder.imageUrl
-                      ? `http://localhost:5000/${myOrder.imageUrl}`
+                      ? `http://localhost:5000/images/${myOrder.imageUrl}`
                       : `${PF}Logo/Potz_Logo.png`
                   }
                   style={styles.image}
