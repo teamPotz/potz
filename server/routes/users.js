@@ -8,6 +8,7 @@ import {
   deleteUserCommunity,
   updateUserById,
   updateUserAccountById,
+  getUserDeliveryPotHistory,
 } from '../controllers/users.js';
 
 const router = Router();
@@ -23,4 +24,6 @@ router.patch(
   updateUserById
 );
 router.patch('/update-account', verifyAuth, updateUserAccountById);
+router.get('/user-delivery-histories', verifyAuth, getUserDeliveryPotHistory);
+
 export default router;

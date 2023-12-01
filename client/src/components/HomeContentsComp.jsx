@@ -63,7 +63,7 @@ const HomeContents = ({ postDatas, setPostDatas }) => {
                 style={imgStyle}
                 src={
                   post.imageUrl
-                    ? `http://localhost:5000/${post.imageUrl}`
+                    ? `http://localhost:5000/images/${post.imageUrl}`
                     : `${PF}Logo/Potz_Logo.png`
                 }
               />

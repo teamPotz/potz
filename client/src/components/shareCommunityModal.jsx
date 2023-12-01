@@ -38,21 +38,44 @@ const ShareCommunityModal = () => {
     color: COLOR.GRAY_500,
   };
 
+  const copyToClipboard = () => {
+    const currentURL = window.location.href;
+
+    const textarea = document.createElement('textarea');
+    textarea.value = currentURL;
+    document.body.appendChild(textarea);
+
+    textarea.select(); //textareat에 저장한 url 선택함
+    textarea.setSelectionRange(0, 99999); //텍스트 전체 복사
+
+    document.execCommand('copy'); //클립보드로 복사.
+
+    document.body.removeChild(textarea);
+
+    alert('커뮤니티 주소가 복사되었어요!');
+  };
+
   return (
     <ModalContainer>
       <ModalWrapper>
-        <div style={fontStyle}>새로운 공동체를 만들었어요!</div>
+        <div style={fontStyle}>아직 게시글이 없어요😥</div>
         <div>
           <img src={ModalImg}></img>
         </div>
-        <span style={fontStyle2}>이 소식을 이웃들에게도 공유해주세요!</span>
-        <ButtonSm
-          backgroundColor={COLOR.POTZ_PINK_DEFAULT}
-          hoverColor={COLOR.POTZ_PINK_600}
-          fontColor={COLOR.WHITE}
+        <span style={fontStyle2}>이 공동체의 존재를 주변에 알려주세요!</span>
+        <div
+          onClick={() => {
+            copyToClipboard();
+          }}
         >
-          공동체 공유하기
-        </ButtonSm>
+          <ButtonSm
+            backgroundColor={COLOR.POTZ_PINK_DEFAULT}
+            hoverColor={COLOR.POTZ_PINK_600}
+            fontColor={COLOR.WHITE}
+          >
+            공동체 공유하기
+          </ButtonSm>
+        </div>
       </ModalWrapper>
     </ModalContainer>
   );

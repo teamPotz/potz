@@ -99,6 +99,30 @@ export async function getUserOrderDataById(req, res) {
   }
 }
 
+export async function getUserDeliveryPotHistory(req, res) {
+  try {
+    const userData = await prisma.user.findUnique({
+      where: {
+        id: req.user.id,
+      },
+      select: {
+        _count: {
+          select: {
+            participatedDeliveryPots: true,
+            deliveryPotHistoryAsMaster: true,
+          },
+        },
+      },
+    });
+
+    // console.log(userData._count);
+    res.status(200).send(userData._count);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'get userData error' });
+  }
+}
+
 export async function updateUserAccountById(req, res) {
   console.log(req.body);
 
