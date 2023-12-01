@@ -430,7 +430,7 @@ function Chat() {
               }}
               src={
                 deliveryPot?.post.imageUrl
-                  ? `http://localhost:5000/${deliveryPot?.post.imageUrl}`
+                  ? `http://localhost:5000/images/${deliveryPot?.post.imageUrl}`
                   : `${PF}Logo/Potz_Logo.png`
               }
             />
