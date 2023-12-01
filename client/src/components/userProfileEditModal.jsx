@@ -11,7 +11,7 @@ const OrderMessageWrapper = styled.div`
   font-weight: 500;
   width: 277px;
   height: auto;
-  max-height: 308px;
+  max-height: 500px;
   padding: 32px 24px 32px;
   background-color: ${COLOR.WHITE};
   border-radius: 14px;

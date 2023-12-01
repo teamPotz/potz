@@ -8,9 +8,8 @@ const OrderMessageWrapper = styled.div`
   color: ${COLOR.GRAY_500};
   font-weight: 500;
   width: 277px;
-  height: auto;
-  max-height: 308px;
-  padding: 32px 24px;
+  max-height: 600px;
+  padding: 0px 24px 18px 24px;
   background-color: ${COLOR.WHITE};
   border-radius: 14px;
   gap: 11.67px;

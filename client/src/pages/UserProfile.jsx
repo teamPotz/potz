@@ -33,6 +33,50 @@ const Box = styled.div`
     margin: 0px;
   }
 `;
+
+const Box2 = styled.div`
+  display: flex;
+  flex-direction: ${(props) => props.align};
+  align-items: center;
+  height: ${(props) => props.height};
+  justify-content: space-between;
+  background-color: ${COLOR.WHITE};
+  div {
+    svg {
+      cursor: grab;
+      transition: all 0.2s ease;
+      &:hover {
+        transform: ${(props) => (props.noTransform ? 'none' : 'scale(1.18)')};
+      }
+    }
+  }
+  p {
+    margin: 0px;
+  }
+`;
+
+const NavComp = styled.div`
+  display: flex;
+  padding-left: 28px;
+  flex-direction: ${(props) => props.align};
+  align-items: center;
+  height: ${(props) => props.height};
+  justify-content: space-between;
+  background-color: ${COLOR.WHITE};
+  div {
+    svg {
+      cursor: grab;
+      transition: all 0.2s ease;
+      &:hover {
+        transform: ${(props) => (props.noTransform ? 'none' : 'scale(1.18)')};
+      }
+    }
+  }
+  p {
+    margin: 0px;
+  }
+`;
+
 const Profile1 = styled.div`
   display: flex;
   flex-direction: row;
@@ -49,16 +93,19 @@ const Profile1 = styled.div`
     width: 276.5px;
   }
 `;
+
 const Profile2 = styled.div`
+  margin-top: 14px;
   display: flex;
-  width: 363.33px;
-  height: 78px;
+  align-items: center;
+  width: 363px;
+  height: auto;
+  padding: 12px 0px;
   transform: translateY(-46px);
   background-color: ${COLOR.GRAY_100};
-  border-radius: 9.33333px;
+  border-radius: 9px;
   div {
-    margin: 0px;
-    padding: 14px 35px 14px 16.3333px;
+    margin-left: 12px;
   }
 `;
 const FontBig = styled.p`
@@ -137,18 +184,33 @@ const text = [
   ['내 공동체 관리', '/my-page/communites'],
   ['알림 설정'],
   ['참여 내역'],
-  ['결제 내역'],
-  ['이벤트 및 공지사항'],
 ];
 
 function UserProfile() {
   const { user, logout } = useAuth();
   console.log(user);
   const navigate = useNavigate();
-  // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
   const [visible, setVisible] = useState(false);
   const [visible2, setVisible2] = useState(false);
+  const [blur, setBlur] = useState(true);
+  const [potNum, setPotNum] = useState();
+
+  const profileEditHandler = () => {
+    setVisible(true);
+  };
+
+  const userAcocuntModalHandler = () => {
+    setVisible2(true);
+  };
+
+  const blurHandler = () => {
+    if (blur) {
+      setBlur(false);
+    } else {
+      setBlur(true);
+    }
+  };
 
   useEffect(() => {
     const ReSizeHandler = () => {
@@ -163,13 +225,35 @@ function UserProfile() {
     };
   }, []);
 
-  const [blur, setBlur] = useState(true);
-  const blurHandler = () => {
-    if (blur) {
-      setBlur(false);
-    } else {
-      setBlur(true);
-    }
+  // 커뮤니티 데이터
+  useEffect(() => {
+    const fetchCommunityData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/users/user-delivery-histories`,
+          {
+            method: 'GET',
+            credentials: 'include',
+          }
+        );
+        const data = await response.json();
+        console.log('유저가 배달팟 참여한 내역 데이터', data);
+        setPotNum(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchCommunityData();
+  }, []);
+
+  const myPageStyle = {
+    paddingLeft: '28px',
+    paddingRight: '28px',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '60px',
   };
 
   const navbarStyle = {
@@ -197,12 +281,8 @@ function UserProfile() {
     marginBottom: '4px',
   };
 
-  const profileEditHandler = () => {
-    setVisible(true);
-  };
-
-  const userAcocuntModalHandler = () => {
-    setVisible2(true);
+  const coloredFont = {
+    color: COLOR.POTZ_PINK_DEFAULT,
   };
 
   return (
@@ -219,17 +299,17 @@ function UserProfile() {
           setVisible={setVisible}
         ></UserProfileEditModal>
       ) : null}
-      <div className='contents_container'></div>
+
       <div style={styles.topBar}>
-        <Box height={'70px'}>
+        <NavComp height={'70px'}>
           <div>
             <FontBig>마이 팟즈</FontBig>
           </div>
           <div></div>
-        </Box>
+        </NavComp>
       </div>
       <div style={styles.content}>
-        <Box height={'227.33px'} align={'column'}>
+        <Box2 height={'227.33px'} align={'column'}>
           <Profile1>
             {!user.profile ? (
               <img
@@ -281,16 +361,39 @@ function UserProfile() {
           <br></br>
           <Profile2>
             <div>
-              <FontMd weight={500} color={`${COLOR.GRAY_400}`}>
-                {user.name}님! <p></p>이번 달 팟즈로{' '}
-                <FontMd weight={500} color={`${COLOR.POTZ_PINK_DEFAULT}`}>
-                  배달비 26000원
-                </FontMd>
-                을 절약했어요.
-              </FontMd>
+              {potNum ? (
+                <div>
+                  <div style={{ margin: '0px' }}>
+                    <span>
+                      <span style={coloredFont}>
+                        {potNum.participatedDeliveryPots}번{' '}
+                      </span>
+                      배달팟에 참여했고, 방장은{' '}
+                      <span style={coloredFont}>
+                        {potNum.deliveryPotHistoryAsMaster}번{' '}
+                      </span>{' '}
+                      하셨네요!
+                    </span>
+                  </div>
+                  <div style={{ margin: '0px' }}>
+                    {potNum.deliveryPotHistoryAsMaster < 2 ? (
+                      <span>
+                        <span style={coloredFont}>
+                          {2 - potNum.deliveryPotHistoryAsMaster}번{' '}
+                        </span>{' '}
+                        방장을 더 하면, 왕관 마크를 받을 수 있어요.
+                      </span>
+                    ) : (
+                      <span>
+                        방장 경험이 많아서 왕관 마크가 작성 글에 붙어요.
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ) : null}
             </div>
           </Profile2>
-        </Box>
+        </Box2>
       </div>
       <Box height={'74.67px'}>
         <div style={styles.verticalAlign}>
@@ -323,12 +426,12 @@ function UserProfile() {
       </Box>
 
       <div style={styles.contentBox}>
-        <Box height={'91px'} noTransform={true}>
+        <Box height={'100px'} noTransform={true}>
           <div style={accountStyle}>
             <div style={containerStyle}>
               <span>간편 입력 계좌 번호</span>
               <div style={{ margin: '0px' }} onClick={userAcocuntModalHandler}>
-                <TagPlaceSM>등록하기</TagPlaceSM>
+                <TagPlaceSM>등록</TagPlaceSM>
               </div>
             </div>
 
@@ -413,7 +516,7 @@ function UserProfile() {
         {text.map((text) => {
           return (
             <>
-              <Box height={'61.83px'}>
+              <Box height={'80px'}>
                 <div>
                   <FontMd weight={400} color={COLOR.BLACK}>
                     {text[0]}
@@ -442,7 +545,7 @@ function UserProfile() {
           );
         })}
       </div>
-      <div className='contents_container'>
+      <div style={myPageStyle}>
         <ButtonBg
           backgroundColor={COLOR.POTZ_PINK_DEFAULT}
           hoverColor={COLOR.POTZ_PINK_600}

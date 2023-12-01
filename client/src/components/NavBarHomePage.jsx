@@ -222,7 +222,11 @@ const NavBarHomePage = (props) => {
           </div>
           <div style={fontStyle2}>
             <span>멤버 수</span>
-            <span style={fontColored}>{communityDatas._count.members}</span>
+            {communityDatas._count ? (
+              <span style={fontColored}>{communityDatas._count.members}</span>
+            ) : (
+              0
+            )}
             {communityDatas.communityTypes.map((type) => (
               <TagPlaceSM key={type.id}>{type.name}</TagPlaceSM>
             ))}
