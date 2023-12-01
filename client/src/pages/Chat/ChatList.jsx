@@ -147,7 +147,7 @@ function ChatList() {
                 }}
                 src={
                   pot.post.imageUrl
-                    ? `http://localhost:5000${pot.post.imageUrl}`
+                    ? `http://localhost:5000/images/${pot.post.imageUrl}`
                     : `${PF}Logo/Potz_Logo.png`
                 }
               />
