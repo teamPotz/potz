@@ -28,7 +28,6 @@ export async function createDeposit(req, res, next) {
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', depositMessage);
 
-    // todo : communityId 별로 namesapce 나눠서 보내기
     io.of('/room').emit('updateLastMessage', {
       potId,
       message: depositMessage,

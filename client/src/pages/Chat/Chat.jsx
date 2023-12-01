@@ -12,6 +12,7 @@ const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 import { useChat } from '../../contexts/ChatContext.jsx';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { socket } from '../../../socket.js';
+import UserAccountUpdateModal from '../../components/userAccountUpdateModal.jsx';
 
 const initialOrderData = {
   file: null,
@@ -40,6 +41,7 @@ function Chat() {
   const [orderFormData, setOrderFormData] = useState(initialOrderData);
   const [openDepositModal, setOpenDepositModal] = useState(false);
   const [depositFormData, setDepositFormData] = useState(initialDepositData);
+  const [openAccountModal, setOpenAccountModal] = useState(false);
 
   const { potId } = useParams();
   const { user } = useAuth();
@@ -125,7 +127,7 @@ function Chat() {
   }
 
   async function confirmOrder(orderId, messageId) {
-    if (isPotMaster) {
+    if (!isPotMaster) {
       return alert('메뉴 확인은 방장만 할 수 있습니다.');
     }
     try {
@@ -256,7 +258,9 @@ function Chat() {
         !user.profile?.accountNumber ||
         !user.profile?.accountHolderName)
     ) {
-      return alert('계좌정보가 없습니다.');
+      alert('계좌정보를 먼저 등록해주세요.');
+      setOpenAccountModal(true);
+      return;
     }
 
     try {
@@ -457,7 +461,6 @@ function Chat() {
         style={{ backgroundColor: COLOR.POTZ_PINK_200 }}
       >
         {/* <GoBack text={state?.storeName} /> */}
-
         {/* test buttons */}
         <div style={{ position: 'fixed', top: '70px' }}>
           <div>
@@ -482,7 +485,6 @@ function Chat() {
             </button>
           </div>
         </div>
-
         <div>
           <MessageContainer
             messages={messages}
@@ -492,11 +494,9 @@ function Chat() {
             confirmDeposit={confirmDeposit}
           />
         </div>
-
         {openMenuBar && (
           <ChatMenu isPotMaster={isPotMaster} leavePot={leavePot} />
         )}
-
         <ChatInput
           newMessage={newMessage}
           setNewMessage={setNewMessage}
@@ -505,7 +505,6 @@ function Chat() {
           isMenuBarOpened={openMenuBar}
           toggleMenuBar={() => setOpenMenuBar((prev) => !prev)}
         />
-
         {openOrderModal && (
           <OrderModal
             closeModal={() => setOpenOrderModal(false)}
@@ -514,13 +513,18 @@ function Chat() {
             sendOrderMessage={sendOrderMessage}
           />
         )}
-
         {openDepositModal && (
           <DepositModal
             closeModal={() => setOpenDepositModal(false)}
             formData={depositFormData}
             handleFormChange={handleDepositFormChange}
             sendDepositMessage={sendDepositMessage}
+          />
+        )}
+        {openAccountModal && (
+          <UserAccountUpdateModal
+            setVisible={setOpenAccountModal}
+            user={user}
           />
         )}
       </div>
