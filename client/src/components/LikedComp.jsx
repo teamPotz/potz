@@ -1,8 +1,168 @@
 import styled from 'styled-components';
-import Font from '../utility/Font';
 import COLOR from '../utility/Color';
+import logoImg from '../../public/images/Logo/Potz_Logo.png';
 import TagPlaceSM from './TagPlaceSM';
 import { useNavigate } from 'react-router-dom';
+
+const LikedComp = ({ postData, getDeletedData }) => {
+  const navigate = useNavigate();
+  console.log('좋아요한 포스트 데이터', postData);
+
+  const toggleLike = async () => {
+    try {
+      //서버로 좋아요 데이터 업데이트
+      try {
+        const response = await fetch(
+          `http://localhost:5000/posts/${postData.id}/like`,
+          {
+            method: 'PATCH',
+            credentials: 'include',
+          }
+        );
+        const data = await response.json();
+        console.log('좋아요 업데이트', data);
+
+        //좋아요 취소한 게시글 state 관리 함수
+        getDeletedData(data);
+        alert('찜 목록을 수정했어요.😋');
+      } catch (error) {
+        console.error(error);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const clickHandler = (event) => {
+    event.stopPropagation();
+    toggleLike();
+  };
+
+  return (
+    <LikedCompWrapper onClick={() => navigate(`/posts/${postData.id}`)}>
+      <div>
+        <a style={linkStyle} href={postData.orderLink}>
+          <span>배달앱 바로가기</span>
+        </a>
+        <div style={likedStyle} onClick={clickHandler}>
+          <ButtonContainer>
+            <HeartIconClicked />
+          </ButtonContainer>
+        </div>
+        <div style={tagStyle}>
+          <TagPlaceSM>{postData.category}</TagPlaceSM>
+        </div>
+        <img
+          width={150}
+          height={150}
+          style={imgStyle}
+          src={
+            postData.imageUrl
+              ? `http://localhost:5000/images/${postData.imageUrl}`
+              : logoImg
+          }
+        />
+      </div>
+      <div>
+        <div style={textOverflow}>
+          <span style={fontStyle1}>{postData.storeName}</span>
+        </div>
+        <div style={fontStyle3}>
+          <div>
+            <span>{postData.recruitment}</span>
+            <span>/</span>
+            <span>{postData.participantsCount}</span>
+            <span>명</span>
+          </div>
+          <div>
+            <span>{postData.meetingLocation}</span>
+          </div>
+        </div>
+        <div style={fontStyle2}>
+          <span style={coloredfont}>
+            {postData.appliedDeliveryFeeInfo ? (
+              <span> {postData.deliveryFeePerPerson} </span>
+            ) : (
+              <span>무료</span>
+            )}
+          </span>
+          {postData.participantsCount ? (
+            <span>원씩 배달</span>
+          ) : (
+            <span>배달</span>
+          )}
+        </div>
+      </div>
+    </LikedCompWrapper>
+  );
+};
+
+const textOverflow = {
+  width: '124px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+};
+
+const fontStyle1 = {
+  width: '100%',
+  height: '30px',
+  fontSize: '16px',
+  fontWeight: '700',
+};
+
+const fontStyle2 = {
+  fontSize: '18px',
+  fontWeight: '700',
+  marginTop: '8px',
+};
+
+const fontStyle3 = {
+  display: 'flex',
+  gap: '8px',
+  fontSize: '14px',
+  fontWeight: '400',
+  color: COLOR.GRAY_300,
+};
+
+const coloredfont = {
+  color: COLOR.POTZ_PINK_DEFAULT,
+  marginRight: '4px',
+};
+
+const tagStyle = {
+  position: 'relative',
+  top: '34px',
+  left: '16px',
+};
+
+const linkStyle = {
+  position: 'relative',
+  top: '196px',
+  left: '52px',
+  textDecoration: 'underline',
+  color: COLOR.WHITE,
+  background: 'none',
+  fontWeight: '600',
+  fontSize: '12px',
+};
+
+const likedStyle = {
+  position: 'relative',
+  top: '62px',
+  left: '102px',
+  textDecoration: 'underline',
+  color: COLOR.WHITE,
+  background: 'none',
+  fontWeight: '600',
+  fontSize: '12px',
+};
+
+const imgStyle = {
+  display: 'flex',
+  marginBottom: '4px',
+  borderRadius: '12px',
+};
 
 const LikedCompWrapper = styled.div`
   height: 100%;
@@ -13,7 +173,6 @@ const LikedCompWrapper = styled.div`
   justify-content: start;
   cursor: grab;
   transition: all 0.3s ease;
-  font-family: ${Font.FontKor};
 
   &:hover {
     transform: scale(1.04);
@@ -51,169 +210,6 @@ const HeartIconClicked = () => {
         fill='#FF7971'
       />
     </svg>
-  );
-};
-
-const LikedComp = (props) => {
-  let navigate = useNavigate();
-
-  let { postData, getDeletedData } = props;
-  console.log('좋아요한 포스트 데이터', postData);
-  let postId = postData.id;
-
-  const handleLikeToggle = async () => {
-    try {
-      //서버로 좋아요 데이터 업데이트
-      try {
-        const response = await fetch(
-          `http://localhost:5000/posts/${postId}/like`,
-          {
-            method: 'PATCH',
-            credentials: 'include',
-          }
-        );
-        const data = await response.json();
-        console.log('좋아요 업데이트', data);
-
-        //좋아요 취소한 게시글 state 관리 함수
-        getDeletedData(data);
-        alert('찜 목록을 수정했어요.😋');
-      } catch (error) {
-        console.error(error);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const clickHandler = (event) => {
-    event.stopPropagation();
-    handleLikeToggle();
-  };
-
-  const textOverflow = {
-    width: '124px',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-  };
-
-  const fontStyle1 = {
-    width: '100%',
-    height: '30px',
-    fontSize: '16px',
-    fontWeight: '700',
-  };
-
-  const fontStyle2 = {
-    fontSize: '18px',
-    fontWeight: '700',
-    marginTop: '8px',
-  };
-
-  const fontStyle3 = {
-    display: 'flex',
-    gap: '8px',
-    fontSize: '14px',
-    fontWeight: '400',
-    color: COLOR.GRAY_300,
-  };
-
-  const coloredfont = {
-    color: COLOR.POTZ_PINK_DEFAULT,
-    marginRight: '4px',
-  };
-
-  const tagStyle = {
-    position: 'relative',
-    top: '34px',
-    left: '16px',
-  };
-
-  const linkStyle = {
-    position: 'relative',
-    top: '196px',
-    left: '52px',
-    textDecoration: 'underline',
-    color: COLOR.WHITE,
-    background: 'none',
-    fontWeight: '600',
-    fontSize: '12px',
-  };
-
-  const likedStyle = {
-    position: 'relative',
-    top: '62px',
-    left: '102px',
-    textDecoration: 'underline',
-    color: COLOR.WHITE,
-    background: 'none',
-    fontWeight: '600',
-    fontSize: '12px',
-  };
-
-  const imgStyle = {
-    display: 'flex',
-    marginBottom: '4px',
-    borderRadius: '12px',
-  };
-
-  return (
-    <LikedCompWrapper
-      onClick={() => {
-        navigate(`/posts/${postData.id}`);
-      }}
-    >
-      <div>
-        <a style={linkStyle} href={postData.orderLink}>
-          <span>배달앱 바로가기</span>
-        </a>
-        <div style={likedStyle} onClick={clickHandler}>
-          <ButtonContainer>
-            <HeartIconClicked></HeartIconClicked>
-          </ButtonContainer>
-        </div>
-        <div style={tagStyle}>
-          <TagPlaceSM>{postData.category}</TagPlaceSM>
-        </div>
-        <img
-          width={150}
-          height={150}
-          style={imgStyle}
-          src={`http://localhost:5000/images/${postData.imageUrl}`}
-        ></img>
-      </div>
-      <div>
-        <div style={textOverflow}>
-          <span style={fontStyle1}>{postData.storeName}</span>
-        </div>
-        <div style={fontStyle3}>
-          <div>
-            <span>{postData.recruitment}</span>
-            <span>/</span>
-            <span>{postData.participantsCount}</span>
-            <span>명</span>
-          </div>
-          <div>
-            <span>{postData.meetingLocation}</span>
-          </div>
-        </div>
-        <div style={fontStyle2}>
-          <span style={coloredfont}>
-            {postData.appliedDeliveryFeeInfo ? (
-              <span> {postData.deliveryFeePerPerson} </span>
-            ) : (
-              <span>무료</span>
-            )}
-          </span>
-          {postData.participantsCount ? (
-            <span>원씩 배달</span>
-          ) : (
-            <span>배달</span>
-          )}
-        </div>
-      </div>
-    </LikedCompWrapper>
   );
 };
 
