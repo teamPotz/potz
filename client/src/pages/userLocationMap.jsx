@@ -3,6 +3,22 @@ import '../App.css';
 import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import COLOR from '../utility/Color';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
+
+const SubmitBtn = styled.button`
+  border: 0;
+  background-color: transparent;
+  font-size: 18px;
+  transition: 0.2s;
+  display: flex;
+  justify-content: center;
+  color: ${COLOR.GRAY_300};
+  &: hover {
+    color: ${COLOR.GRAY_500};
+    cursor: pointer;
+  }
+`;
 
 function PostMap(props) {
   const [info, setInfo] = useState();
@@ -14,6 +30,7 @@ function PostMap(props) {
     lat: 37.56421,
     lon: 127.00169,
   });
+  const [position, setPosition] = useState();
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -104,6 +121,23 @@ function PostMap(props) {
     setLatLon(clickedMarker.position);
   };
 
+  const MapClickEventWithMarker = (_t, mouseEvent) => {
+    setPosition({
+      position: {
+        lat: mouseEvent.latLng.getLat(),
+        lng: mouseEvent.latLng.getLng(),
+      },
+    });
+    setLatLon({
+      lat: mouseEvent.latLng.getLat(),
+      lng: mouseEvent.latLng.getLng(),
+    });
+  };
+
+  useEffect(() => {
+    console.log(latLon);
+  }, [latLon]);
+
   return (
     <>
       <Map
@@ -111,32 +145,85 @@ function PostMap(props) {
         style={{ width: '420px', height: '100vh' }}
         level={3}
         onCreate={setMap}
+        onClick={MapClickEventWithMarker}
       >
-        {markers.map((marker) => (
-          <MapMarker
-            key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-            position={marker.position}
-            onClick={() => handleMarkerClick(marker)}
-          >
-            {latLon
-              ? info &&
-                info.content === marker.content && (
-                  <div style={{ color: `${COLOR.BLACK}` }}>
-                    {marker.content}
-                    <button
-                      onClick={() =>
-                        navigate('/community-lists', {
-                          state: { latLon: latLon },
-                        })
-                      }
-                    >
-                      선택
-                    </button>
-                  </div>
-                )
-              : null}
-          </MapMarker>
-        ))}
+        {position
+          ? position && (
+              <MapMarker
+                position={position.position}
+                onClick={() => handleMarkerClick(position)}
+                image={{
+                  src: `${PF}Logo/Potz_Logo.png`,
+                  size: {
+                    width: 64,
+                    height: 69,
+                  },
+                  options: {
+                    offset: {
+                      x: 27,
+                      y: 69,
+                    },
+                  },
+                }}
+              >
+                <div
+                  style={{
+                    padding: '7px',
+                    display: 'flex',
+                    margin: '0 auto',
+                  }}
+                >
+                  <SubmitBtn
+                    onClick={() =>
+                      navigate('/community-lists', {
+                        state: { latLon: latLon },
+                      })
+                    }
+                  >
+                    이 위치 선택하기
+                  </SubmitBtn>
+                </div>
+              </MapMarker>
+            )
+          : markers.map((marker) => (
+              <MapMarker
+                key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+                position={marker.position}
+                onClick={() => handleMarkerClick(marker)}
+                image={{
+                  src: `${PF}Logo/Potz_Logo.png`,
+                  size: {
+                    width: 64,
+                    height: 69,
+                  },
+                  options: {
+                    offset: {
+                      x: 27,
+                      y: 69,
+                    },
+                  },
+                }}
+              >
+                {latLon
+                  ? info &&
+                    info.content === marker.content && (
+                      <div style={{ color: `${COLOR.BLACK}` }}>
+                        <div style={{ padding: '5px' }}>
+                          <SubmitBtn
+                            onClick={() =>
+                              navigate('/community-lists', {
+                                state: { latLon: latLon },
+                              })
+                            }
+                          >
+                            이 위치 선택하기
+                          </SubmitBtn>
+                        </div>
+                      </div>
+                    )
+                  : null}
+              </MapMarker>
+            ))}
       </Map>
     </>
   );

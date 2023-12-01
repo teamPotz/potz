@@ -127,6 +127,10 @@ function MyCommunitySettings() {
   }, [initialDatas]);
 
   const deleteUserCommunity = async (communityId) => {
+    const filteredCommunity = communityDatas.filter((communityData) => {
+      return communityData.id !== communityId;
+    });
+    setCommunityDatas(filteredCommunity);
     try {
       const res = await fetch(
         'http://localhost:5000/users/user-community/delete',
@@ -141,8 +145,6 @@ function MyCommunitySettings() {
       );
       const data = await res.json();
       console.log('탈퇴할 커뮤니티 id', data);
-      location.reload();
-      alert('탈퇴가 완료되었습니다.');
     } catch (error) {
       console.log(error);
     }
