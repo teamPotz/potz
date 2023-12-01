@@ -1,11 +1,180 @@
-import styled from 'styled-components';
-import Font from '../utility/Font';
-import COLOR from '../utility/Color';
-import TagPlaceSM from './TagPlaceSM';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import COLOR from '../utility/Color';
+import TagPlaceSM from './TagPlaceSM';
 import HomeAlert from './homeAlertModal';
 import HomeDiscountModal from './homeDiscountModal';
+const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
+
+const HomeContents = ({ postDatas, setPostDatas }) => {
+  const [visible, setVisible] = useState(false);
+  const [visible2, setVisible2] = useState(false);
+  const [contentPostId, setContentPostId] = useState();
+  const [discountPostId, setDiscountPostId] = useState();
+
+  const navigate = useNavigate();
+
+  const handleLikeToggle = async (postId) => {
+    try {
+      // 서버로 좋아요 데이터 업데이트
+      try {
+        const response = await fetch(
+          `http://localhost:5000/posts/${postId}/like`,
+          {
+            method: 'PATCH',
+            credentials: 'include',
+          }
+        );
+        const data = await response.json();
+        console.log('좋아요 업데이트', data);
+
+        // update post state
+        setPostDatas((prevPosts) =>
+          prevPosts.map((post) =>
+            post.id === postId ? { ...post, liked: data.liked } : post
+          )
+        );
+
+        alert('찜 목록을 수정했어요.😋');
+      } catch (error) {
+        console.error(error);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <div style={homeContentesContainer}>
+      {postDatas.map((post) => {
+        return (
+          <HomeContentsWrapper
+            key={post.id}
+            onClick={() => navigate(`/posts/${post.id}`)}
+          >
+            <div>
+              <div style={tagStyle}>
+                <TagPlaceSM>{post.category}</TagPlaceSM>
+              </div>
+              <img
+                width={112}
+                height={112}
+                style={imgStyle}
+                src={
+                  post.imageUrl
+                    ? `http://localhost:5000/${post.imageUrl}`
+                    : `${PF}Logo/Potz_Logo.png`
+                }
+              />
+            </div>
+            <div style={fontWrapper}>
+              <div style={fontContainer}>
+                <div style={textOverflow}>
+                  <span style={fontStyle1}>{post.storeName}</span>
+                </div>
+                <div style={fontStyle2}>
+                  <span style={coloredfont}>
+                    {post.deliveryFeePerPerson ? (
+                      <span>{post.deliveryFeePerPerson}</span>
+                    ) : (
+                      <span>무료</span>
+                    )}
+                  </span>
+                  {post.deliveryFeePerPerson ? (
+                    <span>원씩 배달</span>
+                  ) : (
+                    <span>배달</span>
+                  )}
+                </div>
+                <div style={fontStyle3}>
+                  {post.orderLink ? (
+                    <a style={linkStyle} href={post.orderLink}>
+                      <span>배달 앱 링크 바로가기</span>
+                    </a>
+                  ) : null}
+                </div>
+              </div>
+              <div style={fontstyle4}>
+                <div>
+                  <span>{post.participantsCount}</span>
+                  <span>/</span>
+                  <span>{post.recruitment}</span>
+                  <span>명</span>
+                </div>
+                <div>
+                  <span>{post.meetingLocation}</span>
+                </div>
+              </div>
+            </div>
+
+            <div style={buttonContainer}>
+              <ButtonContainer
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLikeToggle(post.id);
+                }}
+              >
+                <HeartIcon fill={post.liked && COLOR.POTZ_PINK_DEFAULT} />
+              </ButtonContainer>
+
+              <ButtonContainer
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setVisible2(!visible2);
+                  setDiscountPostId(post.id);
+                }}
+              >
+                <SaleIcon />
+              </ButtonContainer>
+
+              {/* 우선은 2회 이상 만든 사람에게 왕관 붙여줌 */}
+              <ButtonContainer
+                onClick={(event) => {
+                  event.stopPropagation();
+                  console.log('ButtonContainer clicked', !visible);
+                  console.log('방장 경력');
+                  setContentPostId(post.id);
+                  setVisible(!visible);
+                }}
+              >
+                {post.potMasterHistoryCount >= 1 ? <CrownIcon /> : null}
+              </ButtonContainer>
+            </div>
+          </HomeContentsWrapper>
+        );
+      })}
+
+      {visible ? (
+        <HomeAlert
+          setVisible={setVisible}
+          potMasterHistoryCount={
+            postDatas.find((post) => post.id === contentPostId)
+              ?.potMasterHistoryCount
+          }
+        />
+      ) : null}
+
+      {visible2 ? (
+        <HomeDiscountModal
+          setVisible2={setVisible2}
+          discountInfo={
+            postDatas.find((post) => post.id === discountPostId)
+              ?.nextDiscountInfos
+          }
+          totalOrderPrice={
+            postDatas.find((post) => post.id === discountPostId)
+              ?.totalOrderPrice
+          }
+          nextDeliveryFeeInfo={
+            postDatas.find((post) => post.id === discountPostId)
+              ?.nextDeliveryFeeInfo
+          }
+        />
+      ) : null}
+    </div>
+  );
+};
 
 const HomeContentsWrapper = styled.div`
   height: 150px;
@@ -40,7 +209,7 @@ const ButtonContainer = styled.button`
   }
 `;
 
-const HeartIcon = () => {
+const HeartIcon = ({ fill }) => {
   return (
     <svg
       width='28'
@@ -53,26 +222,7 @@ const HeartIcon = () => {
         fillRule='evenodd'
         clipRule='evenodd'
         d='M12.7213 25.1148C13.4983 25.6281 14.5005 25.6281 15.2763 25.1148C17.7438 23.4861 23.1163 19.593 25.431 15.2366C28.4818 9.48965 24.899 3.75781 20.1623 3.75781C17.4626 3.75781 15.8386 5.16831 14.9403 6.38048C14.8324 6.52894 14.6909 6.64976 14.5274 6.73307C14.3638 6.81638 14.1829 6.85981 13.9994 6.85981C13.8158 6.85981 13.6349 6.81638 13.4714 6.73307C13.3079 6.64976 13.1664 6.52894 13.0585 6.38048C12.1601 5.16831 10.5361 3.75781 7.83646 3.75781C3.09979 3.75781 -0.483041 9.48965 2.56896 15.2366C4.88129 19.593 10.2561 23.4861 12.7213 25.1148'
-        fill='#EDEDED'
-      />
-    </svg>
-  );
-};
-
-const HeartIconClicked = () => {
-  return (
-    <svg
-      width='28'
-      height='28'
-      viewBox='0 0 28 28'
-      fill='none'
-      xmlns='http://www.w3.org/2000/svg'
-    >
-      <path
-        fillRule='evenodd'
-        clipRule='evenodd'
-        d='M12.7213 25.1148C13.4983 25.6281 14.5005 25.6281 15.2763 25.1148C17.7438 23.4861 23.1163 19.593 25.431 15.2366C28.4818 9.48965 24.899 3.75781 20.1623 3.75781C17.4626 3.75781 15.8386 5.16831 14.9403 6.38048C14.8324 6.52894 14.6909 6.64976 14.5274 6.73307C14.3638 6.81638 14.1829 6.85981 13.9994 6.85981C13.8158 6.85981 13.6349 6.81638 13.4714 6.73307C13.3079 6.64976 13.1664 6.52894 13.0585 6.38048C12.1601 5.16831 10.5361 3.75781 7.83646 3.75781C3.09979 3.75781 -0.483041 9.48965 2.56896 15.2366C4.88129 19.593 10.2561 23.4861 12.7213 25.1148Z'
-        fill='#FF7971'
+        fill={fill || '#EDEDED'}
       />
     </svg>
   );
@@ -154,13 +304,11 @@ const fontstyle4 = {
   display: 'flex',
   fontSize: '14px',
   fontWeight: '400',
-  fontFamily: Font.FontKor,
   gap: '8px',
 };
 
 const fontContainer = {
   color: COLOR.GRAY_500,
-  fontFamily: Font.FontKor,
   display: 'flex',
   flexDirection: 'column',
   gap: '4px',
@@ -191,188 +339,6 @@ const homeContentesContainer = {
 
 const linkStyle = {
   color: COLOR.GRAY_300,
-};
-
-const HomeContents = ({ postDatas }) => {
-  let [visible, setVisible] = useState(false);
-  let [visible2, setVisible2] = useState(false);
-  let [contentPostId, setContentPostId] = useState();
-  let [discountPostId, setDiscountPostId] = useState();
-
-  console.log('첫 랜더링을 위해 받아온 데이터', postDatas);
-
-  const navigate = useNavigate();
-
-  //postDatas 배열에서 좋아요 데이터와 id 데이터만 따로 추출해서 배열로 관리
-  const [likeStates, setLikeStates] = useState(
-    postDatas.map((post) => ({ liked: post.liked, id: post.id }))
-  );
-
-  //postId와 일치하는 likeState 찾기
-  const findLikeStateByPostId = (postId) => {
-    return likeStates.find((likeState) => likeState.id === postId);
-  };
-
-  const handleLikeToggle = async (postId) => {
-    try {
-      //서버로 좋아요 데이터 업데이트
-      try {
-        const response = await fetch(
-          `http://localhost:5000/posts/${postId}/like`,
-          {
-            method: 'PATCH',
-            credentials: 'include',
-          }
-        );
-        const data = await response.json();
-        console.log('좋아요 업데이트', data);
-        alert('찜 목록을 수정했어요.😋');
-      } catch (error) {
-        console.error(error);
-      }
-
-      //화면 출력
-      setLikeStates((prevLikeStates) =>
-        prevLikeStates.map((prevState) =>
-          //클릭한 버튼이 속한 post의 Id가 postDatas의 post Id와 같을 경우에 liked 값을 이전 값과 반대로 토글함
-          prevState.id === postId
-            ? { ...prevState, liked: !prevState.liked }
-            : prevState
-        )
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  return (
-    <div style={homeContentesContainer}>
-      {postDatas.map((post) => {
-        const likeState = findLikeStateByPostId(post.id);
-        return (
-          <HomeContentsWrapper
-            key={post.id}
-            onClick={() => navigate(`/posts/${post.id}`)}
-          >
-            <div>
-              <div style={tagStyle}>
-                <TagPlaceSM>{post.category}</TagPlaceSM>
-              </div>
-              <img
-                width={112}
-                height={112}
-                style={imgStyle}
-                src={`http://localhost:5000/images/${post.imageUrl}`}
-              />
-            </div>
-            <div style={fontWrapper}>
-              <div style={fontContainer}>
-                <div style={textOverflow}>
-                  <span style={fontStyle1}>{post.storeName}</span>
-                </div>
-                <div style={fontStyle2}>
-                  <span style={coloredfont}>
-                    {post.deliveryFeePerPerson ? (
-                      <span>{post.deliveryFeePerPerson}</span>
-                    ) : (
-                      <span>무료</span>
-                    )}
-                  </span>
-                  {post.deliveryFeePerPerson ? (
-                    <span>원씩 배달</span>
-                  ) : (
-                    <span>배달</span>
-                  )}
-                </div>
-                <div style={fontStyle3}>
-                  {post.orderLink ? (
-                    <a style={linkStyle} href={post.orderLink}>
-                      <span>배달 앱 링크 바로가기</span>
-                    </a>
-                  ) : null}
-                </div>
-              </div>
-              <div style={fontstyle4}>
-                <div>
-                  <span>{post.participantsCount}</span>
-                  <span>/</span>
-                  <span>{post.recruitment}</span>
-                  <span>명</span>
-                </div>
-                <div>
-                  <span>{post.meetingLocation}</span>
-                </div>
-              </div>
-            </div>
-            <div style={buttonContainer}>
-              <ButtonContainer
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleLikeToggle(post.id);
-                }}
-              >
-                {/* findLikeStateByPostId 함수로 찾은 postid와 같은 id를 가진 객체 */}
-                {likeStates && likeState.liked ? (
-                  <HeartIconClicked />
-                ) : (
-                  <HeartIcon />
-                )}
-              </ButtonContainer>
-
-              <ButtonContainer
-                onClick={(event) => {
-                  event.stopPropagation();
-                  setVisible2(!visible2);
-                  setDiscountPostId(post.id);
-                }}
-              >
-                <SaleIcon />
-              </ButtonContainer>
-
-              {/* 우선은 2회 이상 만든 사람에게 왕관 붙여줌 */}
-              <ButtonContainer
-                onClick={(event) => {
-                  event.stopPropagation();
-                  console.log('ButtonContainer clicked', !visible);
-                  console.log('방장 경력');
-                  setContentPostId(post.id);
-                  setVisible(!visible);
-                }}
-              >
-                {post.potMasterHistoryCount >= 1 ? <CrownIcon /> : null}
-              </ButtonContainer>
-            </div>
-          </HomeContentsWrapper>
-        );
-      })}
-      {visible ? (
-        <HomeAlert
-          setVisible={setVisible}
-          potMasterHistoryCount={
-            postDatas.find((post) => post.id === contentPostId)
-              ?.potMasterHistoryCount
-          }
-        />
-      ) : null}
-      {visible2 ? (
-        <HomeDiscountModal
-          setVisible2={setVisible2}
-          discountInfo={
-            postDatas.find((post) => post.id === discountPostId)
-              ?.nextDiscountInfos
-          }
-          totalOrderPrice={
-            postDatas.find((post) => post.id === discountPostId)
-              ?.totalOrderPrice
-          }
-          nextDeliveryFeeInfo={
-            postDatas.find((post) => post.id === discountPostId)
-              ?.nextDeliveryFeeInfo
-          }
-        />
-      ) : null}
-    </div>
-  );
 };
 
 export default HomeContents;
