@@ -110,10 +110,11 @@ export async function confirmOrder(req, res, next) {
       );
     });
 
+    // send message to chatroom
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', orderConfirmMessage);
 
-    // todo : communityId 별로 namesapce 나눠서 보내기
+    // send message to chatlist
     io.of('/room').emit('updateLastMessage', {
       potId,
       message: orderConfirmMessage,

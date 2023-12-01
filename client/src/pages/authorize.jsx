@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function AuthorizeUser() {
   let navigate = useNavigate();
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -35,8 +36,9 @@ function AuthorizeUser() {
         console.error(error);
       }
     };
+
     fetchUserData();
-  }, []);
+  }, [navigate]);
 
   return (
     <div>

@@ -1,7 +1,7 @@
+import './App.css';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext.jsx';
-import './App.css';
 import AppLayout from './components/ui/AppLayout.jsx';
 import MakeCommunity from './pages/MakeCommunityPage.jsx';
 import ChooseFeature from './pages/ChooseFeaturePage.jsx';
@@ -16,7 +16,6 @@ import CategoryPage from './pages/Category.jsx';
 import Login from './pages/loginPage.jsx';
 import LoginPage from './pages/LocalLogin/LoginPage.jsx';
 import ProtectedRoute from './pages/ProtectedRoute.jsx';
-import CategorySearch from './pages/CategorySearchPage.jsx';
 import ChooseCommunity from './pages/ChooseCommunityPage.jsx';
 import LikedList from './pages/LikedListPage.jsx';
 import SearchResult from './pages/SearchResult.jsx';
@@ -152,11 +151,11 @@ const router = createBrowserRouter([
       },
       {
         path: 'my-page/bigdata',
-        element: <MyBigData/>,
+        element: <MyBigData />,
       },
       {
         path: 'my-page/communites',
-        element: <MyCommunitySettings/>
+        element: <MyCommunitySettings />,
       },
       { path: '/chats/', element: <ChatList /> },
       { path: '/chats/:potId', element: <Chat /> },

@@ -1,7 +1,136 @@
 import { PrismaClient } from '@prisma/client';
-
-let communityPhoto = '';
 const prisma = new PrismaClient();
+
+import {
+  getTotalOrderPrice,
+  getOrderedUserCount,
+  getApplicableDeliveryFeeInfo,
+  getNextDeliveryFeeInfos,
+  getAppliedDiscountInfo,
+  getNextDiscountInfos,
+} from '../utils/deliveryCalculator.js';
+
+export async function getPostsByCommunityId(req, res, next) {
+  try {
+    const { id: communityId } = req.params;
+
+    if (!communityId) {
+      res.status(400);
+      throw new Error('missing communityId in request');
+    }
+
+    const posts = await prisma.post.findMany({
+      where: {
+        isDeleted: false,
+        communityId: +communityId,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+      select: {
+        id: true,
+        storeName: true,
+        author: {
+          select: {
+            id: true,
+            _count: { select: { deliveryPotHistoryAsMaster: true } },
+          },
+        },
+        imageUrl: true,
+        orderLink: true,
+        recruitment: true,
+        meetingLocation: true,
+        likedByUsers: {
+          where: { userId: req.user.id, liked: true },
+        },
+        category: {
+          select: { name: true },
+        },
+        deliveryPot: {
+          select: {
+            _count: { select: { participants: true } },
+            orders: {
+              select: {
+                price: true,
+                quantity: true,
+                userId: true,
+              },
+            },
+          },
+        },
+        deliveryFees: true,
+        _count: {
+          select: { deliveryDiscounts: true },
+        },
+        deliveryDiscounts: true,
+      },
+    });
+
+    const transformedPosts = posts.map((post) => {
+      // 현재 배달팟에서 주문 신청한 메뉴의 총 가격
+      const totalOrderPrice = getTotalOrderPrice(post.deliveryPot.orders);
+
+      // 현재 배달팟에서 주문 신청한 사람 수
+      const orderedUserCount = getOrderedUserCount(post.deliveryPot.orders);
+
+      // 적용되는 배달비 정보
+      const appliedDeliveryFeeInfo = getApplicableDeliveryFeeInfo(
+        post.deliveryFees,
+        totalOrderPrice
+      );
+
+      // 다음 적용될 수 있는 배달비 정보
+      const nextDeliveryFeeInfo = getNextDeliveryFeeInfos(
+        post.deliveryFees,
+        appliedDeliveryFeeInfo,
+        totalOrderPrice
+      );
+
+      // 적용된 할인 정보
+      const appliedDiscountInfo = getAppliedDiscountInfo(
+        post.deliveryDiscounts,
+        totalOrderPrice
+      );
+
+      // 다음 적용될 수 있는 할인 정보
+      const nextDiscountInfos = getNextDiscountInfos(
+        post.deliveryDiscounts,
+        appliedDiscountInfo,
+        totalOrderPrice
+      );
+
+      // 1인당 배달비
+      const deliveryFeePerPerson =
+        appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
+
+      return {
+        id: post.id,
+        storeName: post.storeName,
+        imageUrl: post.imageUrl,
+        category: post.category.name,
+        liked: post.likedByUsers.length > 0,
+        orderLink: post.orderLink,
+        participantsCount: post.deliveryPot._count.participants,
+        recruitment: post.recruitment,
+        meetingLocation: post.meetingLocation,
+        orderedUserCount,
+        totalOrderPrice,
+        appliedDeliveryFeeInfo,
+        nextDeliveryFeeInfo,
+        appliedDiscountInfo,
+        nextDiscountInfos,
+        deliveryFeePerPerson,
+        hasDiscount: post.deliveryDiscounts?.length > 0,
+        potMasterHistoryCount: post.author._count.deliveryPotHistoryAsMaster,
+      };
+    });
+
+    res.status(200).send(transformedPosts);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}
 
 export async function getCommunities(req, res) {
   try {
@@ -105,6 +234,7 @@ export async function getCommunityById(req, res) {
             },
           },
         },
+        posts: true,
         _count: {
           select: { members: true },
         },
@@ -125,6 +255,7 @@ export async function getCommunityById(req, res) {
   }
 }
 
+let communityPhoto = '';
 export async function saveCommunityImg(req, res) {
   console.log(req.file.path);
   let editPath = '/' + req.file.path.replace(/\\/g, '/');
