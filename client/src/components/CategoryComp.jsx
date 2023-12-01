@@ -22,7 +22,7 @@ const CategoryListComp = ({ postData }) => {
           style={imgStyle}
           src={
             postData.imageUrl
-              ? `http://localhost:5000/${postData.imageUrl}`
+              ? `http://localhost:5000/images/${postData.imageUrl}`
               : logoImg
           }
         ></img>
