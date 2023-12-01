@@ -182,7 +182,7 @@ const styles = {
 
 const text = [
   ['내 공동체 관리', '/my-page/communites'],
-  ['알림 설정'],
+  ['알림 내역 관리'],
   ['참여 내역'],
 ];
 
