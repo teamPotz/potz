@@ -7,6 +7,7 @@ import OrderConfirmMessage from './OrderConfirmMessage.jsx';
 import DepositMessage from './DepositMessage.jsx';
 import DepositConfirmMessage from './DepositConfirmMessage.jsx';
 import { useAuth } from '../../../contexts/AuthContext.jsx';
+import SystemMessage from './SystemMessage.jsx';
 
 function MessageContainer({
   messages,
@@ -27,34 +28,46 @@ function MessageContainer({
       {messages.map((message) => {
         switch (message.type) {
           case 'SYSTEM':
-            return <div key={message.id}>{message.content.message}</div>;
+          case 'REQUEST':
+            return (
+              <div key={message.id} ref={scrollRef}>
+                <SystemMessage key={message.id} message={message} />
+              </div>
+            );
           case 'TEXT':
             return (
-              <TextMessageWrapper
-                $own={message.sender.id === user.id}
-                ref={scrollRef}
-              >
-                <TextMessage key={message.id} message={message} />
-              </TextMessageWrapper>
-            );
-          case 'REQUEST':
-            return <div key={message.id}>{message.content.message}</div>;
-          case 'ORDER':
-            return (
-              <OrderMessage
+              <div
                 key={message.id}
                 ref={scrollRef}
-                message={message}
-                isPotMaster={isPotMaster}
-                confirmOrder={confirmOrder}
-                own={message.sender.id === user.id}
-              />
+                style={{
+                  width: 'auto',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems:
+                    message.sender.id === user.id ? 'flex-end' : 'flex-start',
+                }}
+              >
+                <TextMessage
+                  message={message}
+                  own={message.sender.id === user.id}
+                />
+              </div>
+            );
+          case 'ORDER':
+            return (
+              <div key={message.id} ref={scrollRef}>
+                <OrderMessage
+                  message={message}
+                  isPotMaster={isPotMaster}
+                  confirmOrder={confirmOrder}
+                  own={message.sender.id === user.id}
+                />
+              </div>
             );
           case 'ORDER_CONFIRM':
             return (
-              <div ref={scrollRef}>
+              <div key={message.id} ref={scrollRef}>
                 <OrderConfirmMessage
-                  key={message.id}
                   sender={message.sender}
                   own={message.sender.id === user.id}
                 />
@@ -62,9 +75,8 @@ function MessageContainer({
             );
           case 'DEPOSIT':
             return (
-              <div ref={scrollRef}>
+              <div key={message.id} ref={scrollRef}>
                 <DepositMessage
-                  key={message.id}
                   message={message}
                   isPotMaster={isPotMaster}
                   confirmDeposit={confirmDeposit}
@@ -74,16 +86,13 @@ function MessageContainer({
             );
           case 'DEPOSIT_CONFIRM':
             return (
-              <div ref={scrollRef}>
+              <div key={message.id} ref={scrollRef}>
                 <DepositConfirmMessage
-                  key={message.id}
                   sender={message.sender}
                   own={message.sender.id === user.id}
                 />
               </div>
             );
-          default:
-            return null;
         }
       })}
     </MessageContainerWrapper>
@@ -103,21 +112,6 @@ const MessageContainerWrapper = styled.div`
   padding-top: 74px;
   padding-bottom: 74px;
   // height: 100vh;
-`;
-
-const TextMessageWrapper = styled.div`
-  background-color: ${(props) =>
-    props.$own ? `${COLOR.POTZ_PINK_500}` : `${COLOR.WHITE}`};
-  color: ${(props) => (props.$own ? `${COLOR.WHITE}` : `${COLOR.BLACK}`)};
-  border-radius: 14px;
-  width: auto;
-  max-width: 276px;
-  padding: 4px 14px;
-  margin-left: ${(props) => (props.$own ? 'auto' : 'none')};
-  margin-right: ${(props) => (props.$own ? 'none' : 'auto')};
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
 `;
 
 export default MessageContainer;
