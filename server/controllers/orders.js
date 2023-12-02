@@ -89,15 +89,17 @@ export async function confirmOrder(req, res, next) {
     }
 
     // 3. 주문확인 트랜잭션(주문확인처리->주문메시지 수정->주문확인메시지 생성)
-    let orderConfirmMessage;
+    let order, orderConfirmMessage;
     await prisma.$transaction(async (tx) => {
       // 3-1. update order
-      const order = await tx.deliveryOrder.update({
+      order = await tx.deliveryOrder.update({
         where: { id: +orderId },
         data: { orderConfirmed: true },
         select: {
           id: true,
           orderConfirmed: true,
+          price: true,
+          quantity: true,
         },
       });
 
@@ -117,6 +119,11 @@ export async function confirmOrder(req, res, next) {
     // send message to chatroom
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', orderConfirmMessage);
+
+    // update order
+    io.of('/chat')
+      .to(potId.toString())
+      .emit('updateOrder', { price: order.price, quantity: order.quantity });
 
     // send message to chatlist
     io.of('/room').emit('updateLastMessage', {

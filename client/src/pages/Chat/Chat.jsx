@@ -426,6 +426,12 @@ function Chat() {
       setDeliveryPot((prev) => ({ ...prev, ...data }));
     });
 
+    // 방 정보 업데이트
+    socket.on('updateOrder', (data) => {
+      console.log('updateOrder', data);
+      setDeliveryPot((prev) => ({ ...prev, orders: [...prev.orders, data] }));
+    });
+
     socket.emit('join', { potId, user });
     return () => {
       socket.disconnect();
