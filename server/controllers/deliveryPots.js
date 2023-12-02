@@ -301,7 +301,7 @@ export async function setPotStatus(req, res, next) {
           const deliveryFeePerPerson =
             appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
 
-          message = `각자 메뉴가격+배달비(${deliveryFeePerPerson}원) 씩 보내주세요.\n${bankName} ${accountNumber} ${accountHolderName}`;
+          message = `각자 메뉴가격+배달비(${deliveryFeePerPerson}원) 씩 보내주세요.\n💸${bankName} ${accountNumber} ${accountHolderName}💸`;
           break;
         case 'PICKUP_REQUEST':
           message = `배달이 완료되었습니다.\n${pot.post.meetingLocation}으로 나와주세요.`;
