@@ -13,7 +13,6 @@ function PotStatus({ status }) {
       <div
         style={{
           display: 'flex',
-          flex: 1,
           whiteSpace: 'nowrap',
           alignItems: 'center',
           gap: '6px',
@@ -24,10 +23,13 @@ function PotStatus({ status }) {
           방장 요청사항 {status.length > 0 ? `${status.length}개` : '없음'}
         </FontMd>
       </div>
-      <div style={{ display: 'flex', flex: 1, gap: '6px' }}>
-        {status.map((s) => (
-          <RequestMessage key={s.id}>{statusInfo[s.status]}</RequestMessage>
-        ))}
+
+      <div style={{ display: 'flex', gap: '6px' }}>
+        {status
+          .sort((a, b) => b.id - a.id)
+          .map((s) => (
+            <StatusMessage key={s.id}>{statusInfo[s.status]}</StatusMessage>
+          ))}
       </div>
     </Wrapper>
   );
@@ -53,7 +55,7 @@ const BellIcon = ({ fill }) => {
 };
 
 const Wrapper = styled.div`
-  margin-left: 28px;
+  // margin-left: 28px;
   height: 30px;
   display: flex;
   align-items: center;
@@ -67,7 +69,7 @@ const FontMd = styled.p`
   color: ${(props) => props.color}; //${COLOR.BLACK}; ${COLOR.GRAY_400};
 `;
 
-const RequestMessage = styled.div`
+const StatusMessage = styled.div`
   background: ${COLOR.POTZ_PINK_200};
   color: ${COLOR.POTZ_PINK_DEFAULT};
   height: 30px;
