@@ -86,7 +86,9 @@ function OrderMessage({ message, own, isPotMaster, confirmOrder }) {
       <Title>{message.sender.name}님의 메뉴 선정</Title>
       {imageUrl && <MenuImage imageUrl={imageUrl} />}
       <div>{menuName}</div>
-      <div>총 금액 {+price * +quantity}원</div>
+      <div>
+        총 금액 {new Intl.NumberFormat('ko-kr').format(+price * +quantity)}원
+      </div>
       {isPotMaster && (
         <ButtonBg
           backgroundColor={COLOR.POTZ_PINK_DEFAULT}

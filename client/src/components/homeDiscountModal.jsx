@@ -103,7 +103,10 @@ function HomeDiscountModal(props) {
               <div>
                 앞으로
                 <span style={coloredFont}>
-                  {discountInfo.minAmount - totalOrderPrice}원
+                  {new Intl.NumberFormat('ko-kr').format(
+                    discountInfo.minAmount - totalOrderPrice
+                  )}
+                  원
                 </span>
                 만 주문비 채우면
               </div>
@@ -111,7 +114,12 @@ function HomeDiscountModal(props) {
               <div>
                 총
                 {discountInfo.discount ? (
-                  <span style={coloredFont}>{discountInfo.discount}원</span>
+                  <span style={coloredFont}>
+                    {new Intl.NumberFormat('ko-kr').format(
+                      discountInfo.discount
+                    )}
+                    원
+                  </span>
                 ) : null}
                 {discountInfo.discountRate ? (
                   <span style={coloredFont}>
@@ -134,13 +142,21 @@ function HomeDiscountModal(props) {
               <div>
                 <span>앞으로</span>
                 <span style={coloredFont}>
-                  {nextDeliveryFeeInfo.minAmount - totalOrderPrice}원
+                  {new Intl.NumberFormat('ko-kr').format(
+                    nextDeliveryFeeInfo.minAmount - totalOrderPrice
+                  )}
+                  원
                 </span>
                 <span>만 주문비 채우면</span>
               </div>
               <div>
                 <span>나누기 전 배달비</span>
-                <span style={coloredFont}>{nextDeliveryFeeInfo.fee}원</span>
+                <span style={coloredFont}>
+                  {new Intl.NumberFormat('ko-kr').format(
+                    nextDeliveryFeeInfo.fee
+                  )}
+                  원
+                </span>
                 <span>으로 변경</span>
               </div>
             </div>
