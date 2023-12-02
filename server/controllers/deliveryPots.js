@@ -343,10 +343,40 @@ export async function closeDeliveryPot(req, res, next) {
       throw new Error(`already closed`);
     }
 
-    // 2. close pot
-    const pot = await prisma.deliveryPot.update({
-      where: { id: +potId },
-      data: { closed: true },
+    // 2. close pot and create history
+    let pot;
+    await prisma.$transaction(async (tx) => {
+      // 2-1. close pot
+      pot = await tx.deliveryPot.update({
+        where: { id: +potId },
+        data: { closed: true },
+        include: {
+          deposits: {
+            where: {
+              depositConfirmed: true,
+            },
+            select: {
+              userId: true,
+            },
+          },
+        },
+      });
+      console.log('pot', pot);
+      const users = pot.deposits.map((item) => ({ id: item.userId }));
+      console.log('users', users);
+
+      // 2-2. create history
+      const history = await tx.deliveryPotHistory.create({
+        data: {
+          potMasterId: pot.potMasterId,
+          participants: {
+            connect: pot.deposits.map((item) => ({ id: item.userId })),
+          },
+          deliveryPotId: pot.id,
+        },
+      });
+
+      console.log(history);
     });
 
     // 3. send updated status
@@ -355,6 +385,7 @@ export async function closeDeliveryPot(req, res, next) {
       .to(potId.toString())
       .emit('updatePot', { closed: pot.closed });
 
+    console.log(`pot ${potId} closed`);
     res.status(200).json(pot);
   } catch (error) {
     console.error(error);
