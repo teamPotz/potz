@@ -1,9 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import {
-  checkPotExists,
-  enterPot,
-  leavePot,
-} from '../services/deliveryPots.js';
+import { checkPotExists, enterPot } from '../services/deliveryPots.js';
 import {
   createMessage,
   getMessagesByPotId,
@@ -85,39 +81,51 @@ export async function joinDeliveryPot(req, res, next) {
       throw new Error(`deliveryPot id #${potId} not found`);
     }
 
-    // 2. enter pot
-    const { pot, alreadyJoined } = await enterPot(potId, req.user.id);
-
-    // 3-1. 방의 모든 메시지 읽음 처리
-    await readAllMessages(potId, req.user.id);
-
-    // 3-2. 읽음처리 이벤트 전송
-    const io = req.app.get('io');
-    io.of('/chat').to(potId.toString()).emit('updateCountAll', req.user.id);
-
-    // 4. 처음 들어가는 방인경우 시스템 메시지 전송, 참여자수 udate
-    if (!alreadyJoined) {
-      // create system message
-      const systemMessage = await createMessage('SYSTEM', potId, req.user.id, {
-        message: `${req.user.name}님이 입장했습니다.`,
-      });
-
-      // send system message
-      io.of('/chat').to(potId.toString()).emit('message', systemMessage);
-
-      // update chat status
-      io.of('/chat')
-        .to(potId.toString())
-        .emit('updatePot', { _count: pot._count });
-
-      // update userlist
-      io.of('/room').emit('updateUserList', {
+    let pot, alreadyJoined;
+    await prisma.$transaction(async (tx) => {
+      // 2. enter pot
+      ({ pot: pot, alreadyJoined: alreadyJoined } = await enterPot(
+        tx,
         potId,
-        participants: pot._count.participants,
-        message: systemMessage,
-      });
-    }
+        req.user.id
+      ));
 
+      // 3-1. 방의 모든 메시지 읽음 처리
+      await readAllMessages(tx, potId, req.user.id);
+
+      // 3-2. 읽음처리 이벤트 전송
+      const io = req.app.get('io');
+      io.of('/chat').to(potId.toString()).emit('updateCountAll', req.user.id);
+
+      // 4. 처음 들어가는 방인경우 시스템 메시지 전송, 참여자수 udate
+      if (!alreadyJoined) {
+        // create system message
+        const systemMessage = await createMessage(
+          tx,
+          'SYSTEM',
+          potId,
+          req.user.id,
+          {
+            message: `${req.user.name}님이 입장했습니다.`,
+          }
+        );
+
+        // send system message
+        io.of('/chat').to(potId.toString()).emit('message', systemMessage);
+
+        // update chat status
+        io.of('/chat')
+          .to(potId.toString())
+          .emit('updatePot', { _count: pot._count });
+
+        // update userlist
+        io.of('/room').emit('updateUserList', {
+          potId,
+          participants: pot._count.participants,
+          message: systemMessage,
+        });
+      }
+    });
     res.status(200).json(pot);
   } catch (error) {
     console.error(error);
@@ -138,11 +146,29 @@ export async function leaveDeliveryPot(req, res, next) {
       throw new Error(`deliveryPot id #${potId} not found`);
     }
 
-    const pot = await leavePot(potId, req.user.id);
+    let pot, systemMessage;
+    await prisma.$transaction(async (tx) => {
+      // 1. leave pot
+      pot = await tx.deliveryPot.update({
+        where: { id: +potId },
+        data: {
+          participants: {
+            disconnect: { id: userId },
+          },
+        },
+        include: {
+          _count: {
+            select: {
+              participants: true,
+            },
+          },
+        },
+      });
 
-    // create system message
-    const systemMessage = await createMessage('SYSTEM', potId, req.user.id, {
-      message: `${req.user.name}님이 퇴장했습니다.`,
+      // 2. create system message
+      systemMessage = await createMessage(tx, 'SYSTEM', potId, req.user.id, {
+        message: `${req.user.name}님이 퇴장했습니다.`,
+      });
     });
 
     // send system message
@@ -189,6 +215,7 @@ export async function setPotStatus(req, res, next) {
       where: { id: +potId },
       select: { potMasterId: true, status: true },
     });
+
     // 1. 존재 여부, 방장여부, 이미 해당 상태인지 확인
     if (!existingPot) {
       throw new Error(`cant find delivery pot #${potId}`);
@@ -203,86 +230,90 @@ export async function setPotStatus(req, res, next) {
       throw new Error(`already in ${status} status`);
     }
 
-    // 2. update status
-    const pot = await prisma.deliveryPot.update({
-      where: { id: +potId },
-      data: {
-        status: {
-          create: {
-            status,
+    let pot, requestMessage;
+    await prisma.$transaction(async (tx) => {
+      // 2. update status
+      pot = await tx.deliveryPot.update({
+        where: { id: +potId },
+        data: {
+          status: {
+            create: {
+              status,
+            },
           },
         },
-      },
-      include: {
-        status: true,
-        post: {
-          select: {
-            meetingLocation: true,
-            deliveryFees: true,
+        include: {
+          status: true,
+          post: {
+            select: {
+              meetingLocation: true,
+              deliveryFees: true,
+            },
           },
-        },
-        orders: {
-          select: {
-            price: true,
-            quantity: true,
-            userId: true,
+          orders: {
+            select: {
+              price: true,
+              quantity: true,
+              userId: true,
+            },
           },
-        },
-        potMaster: {
-          select: {
-            profile: {
-              select: {
-                accountHolderName: true,
-                accountNumber: true,
-                bankName: true,
+          potMaster: {
+            select: {
+              profile: {
+                select: {
+                  accountHolderName: true,
+                  accountNumber: true,
+                  bankName: true,
+                },
               },
             },
           },
         },
-      },
-    });
+      });
 
-    // 4. create request message
-    let message;
-    switch (status) {
-      case 'MENU_REQUEST':
-        message = '각자 메뉴를 선택해주세요.';
-        break;
-      case 'DEPOSIT_REQUEST':
-        if (!pot.potMaster.profile) {
-          throw new Error('계좌정보가 입력되지 않았습니다.');
-        }
+      // 4. create request message
+      let message;
+      switch (status) {
+        case 'MENU_REQUEST':
+          message = '각자 메뉴를 선택해주세요.';
+          break;
+        case 'DEPOSIT_REQUEST':
+          if (!pot.potMaster.profile) {
+            throw new Error('계좌정보가 입력되지 않았습니다.');
+          }
 
-        const { bankName, accountNumber, accountHolderName } =
-          pot.potMaster.profile;
+          const { bankName, accountNumber, accountHolderName } =
+            pot.potMaster.profile;
 
-        // 현재 배달팟에서 주문 신청한 메뉴의 총 가격
-        const totalOrderPrice = getTotalOrderPrice(pot.orders);
+          // 현재 배달팟에서 주문 신청한 메뉴의 총 가격
+          const totalOrderPrice = getTotalOrderPrice(pot.orders);
 
-        // 현재 배달팟에서 주문 신청한 사람 수
-        const orderedUserCount = getOrderedUserCount(pot.orders);
+          // 현재 배달팟에서 주문 신청한 사람 수
+          const orderedUserCount = getOrderedUserCount(pot.orders);
 
-        // 적용된 배달비 정보
-        const appliedDeliveryFeeInfo = getApplicableDeliveryFeeInfo(
-          pot.post.deliveryFees,
-          totalOrderPrice
-        );
+          // 적용된 배달비 정보
+          const appliedDeliveryFeeInfo = getApplicableDeliveryFeeInfo(
+            pot.post.deliveryFees,
+            totalOrderPrice
+          );
 
-        // 1인당 배달비
-        const deliveryFeePerPerson =
-          appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
+          // 1인당 배달비
+          const deliveryFeePerPerson =
+            appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
 
-        message = `각자 메뉴가격+배달비(${deliveryFeePerPerson}원) 씩 보내주세요.\n${bankName} ${accountNumber} ${accountHolderName}`;
-        break;
-      case 'PICKUP_REQUEST':
-        message = `배달이 완료되었습니다.\n${pot.post.meetingLocation}으로 나와주세요.`;
-        break;
+          message = `각자 메뉴가격+배달비(${deliveryFeePerPerson}원) 씩 보내주세요.\n${bankName} ${accountNumber} ${accountHolderName}`;
+          break;
+        case 'PICKUP_REQUEST':
+          message = `배달이 완료되었습니다.\n${pot.post.meetingLocation}으로 나와주세요.`;
+          break;
 
-      default:
-        break;
-    }
-    const requestMessage = await createMessage('REQUEST', potId, req.user.id, {
-      message,
+        default:
+          break;
+      }
+
+      requestMessage = await createMessage(tx, 'REQUEST', potId, req.user.id, {
+        message,
+      });
     });
 
     // send message to chatroom
@@ -361,9 +392,6 @@ export async function closeDeliveryPot(req, res, next) {
           },
         },
       });
-      console.log('pot', pot);
-      const users = pot.deposits.map((item) => ({ id: item.userId }));
-      console.log('users', users);
 
       // 2-2. create history
       const history = await tx.deliveryPotHistory.create({

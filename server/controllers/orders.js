@@ -7,23 +7,27 @@ export async function createOrder(req, res, next) {
   const { potId, menuName, quantity, price } = req.body;
 
   try {
-    const order = await prisma.deliveryOrder.create({
-      data: {
-        deliveryPotId: +potId,
-        userId: req.user.id,
-        imageUrl: req.file?.filename || null,
-        menuName: menuName,
-        quantity: +quantity,
-        price: +price,
-      },
-    });
+    let order, orderMessage;
+    await prisma.$transaction(async (tx) => {
+      order = await tx.deliveryOrder.create({
+        data: {
+          deliveryPotId: +potId,
+          userId: req.user.id,
+          imageUrl: req.file?.filename || null,
+          menuName: menuName,
+          quantity: +quantity,
+          price: +price,
+        },
+      });
 
-    const orderMessage = await createMessage(
-      'ORDER',
-      potId,
-      req.user.id,
-      order
-    );
+      orderMessage = await createMessage(
+        tx,
+        'ORDER',
+        potId,
+        req.user.id,
+        order
+      );
+    });
 
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', orderMessage);
@@ -88,7 +92,7 @@ export async function confirmOrder(req, res, next) {
     let orderConfirmMessage;
     await prisma.$transaction(async (tx) => {
       // 3-1. update order
-      const order = await prisma.deliveryOrder.update({
+      const order = await tx.deliveryOrder.update({
         where: { id: +orderId },
         data: { orderConfirmed: true },
         select: {
@@ -98,10 +102,11 @@ export async function confirmOrder(req, res, next) {
       });
 
       // 3-2. update order message
-      await updateOrderMessage(messageId, true);
+      await updateOrderMessage(tx, messageId, true);
 
       // 3-3. create order confirm message
       orderConfirmMessage = await createMessage(
+        tx,
         'ORDER_CONFIRM',
         potId,
         req.user.id,
@@ -135,7 +140,7 @@ export async function createOrderAndDeposit(req, res, next) {
     let orderMessage, depositMessage;
     await prisma.$transaction(async (tx) => {
       // 1-1. create order and confirm
-      const order = await prisma.deliveryOrder.create({
+      const order = await tx.deliveryOrder.create({
         data: {
           deliveryPotId: +potId,
           userId: req.user.id,
@@ -148,10 +153,16 @@ export async function createOrderAndDeposit(req, res, next) {
       });
 
       // 1-2. create order message
-      orderMessage = await createMessage('ORDER', potId, req.user.id, order);
+      orderMessage = await createMessage(
+        tx,
+        'ORDER',
+        potId,
+        req.user.id,
+        order
+      );
 
       // 2. create deposit and confirm
-      const deposit = await prisma.deposit.create({
+      const deposit = await tx.deposit.create({
         data: {
           deliveryPotId: +potId,
           userId: req.user.id,
@@ -164,6 +175,7 @@ export async function createOrderAndDeposit(req, res, next) {
 
       // 2-2. create deposit message
       depositMessage = await createMessage(
+        tx,
         'DEPOSIT',
         potId,
         req.user.id,
