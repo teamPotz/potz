@@ -143,11 +143,15 @@ function MyOrderHistory() {
                   <div>
                     <FontBg>{myOrder.menuName}</FontBg>
                     <FontSm color={COLOR.GRAY_400}>
-                      갯수 {myOrder.quantity} | 주문가격 {myOrder.price}원
+                      갯수 {myOrder.quantity} | 주문가격{' '}
+                      {new Intl.NumberFormat('ko-kr').format(myOrder.price)}원
                     </FontSm>
                   </div>
                   <FontMd>
-                    총 결제 금액 : {myOrder.quantity * myOrder.price}원
+                    {`총 결제 금액 : ${new Intl.NumberFormat('ko-kr').format(
+                      myOrder.quantity * myOrder.price
+                    )}
+                    원`}
                   </FontMd>
                 </AlignColumn>
               </BoxComp>
