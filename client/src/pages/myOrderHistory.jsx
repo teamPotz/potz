@@ -127,7 +127,7 @@ function MyOrderHistory() {
                 <img
                   src={
                     myOrder.imageUrl
-                      ? `http://localhost:5000/${myOrder.imageUrl}`
+                      ? `http://localhost:5000/images/${myOrder.imageUrl}`
                       : `${PF}Logo/Potz_Logo.png`
                   }
                   style={styles.image}
