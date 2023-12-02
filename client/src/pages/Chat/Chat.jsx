@@ -89,6 +89,8 @@ function Chat() {
   }
 
   async function sendOrderMessage() {
+    if (isLoadingSendMessage) return;
+
     const { file, menuName, quantity, price } = orderFormData;
 
     if (!menuName || !quantity || !price) {
@@ -108,6 +110,7 @@ function Chat() {
     formData.append('image', file);
 
     try {
+      setisLoadingSendMessage(true);
       const res = await fetch('http://localhost:5000/orders/', {
         method: 'POST',
         credentials: 'include',
@@ -122,14 +125,19 @@ function Chat() {
       setOrderFormData(initialOrderData);
     } catch (error) {
       console.error(error);
+    } finally {
+      setisLoadingSendMessage(false);
     }
   }
 
   async function confirmOrder(orderId, messageId) {
+    if (isLoadingSendMessage) return;
     if (!isPotMaster) {
       return alert('메뉴 확인은 방장만 할 수 있습니다.');
     }
+
     try {
+      setisLoadingSendMessage(true);
       const res = await fetch(
         `http://localhost:5000/orders/${orderId}/confirm`,
         {
@@ -159,6 +167,8 @@ function Chat() {
       );
     } catch (error) {
       console.error(error);
+    } finally {
+      setisLoadingSendMessage(false);
     }
   }
 
@@ -175,6 +185,7 @@ function Chat() {
   }
 
   async function sendDepositMessage() {
+    if (isLoadingSendMessage) return;
     const { file, depositor, amount } = depositFormData;
 
     if (!depositor || !amount) {
@@ -193,6 +204,7 @@ function Chat() {
     formData.append('image', file);
 
     try {
+      setisLoadingSendMessage(true);
       const res = await fetch('http://localhost:5000/deposits/', {
         method: 'POST',
         credentials: 'include',
@@ -207,14 +219,19 @@ function Chat() {
       setDepositFormData(initialDepositData);
     } catch (error) {
       console.error(error);
+    } finally {
+      setisLoadingSendMessage(false);
     }
   }
 
   async function confirmDeposit(orderId, messageId) {
+    if (isLoadingSendMessage) return;
     if (!isPotMaster) {
       return alert('입금 확인은 방장만 할 수 있습니다.');
     }
+
     try {
+      setisLoadingSendMessage(true);
       const res = await fetch(
         `http://localhost:5000/deposits/${orderId}/confirm`,
         {
@@ -242,6 +259,8 @@ function Chat() {
       );
     } catch (error) {
       console.error(error);
+    } finally {
+      setisLoadingSendMessage(false);
     }
   }
 
@@ -318,6 +337,7 @@ function Chat() {
 
   // 방장용 메뉴선택(선택 즉시 주문확정, 입금확정까지 되도록)
   async function orderPotMaster() {
+    if (isLoadingSendMessage) return;
     const { file, menuName, quantity, price } = orderFormData;
 
     if (!menuName || !quantity || !price) {
@@ -337,6 +357,7 @@ function Chat() {
     formData.append('image', file);
 
     try {
+      setisLoadingSendMessage(true);
       const res = await fetch('http://localhost:5000/orders/pot-master', {
         method: 'POST',
         credentials: 'include',
@@ -351,6 +372,8 @@ function Chat() {
       setOrderFormData(initialOrderData);
     } catch (error) {
       console.error(error);
+    } finally {
+      setisLoadingSendMessage(false);
     }
   }
 
