@@ -28,6 +28,7 @@ export async function enterPot(tx, potId, userId) {
           id: true,
           storeName: true,
           imageUrl: true,
+          categoryId: true,
         },
       },
       status: {
@@ -67,6 +68,7 @@ export async function enterPot(tx, potId, userId) {
           id: true,
           storeName: true,
           imageUrl: true,
+          categoryId: true,
         },
       },
       status: {

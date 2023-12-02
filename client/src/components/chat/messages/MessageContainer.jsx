@@ -15,6 +15,7 @@ function MessageContainer({
   isPotMaster,
   confirmOrder,
   confirmDeposit,
+  categoryId,
 }) {
   const scrollRef = useRef();
   const { user } = useAuth();
@@ -69,6 +70,7 @@ function MessageContainer({
               <div key={message.id} ref={scrollRef}>
                 <OrderConfirmMessage
                   sender={message.sender}
+                  categoryId={categoryId}
                   own={message.sender.id === user.id}
                 />
               </div>

@@ -603,6 +603,7 @@ function Chat() {
             isPotMaster={isPotMaster}
             confirmOrder={confirmOrder}
             confirmDeposit={confirmDeposit}
+            categoryId={deliveryPot?.post?.categoryId}
           />
         </div>
         {openMenuBar && (
