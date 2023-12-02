@@ -23,12 +23,6 @@ function ChatList() {
         }
         const data = await res.json();
         console.log('data', data);
-        // const sorted = data.sort(
-        //   (a, b) =>
-        //     new Date(b.messages.at(0)?.createdAt) -
-        //     new Date(a.messages.at(0)?.createdAt)
-        // );
-        // console.log('sorted', sorted);
         setDeliveryPots(data);
       } catch (error) {
         console.error(error);
@@ -126,7 +120,9 @@ function ChatList() {
 
   return (
     <div className='potz_container' style={styles.background}>
-      <Title>배달팟 채팅 목록</Title>
+      <div style={{ position: 'fixed', zIndex: 100 }}>
+        <Title>배달팟 채팅 목록</Title>
+      </div>
       <div style={styles.sideTitle}>
         <FontMd color={`${COLOR.GRAY_400}`}>
           지금 참여 중인 배달팟 채팅 {deliveryPots.length}
@@ -233,7 +229,7 @@ const Chat = styled.div`
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
   height: 147px;
   background: ${COLOR.WHITE};
   border-radius: 9.33333px;
