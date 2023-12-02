@@ -54,9 +54,7 @@ export async function getDeliveryPots(req, res, next) {
               where: {
                 NOT: {
                   readBy: {
-                    some: {
-                      id: req.user.id,
-                    },
+                    some: { id: req.user.id },
                   },
                 },
               },
@@ -87,14 +85,15 @@ export async function joinDeliveryPot(req, res, next) {
       throw new Error(`deliveryPot id #${potId} not found`);
     }
 
-    // 2. 방의 모든 메시지 읽음 처리
+    // 2. enter pot
+    const { pot, alreadyJoined } = await enterPot(potId, req.user.id);
+
+    // 3-1. 방의 모든 메시지 읽음 처리
     await readAllMessages(potId, req.user.id);
 
+    // 3-2. 읽음처리 이벤트 전송
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('updateCountAll', req.user.id);
-
-    // 3. enter pot
-    const { pot, alreadyJoined } = await enterPot(potId, req.user.id);
 
     // 4. 처음 들어가는 방인경우 시스템 메시지 전송, 참여자수 udate
     if (!alreadyJoined) {
@@ -106,7 +105,12 @@ export async function joinDeliveryPot(req, res, next) {
       // send system message
       io.of('/chat').to(potId.toString()).emit('message', systemMessage);
 
-      // send userlist
+      // update chat status
+      io.of('/chat')
+        .to(potId.toString())
+        .emit('updatePot', { _count: pot._count });
+
+      // update userlist
       io.of('/room').emit('updateUserList', {
         potId,
         participants: pot._count.participants,
@@ -134,23 +138,30 @@ export async function leaveDeliveryPot(req, res, next) {
       throw new Error(`deliveryPot id #${potId} not found`);
     }
 
-    const result = await leavePot(potId, req.user.id);
+    const pot = await leavePot(potId, req.user.id);
 
     // create system message
     const systemMessage = await createMessage('SYSTEM', potId, req.user.id, {
       message: `${req.user.name}님이 퇴장했습니다.`,
     });
 
+    // send system message
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', systemMessage);
 
+    // update chat status
+    io.of('/chat')
+      .to(potId.toString())
+      .emit('updatePot', { _count: pot._count });
+
+    // update userlist
     io.of('/room').emit('updateUserList', {
       potId,
-      participants: result._count.participants,
+      participants: pot._count.participants,
       message: systemMessage,
     });
 
-    res.status(200).json(result);
+    res.status(200).json(pot);
   } catch (error) {
     console.error(error);
     next(error);
@@ -261,10 +272,10 @@ export async function setPotStatus(req, res, next) {
         const deliveryFeePerPerson =
           appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
 
-        message = `각자 메뉴가격+배달비(${deliveryFeePerPerson}원) 씩 보내주세요. ${bankName} ${accountNumber} ${accountHolderName}`;
+        message = `각자 메뉴가격+배달비(${deliveryFeePerPerson}원) 씩 보내주세요.\n${bankName} ${accountNumber} ${accountHolderName}`;
         break;
       case 'PICKUP_REQUEST':
-        message = `배달이 완료되었습니다. ${pot.post.meetingLocation}으로 나와주세요.`;
+        message = `배달이 완료되었습니다.\n${pot.post.meetingLocation}으로 나와주세요.`;
         break;
 
       default:
