@@ -1,13 +1,10 @@
 import { useState, useEffect } from 'react';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
 import GoBack from '../components/goBack';
 import CategoryBtn from '../components/CategoryBtn';
 
 function CategoryPage() {
-  let [categoryData, setCategoryData] = useState();
+  const [categoryData, setCategoryData] = useState();
 
   useEffect(() => {
     async function fetchCategoryData() {

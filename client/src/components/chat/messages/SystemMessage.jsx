@@ -6,7 +6,7 @@ const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 
 function SystemMessage({ message }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+    <div style={{ display: 'flex', gap: '6px' }}>
       <div
         style={{
           backgroundColor: COLOR.WHITE,
