@@ -18,7 +18,7 @@ const BoxComp = styled.div`
   background: ${COLOR.WHITE};
   box-shadow: 0px 3.5px 8.167px 0px rgba(0, 0, 0, 0.07);
   transition: all 0.2s ease;
-  &:hover{
+  &:hover {
     transform: scale(1.05);
     cursor: grab;
   }
@@ -133,7 +133,13 @@ function MyOrderHistory() {
                   style={styles.image}
                 ></img>
                 <AlignColumn>
-                  <FontSm>주문날짜 : {myOrder.updatedAt}</FontSm>
+                  <FontSm>
+                    주문날짜 :{' '}
+                    {new Intl.DateTimeFormat('ko', {
+                      dateStyle: 'long',
+                      timeStyle: 'short',
+                    }).format(new Date(myOrder.updatedAt))}
+                  </FontSm>
                   <div>
                     <FontBg>{myOrder.menuName}</FontBg>
                     <FontSm color={COLOR.GRAY_400}>
