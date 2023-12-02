@@ -302,7 +302,7 @@ export async function setPotStatus(req, res, next) {
     });
 
     console.log('request message sent');
-    res.status(201).json(requestMessage);
+    res.status(201).json(pot);
   } catch (error) {
     console.error(error);
     next(error);

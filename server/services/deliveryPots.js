@@ -33,6 +33,16 @@ export async function enterPot(potId, userId) {
       status: {
         select: { id: true, status: true },
       },
+      orders: {
+        where: { orderConfirmed: true },
+        select: {
+          price: true,
+          quantity: true,
+        },
+      },
+      _count: {
+        select: { participants: true },
+      },
     },
   });
 
@@ -59,16 +69,17 @@ export async function enterPot(potId, userId) {
           imageUrl: true,
         },
       },
-      // messages: {
-      //   orderBy: {
-      //     createdAt: 'desc',
-      //   },
-      //   take: 1,
-      // },
-      _count: {
+      status: {
+        select: { id: true, status: true },
+      },
+      orders: {
+        where: { orderConfirmed: true },
         select: {
-          participants: true,
+          price: true,
         },
+      },
+      _count: {
+        select: { participants: true },
       },
     },
   });
