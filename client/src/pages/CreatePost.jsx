@@ -463,7 +463,7 @@ function CreatePost() {
                         state: {
                           routeName: '/create-post',
                           communityId: location.state.communityId,
-                          imageUrl: sendImg ? sendImg : null,
+                          imageUrl: sendImg ? sendImg : imageUrl ? imageUrl : null,
                         },
                       })
                     }

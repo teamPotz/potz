@@ -485,7 +485,7 @@ function UpdatePost() {
                       navigate('/getaddress', {
                         state: {
                           routeName: `/update-post/${id}`,
-                          imageUrl: sendImg ? sendImg : null,
+                          imageUrl: sendImg ? sendImg : imageUrl ? imageUrl : null,
                         },
                       })
                     }
