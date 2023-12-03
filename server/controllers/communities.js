@@ -214,7 +214,8 @@ export async function getCommunitiesByLocation(req, res) {
 export async function getCommunityById(req, res) {
   const { id } = req.params;
   const communityId = parseInt(id, 10);
-  console.log('커뮤니티 아이디', communityId);
+  // console.log('커뮤니티 아이디', communityId);
+
   try {
     const community = await prisma.community.findUnique({
       where: {
