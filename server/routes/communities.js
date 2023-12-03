@@ -7,8 +7,8 @@ import {
   getCommunities,
   createCommunity,
   getCommunityById,
-  updateCommunity,
-  deleteCommunity,
+  // updateCommunity,
+  // deleteCommunity,
   saveCommunityImg,
   getPostsByCommunityId,
 } from '../controllers/communities.js';
@@ -23,10 +23,8 @@ router.get('/search', verifyAuth, getCommunitiesByLocation);
 router.post('/photo', fileUpload.single('image'), saveCommunityImg);
 router.get('/:id/posts', verifyAuth, getPostsByCommunityId);
 router.patch('/:id/join', joinCommunity);
-router
-  .route('/:id')
-  .get(verifyAuth, getCommunityById)
-  .patch(verifyAuth, updateCommunity)
-  .delete(verifyAuth, deleteCommunity);
+router.route('/:id').get(verifyAuth, getCommunityById);
+// .patch(verifyAuth, updateCommunity)
+// .delete(verifyAuth, deleteCommunity);
 
 export default router;
