@@ -130,6 +130,7 @@ function UpdatePost() {
   const { id } = useParams();
   const myInputRef = useRef(null);
   const [sendImg, setSendImg] = useState();
+  const [sendImgFile, setSendImgFile] = useState();
 
   //데이터 받아와서 바인딩
   const [getData, setGetData] = useState({
@@ -222,7 +223,7 @@ function UpdatePost() {
     const image = imageUrl;
     const reader = new FileReader();
     reader.onloadend = () => {
-      setSelectImg(reader.result);
+      setSendImgFile(reader.result);
     };
     if (image) {
       reader.readAsDataURL(image);
@@ -421,12 +422,12 @@ function UpdatePost() {
                 }}
               ></input>
               <ImgInput
-                img={selectImg}
+                img={selectImg ? selectImg : sendImgFile ? sendImgFile : null}
                 onClick={() => {
                   myInputRef.current.click();
                 }}
               >
-                {selectImg ? (
+                {selectImg || sendImgFile ? (
                   <div />
                 ) : getData.imageUrl ? (
                   <img

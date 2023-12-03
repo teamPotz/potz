@@ -129,6 +129,7 @@ function CreatePost() {
   const location = useLocation();
   const myInputRef = useRef(null);
   const [sendImg, setSendImg] = useState();
+  const [sendImgFile, setSendImgFile] = useState();
 
   let Address = false;
   let name = false;
@@ -142,7 +143,7 @@ function CreatePost() {
     const image = imageUrl;
     const reader = new FileReader();
     reader.onloadend = () => {
-      setSelectImg(reader.result);
+      setSendImgFile(reader.result);
     };
     if (image) {
       reader.readAsDataURL(image);
@@ -412,12 +413,12 @@ function CreatePost() {
               ></input>
 
               <ImgInput
-                img={selectImg}
+                img={selectImg ? selectImg : sendImgFile ? sendImgFile : null}
                 onClick={() => {
                   myInputRef.current.click();
                 }}
               >
-                {selectImg ? (
+                {selectImg || sendImgFile ? (
                   <div />
                 ) : (
                   <svg
