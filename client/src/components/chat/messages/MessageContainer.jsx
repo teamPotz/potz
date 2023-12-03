@@ -95,6 +95,8 @@ function MessageContainer({
                 />
               </div>
             );
+          default:
+            return null;
         }
       })}
     </MessageContainerWrapper>

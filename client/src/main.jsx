@@ -11,7 +11,7 @@ import ChooseInterest from './pages/ChooseInterest.jsx';
 import FindLocation from './pages/FindLocationPage.jsx';
 import Detail from './pages/Detail.jsx';
 import SearchPage from './pages/Search.jsx';
-import Alarm from './pages/Alarm.jsx';
+import Notification from './pages/Notification.jsx';
 import CategoryPage from './pages/Category.jsx';
 import Login from './pages/loginPage.jsx';
 import LoginPage from './pages/LocalLogin/LoginPage.jsx';
@@ -114,8 +114,8 @@ const router = createBrowserRouter([
         element: <SearchResult />,
       },
       {
-        path: '/alarm',
-        element: <Alarm />,
+        path: '/notification',
+        element: <Notification />,
       },
       {
         path: '/category',
@@ -160,7 +160,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/my-page/order-history',
-        element: <MyOrderHistory/>,
+        element: <MyOrderHistory />,
       },
       { path: '/chats/', element: <ChatList /> },
       { path: '/chats/:potId', element: <Chat /> },

@@ -244,8 +244,10 @@ export async function setPotStatus(req, res, next) {
         },
         include: {
           status: true,
+          participants: { select: { id: true } },
           post: {
             select: {
+              storeName: true,
               meetingLocation: true,
               deliveryFees: true,
             },
@@ -314,6 +316,25 @@ export async function setPotStatus(req, res, next) {
       requestMessage = await createMessage(tx, 'REQUEST', potId, req.user.id, {
         message,
       });
+
+      // 5. notification
+      // 5-1. find members in pot(except pot master)
+      const members = pot.participants.filter((p) => p.id !== pot.potMasterId);
+
+      if (members.length > 0) {
+        // 5-2. create notification
+        const noti = await prisma.notification.createMany({
+          data: members.map((member) => ({
+            type: 'NEW_REQUEST',
+            userId: member.id,
+            content: {
+              potId: +potId,
+              storeName: pot.post.storeName,
+              status,
+            },
+          })),
+        });
+      }
     });
 
     // send message to chatroom

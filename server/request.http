@@ -29,7 +29,7 @@ Content-Type: application/json
 GET http://localhost:5000/posts?communityId=1
 
 ### cancel status of pot 
-DELETE http://localhost:5000/delivery-pots/1/status
+DELETE http://localhost:5000/delivery-pots/19/status
 Content-Type: application/json
 
 {

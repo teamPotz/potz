@@ -342,7 +342,7 @@ export async function getPostByName(req, res) {
       };
 
       result.push(transformedPost);
-      console.log('appliedDeliveryFeeInfo', appliedDeliveryFeeInfo);
+      // console.log('appliedDeliveryFeeInfo', appliedDeliveryFeeInfo);
     }
     res.status(200).send(result);
   } catch (error) {
@@ -434,7 +434,7 @@ export async function getPostByCategoryId(req, res) {
       );
 
       const orderedUserCount = getOrderedUserCount(post.deliveryPot.orders);
-      console.log('post.deliveryPot.orders', post.deliveryPot.orders);
+      // console.log('post.deliveryPot.orders', post.deliveryPot.orders);
 
       const deliveryFeePerPerson =
         appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
@@ -464,7 +464,7 @@ export async function getPostByCategoryId(req, res) {
       };
 
       result.push(transformedPost);
-      console.log('appliedDeliveryFeeInfo', appliedDeliveryFeeInfo);
+      // console.log('appliedDeliveryFeeInfo', appliedDeliveryFeeInfo);
     }
     res.status(200).send(result);
   } catch (error) {
@@ -489,6 +489,7 @@ export async function createPost(req, res, next) {
   } = req.body;
 
   try {
+    // todo : use transaction
     // 1. 게시글 등록
     const post = await prisma.post.create({
       data: {
@@ -512,7 +513,7 @@ export async function createPost(req, res, next) {
           },
         },
         category: {
-          select: { name: true },
+          select: { id: true, name: true },
         },
         deliveryPot: {
           select: {
@@ -552,6 +553,34 @@ export async function createPost(req, res, next) {
         postId: post.id,
       },
     });
+
+    // 5. notification
+    // 5-1. find members in community
+    const communityMembers = await prisma.communitiesOnUsers.findMany({
+      where: { communityId: +communityId },
+      select: {
+        userId: true,
+        community: {
+          select: { name: true },
+        },
+      },
+    });
+
+    if (communityMembers.length > 0) {
+      // 5-2. create notification
+      const noti = await prisma.notification.createMany({
+        data: communityMembers.map((member) => ({
+          type: 'NEW_POST',
+          userId: member.userId,
+          content: {
+            postId: post.id,
+            storeName: post.storeName,
+            categoryId: +categoryId,
+            communityName: member.community.name,
+          },
+        })),
+      });
+    }
 
     // 현재 배달팟에서 주문 신청한 메뉴의 총 가격
     const totalOrderPrice = 0;

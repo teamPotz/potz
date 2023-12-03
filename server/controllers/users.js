@@ -124,8 +124,6 @@ export async function getUserDeliveryPotHistory(req, res) {
 }
 
 export async function updateUserAccountById(req, res) {
-  console.log(req.body);
-
   const accountOwner = req.body.accountOwner;
   const account = req.body.account;
   const bankName = req.body.bankName;
@@ -156,11 +154,6 @@ export async function updateUserAccountById(req, res) {
 }
 
 export async function updateUserById(req, res) {
-  console.log(req.user.id);
-  console.log(req.file);
-  console.log(req.body.userName);
-  console.log(req.body);
-
   const imgUrl = req.file.path.replace('uploads', '');
 
   try {
@@ -190,5 +183,39 @@ export async function updateUserById(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'get userData error' });
+  }
+}
+
+export async function getNotifications(req, res, next) {
+  try {
+    const noti = await prisma.notification.findMany({
+      where: {
+        userId: req.user.id,
+        confirmed: false,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return res.status(200).json(noti);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}
+
+export async function readAllNotifications(req, res, next) {
+  try {
+    const noti = await prisma.notification.updateMany({
+      where: {
+        userId: req.user.id,
+        confirmed: false,
+      },
+      data: { confirmed: true },
+    });
+
+    return res.status(200).json(noti);
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 }

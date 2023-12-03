@@ -206,7 +206,7 @@ const NavBarHomePage = (props) => {
   };
 
   let clickHandler2 = () => {
-    navigate('/alarm');
+    navigate('/notification');
   };
 
   let clickHandler3 = () => {

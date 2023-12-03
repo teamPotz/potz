@@ -9,6 +9,8 @@ import {
   updateUserById,
   updateUserAccountById,
   getUserDeliveryPotHistory,
+  getNotifications,
+  readAllNotifications,
 } from '../controllers/users.js';
 
 const router = Router();
@@ -25,5 +27,7 @@ router.patch(
 );
 router.patch('/update-account', verifyAuth, updateUserAccountById);
 router.get('/user-delivery-histories', verifyAuth, getUserDeliveryPotHistory);
+router.get('/notification', verifyAuth, getNotifications);
+router.patch('/notification', verifyAuth, readAllNotifications);
 
 export default router;

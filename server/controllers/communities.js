@@ -332,19 +332,3 @@ export async function joinCommunity(req, res) {
 export async function updateCommunity(req, res) {
   // ...
 }
-
-export async function deleteCommunity(req, res) {
-  // ...
-}
-
-// export async function joinCommunity(req, res) {
-//   // ...
-
-//   await prisma.community.update({
-//     data:{
-//       members:{
-//         connect:?
-//       }
-//     }
-//   })
-// }
