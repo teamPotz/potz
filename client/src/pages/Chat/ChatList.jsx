@@ -236,11 +236,9 @@ const Chat = styled.div`
   box-sizing: border-box;
   gap: 16.33px;
   cursor: pointer;
-
   &:hover {
     transform: scale(1.02);
     transition: 0.2s ease-in-out;
-    backgound-color: ${COLOR.POTZ_PINK_100};
   }
 `;
 const Content1 = styled.div`

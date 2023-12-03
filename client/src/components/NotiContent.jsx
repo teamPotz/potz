@@ -139,13 +139,17 @@ const NotificationBox = styled.div`
   color: ${COLOR.GRAY_200};
   cursor: pointer;
   box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.07);
+  &:hover {
+    transform: scale(1.02);
+    transition: 0.2s ease-in-out;
+  }
 `;
 
 const NotiType = styled.div`
   background: ${COLOR.POTZ_PINK_200};
   color: ${COLOR.POTZ_PINK_DEFAULT};
-  width: 86.7px;
   height: 21px;
+  padding: 0px 10px;
   border-radius: 10px;
   display: flex;
   flex-direction: row;
@@ -156,9 +160,6 @@ const NotiType = styled.div`
   font-size: 10px;
   line-height: 150%;
   cursor: pointer;
-  // &:hover {
-  // background: ${COLOR.GRAY_200};
-  // }
 `;
 
 const Title = styled.div`
@@ -188,9 +189,6 @@ const SubTitle = styled.div`
 `;
 
 const styles = {
-  background: {
-    backgroundColor: `${COLOR.WHITE}`,
-  },
   sideCategory1: {
     marginTop: '10px',
     display: 'flex',
@@ -202,7 +200,6 @@ const styles = {
     width: '100%',
     height: '81px',
   },
-
   sideCategory2: {
     display: 'flex',
     flexDirection: 'row',
@@ -218,26 +215,6 @@ const styles = {
     borderBottom: '0.58px solid',
     color: `${COLOR.GRAY_100}`,
   },
-
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '9.33px',
-    marginTop: '-5px',
-    marginBottom: '69.33px',
-  },
-  space: {
-    display: 'flex',
-    width: '280px',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  rowFlex: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: '7px',
-    alignItems: 'center',
-    height: '21px',
-  },
 };
+
 export default NotiContent;
