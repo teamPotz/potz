@@ -129,6 +129,7 @@ function UpdatePost() {
   const location = useLocation();
   const { id } = useParams();
   const myInputRef = useRef(null);
+  const [sendImg, setSendImg] = useState();
 
   //데이터 받아와서 바인딩
   const [getData, setGetData] = useState({
@@ -213,9 +214,19 @@ function UpdatePost() {
 
   let searchedAddress = false;
   let name = false;
+  let imageUrl =  false;
   if (location.state !== null) {
     name = location.state.name;
     searchedAddress = location.state.address;
+    imageUrl = location.state?.imageUrl;
+    const image = imageUrl;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setSelectImg(reader.result);
+    };
+    if (image) {
+      reader.readAsDataURL(image);
+    }
   }
 
   const [toggleLimit, setToggleLimit] = useState(true);
@@ -350,7 +361,7 @@ function UpdatePost() {
             const meetingLocation = e.target.meetingLocation.value;
             const deliveryFees = processData('deliveryFee', e);
             const deliveryDiscounts = processData('deliveryDiscount', e);
-            const file = e.target.image.files[0];
+            const file = e.target.image.files[0] ? e.target.image.files[0] : imageUrl ? imageUrl : null;
 
             if (
               checkNumberic(deliveryFees) &&
@@ -360,11 +371,9 @@ function UpdatePost() {
                 if (
                   storeName &&
                   storeAddress &&
-                  orderLink &&
                   categoryId &&
                   recruitment &&
-                  meetingLocation &&
-                  (deliveryFees || deliveryDiscounts)
+                  meetingLocation
                 ) {
                   updatePost(
                     storeName,
@@ -378,7 +387,9 @@ function UpdatePost() {
                     file
                   );
                 } else {
-                  alert('모든 내용을 입력해주세요.');
+                  alert(
+                    '가게이름, 가게주소, 카테고리, 마감인원수, 만날장소는 필수 요소입니다.'
+                  );
                 }
               } else {
                 alert('마감 인원수에는 숫자만 입력 가능합니다.');
@@ -398,6 +409,7 @@ function UpdatePost() {
                 accept='image/*'
                 onChange={(e) => {
                   e.preventDefault();
+                  setSendImg(e.target.files[0]);
                   const image = e.target.files[0];
                   const reader = new FileReader();
                   reader.onloadend = () => {
@@ -472,6 +484,7 @@ function UpdatePost() {
                       navigate('/getaddress', {
                         state: {
                           routeName: `/update-post/${id}`,
+                          imageUrl: sendImg ? sendImg : null,
                         },
                       })
                     }
