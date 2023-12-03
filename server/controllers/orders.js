@@ -120,16 +120,16 @@ export async function confirmOrder(req, res, next) {
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', orderConfirmMessage);
 
-    // update order
-    io.of('/chat')
-      .to(potId.toString())
-      .emit('updateOrder', { price: order.price, quantity: order.quantity });
-
     // send message to chatlist
     io.of('/room').emit('updateLastMessage', {
       potId,
       message: orderConfirmMessage,
     });
+
+    // update order
+    io.of('/chat')
+      .to(potId.toString())
+      .emit('updateOrder', { price: order.price, quantity: order.quantity });
 
     console.log('order confirm message sent');
     res.status(201).json(orderConfirmMessage);
@@ -144,10 +144,10 @@ export async function createOrderAndDeposit(req, res, next) {
   const { potId, menuName, quantity, price } = req.body;
 
   try {
-    let orderMessage, depositMessage;
+    let order, orderMessage, depositMessage;
     await prisma.$transaction(async (tx) => {
       // 1-1. create order and confirm
-      const order = await tx.deliveryOrder.create({
+      order = await tx.deliveryOrder.create({
         data: {
           deliveryPotId: +potId,
           userId: req.user.id,
@@ -191,14 +191,23 @@ export async function createOrderAndDeposit(req, res, next) {
     });
 
     const io = req.app.get('io');
+    // send message to chatroom
     io.of('/chat').to(potId.toString()).emit('message', orderMessage);
+    // send message to chatlist
     io.of('/room').emit('updateLastMessage', { potId, message: orderMessage });
 
+    // send message to chatroom
     io.of('/chat').to(potId.toString()).emit('message', depositMessage);
+    // send message to chatlist
     io.of('/room').emit('updateLastMessage', {
       potId,
       message: depositMessage,
     });
+
+    // update order
+    io.of('/chat')
+      .to(potId.toString())
+      .emit('updateOrder', { price: order.price, quantity: order.quantity });
 
     console.log(`potmaster's order&deposit completed`);
     res.status(201).json({ success: true });
