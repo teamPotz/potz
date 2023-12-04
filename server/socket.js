@@ -4,7 +4,6 @@ import { readMessage } from './services/messages.js';
 export default function (server, app) {
   const io = new Server(server, {
     // cors: { origin: 'http://localhost:5173' },
-    cors: { origin: 'http://localhost:80' },
     path: '/socket.io',
   });
 

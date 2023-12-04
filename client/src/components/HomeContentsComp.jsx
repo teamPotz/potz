@@ -5,7 +5,7 @@ import COLOR from '../utility/Color';
 import TagPlaceSM from './TagPlaceSM';
 import HomeAlert from './homeAlertModal';
 import HomeDiscountModal from './homeDiscountModal';
-const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
+import logoImg from '../../../public/images/Logo/Potz_Logo.png';
 
 const HomeContents = ({ postDatas, setPostDatas }) => {
   const [visible, setVisible] = useState(false);
@@ -27,7 +27,7 @@ const HomeContents = ({ postDatas, setPostDatas }) => {
           }
         );
         const data = await response.json();
-        console.log('좋아요 업데이트', data);
+        // console.log('좋아요 업데이트', data);
 
         // update post state
         setPostDatas((prevPosts) =>
@@ -66,7 +66,7 @@ const HomeContents = ({ postDatas, setPostDatas }) => {
                     ? `${import.meta.env.VITE_APP_API_URL}/images/${
                         post.imageUrl
                       }`
-                    : `${PF}Logo/Potz_Logo.png`
+                    : logoImg
                 }
               />
             </div>

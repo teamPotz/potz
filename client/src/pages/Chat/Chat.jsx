@@ -8,10 +8,14 @@ import MessageContainer from '../../components/chat/messages/MessageContainer.js
 import OrderModal from '../../components/chat/OrderModal.jsx';
 import DepositModal from '../../components/chat/DepositModal.jsx';
 import UserAccountUpdateModal from '../../components/mypage/userAccountUpdateModal.jsx';
+import logoImg from '../../../public/images/Logo/Potz_Logo.png';
+import crownImg from '../../../public/images/icons/crown.svg';
+import userImg from '../../../public/images/icons/user.svg';
+import moneyImg from '../../../public/images/icons/money.svg';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { socket } from '../../../socket.js';
 
-const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
+// const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 
 const initialOrderData = {
   file: null,
@@ -525,7 +529,7 @@ function Chat() {
                   ? `${import.meta.env.VITE_APP_API_URL}/images/${
                       deliveryPot?.post.imageUrl
                     }`
-                  : `${PF}Logo/Potz_Logo.png`
+                  : logoImg
               }
             />
           </div>
@@ -543,7 +547,7 @@ function Chat() {
             >
               <div style={{ maxWidth: '100px' }}>
                 <img
-                  src={PF + 'icons/crown.svg'}
+                  src={crownImg}
                   style={{
                     height: '12px',
                     marginRight: '0.2rem',
@@ -553,7 +557,7 @@ function Chat() {
               </div>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <img
-                  src={PF + 'icons/user.svg'}
+                  src={userImg}
                   style={{
                     height: '12px',
                     marginRight: '0.4rem',
@@ -565,7 +569,7 @@ function Chat() {
               </div>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <img
-                  src={PF + 'icons/money.svg'}
+                  src={moneyImg}
                   style={{
                     height: '12px',
                     marginRight: '0.2rem',
