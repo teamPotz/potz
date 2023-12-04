@@ -1,7 +1,6 @@
 import '../../index.css';
 import { Outlet } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
-import '../../App.css';
 import leftImg from '../../../public/images/graphicImg/potzImg.png';
 import qrImg from '../../../public/images/graphicImg/qrCode.png';
 

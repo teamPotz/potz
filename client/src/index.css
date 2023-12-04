@@ -68,6 +68,9 @@
 }
 
 .side_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: rgb(255, 255, 255);
   width: 260px;
   height: 464px;
