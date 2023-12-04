@@ -134,7 +134,7 @@ function CreatePost() {
   let Address = false;
   let name = false;
   let communityid = false;
-  let imageUrl =  false;
+  let imageUrl = false;
   if (location.state !== null) {
     name = location.state.name;
     Address = location.state.address;
@@ -351,7 +351,11 @@ function CreatePost() {
             const communityId = communityid;
             const deliveryFees = processData('deliveryFee', e);
             const deliveryDiscounts = processData('deliveryDiscount', e);
-            const file = e.target.image.files[0] ? e.target.image.files[0] : imageUrl ? imageUrl : null;
+            const file = e.target.image.files[0]
+              ? e.target.image.files[0]
+              : imageUrl
+              ? imageUrl
+              : null;
 
             if (
               checkNumberic(deliveryFees) &&
@@ -463,7 +467,11 @@ function CreatePost() {
                         state: {
                           routeName: '/create-post',
                           communityId: location.state.communityId,
-                          imageUrl: sendImg ? sendImg : imageUrl ? imageUrl : null,
+                          imageUrl: sendImg
+                            ? sendImg
+                            : imageUrl
+                            ? imageUrl
+                            : null,
                         },
                       })
                     }

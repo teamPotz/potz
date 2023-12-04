@@ -215,7 +215,7 @@ function UpdatePost() {
 
   let searchedAddress = false;
   let name = false;
-  let imageUrl =  false;
+  let imageUrl = false;
   if (location.state !== null) {
     name = location.state.name;
     searchedAddress = location.state.address;
@@ -362,7 +362,11 @@ function UpdatePost() {
             const meetingLocation = e.target.meetingLocation.value;
             const deliveryFees = processData('deliveryFee', e);
             const deliveryDiscounts = processData('deliveryDiscount', e);
-            const file = e.target.image.files[0] ? e.target.image.files[0] : imageUrl ? imageUrl : null;
+            const file = e.target.image.files[0]
+              ? e.target.image.files[0]
+              : imageUrl
+              ? imageUrl
+              : null;
 
             if (
               checkNumberic(deliveryFees) &&
@@ -485,7 +489,11 @@ function UpdatePost() {
                       navigate('/getaddress', {
                         state: {
                           routeName: `/update-post/${id}`,
-                          imageUrl: sendImg ? sendImg : imageUrl ? imageUrl : null,
+                          imageUrl: sendImg
+                            ? sendImg
+                            : imageUrl
+                            ? imageUrl
+                            : null,
                         },
                       })
                     }

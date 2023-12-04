@@ -14,7 +14,6 @@ const text = [
   ['내 공동체 관리', '/my-page/communites'],
   ['알림 내역 관리', '/notification'],
   ['참여 내역', '/my-page/order-history'],
-  ['결제 내역', '/my-page/order-history'],
 ];
 
 function UserProfile() {
@@ -126,7 +125,7 @@ function UserProfile() {
                 }}
               />
             )}
-            <div>
+            <div style={{ width: '272px' }}>
               <span>
                 <FontBig>{user.name}</FontBig>
                 <FontSm color={`${COLOR.GRAY_500}`}>
