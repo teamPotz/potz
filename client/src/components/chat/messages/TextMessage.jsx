@@ -5,7 +5,11 @@ import COLOR from '../../../utility/Color.js';
 function TextMessage({ message, own }) {
   return (
     <>
-      {!own && <div style={{ fontSize: '14px' }}>{message.sender.name}</div>}
+      {!own && (
+        <div style={{ fontSize: '14px', marginLeft: '4px' }}>
+          {message.sender.name}
+        </div>
+      )}
       <Message $own={own}>
         {message.content.message}
         <div
