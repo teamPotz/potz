@@ -210,7 +210,9 @@ const ResultContentsComp = ({ postDatas }) => {
                 width={112}
                 height={112}
                 style={imgStyle}
-                src={`http://localhost:5000/images/${post.imageUrl}`}
+                src={`${import.meta.env.VITE_APP_API_URL}/images/${
+                  post.imageUrl
+                }`}
               />
             </div>
             <div style={fontWrapper}>

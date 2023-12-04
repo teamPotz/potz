@@ -10,10 +10,13 @@ function Notification() {
 
   async function readAllNotifications() {
     try {
-      const res = await fetch('http://localhost:5000/users/notification', {
-        method: 'PATCH',
-        credentials: 'include',
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_APP_API_URL}/users/notification`,
+        {
+          method: 'PATCH',
+          credentials: 'include',
+        }
+      );
       if (!res.ok) {
         throw new Error('read notifications error');
       }
@@ -29,9 +32,10 @@ function Notification() {
   useEffect(() => {
     async function getNotifications() {
       try {
-        const res = await fetch('http://localhost:5000/users/notification', {
-          credentials: 'include',
-        });
+        const res = await fetch(
+          `${import.meta.env.VITE_APP_API_URL}/users/notification`,
+          { credentials: 'include' }
+        );
         if (!res.ok) {
           throw new Error('get notification error');
         }

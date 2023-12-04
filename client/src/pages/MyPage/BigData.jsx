@@ -51,9 +51,10 @@ function MyBigData() {
   useEffect(() => {
     const fetchUserOrderData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/users/user-order', {
-          credentials: 'include',
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_APP_API_URL}/users/user-order`,
+          { credentials: 'include' }
+        );
         const data = await response.json();
         const average = CalculateAvg(data[0].deliveryPotHistoryAsMember);
         const mode = ModeCategory(data[0].deliveryPotHistoryAsMember);
@@ -93,10 +94,13 @@ function MyBigData() {
   useEffect(() => {
     const getCategoryName = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/categories`, {
-          method: 'GET',
-          credentials: 'include',
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_APP_API_URL}/categories`,
+          {
+            method: 'GET',
+            credentials: 'include',
+          }
+        );
         const categories = await response.json();
         setCategoryName([
           categories[selectCategory - 1].name,
@@ -114,7 +118,9 @@ function MyBigData() {
     async function fetchMyRegionCommunity() {
       try {
         const response = await fetch(
-          `http://localhost:5000/communities/search?latitude=${user.profile.latitude}&longitude=${user.profile.longitude}`,
+          `${import.meta.env.VITE_APP_API_URL}/communities/search?latitude=${
+            user.profile.latitude
+          }&longitude=${user.profile.longitude}`,
           {
             method: 'GET',
             credentials: 'include',
@@ -139,11 +145,8 @@ function MyBigData() {
           myRegions.map(async (myRegion) => {
             const id = myRegion.id;
             const response = await fetch(
-              `http://localhost:5000/communities/${id}`,
-              {
-                method: 'GET',
-                credentials: 'include',
-              }
+              `${import.meta.env.VITE_APP_API_URL}/communities/${id}`,
+              { credentials: 'include' }
             );
             const data = await response.json();
             if (data.posts.length !== 0) {
@@ -166,11 +169,8 @@ function MyBigData() {
       const getCategoriesData = async () => {
         try {
           const res = await fetch(
-            `http://localhost:5000/categories/${selectCategory}`,
-            {
-              method: 'GET',
-              credentials: 'include',
-            }
+            `${import.meta.env.VITE_APP_API_URL}/categories/${selectCategory}`,
+            { credentials: 'include' }
           );
           const data = await res.json();
           const selectStore = getRandomArray(data.posts);
@@ -210,7 +210,7 @@ function MyBigData() {
             <PaddingTop padding='24.5px'>
               <img
                 style={styles.bigImg}
-                src={`http://localhost:5000/${categoryName[1]}`}
+                src={`${import.meta.env.VITE_APP_API_URL}/${categoryName[1]}`}
               ></img>
             </PaddingTop>
 

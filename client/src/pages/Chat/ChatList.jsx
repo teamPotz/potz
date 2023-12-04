@@ -15,9 +15,12 @@ function ChatList() {
   useEffect(() => {
     async function getDeliveryPots() {
       try {
-        const res = await fetch('http://localhost:5000/delivery-pots', {
-          credentials: 'include',
-        });
+        const res = await fetch(
+          `${import.meta.env.VITE_APP_API_URL}/delivery-pots`,
+          {
+            credentials: 'include',
+          }
+        );
         if (!res.ok) {
           throw new Error('get delivery pots error');
         }
@@ -155,7 +158,9 @@ function ChatList() {
                   }}
                   src={
                     pot.post.imageUrl
-                      ? `http://localhost:5000/images/${pot.post.imageUrl}`
+                      ? `${import.meta.env.VITE_APP_API_URL}/images/${
+                          pot.post.imageUrl
+                        }`
                       : `${PF}Logo/Potz_Logo.png`
                   }
                 />

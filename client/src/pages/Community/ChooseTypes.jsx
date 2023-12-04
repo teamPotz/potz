@@ -10,7 +10,9 @@ function ChooseTypes() {
   useEffect(() => {
     async function fetchCommunityTypes() {
       try {
-        const response = await fetch('http://localhost:5000/communities/types');
+        const response = await fetch(
+          `${import.meta.env.VITE_APP_API_URL}/communities/types`
+        );
         const data = await response.json();
         setCommunityTypes(data);
         // console.log(data);

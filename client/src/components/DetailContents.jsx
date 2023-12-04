@@ -48,7 +48,9 @@ function DetailContents({ postDatas }) {
     async function fetchCategoryPostData() {
       try {
         const response = await fetch(
-          `http://localhost:5000/posts/category?categoryId=${categoryId}&communityId=${communityId}`,
+          `${
+            import.meta.env.VITE_APP_API_URL
+          }/posts/category?categoryId=${categoryId}&communityId=${communityId}`,
           { credentials: 'include' }
         );
         const data = await response.json();
@@ -124,7 +126,9 @@ function DetailContents({ postDatas }) {
           style={imgStyle}
           src={
             postDatas.imageUrl
-              ? `http://localhost:5000/images/${postDatas.imageUrl}`
+              ? `${import.meta.env.VITE_APP_API_URL}/images/${
+                  postDatas.imageUrl
+                }`
               : logoImg
           }
         />
@@ -178,7 +182,9 @@ function DetailContents({ postDatas }) {
             <img
               width={46}
               height={46}
-              src={'http://localhost:5000/' + postDatas.potMasterProfileImg}
+              src={`${import.meta.env.VITE_APP_API_URL}/${
+                postDatas.potMasterProfileImg
+              }`}
               style={paddingStyle}
             />
           ) : (

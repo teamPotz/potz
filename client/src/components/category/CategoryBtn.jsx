@@ -13,7 +13,7 @@ const CategoryBtn = ({ category }) => {
         const fetchSearchData = async () => {
           try {
             const response = await fetch(
-              `http://localhost:5000/posts/category?categoryId=${
+              `${import.meta.env.VITE_APP_API_URL}/posts/category?categoryId=${
                 category.id
               }&communityId=${localStorage.getItem('communityDataID')}`,
               {
@@ -39,7 +39,7 @@ const CategoryBtn = ({ category }) => {
       <img
         width={108}
         height={108}
-        src={'http://localhost:5000/' + category.imageUrl}
+        src={`${import.meta.env.VITE_APP_API_URL}/${category.imageUrl}`}
       ></img>
       <TagFood>{category.name}</TagFood>
     </FoodWrapper>

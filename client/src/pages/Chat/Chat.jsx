@@ -52,7 +52,7 @@ function Chat() {
 
     try {
       setisLoadingSendMessage(true);
-      const res = await fetch('http://localhost:5000/messages/', {
+      const res = await fetch(`${import.meta.env.VITE_APP_API_URL}/messages/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -109,7 +109,7 @@ function Chat() {
 
     try {
       setisLoadingSendMessage(true);
-      const res = await fetch('http://localhost:5000/orders/', {
+      const res = await fetch(`${import.meta.env.VITE_APP_API_URL}/orders/`, {
         method: 'POST',
         credentials: 'include',
         body: formData,
@@ -137,7 +137,7 @@ function Chat() {
     try {
       setisLoadingSendMessage(true);
       const res = await fetch(
-        `http://localhost:5000/orders/${orderId}/confirm`,
+        `${import.meta.env.VITE_APP_API_URL}/orders/${orderId}/confirm`,
         {
           method: 'PATCH',
           headers: {
@@ -203,7 +203,7 @@ function Chat() {
 
     try {
       setisLoadingSendMessage(true);
-      const res = await fetch('http://localhost:5000/deposits/', {
+      const res = await fetch(`${import.meta.env.VITE_APP_API_URL}/deposits/`, {
         method: 'POST',
         credentials: 'include',
         body: formData,
@@ -231,7 +231,7 @@ function Chat() {
     try {
       setisLoadingSendMessage(true);
       const res = await fetch(
-        `http://localhost:5000/deposits/${orderId}/confirm`,
+        `${import.meta.env.VITE_APP_API_URL}/deposits/${orderId}/confirm`,
         {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
@@ -281,7 +281,7 @@ function Chat() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/delivery-pots/${potId}/status`,
+        `${import.meta.env.VITE_APP_API_URL}/delivery-pots/${potId}/status`,
         {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
@@ -314,7 +314,7 @@ function Chat() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/delivery-pots/${potId}/close`,
+        `${import.meta.env.VITE_APP_API_URL}/delivery-pots/${potId}/close`,
         {
           method: 'PATCH',
           credentials: 'include',
@@ -356,11 +356,14 @@ function Chat() {
 
     try {
       setisLoadingSendMessage(true);
-      const res = await fetch('http://localhost:5000/orders/pot-master', {
-        method: 'POST',
-        credentials: 'include',
-        body: formData,
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_APP_API_URL}/orders/pot-master`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        }
+      );
 
       if (!res.ok) {
         throw new Error('send order message error');
@@ -383,7 +386,7 @@ function Chat() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/delivery-pots/${potId}/leave`,
+        `${import.meta.env.VITE_APP_API_URL}/delivery-pots/${potId}/leave`,
         {
           method: 'PATCH',
           credentials: 'include',
@@ -462,7 +465,7 @@ function Chat() {
     async function enterPot() {
       try {
         const res = await fetch(
-          `http://localhost:5000/delivery-pots/${potId}/join`,
+          `${import.meta.env.VITE_APP_API_URL}/delivery-pots/${potId}/join`,
           {
             method: 'PATCH',
             credentials: 'include',
@@ -486,7 +489,7 @@ function Chat() {
     async function fetchMessages() {
       try {
         const res = await fetch(
-          `http://localhost:5000/delivery-pots/${potId}/messages`,
+          `${import.meta.env.VITE_APP_API_URL}/delivery-pots/${potId}/messages`,
           { credentials: 'include' }
         );
         const data = await res.json();
@@ -519,7 +522,9 @@ function Chat() {
               }}
               src={
                 deliveryPot?.post?.imageUrl
-                  ? `http://localhost:5000/images/${deliveryPot?.post.imageUrl}`
+                  ? `${import.meta.env.VITE_APP_API_URL}/images/${
+                      deliveryPot?.post.imageUrl
+                    }`
                   : `${PF}Logo/Potz_Logo.png`
               }
             />

@@ -21,7 +21,7 @@ const CommunityComp = ({ communityData }) => {
           style={imgStyle}
           width={92}
           height={92}
-          src={'http://localhost:5000/' + communityData.imageUrl}
+          src={`${import.meta.env.VITE_APP_API_URL}/${communityData.imageUrl}`}
         />
       </div>
       <div style={style1}>

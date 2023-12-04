@@ -12,10 +12,10 @@ function MyOrders() {
   useEffect(() => {
     const fetchUserOrderData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/users/user-order', {
-          method: 'GET',
-          credentials: 'include',
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_APP_API_URL}/users/user-order`,
+          { credentials: 'include' }
+        );
         const data = await response.json();
         console.log('내가 가입한 배달팟', data[0].deliveryPotHistoryAsMember);
         const result = lastestFunc(
@@ -62,7 +62,9 @@ function MyOrders() {
                 <img
                   src={
                     myOrder.imageUrl
-                      ? `http://localhost:5000/images/${myOrder.imageUrl}`
+                      ? `${import.meta.env.VITE_APP_API_URL}/images/${
+                          myOrder.imageUrl
+                        }`
                       : `${PF}Logo/Potz_Logo.png`
                   }
                   style={styles.image}

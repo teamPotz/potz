@@ -20,7 +20,7 @@ const HomeContents = ({ postDatas, setPostDatas }) => {
       // 서버로 좋아요 데이터 업데이트
       try {
         const response = await fetch(
-          `http://localhost:5000/posts/${postId}/like`,
+          `${import.meta.env.VITE_APP_API_URL}/posts/${postId}/like`,
           {
             method: 'PATCH',
             credentials: 'include',
@@ -63,7 +63,7 @@ const HomeContents = ({ postDatas, setPostDatas }) => {
                 style={imgStyle}
                 src={
                   post.imageUrl
-                    ? `http://localhost:5000/images/${post.imageUrl}`
+                    ? `${import.meta.env.VITE_APP_API_URL}${post.imageUrl}`
                     : `${PF}Logo/Potz_Logo.png`
                 }
               />

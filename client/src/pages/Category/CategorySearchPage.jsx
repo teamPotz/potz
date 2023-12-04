@@ -16,7 +16,9 @@ function CategorySearch() {
     async function fetchCategoryPostData() {
       try {
         const response = await fetch(
-          `http://localhost:5000/posts/category?categoryId=${categoryID}&communityId=${communityId}`,
+          `${
+            import.meta.env.VITE_APP_API_URL
+          }/posts/category?categoryId=${categoryID}&communityId=${communityId}`,
           {
             credentials: 'include',
           }

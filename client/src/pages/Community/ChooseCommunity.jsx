@@ -32,7 +32,9 @@ function ChooseCommunity() {
     async function fetchCommunityData() {
       try {
         const response = await fetch(
-          `http://localhost:5000/communities/search?latitude=${latitude}&longitude=${longitude}`,
+          `${
+            import.meta.env.VITE_APP_API_URL
+          }/communities/search?latitude=${latitude}&longitude=${longitude}`,
           {
             method: 'GET',
             credentials: 'include',

@@ -57,9 +57,12 @@ const DepositImage = ({ imageUrl }) => {
   return (
     <img
       style={styles.imageStyle}
-      src={`http://localhost:5000/images/${imageUrl}`}
+      src={`${import.meta.env.VITE_APP_API_URL}/images/${imageUrl}`}
       onClick={() =>
-        window.open(`http://localhost:5000/images/${imageUrl}`, '_blank')
+        window.open(
+          `${import.meta.env.VITE_APP_API_URL}/images/${imageUrl}`,
+          '_blank'
+        )
       }
     />
   );

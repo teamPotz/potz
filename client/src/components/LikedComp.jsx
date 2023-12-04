@@ -13,7 +13,7 @@ const LikedComp = ({ postData, getDeletedData }) => {
       //서버로 좋아요 데이터 업데이트
       try {
         const response = await fetch(
-          `http://localhost:5000/posts/${postData.id}/like`,
+          `${import.meta.env.VITE_APP_API_URL}/posts/${postData.id}/like`,
           {
             method: 'PATCH',
             credentials: 'include',
@@ -58,7 +58,9 @@ const LikedComp = ({ postData, getDeletedData }) => {
           style={imgStyle}
           src={
             postData.imageUrl
-              ? `http://localhost:5000/images/${postData.imageUrl}`
+              ? `${import.meta.env.VITE_APP_API_URL}/images/${
+                  postData.imageUrl
+                }`
               : logoImg
           }
         />

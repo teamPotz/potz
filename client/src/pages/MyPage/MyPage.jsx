@@ -63,7 +63,7 @@ function MyPage() {
     const fetchCommunityData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/users/user-delivery-histories`,
+          `${import.meta.env.VITE_APP_API_URL}/users/user-delivery-histories`,
           {
             method: 'GET',
             credentials: 'include',
@@ -115,7 +115,9 @@ function MyPage() {
                 src={
                   user.profile?.imageUrl?.startsWith('http')
                     ? user.profile?.imageUrl
-                    : `http://localhost:5000/${user.profile.imageUrl}`
+                    : `${import.meta.env.VITE_APP_API_URL}/${
+                        user.profile.imageUrl
+                      }`
                 }
                 style={{
                   width: '70px',

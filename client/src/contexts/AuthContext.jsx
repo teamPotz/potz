@@ -47,14 +47,17 @@ function AuthProvider({ children }) {
 
   async function signUp(email, password, name) {
     try {
-      const res = await fetch('http://localhost:5000/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ email, password, name }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_APP_API_URL}/auth/signup`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ email, password, name }),
+        }
+      );
       const data = await res.json();
       console.log(data);
       if (res.ok) {
@@ -68,14 +71,17 @@ function AuthProvider({ children }) {
   async function login(email, password) {
     dispatch({ type: 'LOGIN_START' });
     try {
-      const res = await fetch('http://localhost:5000/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_APP_API_URL}/auth/login`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ email, password }),
+        }
+      );
       if (!res.ok) {
         throw new Error('failed to login');
       }
@@ -90,10 +96,13 @@ function AuthProvider({ children }) {
 
   async function logout() {
     try {
-      const res = await fetch('http://localhost:5000/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_APP_API_URL}/auth/logout`,
+        {
+          method: 'POST',
+          credentials: 'include',
+        }
+      );
       if (!res.ok) {
         throw new Error('failed to logout');
       }
@@ -109,7 +118,7 @@ function AuthProvider({ children }) {
   async function getUserInfo() {
     dispatch({ type: 'get_user_info_start' });
     try {
-      const res = await fetch('http://localhost:5000/auth/', {
+      const res = await fetch(`${import.meta.env.VITE_APP_API_URL}/auth/`, {
         credentials: 'include',
       });
       const data = await res.json();

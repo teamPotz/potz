@@ -22,7 +22,9 @@ const CategoryListComp = ({ postData }) => {
           style={imgStyle}
           src={
             postData.imageUrl
-              ? `http://localhost:5000/images/${postData.imageUrl}`
+              ? `${import.meta.env.VITE_APP_API_URL}/images/${
+                  postData.imageUrl
+                }`
               : logoImg
           }
         />

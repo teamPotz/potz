@@ -13,7 +13,9 @@ const ResultEmptyModal = ({ categoryImg, categoryName }) => {
               <span style={fontStyle}>카테고리가 비어있어요.</span>
             </div>
             <div>
-              <img src={'http://localhost:5000/' + categoryImg}></img>
+              <img
+                src={`${import.meta.env.VITE_APP_API_URL}/${categoryImg}`}
+              ></img>
             </div>
             <span style={fontStyle2}>새로운 모집글을 작성해보세요.</span>
             <ButtonSm

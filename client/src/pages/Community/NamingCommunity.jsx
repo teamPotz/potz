@@ -47,7 +47,9 @@ function NamingCommunity({ communityType, user1 }) {
   useEffect(() => {
     async function fetchUserDatas() {
       try {
-        const response = await fetch('http://localhost:5000/user');
+        const response = await fetch(
+          `${import.meta.env.VITE_APP_API_URL}/user`
+        );
         const data = await response.json();
         console.log(data);
         setFormDatas({
@@ -79,14 +81,17 @@ function NamingCommunity({ communityType, user1 }) {
       if (formDatas.longitude !== null && formDatas.latitude !== null) {
         console.log(formDatas);
         try {
-          const response = await fetch('http://localhost:5000/communities', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-            body: JSON.stringify(formDatas),
-          });
+          const response = await fetch(
+            `${import.meta.env.VITE_APP_API_URL}/communities`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              credentials: 'include',
+              body: JSON.stringify(formDatas),
+            }
+          );
 
           if (response.ok) {
             //새로 생성된 커뮤니티 데이터 받아서 넘겨주기
@@ -152,7 +157,7 @@ function NamingCommunity({ communityType, user1 }) {
         try {
           setCount(count + 1);
           const response = await fetch(
-            'http://localhost:5000/communities/photo',
+            `${import.meta.env.VITE_APP_API_URL}/communities/photo`,
             {
               method: 'POST',
               body: formData,

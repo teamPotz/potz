@@ -10,7 +10,7 @@
 
 //   async function getJoinedPots() {
 //     try {
-//       const res = await fetch('http://localhost:5000/delivery-pots/', {
+//       const res = await fetch(`${import.meta.env.VITE_APP_API_URL}/delivery-pots/`, {
 //         credentials: 'include',
 //       });
 //       if (!res.ok) {
@@ -27,7 +27,7 @@
 //   async function joinPot(potId, user, socket) {
 //     try {
 //       const res = await fetch(
-//         `http://localhost:5000/delivery-pots/${potId}/join`,
+//         `${import.meta.env.VITE_APP_API_URL}/delivery-pots/${potId}/join`,
 //         {
 //           method: 'PATCH',
 //           credentials: 'include',
@@ -50,7 +50,7 @@
 //   async function leavePot(potId, user, socket) {
 //     try {
 //       const res = await fetch(
-//         `http://localhost:5000/delivery-pots/${potId}/leave`,
+//         `${import.meta.env.VITE_APP_API_URL}/delivery-pots/${potId}/leave`,
 //         {
 //           method: 'PATCH',
 //           credentials: 'include',

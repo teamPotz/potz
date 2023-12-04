@@ -90,10 +90,10 @@ function MyCommunitySettings() {
   useEffect(() => {
     async function fetchUserInfo() {
       try {
-        const response = await fetch('http://localhost:5000/users/user-info', {
-          method: 'GET',
-          credentials: 'include',
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_APP_API_URL}/users/user-info`,
+          { credentials: 'include' }
+        );
         const data = await response.json();
         setInitialDatas(data);
       } catch (error) {
@@ -109,11 +109,10 @@ function MyCommunitySettings() {
         async function fetchCommunityData() {
           try {
             const response = await fetch(
-              `http://localhost:5000/communities/${community.communityId}`,
-              {
-                method: 'GET',
-                credentials: 'include',
-              }
+              `${import.meta.env.VITE_APP_API_URL}/communities/${
+                community.communityId
+              }`,
+              { credentials: 'include' }
             );
             const data = await response.json();
             console.log(data);
@@ -135,7 +134,7 @@ function MyCommunitySettings() {
     setCommunityDatas(filteredCommunity);
     try {
       const res = await fetch(
-        'http://localhost:5000/users/user-community/delete',
+        `${import.meta.env.VITE_APP_API_URL}/users/user-community/delete`,
         {
           method: 'PATCH',
           body: JSON.stringify({ communityId }),
