@@ -63,7 +63,9 @@ const HomeContents = ({ postDatas, setPostDatas }) => {
                 style={imgStyle}
                 src={
                   post.imageUrl
-                    ? `${import.meta.env.VITE_APP_API_URL}${post.imageUrl}`
+                    ? `${import.meta.env.VITE_APP_API_URL}/images/${
+                        post.imageUrl
+                      }`
                     : `${PF}Logo/Potz_Logo.png`
                 }
               />
