@@ -5,7 +5,7 @@ import COLOR from '../utility/Color';
 import TagPlaceSM from './TagPlaceSM';
 import HomeAlert from './homeAlertModal';
 import HomeDiscountModal from './homeDiscountModal';
-import logoImg from '../../../public/images/Logo/Potz_Logo.png';
+import logoImg from '../../public/images/Logo/Potz_Logo.png';
 
 const HomeContents = ({ postDatas, setPostDatas }) => {
   const [visible, setVisible] = useState(false);
