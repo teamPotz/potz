@@ -1,79 +1,14 @@
-import '../App.css';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
 import { useState, useEffect } from 'react';
-import PostMap from './postMap';
+import styled from 'styled-components';
 import COLOR from '../utility/Color';
 import { useNavigate } from 'react-router';
-import Font from '../utility/Font';
-import styled from 'styled-components';
-import UserLocationMap from './userLocationMap';
-
-const Input = styled.input`
-  border: none;
-  width: 100%;
-  background-color: transparent;
-  font: ${Font.FontKor};
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 600;
-  &:focus {
-    outline: none;
-  }
-`;
+import UserLocationMap from '../components/UserLocationMap';
 
 function UserLoactionLandingMap() {
   const [value, setValue] = useState('');
   const [keyword, setKeyword] = useState('');
   const [currentLocation, setCurrentLocation] = useState();
   const navigate = useNavigate();
-
-  const styles = {
-    wrapperInput: {
-      width: '420px',
-      height: '70px',
-      backgroundColor: 'transparent',
-      position: 'fixed',
-      top: 0,
-      zIndex: 999,
-      display: 'flex',
-      alignItems: 'center',
-    },
-    inputBox: {
-      display: 'flex',
-      width: '420px',
-      flexDirection: 'row',
-      margin: '28px',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
-    form: {
-      display: 'flex',
-      flexDirection: 'row',
-      width: '300.667px',
-      height: '46.667px',
-      borderRadius: '11.667px',
-      backgroundColor: `${COLOR.POTZ_PINK_100}`,
-      opacity: 0.8,
-      alignItems: 'center',
-      paddingLeft: '14px',
-      gap: '14px',
-    },
-    input: {
-      border: 'none',
-      width: '100%',
-      backgroundColor: 'transparent',
-      font: `${Font.FontKor}`,
-      fontSize: '15px',
-      fontStyle: 'normal',
-      fontWeight: 500,
-    },
-    button: {
-      border: 'none',
-      backgroundColor: 'transparent',
-    },
-  };
 
   const submitKeyWord = (e) => {
     e.preventDefault();
@@ -168,11 +103,67 @@ function UserLoactionLandingMap() {
         <UserLocationMap
           currentLocation={currentLocation}
           searchKeyword={keyword}
-        ></UserLocationMap>
+        />
       ) : null}
       <div className='contents_container'></div>
     </div>
   );
 }
 
+const Input = styled.input`
+  border: none;
+  width: 100%;
+  background-color: transparent;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  &:focus {
+    outline: none;
+  }
+`;
+
+const styles = {
+  wrapperInput: {
+    width: '420px',
+    height: '70px',
+    backgroundColor: 'transparent',
+    position: 'fixed',
+    top: 0,
+    zIndex: 999,
+    display: 'flex',
+    alignItems: 'center',
+  },
+  inputBox: {
+    display: 'flex',
+    width: '420px',
+    flexDirection: 'row',
+    margin: '28px',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '300.667px',
+    height: '46.667px',
+    borderRadius: '11.667px',
+    backgroundColor: `${COLOR.POTZ_PINK_100}`,
+    opacity: 0.8,
+    alignItems: 'center',
+    paddingLeft: '14px',
+    gap: '14px',
+  },
+  input: {
+    border: 'none',
+    width: '100%',
+    backgroundColor: 'transparent',
+    fontSize: '15px',
+    fontStyle: 'normal',
+    fontWeight: 500,
+  },
+  button: {
+    border: 'none',
+    backgroundColor: 'transparent',
+  },
+};
 export default UserLoactionLandingMap;

@@ -1,11 +1,9 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import COLOR from '../utility/Color';
-import Font from '../utility/Font';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const InputSearch = styled.input`
-  font-family: ${Font.FontKor};
   font-size: 14px;
   font-weight: 400;
   margin-left: 18px;

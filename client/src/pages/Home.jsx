@@ -3,8 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import COLOR from '../utility/Color';
 import NavBarHomePage from '../components/NavBarHomePage';
 import HomeContents from '../components/HomeContentsComp';
-import ButtonWrite from '../components/ButtonWrite';
-import ShareCommunityModal from '../components/shareCommunityModal';
+import ButtonWrite from '../components/ui/ButtonWrite';
+import ShareCommunityModal from '../components/community/shareCommunityModal';
 import NavBar from '../components/ui/NavBar';
 import { useAuth } from '../contexts/AuthContext';
 import { communitySocket } from '../../socket';
@@ -147,7 +147,7 @@ function Home() {
           <div
             style={btnStyle}
             onClick={() =>
-              navigate('/create-post', { state: { communityId: communityId } })
+              navigate('/posts/create', { state: { communityId: communityId } })
             }
           >
             <ButtonWrite />

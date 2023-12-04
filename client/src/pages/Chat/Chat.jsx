@@ -7,7 +7,7 @@ import ChatInput from '../../components/chat/ChatInput.jsx';
 import MessageContainer from '../../components/chat/messages/MessageContainer.jsx';
 import OrderModal from '../../components/chat/OrderModal.jsx';
 import DepositModal from '../../components/chat/DepositModal.jsx';
-import UserAccountUpdateModal from '../../components/userAccountUpdateModal.jsx';
+import UserAccountUpdateModal from '../../components/mypage/userAccountUpdateModal.jsx';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { socket } from '../../../socket.js';
 

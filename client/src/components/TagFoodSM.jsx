@@ -1,9 +1,7 @@
 import styled from 'styled-components';
 import COLOR from '../utility/Color';
-import Font from '../utility/Font';
 
 const TagFoodSM = styled.button`
-  font-family: ${Font.FontKor};
   font-size: 12px;
   font-weight: 400;
   border: none;

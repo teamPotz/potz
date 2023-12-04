@@ -117,7 +117,7 @@ const SelectComp = (props) => {
   };
 
   const editHandler = () => {
-    navigate(`/update-post/${postId}`);
+    navigate(`/posts/${postId}/update`);
   };
 
   const containerStyle = {

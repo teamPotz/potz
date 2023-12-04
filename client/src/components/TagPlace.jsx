@@ -1,10 +1,8 @@
 import styled from 'styled-components';
 import COLOR from '../utility/Color';
-import Font from '../utility/Font';
 import { useNavigate } from 'react-router-dom';
 
 const TagPlaceStyle = styled.button`
-  font-family: ${Font.FontKor};
   font-size: 18px;
   font-weight: 500;
   border: none;
@@ -28,9 +26,8 @@ const TagPlaceStyle = styled.button`
   }
 `;
 
-const TagPlace = (props) => {
+const TagPlace = ({ children }) => {
   const navigate = useNavigate();
-  let { children } = props;
 
   return (
     <TagPlaceStyle
