@@ -225,15 +225,11 @@ function MyPage() {
             </div>
 
             {user.profile ? (
-              <FontMd2
-                color={COLOR.GRAY_400}
-                weight={400}
-                blur={blur}
-                style={{ gap: '4px' }}
-              >
-                <span>{user.profile.bankName}</span>
-                <span>{user.profile.accountNumber}</span>
-                <span>{user.profile.accountHolderName}</span>
+              <FontMd2 color={COLOR.GRAY_400} weight={400} blur={blur}>
+                <span>
+                  {user.profile.bankName} {user.profile.accountNumber}{' '}
+                  {user.profile.accountHolderName}
+                </span>
               </FontMd2>
             ) : null}
           </div>
