@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import LikedComp from '../components/LikedComp';
 import COLOR from '../utility/Color';
-import Font from '../utility/Font';
 import NavBar from '../components/ui/NavBar';
 
 function LikedList() {
-  let communityId = localStorage.getItem('communityDataID');
-  let [postDatas, setPostDatas] = useState();
+  const communityId = localStorage.getItem('communityDataID');
+  const [postDatas, setPostDatas] = useState();
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
   const [displayWidth, setdisplayWidth] = useState(window.innerWidth);
+
   useEffect(() => {
     const ReSizeHandler = () => {
       setdisplayWidth(window.innerWidth);
@@ -107,7 +107,6 @@ function LikedList() {
     gap: '16px',
     marginTop: '14px',
     marginLeft: '28px',
-    fontFamily: Font.FontKor,
     fontSize: '14px',
     fontWeight: '700',
     color: COLOR.GRAY_400,
@@ -115,7 +114,6 @@ function LikedList() {
 
   const alertStyle = {
     marginTop: '40px',
-    fontFamily: Font.FontKor,
     fontWeight: '700',
     color: COLOR.POTZ_PINK_DEFAULT,
     display: 'flex',
@@ -130,7 +128,6 @@ function LikedList() {
         <nav style={TopNav}>
           <span
             style={{
-              fontFamily: Font.FontKor,
               fontSize: '18px',
               fontWeight: '700',
               marginLeft: '28px',
@@ -162,7 +159,7 @@ function LikedList() {
                   key={index}
                   getDeletedData={getDeletedData}
                   postData={postData}
-                ></LikedComp>
+                />
               );
             })}
         </div>

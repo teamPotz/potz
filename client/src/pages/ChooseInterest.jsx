@@ -9,7 +9,7 @@ import {
   Salad,
   Chicken,
   ChineseFood,
-} from '../components/Category_Food';
+} from '../components/category/Category_Food';
 import { useAuth } from '../contexts/AuthContext';
 
 function ChooseInterest() {

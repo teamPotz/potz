@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import Font from '../utility/Font';
 import COLOR from '../utility/Color';
-import ButtonSm from '../components/ButtonSM';
+import ButtonSm from '../components/ui/ButtonSM';
 
 const SearchEmptyModal = (props) => {
   let { searchVal } = props;
@@ -25,21 +24,18 @@ const SearchEmptyModal = (props) => {
   `;
 
   const fontStyle = {
-    fontFamily: Font.FontKor,
     fontSize: '16px',
     fontWeight: '600',
     color: COLOR.GRAY_400,
   };
 
   const fontStyle2 = {
-    fontFamily: Font.FontKor,
     fontSize: '14px',
     fontWeight: '300',
     color: COLOR.GRAY_500,
   };
 
   const coloredFont = {
-    fontFamily: Font.FontKor,
     fontSize: '16px',
     fontWeight: '700',
     color: COLOR.POTZ_PINK_DEFAULT,

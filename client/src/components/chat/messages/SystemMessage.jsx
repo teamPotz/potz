@@ -1,7 +1,7 @@
+import React from 'react';
 import styled from 'styled-components';
 import COLOR from '../../../utility/Color.js';
 import timeAgoFormat from '../../../utility/timeAgo.js';
-import React from 'react';
 const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 
 function SystemMessage({ message }) {

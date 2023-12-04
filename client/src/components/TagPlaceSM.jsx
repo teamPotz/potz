@@ -1,9 +1,7 @@
 import styled from 'styled-components';
 import COLOR from '../utility/Color';
-import Font from '../utility/Font';
 
 const TagPlaceStyle = styled.button`
-  font-family: ${Font.FontKor};
   font-size: 10px;
   font-weight: 500;
   border: none;
@@ -23,9 +21,7 @@ const TagPlaceStyle = styled.button`
   }
 `;
 
-const TagPlaceSM = (props) => {
-  let { children } = props;
-
+const TagPlaceSM = ({ children }) => {
   return <TagPlaceStyle>{children}</TagPlaceStyle>;
 };
 export default TagPlaceSM;

@@ -1,5 +1,5 @@
-import timeAgoFormat from '../../../utility/timeAgo.js';
 import styled from 'styled-components';
+import timeAgoFormat from '../../../utility/timeAgo.js';
 import COLOR from '../../../utility/Color.js';
 
 function TextMessage({ message, own }) {

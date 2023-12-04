@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import COLOR from '../utility/Color';
-import GoBack from '../components/goBack';
+import GoBack from '../components/ui/GoBackNavbar';
 import SearchEmptyModal from '../components/SearchEmptyModal';
 import SearchResultComp from '../components/SearchResultComp';
 

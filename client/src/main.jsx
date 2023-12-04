@@ -3,34 +3,34 @@ import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext.jsx';
 import AppLayout from './components/ui/AppLayout.jsx';
-import MakeCommunity from './pages/MakeCommunityPage.jsx';
-import ChooseFeature from './pages/ChooseFeaturePage.jsx';
-import NamingCommunity from './pages/NamingCommunity.jsx';
-import Home from './pages/Home.jsx';
-import ChooseInterest from './pages/ChooseInterest.jsx';
-import FindLocation from './pages/FindLocationPage.jsx';
-import Detail from './pages/Detail.jsx';
-import SearchPage from './pages/Search.jsx';
-import Notification from './pages/Notification.jsx';
-import CategoryPage from './pages/Category.jsx';
-import Login from './pages/loginPage.jsx';
-import LoginPage from './pages/LocalLogin/LoginPage.jsx';
+import Login from './pages/Login/LoginPage.jsx';
+import LocalLoginPage from './pages/Login/LocalLoginPage.jsx';
 import ProtectedRoute from './pages/ProtectedRoute.jsx';
-import ChooseCommunity from './pages/ChooseCommunityPage.jsx';
+import AuthorizeUser from './pages/authorize.jsx';
+import Home from './pages/Home.jsx';
+import MakeCommunity from './pages/Community/MakeCommunity.jsx';
+import ChooseFeature from './pages/Community/ChooseTypes.jsx';
+import NamingCommunity from './pages/Community/NamingCommunity.jsx';
+import Entercommunity from './pages/Community/EnterCommunity.jsx';
+import ChooseInterest from './pages/ChooseInterest.jsx';
+import ChooseCommunity from './pages/Community/ChooseCommunity.jsx';
+import FindLocation from './pages/Community/FindLocation.jsx';
+import CategoryPage from './pages/Category/Category.jsx';
 import LikedList from './pages/LikedListPage.jsx';
+import SearchPage from './pages/Search.jsx';
 import SearchResult from './pages/SearchResult.jsx';
 import LandingMap from './pages/LandingMap';
+import Detail from './pages/Post/Detail.jsx';
+import CreatePost from './pages/Post/CreatePost.jsx';
+import UpdatePost from './pages/Post/UpdatePost.jsx';
+import UserLoactionLanding from './pages/UserLocationLanding.jsx';
+import MyPage from './pages/MyPage/MyPage.jsx';
+import MyBigData from './pages/MyPage/BigData.jsx';
+import MyCommunities from './pages/MyPage/MyCommunities.jsx';
+import MyOrderHistory from './pages/MyPage/MyOrders.jsx';
 import Chat from './pages/Chat/Chat.jsx';
-import CreatePost from './pages/CreatePost.jsx';
-import UpdatePost from './pages/UpdatePost.jsx';
-import UserLoactionLandingMap from './pages/UserLocationLanding.jsx';
 import ChatList from './pages/Chat/ChatList.jsx';
-import UserProfile from './pages/UserProfile.jsx';
-import Entercommunity from './pages/EnterCommunity.jsx';
-import AuthorizeUser from './pages/authorize.jsx';
-import MyBigData from './pages/myBigData.jsx';
-import MyCommunitySettings from './pages/myCommunitySetting.jsx';
-import MyOrderHistory from './pages/myOrderHistory.jsx';
+import Notification from './pages/Notification.jsx';
 
 const router = createBrowserRouter([
   {
@@ -47,7 +47,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/local-login/',
-        element: <LoginPage />,
+        element: <LocalLoginPage />,
       },
     ],
   },
@@ -100,7 +100,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/user-location',
-        element: <UserLoactionLandingMap />,
+        element: <UserLoactionLanding />,
       },
       {
         path: '/user-interests',
@@ -119,16 +119,16 @@ const router = createBrowserRouter([
         element: <CategoryPage />,
       },
       {
-        path: '/create-post',
+        path: '/posts/create',
         element: <CreatePost />,
+      },
+      {
+        path: '/posts/:id/update',
+        element: <UpdatePost />,
       },
       {
         path: '/posts/:id',
         element: <Detail />,
-      },
-      {
-        path: '/update-post/:id',
-        element: <UpdatePost />,
       },
       {
         path: '/liked-list',
@@ -136,7 +136,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/my-page',
-        element: <UserProfile />,
+        element: <MyPage />,
       },
       {
         path: '/my-page/bigdata',
@@ -144,7 +144,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/my-page/communites',
-        element: <MyCommunitySettings />,
+        element: <MyCommunities />,
       },
       {
         path: '/my-page/order-history',

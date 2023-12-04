@@ -1,86 +1,20 @@
-import '../App.css';
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import Font from '../utility/Font';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
 import SearchBar from '../components/SearchBar';
 import TagFoodSM from '../components/TagFoodSM';
-import CategoryBtnSM from '../components/CategoryBtnSM';
-
-const Divider = styled.div`
-  margin-top: 18px;
-  margin-bottom: 18px;
-  background-color: ${COLOR.POTZ_PINK_100};
-  height: 10px;
-  width: 100%;
-  & hr {
-    background: ${COLOR.GRAY_200};
-    height: 1px;
-    border: 0;
-  }
-`;
-
-const CategorySearchStyle = styled.div`
-  margin-top: 14px;
-  margin-bottom: 48px;
-  margin-left: 28px;
-  overflow: auto;
-  width: 100%;
-  display: flex;
-  gap: 14px;
-
-  overflow-y: scroll;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`;
-
-const BackButton = styled.button`
-  width: 28px;
-  height: 28px;
-  background: ${COLOR.WHITE};
-  border: none;
-  transition: all 0.2s ease;
-  cursor: grab;
-
-  &:hover {
-    transform: scale(1.18);
-    border-radius: 4px;
-  }
-`;
-
-const GoButton = styled.button`
-  width: 14px;
-  height: 14px;
-  background: ${COLOR.WHITE};
-  border: none;
-  transition: all 0.2s ease;
-  cursor: grab;
-
-  &:hover {
-    transform: scale(1.18);
-    border-radius: 4px;
-  }
-`;
+import CategoryBtnSM from '../components/category/CategoryBtnSM';
 
 function SearchPage() {
-  //테스트용 유저 아이디
-  let navigate = useNavigate();
-  let [categoryData, setCategoryData] = useState();
-  let [searchHistory, setSearchHistory] = useState();
+  const navigate = useNavigate();
+  const [categoryData, setCategoryData] = useState();
+  const [searchHistory, setSearchHistory] = useState();
 
   useEffect(() => {
     async function fetchCategoryData() {
       try {
         const response = await fetch('http://localhost:5000/categories', {
-          method: 'GET',
           credentials: 'include',
         });
         const data = await response.json();
@@ -97,7 +31,6 @@ function SearchPage() {
     async function fetchSearchHistoryData() {
       try {
         const response = await fetch('http://localhost:5000/search-history', {
-          method: 'GET',
           credentials: 'include',
         });
         const data = await response.json();
@@ -225,12 +158,10 @@ function SearchPage() {
 
   const fontStyle = {
     marginTop: '2px',
-    fontFamily: Font.FontKor,
     fontWeight: '700',
   };
 
   const fontStyle2 = {
-    fontFamily: Font.FontKor,
     color: COLOR.GRAY_400,
     fontSize: '14px',
     cursor: 'grab',
@@ -432,5 +363,64 @@ function SearchPage() {
     </div>
   );
 }
+
+const Divider = styled.div`
+  margin-top: 18px;
+  margin-bottom: 18px;
+  background-color: ${COLOR.POTZ_PINK_100};
+  height: 10px;
+  width: 100%;
+  & hr {
+    background: ${COLOR.GRAY_200};
+    height: 1px;
+    border: 0;
+  }
+`;
+
+const CategorySearchStyle = styled.div`
+  margin-top: 14px;
+  margin-bottom: 48px;
+  margin-left: 28px;
+  overflow: auto;
+  width: 100%;
+  display: flex;
+  gap: 14px;
+
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const BackButton = styled.button`
+  width: 28px;
+  height: 28px;
+  background: ${COLOR.WHITE};
+  border: none;
+  transition: all 0.2s ease;
+  cursor: grab;
+
+  &:hover {
+    transform: scale(1.18);
+    border-radius: 4px;
+  }
+`;
+
+const GoButton = styled.button`
+  width: 14px;
+  height: 14px;
+  background: ${COLOR.WHITE};
+  border: none;
+  transition: all 0.2s ease;
+  cursor: grab;
+
+  &:hover {
+    transform: scale(1.18);
+    border-radius: 4px;
+  }
+`;
 
 export default SearchPage;

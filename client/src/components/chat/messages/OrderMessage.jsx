@@ -1,8 +1,8 @@
+import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import COLOR from '../../../utility/Color';
 import CartIcon from '../assets/CartIcon';
-import ButtonBg from '../../ButtonBG';
-import { useEffect, useRef } from 'react';
+import ButtonBg from '../../ui/ButtonBG';
 
 const FontBig = styled.p`
   font-style: normal;

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import COLOR from '../../utility/Color';
 import BackNavBar from '../../components/ui/BackNavBar';
 import ImageFileInput from '../form/ImageFileInput';
-import ButtonBg from '../ButtonBG';
+import ButtonBg from '../ui/ButtonBG';
 import MoneyIcon from './assets/MoneyIcon';
 import UserIcon from './assets/UserIcon';
 

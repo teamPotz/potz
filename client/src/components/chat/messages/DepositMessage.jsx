@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import COLOR from '../../../utility/Color';
-import ButtonBg from '../../ButtonBG';
+import ButtonBg from '../../ui/ButtonBG';
 
 const FontBig = styled.p`
   font-style: normal;
