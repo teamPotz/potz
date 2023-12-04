@@ -374,7 +374,7 @@ function UpdatePost() {
                     onClick={() =>
                       navigate('/getaddress', {
                         state: {
-                          routeName: `posts/${id}/update`,
+                          routeName: `/posts/${id}/update`,
                           imageUrl: sendImg
                             ? sendImg
                             : imageUrl
