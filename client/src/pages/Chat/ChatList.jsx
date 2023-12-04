@@ -22,7 +22,7 @@ function ChatList() {
           throw new Error('get delivery pots error');
         }
         const data = await res.json();
-        console.log('data', data);
+        // console.log('data', data);
         setDeliveryPots(data);
       } catch (error) {
         console.error(error);
