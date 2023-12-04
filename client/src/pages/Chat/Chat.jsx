@@ -8,7 +8,6 @@ import MessageContainer from '../../components/chat/messages/MessageContainer.js
 import OrderModal from '../../components/chat/OrderModal.jsx';
 import DepositModal from '../../components/chat/DepositModal.jsx';
 import UserAccountUpdateModal from '../../components/userAccountUpdateModal.jsx';
-import { useChat } from '../../contexts/ChatContext.jsx';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { socket } from '../../../socket.js';
 
@@ -44,7 +43,6 @@ function Chat() {
 
   const { potId } = useParams();
   const { user } = useAuth();
-  const { leavePot } = useChat();
   const navigate = useNavigate();
 
   // text message
@@ -377,9 +375,29 @@ function Chat() {
     }
   }
 
-  function handleLeavPot() {
-    leavePot(potId, user, socket);
-    navigate('/');
+  async function leavPot() {
+    if (isPotMaster) {
+      alert('방장은 탈퇴할 수 없습니다.');
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:5000/delivery-pots/${potId}/leave`,
+        {
+          method: 'PATCH',
+          credentials: 'include',
+        }
+      );
+      if (!res.ok) {
+        throw new Error('leave pot error');
+      }
+      socket.emit('exit', { potId, user });
+      const data = res.json();
+      navigate('/');
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   // socket
@@ -518,15 +536,15 @@ function Chat() {
                 marginTop: '0.1rem',
               }}
             >
-              <div>
+              <div style={{ maxWidth: '100px' }}>
                 <img
                   src={PF + 'icons/crown.svg'}
                   style={{
                     height: '12px',
-                    marginRight: '0.1rem',
+                    marginRight: '0.2rem',
                   }}
                 />
-                <span> {deliveryPot?.potMaster?.name}</span>
+                <span>{deliveryPot?.potMaster?.name}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <img
@@ -613,7 +631,7 @@ function Chat() {
             setStatus={setStatus}
             setOpenOrderModal={setOpenOrderModal}
             setOpenDepositModal={setOpenDepositModal}
-            leavePot={handleLeavPot}
+            leavePot={leavPot}
           />
         )}
         <ChatInput
