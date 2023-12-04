@@ -125,7 +125,7 @@ function MyPage() {
                 }}
               />
             )}
-            <div>
+            <div style={{ width: '272px' }}>
               <span>
                 <FontBig>{user.name}</FontBig>
                 <FontSm color={`${COLOR.GRAY_500}`}>
