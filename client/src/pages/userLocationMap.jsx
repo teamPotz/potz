@@ -160,10 +160,10 @@ function PostMap(props) {
                   },
                   options: {
                     offset: {
-                      x: 27,
+                      x: 31,
                       y: 69,
                     },
-                  },
+                  }
                 }}
               >
                 <div

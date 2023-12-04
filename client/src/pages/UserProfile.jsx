@@ -384,11 +384,11 @@ const Box = styled.div`
 `;
 
 const Box2 = styled.div`
+  width: 100%;
   display: flex;
-  flex-direction: ${(props) => props.align};
+  flex-direction: column;
   align-items: center;
-  height: ${(props) => props.height};
-  justify-content: space-between;
+  padding-bottom: 24px;
   background-color: ${COLOR.WHITE};
   div {
     svg {
@@ -427,35 +427,30 @@ const NavComp = styled.div`
 `;
 
 const Profile1 = styled.div`
+  margin-top: 36px;
+  margin-bottom: 12px;
   display: flex;
-  flex-direction: row;
   gap: 21px;
-  align-items: center;
   height: 70px;
-  margin: 28px;
+  width: calc(100% - 56px);
   div {
+    width: 100%;
     margin: 0;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    width: 276.5px;
   }
 `;
 
 const Profile2 = styled.div`
-  margin-top: 14px;
   display: flex;
   align-items: center;
-  width: 363px;
+  width: calc(100% - 84px);
   height: auto;
-  padding: 12px 0px;
-  transform: translateY(-46px);
+  padding: 14px 14px;
   background-color: ${COLOR.GRAY_100};
   border-radius: 9px;
-  div {
-    margin-left: 12px;
-  }
 `;
 const FontBig = styled.p`
   font-style: normal;
@@ -507,7 +502,7 @@ const styles = {
     boxShadow: '0px 1.16667px 2.33333px rgba(0, 0, 0, 0.08)',
   },
   content: {
-    marginTop: '60.67px',
+    marginTop: '61px',
   },
   navBar: {
     position: 'fixed',

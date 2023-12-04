@@ -4,6 +4,7 @@ import CommunityComp from '../components/Community';
 import { useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import Font from '../utility/Font';
+import { useNavigate } from 'react-router-dom';
 
 const EditBar = styled.div`
   margin-top: 70px;
@@ -84,6 +85,7 @@ function MyCommunitySettings() {
   let [initialDatas, setInitialDatas] = useState();
   let [communityDatas, setCommunityDatas] = useState([]);
   let [editBtn, setEditBtn] = useState('편집');
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchUserInfo() {
@@ -158,6 +160,9 @@ function MyCommunitySettings() {
       <GoBack text='내 공동체 관리' />
       <EditBar>
         <FontSm>내 공동체 수 {communityDatas?.length}</FontSm>
+        <div style={{width: '220px'}}/>
+        <FontSm onClick={() => navigate('/find-community')} hover={true}>추가</FontSm>
+        <FontSm> | </FontSm>
         <FontSm
           onClick={() => setEditBtn(editBtn == '편집' ? '완료' : '편집')}
           hover={true}

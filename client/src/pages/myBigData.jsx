@@ -114,7 +114,7 @@ function MyBigData() {
     let orderPrices = [];
     datas.map((data) => {
       data.deliveryPot.orders.map((order) => {
-        if(order.userId === user.id){
+        if(order.orderConfirmed && order.userId === user.id){
           const price = order.price * order.quantity;
           orderPrices.push(price);
         }

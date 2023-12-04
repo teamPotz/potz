@@ -94,7 +94,8 @@ function MyOrderHistory() {
         });
         const data = await response.json();
         console.log('내가 가입한 배달팟', data[0].deliveryPotHistoryAsMember);
-        setMyOrders(myOrderdata(data[0].deliveryPotHistoryAsMember));
+        const result = lastestFunc(myOrderdata(data[0].deliveryPotHistoryAsMember));
+        setMyOrders(result);
       } catch (error) {
         console.error(error);
       }
@@ -107,7 +108,7 @@ function MyOrderHistory() {
     let arr = [];
     datas.map((data) => {
       data.deliveryPot.orders.map((order) => {
-        if (order.userId === user.id) {
+        if (order.orderConfirmed && (order.userId === user.id)) {
           console.log('내가 한 주문', order);
           arr.push(order);
         }
@@ -115,6 +116,12 @@ function MyOrderHistory() {
     });
     return arr;
   };
+
+  //최신순으로 정렬
+  const lastestFunc = (datas) => {
+    const sortedData = datas.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+    return sortedData;
+  }
 
   return (
     <div className='potz_container' style={styles.background}>

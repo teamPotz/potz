@@ -83,6 +83,7 @@ export async function getUserOrderDataById(req, res, next) {
                     price: true,
                     quantity: true,
                     imageUrl: true,
+                    orderConfirmed: true,
                     updatedAt: true,
                   },
                 },

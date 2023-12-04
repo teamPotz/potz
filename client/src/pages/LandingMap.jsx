@@ -277,6 +277,7 @@ function LandingMap() {
                           name: result.place_name,
                           address: result.address_name,
                           communityId: location.state.communityId,
+                          imageUrl: location.state?.imageUrl,
                         },
                       });
                     }}
