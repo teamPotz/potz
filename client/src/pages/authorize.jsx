@@ -30,7 +30,7 @@ function AuthorizeUser() {
           );
           navigate(`/community/${sortedCommunities[0].communityId}`);
         } else {
-          navigate('/find-community');
+          navigate('/community/find');
         }
       } catch (error) {
         console.error(error);

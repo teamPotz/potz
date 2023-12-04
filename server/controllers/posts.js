@@ -10,7 +10,7 @@ import {
 
 const prisma = new PrismaClient();
 
-export async function getPostById(req, res) {
+export async function getPostById(req, res, next) {
   const { id } = req.params;
 
   try {
@@ -106,11 +106,11 @@ export async function getPostById(req, res) {
     res.status(200).send(transformedPost);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get posts error' });
+    next(error);
   }
 }
 
-export async function getPostByLiked(req, res) {
+export async function getPostByLiked(req, res, next) {
   const { communityId } = req.query;
 
   try {
@@ -226,13 +226,13 @@ export async function getPostByLiked(req, res) {
     res.status(200).send(transformedposts);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get posts error' });
+    next(error);
   }
 }
 
-export async function getPostByName(req, res) {
+export async function getPostByName(req, res, next) {
   const { key, communityId } = req.query;
-  console.log(key, communityId);
+  // console.log(key, communityId);
 
   try {
     const posts = await prisma.post.findMany({
@@ -342,16 +342,16 @@ export async function getPostByName(req, res) {
       };
 
       result.push(transformedPost);
-      console.log('appliedDeliveryFeeInfo', appliedDeliveryFeeInfo);
+      // console.log('appliedDeliveryFeeInfo', appliedDeliveryFeeInfo);
     }
     res.status(200).send(result);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get posts error' });
+    next(error);
   }
 }
 
-export async function getPostByCategoryId(req, res) {
+export async function getPostByCategoryId(req, res, next) {
   const { categoryId, communityId } = req.query;
   console.log(categoryId, communityId);
 
@@ -434,7 +434,7 @@ export async function getPostByCategoryId(req, res) {
       );
 
       const orderedUserCount = getOrderedUserCount(post.deliveryPot.orders);
-      console.log('post.deliveryPot.orders', post.deliveryPot.orders);
+      // console.log('post.deliveryPot.orders', post.deliveryPot.orders);
 
       const deliveryFeePerPerson =
         appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
@@ -464,12 +464,12 @@ export async function getPostByCategoryId(req, res) {
       };
 
       result.push(transformedPost);
-      console.log('appliedDeliveryFeeInfo', appliedDeliveryFeeInfo);
+      // console.log('appliedDeliveryFeeInfo', appliedDeliveryFeeInfo);
     }
     res.status(200).send(result);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get posts error' });
+    next(error);
   }
 }
 
@@ -489,6 +489,7 @@ export async function createPost(req, res, next) {
   } = req.body;
 
   try {
+    // todo : use transaction
     // 1. 게시글 등록
     const post = await prisma.post.create({
       data: {
@@ -512,7 +513,7 @@ export async function createPost(req, res, next) {
           },
         },
         category: {
-          select: { name: true },
+          select: { id: true, name: true },
         },
         deliveryPot: {
           select: {
@@ -552,6 +553,34 @@ export async function createPost(req, res, next) {
         postId: post.id,
       },
     });
+
+    // 5. notification
+    // 5-1. find members in community
+    const communityMembers = await prisma.communitiesOnUsers.findMany({
+      where: { communityId: +communityId },
+      select: {
+        userId: true,
+        community: {
+          select: { name: true },
+        },
+      },
+    });
+
+    if (communityMembers.length > 0) {
+      // 5-2. create notification
+      const noti = await prisma.notification.createMany({
+        data: communityMembers.map((member) => ({
+          type: 'NEW_POST',
+          userId: member.userId,
+          content: {
+            postId: post.id,
+            storeName: post.storeName,
+            categoryId: +categoryId,
+            communityName: member.community.name,
+          },
+        })),
+      });
+    }
 
     // 현재 배달팟에서 주문 신청한 메뉴의 총 가격
     const totalOrderPrice = 0;
@@ -622,7 +651,7 @@ export async function createPost(req, res, next) {
 }
 
 //update Post
-export async function updateGetPost(req, res) {
+export async function updateGetPost(req, res, next) {
   const { id } = req.params;
   try {
     const updateGetPost = await prisma.post.findUnique({
@@ -646,15 +675,16 @@ export async function updateGetPost(req, res) {
     res.status(201).json(updateGetPost);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: 'get post error' });
+    next(error);
   }
 }
 
-export async function updatePost(req, res) {
+export async function updatePost(req, res, next) {
   const { id } = req.params;
   let imageUrl = req.file?.filename;
   let deliveryFees = JSON.parse(req.body.deliveryFees);
   let deliveryDiscounts = JSON.parse(req.body.deliveryDiscounts);
+
   const {
     storeName,
     storeAddress,
@@ -678,7 +708,7 @@ export async function updatePost(req, res) {
       updatedPostData = {
         storeName,
         storeAddress,
-        imageUrl: imageUrl,
+        imageUrl,
         orderLink,
         categoryId: +categoryId,
         recruitment: +recruitment,
@@ -726,11 +756,11 @@ export async function updatePost(req, res) {
     res.status(201).json(updatePost);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: 'update post error' });
+    next(error);
   }
 }
 
-export async function deletePost(req, res) {
+export async function deletePost(req, res, next) {
   const { id } = req.params;
   console.log(id);
 
@@ -748,12 +778,12 @@ export async function deletePost(req, res) {
     console.log('데이터 삭제 완료');
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'create communities error' });
+    next(error);
   }
 }
 
 /// 찜하기, 찜 취소하기
-export async function toggleLike(req, res) {
+export async function toggleLike(req, res, next) {
   const postId = parseInt(req.params.id);
 
   //좋아요 여부 확인을 위한 사용자 정보
@@ -789,6 +819,6 @@ export async function toggleLike(req, res) {
     res.status(201).json(result);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'update post error' });
+    next(error);
   }
 }

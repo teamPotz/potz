@@ -175,7 +175,7 @@ function PostMap(props) {
                 >
                   <SubmitBtn
                     onClick={() =>
-                      navigate('/community-lists', {
+                      navigate('/community/lists', {
                         state: { latLon: latLon },
                       })
                     }
@@ -211,7 +211,7 @@ function PostMap(props) {
                         <div style={{ padding: '5px' }}>
                           <SubmitBtn
                             onClick={() =>
-                              navigate('/community-lists', {
+                              navigate('/community/lists', {
                                 state: { latLon: latLon },
                               })
                             }

@@ -18,7 +18,7 @@ const BoxComp = styled.div`
   background: ${COLOR.WHITE};
   box-shadow: 0px 3.5px 8.167px 0px rgba(0, 0, 0, 0.07);
   transition: all 0.2s ease;
-  &:hover{
+  &:hover {
     transform: scale(1.05);
     cursor: grab;
   }
@@ -140,15 +140,25 @@ function MyOrderHistory() {
                   style={styles.image}
                 ></img>
                 <AlignColumn>
-                  <FontSm>주문날짜 : {myOrder.updatedAt}</FontSm>
+                  <FontSm>
+                    주문날짜 :{' '}
+                    {new Intl.DateTimeFormat('ko', {
+                      dateStyle: 'long',
+                      timeStyle: 'short',
+                    }).format(new Date(myOrder.updatedAt))}
+                  </FontSm>
                   <div>
                     <FontBg>{myOrder.menuName}</FontBg>
                     <FontSm color={COLOR.GRAY_400}>
-                      갯수 {myOrder.quantity} | 주문가격 {myOrder.price}원
+                      갯수 {myOrder.quantity} | 주문가격{' '}
+                      {new Intl.NumberFormat('ko-kr').format(myOrder.price)}원
                     </FontSm>
                   </div>
                   <FontMd>
-                    총 결제 금액 : {myOrder.quantity * myOrder.price}원
+                    {`총 결제 금액 : ${new Intl.NumberFormat('ko-kr').format(
+                      myOrder.quantity * myOrder.price
+                    )}
+                    원`}
                   </FontMd>
                 </AlignColumn>
               </BoxComp>

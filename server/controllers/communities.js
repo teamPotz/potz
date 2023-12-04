@@ -132,7 +132,7 @@ export async function getPostsByCommunityId(req, res, next) {
   }
 }
 
-export async function getCommunities(req, res) {
+export async function getCommunities(req, res, next) {
   try {
     const communities = await prisma.community.findMany({
       select: {
@@ -173,11 +173,27 @@ export async function getCommunities(req, res) {
     res.status(200).send(transformedCommunities);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get communities error' });
+    next(error);
   }
 }
 
-export async function getCommunitiesByLocation(req, res) {
+export async function getCommunityTypes(req, res, next) {
+  try {
+    const communityTypes = await prisma.communityType.findMany({
+      select: {
+        id: true,
+        name: true,
+        displayOrder: true,
+      },
+    });
+    res.status(200).send(communityTypes);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}
+
+export async function getCommunitiesByLocation(req, res, next) {
   const { latitude, longitude } = req.query;
   let lat = latitude;
   let long = longitude;
@@ -207,14 +223,15 @@ export async function getCommunitiesByLocation(req, res) {
     res.status(200).send(stringifiedData);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get communities error' });
+    next(error);
   }
 }
 
-export async function getCommunityById(req, res) {
+export async function getCommunityById(req, res, next) {
   const { id } = req.params;
   const communityId = parseInt(id, 10);
-  console.log('커뮤니티 아이디', communityId);
+  // console.log('커뮤니티 아이디', communityId);
+
   try {
     const community = await prisma.community.findUnique({
       where: {
@@ -251,20 +268,20 @@ export async function getCommunityById(req, res) {
     res.status(200).send(transformedCommunity);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get communities error' });
+    next(error);
   }
 }
 
 let communityPhoto = '';
-export async function saveCommunityImg(req, res) {
-  console.log(req.file.path);
+export async function saveCommunityImg(req, res, next) {
+  // console.log(req.file.path);
   let editPath = '/' + req.file.path.replace(/\\/g, '/');
   communityPhoto = editPath.replace('/uploads', '');
 }
 
-export async function createCommunity(req, res) {
+export async function createCommunity(req, res, next) {
   const { communityTypes, longitude, latitude, name } = req.body;
-  console.log('유저 아이디', req.user.id);
+  // console.log('유저 아이디', req.user.id);
 
   try {
     const newCommunityData = await prisma.community.create({
@@ -291,11 +308,11 @@ export async function createCommunity(req, res) {
     console.log('데이터 저장 완료');
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'create communities error' });
+    next(error);
   }
 }
 
-export async function joinCommunity(req, res) {
+export async function joinCommunity(req, res, next) {
   const { id } = req.params;
 
   console.log('userid, communityId', req.user.id, parseInt(id));
@@ -324,26 +341,10 @@ export async function joinCommunity(req, res) {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'join communities error' });
+    next(error);
   }
 }
 
-export async function updateCommunity(req, res) {
+export async function updateCommunity(req, res, next) {
   // ...
 }
-
-export async function deleteCommunity(req, res) {
-  // ...
-}
-
-// export async function joinCommunity(req, res) {
-//   // ...
-
-//   await prisma.community.update({
-//     data:{
-//       members:{
-//         connect:?
-//       }
-//     }
-//   })
-// }

@@ -35,7 +35,7 @@ const TagPlace = (props) => {
   return (
     <TagPlaceStyle
       onClick={() => {
-        navigate('/name-community', {
+        navigate('/community/name', {
           state: {
             data: children,
           },

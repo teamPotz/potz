@@ -7,23 +7,26 @@ export async function createDeposit(req, res, next) {
   const { potId, depositor, amount } = req.body;
 
   try {
-    const deposit = await prisma.deposit.create({
-      data: {
-        deliveryPotId: +potId,
-        userId: req.user.id,
-        amount: +amount,
-        depositor: depositor,
-        imageUrl: req.file?.filename || null,
-      },
-    });
+    let deposit, depositMessage;
+    await prisma.$transaction(async (tx) => {
+      deposit = await tx.deposit.create({
+        data: {
+          deliveryPotId: +potId,
+          userId: req.user.id,
+          amount: +amount,
+          depositor: depositor,
+          imageUrl: req.file?.filename || null,
+        },
+      });
 
-    const depositMessage = await createMessage(
-      'DEPOSIT',
-      potId,
-      req.user.id,
-      deposit
-    );
-    console.log(depositMessage);
+      depositMessage = await createMessage(
+        tx,
+        'DEPOSIT',
+        potId,
+        req.user.id,
+        deposit
+      );
+    });
 
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', depositMessage);
@@ -75,7 +78,7 @@ export async function confirmDeposit(req, res, next) {
     let depositConfirmMessage;
     await prisma.$transaction(async (tx) => {
       // 3-1. update deposit
-      const deposit = await prisma.deposit.update({
+      const deposit = await tx.deposit.update({
         where: { id: +depositId },
         data: { depositConfirmed: true },
         select: {
@@ -85,10 +88,11 @@ export async function confirmDeposit(req, res, next) {
       });
 
       // 3-2. update deposit message
-      await updateDepositMessage(messageId, true);
+      await updateDepositMessage(tx, messageId, true);
 
       // 3-3. create deposit confirm message
       depositConfirmMessage = await createMessage(
+        tx,
         'DEPOSIT_CONFIRM',
         potId,
         req.user.id,

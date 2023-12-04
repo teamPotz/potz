@@ -2,7 +2,18 @@ import styled from 'styled-components';
 import COLOR from '../../../utility/Color';
 import CartIcon from '../assets/CartIcon';
 
-function OrderConfirmMessage({ sender, own }) {
+const categoryIcons = {
+  1: '/images/graphicImg/CategoryBurger.png',
+  2: '/images/graphicImg/CategoryCafe.png',
+  3: '/images/graphicImg/CategoryKoreanFood.png',
+  4: '/images/graphicImg/CategorySushi.png',
+  5: '/images/graphicImg/CategoryChinese.png',
+  6: '/images/graphicImg/CategoryPizza.png',
+  7: '/images/graphicImg/CategoryChiken.png',
+  8: '/images/graphicImg/CategorySalad.png',
+};
+
+function OrderConfirmMessage({ sender, categoryId, own }) {
   return (
     <MessageWrapper $own={own}>
       <div style={styles.box}>
@@ -11,7 +22,14 @@ function OrderConfirmMessage({ sender, own }) {
           <FontBig>메뉴 확인</FontBig>
         </div>
         <div style={styles.content}>
-          <img src='/images/graphicImg/CategoryBurger.png' />
+          <img
+            src={categoryIcons[categoryId]}
+            style={{
+              objectFit: 'contain',
+              width: '100%',
+              height: '124px',
+            }}
+          />
         </div>
         <div>
           <span style={{ color: COLOR.POTZ_PINK_DEFAULT }}>{sender.name}</span>
@@ -44,22 +62,18 @@ const styles = {
   box: {
     width: '100%',
     height: '100%',
-    gap: '12px',
+    gap: '6px',
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   title: {
-    width: '114px',
     height: '28px',
     display: 'flex',
-    flexDirection: 'row',
     alignItems: 'center',
     gap: '12px',
   },
   content: {
-    width: '240px',
-    height: '148px',
-    boxSizing: 'border-box',
     display: 'flex',
     justifyContent: 'center',
   },

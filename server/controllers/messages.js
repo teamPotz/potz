@@ -9,7 +9,13 @@ export async function sendMessage(req, res, next) {
       throw new Error('no potId or content');
     }
 
-    const message = await createMessage(type, potId, req.user.id, content);
+    const message = await createMessage(
+      null,
+      type,
+      potId,
+      req.user.id,
+      content
+    );
     // console.log(message);
 
     const io = req.app.get('io');

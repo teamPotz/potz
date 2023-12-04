@@ -13,11 +13,11 @@ function Home() {
   const navigate = useNavigate();
   const [communityDatas, setCommunityDatas] = useState();
   const [postDatas, setPostDatas] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
   const { id: communityId } = useParams();
   const { user } = useAuth();
 
-  console.log('communityId', communityId);
   localStorage.setItem('communityDataID', communityId);
 
   // 화면 너비 측정을 위한 state 변수 // 디폴트는 420px
@@ -96,7 +96,7 @@ function Home() {
         );
 
         const data = await response.json();
-        console.log('포스트 데이터', data);
+        // console.log('포스트 데이터', data);
         setPostDatas(data);
       } catch (error) {
         console.error(error);
@@ -106,11 +106,34 @@ function Home() {
     fetchPostData();
   }, [communityId]);
 
+  // get notifications
+  useEffect(() => {
+    async function getNotifications() {
+      try {
+        const res = await fetch('http://localhost:5000/users/notification', {
+          credentials: 'include',
+        });
+        if (!res.ok) {
+          throw new Error('get notification error');
+        }
+        const data = await res.json();
+        // console.log(data);
+        setNotifications(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    getNotifications();
+  }, []);
+
   return (
     <div className='potz_container' style={backgroundStyle}>
       <div style={potzContainerStyle}>
         {communityDatas ? (
-          <NavBarHomePage communityDatas={communityDatas} />
+          <NavBarHomePage
+            communityDatas={communityDatas}
+            notifications={notifications}
+          />
         ) : null}
 
         <div style={homeContentesContainer}>

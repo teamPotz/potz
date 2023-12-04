@@ -163,7 +163,11 @@ function DetailContents({ postDatas }) {
           <div style={fontStyle}>
             <span>모인 금액</span>
             <div>
-              <span>{postDatas.totalOrderPrice}</span>
+              <span>
+                {new Intl.NumberFormat('ko-kr').format(
+                  postDatas.totalOrderPrice
+                )}
+              </span>
               <span>원</span>
             </div>
           </div>
@@ -210,7 +214,11 @@ function DetailContents({ postDatas }) {
             <div style={fontStyle3}>
               <span style={coloredFont}>
                 {postDatas.deliveryFeePerPerson ? (
-                  <span>{postDatas.deliveryFeePerPerson}</span>
+                  <span>
+                    {new Intl.NumberFormat('ko-kr').format(
+                      postDatas.deliveryFeePerPerson
+                    )}
+                  </span>
                 ) : (
                   <span>무료</span>
                 )}
@@ -224,7 +232,12 @@ function DetailContents({ postDatas }) {
             <div style={fontStyle4}>
               <span>원래 배달비</span>
               {postDatas.appliedDeliveryFeeInfo ? (
-                <span>{postDatas.appliedDeliveryFeeInfo.fee}원</span>
+                <span>
+                  {new Intl.NumberFormat('ko-kr').format(
+                    postDatas.appliedDeliveryFeeInfo.fee
+                  )}
+                  원
+                </span>
               ) : null}
             </div>
           </div>

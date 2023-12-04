@@ -76,7 +76,11 @@ const HomeContents = ({ postDatas, setPostDatas }) => {
                 <div style={fontStyle2}>
                   <span style={coloredfont}>
                     {post.deliveryFeePerPerson ? (
-                      <span>{post.deliveryFeePerPerson}</span>
+                      <span>
+                        {new Intl.NumberFormat('ko-kr').format(
+                          post.deliveryFeePerPerson
+                        )}
+                      </span>
                     ) : (
                       <span>무료</span>
                     )}

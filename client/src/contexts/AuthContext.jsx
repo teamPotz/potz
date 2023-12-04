@@ -113,7 +113,7 @@ function AuthProvider({ children }) {
         credentials: 'include',
       });
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       if (res.ok) {
         dispatch({ type: 'get_user_info_success', payload: data });
       }

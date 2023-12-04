@@ -7,23 +7,27 @@ export async function createOrder(req, res, next) {
   const { potId, menuName, quantity, price } = req.body;
 
   try {
-    const order = await prisma.deliveryOrder.create({
-      data: {
-        deliveryPotId: +potId,
-        userId: req.user.id,
-        imageUrl: req.file?.filename || null,
-        menuName: menuName,
-        quantity: +quantity,
-        price: +price,
-      },
-    });
+    let order, orderMessage;
+    await prisma.$transaction(async (tx) => {
+      order = await tx.deliveryOrder.create({
+        data: {
+          deliveryPotId: +potId,
+          userId: req.user.id,
+          imageUrl: req.file?.filename || null,
+          menuName: menuName,
+          quantity: +quantity,
+          price: +price,
+        },
+      });
 
-    const orderMessage = await createMessage(
-      'ORDER',
-      potId,
-      req.user.id,
-      order
-    );
+      orderMessage = await createMessage(
+        tx,
+        'ORDER',
+        potId,
+        req.user.id,
+        order
+      );
+    });
 
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', orderMessage);
@@ -85,23 +89,26 @@ export async function confirmOrder(req, res, next) {
     }
 
     // 3. 주문확인 트랜잭션(주문확인처리->주문메시지 수정->주문확인메시지 생성)
-    let orderConfirmMessage;
+    let order, orderConfirmMessage;
     await prisma.$transaction(async (tx) => {
       // 3-1. update order
-      const order = await prisma.deliveryOrder.update({
+      order = await tx.deliveryOrder.update({
         where: { id: +orderId },
         data: { orderConfirmed: true },
         select: {
           id: true,
           orderConfirmed: true,
+          price: true,
+          quantity: true,
         },
       });
 
       // 3-2. update order message
-      await updateOrderMessage(messageId, true);
+      await updateOrderMessage(tx, messageId, true);
 
       // 3-3. create order confirm message
       orderConfirmMessage = await createMessage(
+        tx,
         'ORDER_CONFIRM',
         potId,
         req.user.id,
@@ -119,8 +126,91 @@ export async function confirmOrder(req, res, next) {
       message: orderConfirmMessage,
     });
 
+    // update order
+    io.of('/chat')
+      .to(potId.toString())
+      .emit('updateOrder', { price: order.price, quantity: order.quantity });
+
     console.log('order confirm message sent');
     res.status(201).json(orderConfirmMessage);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}
+
+// 방장용 메뉴선택(주문, 주문확인, 입금, 입금확인 까지 처리)
+export async function createOrderAndDeposit(req, res, next) {
+  const { potId, menuName, quantity, price } = req.body;
+
+  try {
+    let order, orderMessage, depositMessage;
+    await prisma.$transaction(async (tx) => {
+      // 1-1. create order and confirm
+      order = await tx.deliveryOrder.create({
+        data: {
+          deliveryPotId: +potId,
+          userId: req.user.id,
+          imageUrl: req.file?.filename || null,
+          menuName: menuName,
+          quantity: +quantity,
+          price: +price,
+          orderConfirmed: true,
+        },
+      });
+
+      // 1-2. create order message
+      orderMessage = await createMessage(
+        tx,
+        'ORDER',
+        potId,
+        req.user.id,
+        order
+      );
+
+      // 2. create deposit and confirm
+      const deposit = await tx.deposit.create({
+        data: {
+          deliveryPotId: +potId,
+          userId: req.user.id,
+          amount: +price * +quantity,
+          depositor: `${req.user.name}(방장)`,
+          imageUrl: req.file?.filename || null,
+          depositConfirmed: true,
+        },
+      });
+
+      // 2-2. create deposit message
+      depositMessage = await createMessage(
+        tx,
+        'DEPOSIT',
+        potId,
+        req.user.id,
+        deposit
+      );
+    });
+
+    const io = req.app.get('io');
+    // send message to chatroom
+    io.of('/chat').to(potId.toString()).emit('message', orderMessage);
+    // send message to chatlist
+    io.of('/room').emit('updateLastMessage', { potId, message: orderMessage });
+
+    // send message to chatroom
+    io.of('/chat').to(potId.toString()).emit('message', depositMessage);
+    // send message to chatlist
+    io.of('/room').emit('updateLastMessage', {
+      potId,
+      message: depositMessage,
+    });
+
+    // update order
+    io.of('/chat')
+      .to(potId.toString())
+      .emit('updateOrder', { price: order.price, quantity: order.quantity });
+
+    console.log(`potmaster's order&deposit completed`);
+    res.status(201).json({ success: true });
   } catch (error) {
     console.error(error);
     next(error);

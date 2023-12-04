@@ -33,8 +33,16 @@ export async function getMessagesByPotId(potId) {
   return results;
 }
 
-export async function createMessage(type, potId, userId, content) {
-  const message = await prisma.message.create({
+export async function createMessage(
+  prismaClient,
+  type,
+  potId,
+  userId,
+  content
+) {
+  prismaClient = prismaClient || prisma;
+
+  const message = await prismaClient.message.create({
     data: {
       type,
       content,
@@ -72,7 +80,7 @@ export async function createMessage(type, potId, userId, content) {
   return result;
 }
 
-export async function updateOrderMessage(messageId, orderConfirmed) {
+export async function updateOrderMessage(prisma, messageId, orderConfirmed) {
   const existingMessage = await prisma.message.findUnique({
     where: { id: +messageId },
   });
@@ -95,7 +103,11 @@ export async function updateOrderMessage(messageId, orderConfirmed) {
   return message;
 }
 
-export async function updateDepositMessage(messageId, depositConfirmed) {
+export async function updateDepositMessage(
+  prisma,
+  messageId,
+  depositConfirmed
+) {
   const existingMessage = await prisma.message.findUnique({
     where: { id: +messageId },
   });
@@ -139,7 +151,7 @@ export async function readMessage(messageId, userId) {
   return readMessage;
 }
 
-export async function readAllMessages(potId, userId) {
+export async function readAllMessages(prisma, potId, userId) {
   // 1. 해당 방의 안읽은 메시지 구하기
   const unreadMessages = await prisma.message.findMany({
     where: {

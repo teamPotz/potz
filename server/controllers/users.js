@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function getUserData(req, res) {
+export async function getUserData(req, res, next) {
   try {
     const userData = await prisma.User.findMany({
       select: {
@@ -15,11 +15,11 @@ export async function getUserData(req, res) {
     res.status(200).send(userData);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get userData error' });
+    next(error);
   }
 }
 
-export async function getUserDataById(req, res) {
+export async function getUserDataById(req, res, next) {
   try {
     const userData = await prisma.User.findMany({
       where: {
@@ -37,11 +37,11 @@ export async function getUserDataById(req, res) {
     res.status(200).send(userData);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get userData error' });
+    next(error);
   }
 }
 
-export async function deleteUserCommunity(req, res) {
+export async function deleteUserCommunity(req, res, next) {
   console.log('탈퇴할 커뮤니티id:', req.body);
   try {
     const deleteCommunity = await prisma.CommunitiesOnUsers.delete({
@@ -55,11 +55,11 @@ export async function deleteUserCommunity(req, res) {
     res.status(201).send(deleteCommunity);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'delete user-community error' });
+    next(error);
   }
 }
 
-export async function getUserOrderDataById(req, res) {
+export async function getUserOrderDataById(req, res, next) {
   try {
     const userData = await prisma.User.findMany({
       where: {
@@ -96,11 +96,11 @@ export async function getUserOrderDataById(req, res) {
     res.status(200).send(userData);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get userData error' });
+    next(error);
   }
 }
 
-export async function getUserDeliveryPotHistory(req, res) {
+export async function getUserDeliveryPotHistory(req, res, next) {
   try {
     const userData = await prisma.user.findUnique({
       where: {
@@ -120,13 +120,11 @@ export async function getUserDeliveryPotHistory(req, res) {
     res.status(200).send(userData._count);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get userData error' });
+    next(error);
   }
 }
 
-export async function updateUserAccountById(req, res) {
-  console.log(req.body);
-
+export async function updateUserAccountById(req, res, next) {
   const accountOwner = req.body.accountOwner;
   const account = req.body.account;
   const bankName = req.body.bankName;
@@ -152,16 +150,11 @@ export async function updateUserAccountById(req, res) {
     res.status(200).send(userAccount);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get userData error' });
+    next(error);
   }
 }
 
-export async function updateUserById(req, res) {
-  console.log(req.user.id);
-  console.log(req.file);
-  console.log(req.body.userName);
-  console.log(req.body);
-
+export async function updateUserById(req, res, next) {
   const imgUrl = req.file.path.replace('uploads', '');
 
   try {
@@ -190,6 +183,40 @@ export async function updateUserById(req, res) {
     res.status(200).send({ userData, userProfile });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get userData error' });
+    next(error);
+  }
+}
+
+export async function getNotifications(req, res, next) {
+  try {
+    const noti = await prisma.notification.findMany({
+      where: {
+        userId: req.user.id,
+        confirmed: false,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return res.status(200).json(noti);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}
+
+export async function readAllNotifications(req, res, next) {
+  try {
+    const noti = await prisma.notification.updateMany({
+      where: {
+        userId: req.user.id,
+        confirmed: false,
+      },
+      data: { confirmed: true },
+    });
+
+    return res.status(200).json(noti);
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 }

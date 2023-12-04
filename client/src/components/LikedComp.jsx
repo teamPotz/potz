@@ -81,7 +81,12 @@ const LikedComp = ({ postData, getDeletedData }) => {
         <div style={fontStyle2}>
           <span style={coloredfont}>
             {postData.appliedDeliveryFeeInfo ? (
-              <span> {postData.deliveryFeePerPerson} </span>
+              <span>
+                {' '}
+                {new Intl.NumberFormat('ko-kr').format(
+                  postData.deliveryFeePerPerson
+                )}{' '}
+              </span>
             ) : (
               <span>무료</span>
             )}

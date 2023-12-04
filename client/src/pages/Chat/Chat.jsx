@@ -8,7 +8,6 @@ import MessageContainer from '../../components/chat/messages/MessageContainer.js
 import OrderModal from '../../components/chat/OrderModal.jsx';
 import DepositModal from '../../components/chat/DepositModal.jsx';
 import UserAccountUpdateModal from '../../components/userAccountUpdateModal.jsx';
-import { useChat } from '../../contexts/ChatContext.jsx';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { socket } from '../../../socket.js';
 
@@ -32,7 +31,6 @@ function Chat() {
   const [deliveryPot, setDeliveryPot] = useState();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const [isLoadingGetMessage, setIsLoadingGetMessage] = useState(false);
   const [isLoadingSendMessage, setisLoadingSendMessage] = useState(false);
   const [openMenuBar, setOpenMenuBar] = useState(false);
 
@@ -45,7 +43,6 @@ function Chat() {
 
   const { potId } = useParams();
   const { user } = useAuth();
-  const { leavePot } = useChat();
   const navigate = useNavigate();
 
   // text message
@@ -90,6 +87,8 @@ function Chat() {
   }
 
   async function sendOrderMessage() {
+    if (isLoadingSendMessage) return;
+
     const { file, menuName, quantity, price } = orderFormData;
 
     if (!menuName || !quantity || !price) {
@@ -109,6 +108,7 @@ function Chat() {
     formData.append('image', file);
 
     try {
+      setisLoadingSendMessage(true);
       const res = await fetch('http://localhost:5000/orders/', {
         method: 'POST',
         credentials: 'include',
@@ -123,14 +123,19 @@ function Chat() {
       setOrderFormData(initialOrderData);
     } catch (error) {
       console.error(error);
+    } finally {
+      setisLoadingSendMessage(false);
     }
   }
 
   async function confirmOrder(orderId, messageId) {
+    if (isLoadingSendMessage) return;
     if (!isPotMaster) {
       return alert('메뉴 확인은 방장만 할 수 있습니다.');
     }
+
     try {
+      setisLoadingSendMessage(true);
       const res = await fetch(
         `http://localhost:5000/orders/${orderId}/confirm`,
         {
@@ -160,6 +165,8 @@ function Chat() {
       );
     } catch (error) {
       console.error(error);
+    } finally {
+      setisLoadingSendMessage(false);
     }
   }
 
@@ -176,6 +183,7 @@ function Chat() {
   }
 
   async function sendDepositMessage() {
+    if (isLoadingSendMessage) return;
     const { file, depositor, amount } = depositFormData;
 
     if (!depositor || !amount) {
@@ -194,6 +202,7 @@ function Chat() {
     formData.append('image', file);
 
     try {
+      setisLoadingSendMessage(true);
       const res = await fetch('http://localhost:5000/deposits/', {
         method: 'POST',
         credentials: 'include',
@@ -208,14 +217,19 @@ function Chat() {
       setDepositFormData(initialDepositData);
     } catch (error) {
       console.error(error);
+    } finally {
+      setisLoadingSendMessage(false);
     }
   }
 
   async function confirmDeposit(orderId, messageId) {
+    if (isLoadingSendMessage) return;
     if (!isPotMaster) {
       return alert('입금 확인은 방장만 할 수 있습니다.');
     }
+
     try {
+      setisLoadingSendMessage(true);
       const res = await fetch(
         `http://localhost:5000/deposits/${orderId}/confirm`,
         {
@@ -243,6 +257,8 @@ function Chat() {
       );
     } catch (error) {
       console.error(error);
+    } finally {
+      setisLoadingSendMessage(false);
     }
   }
 
@@ -278,7 +294,8 @@ function Chat() {
         throw new Error(errorData?.message);
       }
       const data = await res.json();
-      console.log(data);
+      setDeliveryPot((prevPot) => ({ ...prevPot, status: data.status }));
+      console.log('status', data);
     } catch (error) {
       console.error(error);
       alert(error);
@@ -289,7 +306,9 @@ function Chat() {
     if (!isPotMaster) {
       return alert('방장만 할 수 있습니다.');
     }
-    if (!confirm(`${deliveryPot?.post.storeName}의 모집을 마감하시겠습니까?`)) {
+    if (
+      !confirm(`${deliveryPot?.post?.storeName}의 모집을 마감하시겠습니까?`)
+    ) {
       return;
     }
 
@@ -311,6 +330,73 @@ function Chat() {
     } catch (error) {
       console.error(error);
       alert(error);
+    }
+  }
+
+  // 방장용 메뉴선택(선택 즉시 주문확정, 입금확정까지 되도록)
+  async function orderPotMaster() {
+    if (isLoadingSendMessage) return;
+    const { file, menuName, quantity, price } = orderFormData;
+
+    if (!menuName || !quantity || !price) {
+      alert('이미지 외 모든 필드를 작성해주세요.');
+      return;
+    }
+    if (!Number.isInteger(+quantity) || !Number.isInteger(+price)) {
+      alert('금액과 숫자는 정수로 적어주세요');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('potId', potId);
+    formData.append('menuName', menuName);
+    formData.append('quantity', quantity);
+    formData.append('price', price);
+    formData.append('image', file);
+
+    try {
+      setisLoadingSendMessage(true);
+      const res = await fetch('http://localhost:5000/orders/pot-master', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error('send order message error');
+      }
+      const data = await res.json();
+      setOpenOrderModal(false);
+      setOrderFormData(initialOrderData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setisLoadingSendMessage(false);
+    }
+  }
+
+  async function leavPot() {
+    if (isPotMaster) {
+      alert('방장은 탈퇴할 수 없습니다.');
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:5000/delivery-pots/${potId}/leave`,
+        {
+          method: 'PATCH',
+          credentials: 'include',
+        }
+      );
+      if (!res.ok) {
+        throw new Error('leave pot error');
+      }
+      socket.emit('exit', { potId, user });
+      const data = res.json();
+      navigate('/');
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -354,8 +440,14 @@ function Chat() {
 
     // 방 정보 업데이트
     socket.on('updatePot', (data) => {
-      console.log(data);
+      console.log('updatePot', data);
       setDeliveryPot((prev) => ({ ...prev, ...data }));
+    });
+
+    // 방 정보 업데이트
+    socket.on('updateOrder', (data) => {
+      console.log('updateOrder', data);
+      setDeliveryPot((prev) => ({ ...prev, orders: [...prev.orders, data] }));
     });
 
     socket.emit('join', { potId, user });
@@ -392,7 +484,6 @@ function Chat() {
 
   useEffect(() => {
     async function fetchMessages() {
-      setIsLoadingGetMessage(true);
       try {
         const res = await fetch(
           `http://localhost:5000/delivery-pots/${potId}/messages`,
@@ -403,15 +494,13 @@ function Chat() {
         setMessages(data);
       } catch (error) {
         console.error(error);
-      } finally {
-        setIsLoadingGetMessage(false);
       }
     }
     fetchMessages();
   }, [potId]);
 
   const isPotMaster = useMemo(
-    () => deliveryPot?.potMaster.id === user.id,
+    () => deliveryPot?.potMaster?.id === user?.id,
     [deliveryPot, user]
   );
 
@@ -423,58 +512,108 @@ function Chat() {
           <div style={{ display: 'flex', marginRight: '0.6rem' }}>
             <img
               style={{
-                height: '36px',
-                width: '36px',
+                height: '42px',
+                width: '42px',
                 borderRadius: '0.8rem',
                 objectFit: 'cover',
               }}
               src={
-                deliveryPot?.post.imageUrl
+                deliveryPot?.post?.imageUrl
                   ? `http://localhost:5000/images/${deliveryPot?.post.imageUrl}`
                   : `${PF}Logo/Potz_Logo.png`
               }
             />
           </div>
           <div>
-            <div>{deliveryPot?.post.storeName}</div>
-            <div style={{ fontSize: '0.8rem', color: COLOR.GRAY_400 }}>
-              방장 : {deliveryPot?.potMaster.name}
+            <div>{deliveryPot?.post?.storeName}</div>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                fontSize: '0.7rem',
+                color: COLOR.GRAY_400,
+                gap: '0.6rem',
+                marginTop: '0.1rem',
+              }}
+            >
+              <div style={{ maxWidth: '100px' }}>
+                <img
+                  src={PF + 'icons/crown.svg'}
+                  style={{
+                    height: '12px',
+                    marginRight: '0.2rem',
+                  }}
+                />
+                <span>{deliveryPot?.potMaster?.name}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <img
+                  src={PF + 'icons/user.svg'}
+                  style={{
+                    height: '12px',
+                    marginRight: '0.4rem',
+                    filter:
+                      'invert(75%) sepia(4%) saturate(108%) hue-rotate(30deg) brightness(90%) contrast(86%)',
+                  }}
+                />
+                <span>{deliveryPot?._count.participants}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <img
+                  src={PF + 'icons/money.svg'}
+                  style={{
+                    height: '12px',
+                    marginRight: '0.2rem',
+                    filter:
+                      'invert(75%) sepia(4%) saturate(108%) hue-rotate(30deg) brightness(90%) contrast(86%)',
+                  }}
+                />
+                <div>
+                  {new Intl.NumberFormat('ko-kr').format(
+                    deliveryPot?.orders?.reduce(
+                      (acc, cur) =>
+                        acc + Number(cur.price) * Number(cur.quantity),
+                      0
+                    )
+                  )}
+                  원
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div
-          style={{
-            color: deliveryPot?.closed
-              ? `${COLOR.GRAY_200}`
-              : `${COLOR.POTZ_PINK_500}`,
-            cursor: deliveryPot?.closed ? 'default' : 'pointer',
-            paddingRight: '20px',
-          }}
-          onClick={!deliveryPot?.closed && closePot}
-        >
-          {deliveryPot?.closed ? '마감됨' : '마감'}
-        </div>
+
+        {isPotMaster ? (
+          <div
+            style={{
+              color: deliveryPot?.closed
+                ? `${COLOR.GRAY_200}`
+                : `${COLOR.POTZ_PINK_500}`,
+              cursor: deliveryPot?.closed ? 'default' : 'pointer',
+              paddingRight: '20px',
+            }}
+            onClick={!deliveryPot?.closed ? closePot : null}
+          >
+            {deliveryPot?.closed ? '마감됨' : '마감'}
+          </div>
+        ) : (
+          <div
+            style={{
+              color: deliveryPot?.closed
+                ? `${COLOR.GRAY_200}`
+                : `${COLOR.POTZ_PINK_500}`,
+              paddingRight: '20px',
+            }}
+          >
+            {deliveryPot?.closed ? '마감됨' : '모집 중'}
+          </div>
+        )}
       </TopNavBarWrapper>
 
       <div
         className='potz_container'
         style={{ backgroundColor: COLOR.POTZ_PINK_200 }}
       >
-        {/* test buttons */}
-        <div style={{ position: 'fixed', top: '70px' }}>
-          <div>
-            <button onClick={() => setOpenOrderModal(true)}>메뉴 선택</button>
-            <button onClick={() => setOpenDepositModal(true)}>입금 인증</button>
-            <button
-              onClick={() => {
-                leavePot(potId, user, socket);
-                navigate('/');
-              }}
-            >
-              퇴장
-            </button>
-          </div>
-        </div>
         <div>
           <MessageContainer
             messages={messages}
@@ -482,14 +621,17 @@ function Chat() {
             isPotMaster={isPotMaster}
             confirmOrder={confirmOrder}
             confirmDeposit={confirmDeposit}
+            categoryId={deliveryPot?.post?.categoryId}
           />
         </div>
         {openMenuBar && (
           <ChatMenu
             isPotMaster={isPotMaster}
+            status={deliveryPot?.status}
             setStatus={setStatus}
             setOpenOrderModal={setOpenOrderModal}
             setOpenDepositModal={setOpenDepositModal}
+            leavePot={leavPot}
           />
         )}
         <ChatInput
@@ -505,7 +647,7 @@ function Chat() {
             closeModal={() => setOpenOrderModal(false)}
             formData={orderFormData}
             handleFormChange={handleOrderFormChange}
-            sendOrderMessage={sendOrderMessage}
+            sendOrderMessage={isPotMaster ? orderPotMaster : sendOrderMessage}
           />
         )}
         {openDepositModal && (

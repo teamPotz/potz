@@ -119,7 +119,7 @@ function ChooseCommunity() {
           </div>
           <ButtonNew
             onClick={() => {
-              navigate('/community-types');
+              navigate('/community/types');
             }}
           >
             직접 공동체 만들기

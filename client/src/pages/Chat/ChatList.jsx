@@ -22,7 +22,7 @@ function ChatList() {
           throw new Error('get delivery pots error');
         }
         const data = await res.json();
-        console.log(data);
+        // console.log('data', data);
         setDeliveryPots(data);
       } catch (error) {
         console.error(error);
@@ -120,7 +120,9 @@ function ChatList() {
 
   return (
     <div className='potz_container' style={styles.background}>
-      <Title>배달팟 채팅 목록</Title>
+      <div style={{ position: 'fixed', zIndex: 100 }}>
+        <Title>배달팟 채팅 목록</Title>
+      </div>
       <div style={styles.sideTitle}>
         <FontMd color={`${COLOR.GRAY_400}`}>
           지금 참여 중인 배달팟 채팅 {deliveryPots.length}
@@ -129,65 +131,74 @@ function ChatList() {
       </div>
 
       <div style={styles.content}>
-        {deliveryPots.map((pot) => (
-          <Chat
-            key={pot.id}
-            onClick={() =>
-              navigate(`/chats/${pot.id}`, {
-                state: { storeName: pot.post.storeName },
-              })
-            }
-          >
-            <Content1>
-              <img
-                style={{
-                  width: '70px',
-                  height: '100%',
-                  borderRadius: '0.8rem',
-                }}
-                src={
-                  pot.post.imageUrl
-                    ? `http://localhost:5000/images/${pot.post.imageUrl}`
-                    : `${PF}Logo/Potz_Logo.png`
-                }
-              />
-              <div>
-                <div style={styles.space}>
-                  <FontBig>{pot.post.storeName}</FontBig>
-                  {pot._count.messages > 0 && (
-                    <UnreadCounter>{pot._count.messages}</UnreadCounter>
-                  )}
-                </div>
-
-                <div style={styles.rowFlex}>
-                  <GreenDot />
-                  <FontMd color={`${COLOR.GRAY_400}`}>
-                    <span>{pot._count.participants}명 참여중</span>
-                    <span>
-                      {pot.messages.length > 0 &&
-                        ` | ` +
-                          timeAgoFormat(pot.messages.at(0).createdAt, 'ko')}
-                    </span>
-                  </FontMd>
-                </div>
-
-                <div
+        {deliveryPots
+          .toSorted(
+            (a, b) =>
+              new Date(b.messages.at(0)?.createdAt) -
+              new Date(a.messages.at(0)?.createdAt)
+          )
+          .map((pot) => (
+            <Chat
+              key={pot.id}
+              onClick={() =>
+                navigate(`/chats/${pot.id}`, {
+                  state: { storeName: pot.post.storeName },
+                })
+              }
+            >
+              <Content1>
+                <img
                   style={{
-                    ...styles.rowFlex,
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
+                    width: '70px',
+                    height: '100%',
+                    borderRadius: '0.8rem',
                   }}
-                >
-                  <FontMd color={`${COLOR.GRAY_400}`}>
-                    {pot.messages.length > 0 && lastMessage(pot.messages.at(0))}
-                  </FontMd>
-                </div>
-              </div>
-            </Content1>
+                  src={
+                    pot.post.imageUrl
+                      ? `http://localhost:5000/images/${pot.post.imageUrl}`
+                      : `${PF}Logo/Potz_Logo.png`
+                  }
+                />
+                <div>
+                  <div style={styles.space}>
+                    <FontBig>{pot.post.storeName}</FontBig>
+                    {pot._count.messages > 0 && (
+                      <UnreadCounter>{pot._count.messages}</UnreadCounter>
+                    )}
+                  </div>
 
-            <PotStatus status={pot.status} />
-          </Chat>
-        ))}
+                  <div style={styles.rowFlex}>
+                    <GreenDot />
+                    <FontMd color={`${COLOR.GRAY_400}`}>
+                      <span>{pot._count.participants}명 참여중</span>
+                      <span>
+                        {pot.messages.length > 0 &&
+                          ` | ` +
+                            timeAgoFormat(pot.messages.at(0).createdAt, 'ko')}
+                      </span>
+                    </FontMd>
+                  </div>
+
+                  <div
+                    style={{
+                      ...styles.rowFlex,
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    <FontMd color={`${COLOR.GRAY_400}`}>
+                      {pot.messages.length > 0 &&
+                        lastMessage(pot.messages.at(0))}
+                    </FontMd>
+                  </div>
+                </div>
+              </Content1>
+
+              <div style={{ marginLeft: '28px' }}>
+                <PotStatus status={pot.status} />
+              </div>
+            </Chat>
+          ))}
       </div>
       <div style={navbarStyle}>
         <NavBar />
@@ -218,17 +229,16 @@ const Chat = styled.div`
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
+  overflow-x: hidden;
   height: 147px;
   background: ${COLOR.WHITE};
   border-radius: 9.33333px;
   box-sizing: border-box;
   gap: 16.33px;
   cursor: pointer;
-
   &:hover {
     transform: scale(1.02);
     transition: 0.2s ease-in-out;
-    backgound-color: ${COLOR.POTZ_PINK_100};
   }
 `;
 const Content1 = styled.div`
@@ -267,10 +277,11 @@ const FontBig = styled.p`
   margin: 0;
 `;
 const FontMd = styled.p`
+  color: ${(props) => props.color};
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
-  color: ${(props) => props.color};
+  max-width: 420px;
 `;
 const styles = {
   background: {

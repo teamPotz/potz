@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import COLOR from '../../utility/Color';
-import Font from '../../utility/Font';
 
 const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 
@@ -46,6 +45,7 @@ function ChatInput({
         <Input
           type='text'
           placeholder='메시지를 입력하세요'
+          maxLength='200'
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
@@ -84,29 +84,27 @@ const Wrapper = styled.div`
 `;
 
 const Input = styled.input`
+  background: ${COLOR.GRAY_100};
+  color: ${COLOR.GRAY_500};
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 10px 14px 10px 14px;
   gap: 105px;
   width: 291.67px;
-  // height: 43.17px;
   height: 25px;
-  background: ${COLOR.GRAY_100};
   border-radius: 50px;
   border: none;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16.3333px;
+  line-height: 150%;
 
   transition: 0.2s;
   &:focus {
     outline: none;
     background: ${COLOR.GRAY_200};
   }
-
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16.3333px;
-  line-height: 150%;
-  color: ${COLOR.GRAY_500};
 `;
 
 const SideButton = styled.button`
