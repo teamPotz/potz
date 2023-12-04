@@ -5,7 +5,7 @@ import { io } from 'socket.io-client';
 //   import.meta.env.NODE_ENV === 'production'
 //     ? undefined
 //     : `${import.meta.env.VITE_APP_API_URL}`;
-const URL = 'http://localhost:8080';
+const URL = 'http://localhost:80';
 
 export const socket = io(`${URL}/chat`, {
   autoConnect: false,

@@ -11,7 +11,7 @@ services:
       dockerfile: Dockerfile.dev
       context: ./nginx
     ports:
-      - '8080:80'
+      - '80:80'
 
   mysql:
     container_name: potz_mysql
@@ -35,7 +35,7 @@ services:
   api:
     container_name: potz_api
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
       context: ./server
     environment:
       DATABASE_URL: 'mysql://root:root1234@mysql:3306/potzdb'
@@ -46,5 +46,5 @@ services:
   client:
     container_name: potz_client
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
       context: ./client
