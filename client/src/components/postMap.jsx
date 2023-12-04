@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import COLOR from '../utility/Color';
-const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
+import logoImg from '../../public/images/Logo/Potz_Logo.png';
 
 function PostMap({ searchKeyword, routeName, sendData, latlon }) {
   const [info, setInfo] = useState();
@@ -81,7 +81,7 @@ function PostMap({ searchKeyword, routeName, sendData, latlon }) {
             position={marker.position}
             onClick={() => setInfo(marker)}
             image={{
-              src: `${PF}Logo/Potz_Logo.png`,
+              src: logoImg,
               size: {
                 width: 30,
                 height: 30,

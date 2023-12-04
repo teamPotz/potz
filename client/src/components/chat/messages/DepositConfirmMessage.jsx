@@ -1,7 +1,33 @@
 import styled from 'styled-components';
 import COLOR from '../../../utility/Color';
+import moneyImg from '../../../../public/images/icons/money.svg';
 
-const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
+function DepositConfirmMessage({ sender, own }) {
+  return (
+    <MessageWrapper $own={own}>
+      <div style={styles.box}>
+        <div style={styles.title}>
+          <img
+            src={moneyImg}
+            style={{
+              color: COLOR.POTZ_PINK_400,
+              width: '24px',
+              height: '24px',
+            }}
+          />
+          <FontBig>입금확인</FontBig>
+        </div>
+        <div style={styles.content}>
+          <img src={moneyImg} />
+        </div>
+        <div>
+          <span style={{ color: COLOR.POTZ_PINK_DEFAULT }}>{sender.name}</span>
+          님의 입금 확인 완료!
+        </div>
+      </div>
+    </MessageWrapper>
+  );
+}
 
 const MessageWrapper = styled.div`
   background-color: ${COLOR.WHITE};
@@ -45,32 +71,5 @@ const styles = {
     justifyContent: 'center',
   },
 };
-
-function DepositConfirmMessage({ sender, own }) {
-  return (
-    <MessageWrapper $own={own}>
-      <div style={styles.box}>
-        <div style={styles.title}>
-          <img
-            src={`${PF}icons/money.svg`}
-            style={{
-              color: COLOR.POTZ_PINK_400,
-              width: '24px',
-              height: '24px',
-            }}
-          />
-          <FontBig>입금확인</FontBig>
-        </div>
-        <div style={styles.content}>
-          <img src={`${PF}icons/money.svg`} />
-        </div>
-        <div>
-          <span style={{ color: COLOR.POTZ_PINK_DEFAULT }}>{sender.name}</span>
-          님의 입금 확인 완료!
-        </div>
-      </div>
-    </MessageWrapper>
-  );
-}
 
 export default DepositConfirmMessage;

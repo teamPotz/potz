@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import GoBack from '../../components/ui/GoBackNavbar';
 import COLOR from '../../utility/Color';
+import logoImg from '../../../public/images/Logo/Potz_Logo.png';
 import { useAuth } from '../../contexts/AuthContext';
-const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 
 function MyOrders() {
   const { user } = useAuth();
@@ -65,7 +65,7 @@ function MyOrders() {
                       ? `${import.meta.env.VITE_APP_API_URL}/images/${
                           myOrder.imageUrl
                         }`
-                      : `${PF}Logo/Potz_Logo.png`
+                      : logoImg
                   }
                   style={styles.image}
                 ></img>

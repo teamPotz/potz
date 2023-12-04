@@ -15,8 +15,6 @@ import moneyImg from '../../../public/images/icons/money.svg';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { socket } from '../../../socket.js';
 
-// const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
-
 const initialOrderData = {
   file: null,
   menuName: '',

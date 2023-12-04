@@ -3,7 +3,6 @@ import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import COLOR from '../utility/Color';
-const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 
 function UserLocation({ currentLocation, searchKeyword }) {
   const [info, setInfo] = useState();

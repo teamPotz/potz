@@ -6,7 +6,7 @@ import COLOR from '../../utility/Color';
 import PotStatus from '../../components/chat/PotStatus.jsx';
 import NavBar from '../../components/ui/NavBar';
 import { roomSocket } from '../../../socket.js';
-const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
+import logoImg from '../../../public/images/logo/Potz_Logo.png';
 
 function ChatList() {
   const [deliveryPots, setDeliveryPots] = useState([]);
@@ -161,7 +161,7 @@ function ChatList() {
                       ? `${import.meta.env.VITE_APP_API_URL}/images/${
                           pot.post.imageUrl
                         }`
-                      : `${PF}Logo/Potz_Logo.png`
+                      : logoImg
                   }
                 />
                 <div>
