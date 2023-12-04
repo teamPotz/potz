@@ -177,6 +177,22 @@ export async function getCommunities(req, res, next) {
   }
 }
 
+export async function getCommunityTypes(req, res, next) {
+  try {
+    const communityTypes = await prisma.communityType.findMany({
+      select: {
+        id: true,
+        name: true,
+        displayOrder: true,
+      },
+    });
+    res.status(200).send(communityTypes);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}
+
 export async function getCommunitiesByLocation(req, res, next) {
   const { latitude, longitude } = req.query;
   let lat = latitude;

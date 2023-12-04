@@ -7,10 +7,11 @@ import {
   getCommunities,
   createCommunity,
   getCommunityById,
-  // updateCommunity,
-  // deleteCommunity,
   saveCommunityImg,
   getPostsByCommunityId,
+  getCommunityTypes,
+  // updateCommunity,
+  // deleteCommunity,
 } from '../controllers/communities.js';
 
 const router = Router();
@@ -19,6 +20,7 @@ const router = Router();
 
 router.get('/', verifyAuth, getCommunities);
 router.post('/', verifyAuth, createCommunity);
+router.get('/types', getCommunityTypes);
 router.get('/search', verifyAuth, getCommunitiesByLocation);
 router.post('/photo', fileUpload.single('image'), saveCommunityImg);
 router.get('/:id/posts', verifyAuth, getPostsByCommunityId);
