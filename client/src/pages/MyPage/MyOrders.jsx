@@ -53,7 +53,7 @@ function MyOrders() {
 
   return (
     <div className='potz_container' style={styles.background}>
-      <GoBack text='결제 내역'></GoBack>
+      <GoBack text='참여 내역'></GoBack>
       <div className='contents_container' style={styles.contentContainer}>
         {myOrders &&
           myOrders.map((myOrder, index) => {
