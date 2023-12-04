@@ -62,7 +62,7 @@ const CommunityComp = (props) => {
   return (
     <CommunityWrapper
       onClick={() => {
-        navigate('/enter-community', {
+        navigate('/community/enter', {
           state: {
             communityData: communityData,
           },

@@ -1,9 +1,5 @@
 import { useState, useEffect } from 'react';
-import Container from 'react-bootstrap/Container';
-import { Row } from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
 import COLOR from '../utility/Color';
-import Font from '../utility/Font';
 import TagPlace from '../components/TagPlace';
 import PlacesImg from '../../public/images/graphicImg/Places.png';
 
@@ -14,10 +10,10 @@ function ChooseFeature() {
   useEffect(() => {
     async function fetchCommunityTypes() {
       try {
-        const response = await fetch('http://localhost:5000/community-types');
+        const response = await fetch('http://localhost:5000/communities/types');
         const data = await response.json();
         setCommunityTypes(data);
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.error(error);
       }
@@ -38,7 +34,6 @@ function ChooseFeature() {
     marginTop: '28px',
   };
   const fontStyle = {
-    fontFamily: Font.FontKor,
     fontSize: '24px',
     fontWeight: '700',
     margin: '0',

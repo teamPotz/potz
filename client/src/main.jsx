@@ -27,7 +27,6 @@ import UserLoactionLandingMap from './pages/UserLocationLanding.jsx';
 import ChatList from './pages/Chat/ChatList.jsx';
 import UserProfile from './pages/UserProfile.jsx';
 import Entercommunity from './pages/EnterCommunity.jsx';
-import { ChatProvider } from './contexts/ChatContext.jsx';
 import AuthorizeUser from './pages/authorize.jsx';
 import MyBigData from './pages/myBigData.jsx';
 import MyCommunitySettings from './pages/myCommunitySetting.jsx';
@@ -56,11 +55,9 @@ const router = createBrowserRouter([
     path: '/',
     element: (
       <AuthProvider>
-        <ChatProvider>
-          <ProtectedRoute>
-            <AppLayout />
-          </ProtectedRoute>
-        </ChatProvider>
+        <ProtectedRoute>
+          <AppLayout />
+        </ProtectedRoute>
       </AuthProvider>
     ),
     children: [
@@ -70,40 +67,44 @@ const router = createBrowserRouter([
         index: true,
       },
       {
+        path: '/community/find',
+        element: <FindLocation />,
+      },
+      {
+        path: '/community/create',
+        element: <MakeCommunity />,
+      },
+      {
+        path: '/community/types',
+        element: <ChooseFeature />,
+      },
+      {
+        path: '/community/name',
+        element: <NamingCommunity />,
+      },
+      {
+        path: '/community/lists',
+        element: <ChooseCommunity />,
+      },
+      {
+        path: '/community/enter',
+        element: <Entercommunity />,
+      },
+      {
         path: '/community/:id',
         element: <Home />,
       },
       {
-        path: '/posts/:id',
-        element: <Detail />,
+        path: '/getaddress',
+        element: <LandingMap />,
+      },
+      {
+        path: '/user-location',
+        element: <UserLoactionLandingMap />,
       },
       {
         path: '/user-interests',
         element: <ChooseInterest />,
-      },
-      {
-        path: '/find-community',
-        element: <FindLocation />,
-      },
-      {
-        path: '/create-community',
-        element: <MakeCommunity />,
-      },
-      {
-        path: '/community-types',
-        element: <ChooseFeature />,
-      },
-      {
-        path: '/name-community',
-        element: <NamingCommunity />,
-      },
-      {
-        path: '/community-lists',
-        element: <ChooseCommunity />,
-      },
-      {
-        path: '/enter-community',
-        element: <Entercommunity />,
       },
       {
         path: '/search',
@@ -114,37 +115,24 @@ const router = createBrowserRouter([
         element: <SearchResult />,
       },
       {
-        path: '/notification',
-        element: <Notification />,
-      },
-      {
         path: '/category',
         element: <CategoryPage />,
-      },
-
-      {
-        path: '/liked-list',
-        element: <LikedList />,
       },
       {
         path: '/create-post',
         element: <CreatePost />,
       },
       {
+        path: '/posts/:id',
+        element: <Detail />,
+      },
+      {
         path: '/update-post/:id',
         element: <UpdatePost />,
       },
       {
-        path: '/getaddress',
-        element: <LandingMap />,
-      },
-      {
-        path: '/create-community',
-        element: <MakeCommunity />,
-      },
-      {
-        path: '/user-location',
-        element: <UserLoactionLandingMap />,
+        path: '/liked-list',
+        element: <LikedList />,
       },
       {
         path: '/my-page',
@@ -164,6 +152,10 @@ const router = createBrowserRouter([
       },
       { path: '/chats/', element: <ChatList /> },
       { path: '/chats/:potId', element: <Chat /> },
+      {
+        path: '/notification',
+        element: <Notification />,
+      },
     ],
   },
 ]);
