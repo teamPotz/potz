@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
-export async function getCategory(req, res) {
+export async function getCategory(req, res, next) {
   try {
     const categories = await prisma.Category.findMany({
       select: {
@@ -15,11 +15,11 @@ export async function getCategory(req, res) {
     res.status(200).send(categories);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get categories error' });
+    next(error);
   }
 }
 
-export async function getCategoryById(req, res) {
+export async function getCategoryById(req, res, next) {
   const { id } = req.params;
   // console.log(req.user);
   try {
@@ -60,14 +60,12 @@ export async function getCategoryById(req, res) {
           },
         },
       },
-      where: {
-        id: +id,
-      },
+      where: { id: +id },
     });
 
     res.status(200).send(categories);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'get categories error' });
+    next(error);
   }
 }
