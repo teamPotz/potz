@@ -652,7 +652,7 @@ export async function updateGetPost(req, res) {
 
 export async function updatePost(req, res) {
   const { id } = req.params;
-  let imageUrl = req.file?.filename || null;
+  let imageUrl = req.file?.filename;
   let deliveryFees = JSON.parse(req.body.deliveryFees);
   let deliveryDiscounts = JSON.parse(req.body.deliveryDiscounts);
   const {

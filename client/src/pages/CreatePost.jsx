@@ -128,14 +128,26 @@ function CreatePost() {
   const navigate = useNavigate();
   const location = useLocation();
   const myInputRef = useRef(null);
+  const [sendImg, setSendImg] = useState();
+  const [sendImgFile, setSendImgFile] = useState();
 
   let Address = false;
   let name = false;
   let communityid = false;
+  let imageUrl =  false;
   if (location.state !== null) {
     name = location.state.name;
     Address = location.state.address;
     communityid = location.state.communityId;
+    imageUrl = location.state?.imageUrl;
+    const image = imageUrl;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setSendImgFile(reader.result);
+    };
+    if (image) {
+      reader.readAsDataURL(image);
+    }
   }
 
   const [toggleLimit, setToggleLimit] = useState(false);
@@ -339,7 +351,7 @@ function CreatePost() {
             const communityId = communityid;
             const deliveryFees = processData('deliveryFee', e);
             const deliveryDiscounts = processData('deliveryDiscount', e);
-            const file = e.target.image.files[0];
+            const file = e.target.image.files[0] ? e.target.image.files[0] : imageUrl ? imageUrl : null;
 
             if (
               checkNumberic(deliveryFees) &&
@@ -388,6 +400,7 @@ function CreatePost() {
                 accept='image/*'
                 onChange={(e) => {
                   e.preventDefault();
+                  setSendImg(e.target.files[0]);
                   const image = e.target.files[0];
                   const reader = new FileReader();
                   reader.onloadend = () => {
@@ -400,12 +413,12 @@ function CreatePost() {
               ></input>
 
               <ImgInput
-                img={selectImg}
+                img={selectImg ? selectImg : sendImgFile ? sendImgFile : null}
                 onClick={() => {
                   myInputRef.current.click();
                 }}
               >
-                {selectImg ? (
+                {selectImg || sendImgFile ? (
                   <div />
                 ) : (
                   <svg
@@ -450,6 +463,7 @@ function CreatePost() {
                         state: {
                           routeName: '/create-post',
                           communityId: location.state.communityId,
+                          imageUrl: sendImg ? sendImg : imageUrl ? imageUrl : null,
                         },
                       })
                     }
