@@ -12,25 +12,32 @@ function UserLocation({ currentLocation, searchKeyword }) {
   const [latLon, setLatLon] = useState();
   const navigate = useNavigate();
   const [position, setPosition] = useState();
+  const [newCoordinates, setNewCoordinates] = useState({
+    lat: 37.56421,
+    lon: 127.00169,
+  });
 
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        const bounds = new window.kakao.maps.LatLngBounds();
-        const newCoordinates = {
+        setNewCoordinates({
           lat: position.coords.latitude,
           lon: position.coords.longitude,
-        };
+        });
         console.log('현재 위치', newCoordinates);
-        bounds.extend(
-          new window.kakao.maps.LatLng(newCoordinates.lat, newCoordinates.lon)
-        );
-        if (map) {
-          map.setBounds(bounds);
-        }
       });
     }
-  }, [map]);
+  }, []);
+
+  useEffect(() => {
+    const bounds = new window.kakao.maps.LatLngBounds();
+    bounds.extend(
+      new window.kakao.maps.LatLng(newCoordinates.lat, newCoordinates.lon)
+    );
+    if (map) {
+      map.setBounds(bounds);
+    }
+  }, [map, newCoordinates]);
 
   useEffect(() => {
     const ps = new window.kakao.maps.services.Places();
