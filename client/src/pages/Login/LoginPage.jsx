@@ -29,7 +29,9 @@ function LoginPage() {
             hoverColor={COLOR.YELLOW_100}
             fontColor={COLOR.WHITE}
             onClick={() =>
-              (window.location.href = 'http://localhost:5000/auth/kakao')
+              (window.location.href = `${
+                import.meta.env.VITE_APP_API_URL
+              }/auth/kakao`)
             }
           >
             카카오톡으로 시작
@@ -39,7 +41,9 @@ function LoginPage() {
             hoverColor={COLOR.POTZ_PINK_DEFAULT}
             fontColor={COLOR.WHITE}
             onClick={() => {
-              window.location.href = 'http://localhost:5000/auth/google';
+              window.location.href = `${
+                import.meta.env.VITE_APP_API_URL
+              }/auth/google`;
             }}
           >
             구글 계정으로 시작

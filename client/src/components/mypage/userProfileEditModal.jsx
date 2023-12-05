@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import COLOR from '../../utility/Color';
 import ButtonBg from '../ui/ButtonBG';
-import defaultProfile from '../../../public/images/Logo/Potz_Logo.png';
+import defaultProfile from '../../../public/images/logo.png';
 
 function UserProfileEditModal({ setVisible, user }) {
   const [selectImg, setSelectImg] = useState();
@@ -11,11 +11,14 @@ function UserProfileEditModal({ setVisible, user }) {
   async function userProfileModal(formData) {
     // console.log('formData', formData);
     try {
-      const res = await fetch(`http://localhost:5000/users/update-profile`, {
-        method: 'PATCH',
-        credentials: 'include',
-        body: formData,
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_APP_API_URL}/users/update-profile`,
+        {
+          method: 'PATCH',
+          credentials: 'include',
+          body: formData,
+        }
+      );
       const data = await res.json();
       console.log(data);
       window.location.reload();
@@ -42,7 +45,9 @@ function UserProfileEditModal({ setVisible, user }) {
                 user.profile?.imageUrl?.startsWith('http')
                   ? user.profile.imageUrl
                   : user.profile?.imageUrl
-                  ? `http://localhost:5000/${user.profile.imageUrl}`
+                  ? `${import.meta.env.VITE_APP_API_URL}/${
+                      user.profile.imageUrl
+                    }`
                   : defaultProfile
               }
             />

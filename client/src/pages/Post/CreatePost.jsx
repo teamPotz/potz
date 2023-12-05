@@ -7,14 +7,14 @@ import ButtonBg from '../../components/ui/ButtonBG';
 import TagFood from '../../components/TagFood';
 
 function CreatePost() {
-  const BASE_URL = 'http://localhost:5000';
+  const BASE_URL = `${import.meta.env.VITE_APP_API_URL}`;
   const screenHeight = window.innerHeight - 98;
   const [selectImg, setSelectImg] = useState(undefined);
-  const navigate = useNavigate();
-  const location = useLocation();
   const myInputRef = useRef(null);
   const [sendImg, setSendImg] = useState();
   const [sendImgFile, setSendImgFile] = useState();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   let Address = false;
   let name = false;

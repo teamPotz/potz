@@ -7,10 +7,10 @@ function AuthorizeUser() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/users/user-info', {
-          method: 'GET',
-          credentials: 'include',
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_APP_API_URL}/users/user-info`,
+          { credentials: 'include' }
+        );
         const data = await response.json();
         if (data[0].communities.length > 0) {
           console.log('검색 데이터', data[0].communities);

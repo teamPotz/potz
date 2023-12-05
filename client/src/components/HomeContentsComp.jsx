@@ -5,7 +5,7 @@ import COLOR from '../utility/Color';
 import TagPlaceSM from './TagPlaceSM';
 import HomeAlert from './homeAlertModal';
 import HomeDiscountModal from './homeDiscountModal';
-const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
+import logoImg from '../../public/images/logo.png';
 
 const HomeContents = ({ postDatas, setPostDatas }) => {
   const [visible, setVisible] = useState(false);
@@ -20,14 +20,14 @@ const HomeContents = ({ postDatas, setPostDatas }) => {
       // 서버로 좋아요 데이터 업데이트
       try {
         const response = await fetch(
-          `http://localhost:5000/posts/${postId}/like`,
+          `${import.meta.env.VITE_APP_API_URL}/posts/${postId}/like`,
           {
             method: 'PATCH',
             credentials: 'include',
           }
         );
         const data = await response.json();
-        console.log('좋아요 업데이트', data);
+        // console.log('좋아요 업데이트', data);
 
         // update post state
         setPostDatas((prevPosts) =>
@@ -63,8 +63,10 @@ const HomeContents = ({ postDatas, setPostDatas }) => {
                 style={imgStyle}
                 src={
                   post.imageUrl
-                    ? `http://localhost:5000/images/${post.imageUrl}`
-                    : `${PF}Logo/Potz_Logo.png`
+                    ? `${import.meta.env.VITE_APP_API_URL}/images/${
+                        post.imageUrl
+                      }`
+                    : logoImg
                 }
               />
             </div>

@@ -8,7 +8,7 @@ import TagFood from '../../components/TagFood';
 
 //글쓴이만 글을 수정할 수 있어요
 function UpdatePost() {
-  const BASE_URL = 'http://localhost:5000';
+  const BASE_URL = `${import.meta.env.VITE_APP_API_URL}`;
   const screenHeight = window.innerHeight - 98;
   const [selectImg, setSelectImg] = useState(undefined);
   const navigate = useNavigate();
@@ -328,7 +328,9 @@ function UpdatePost() {
                       objectFit: 'cover',
                       borderRadius: '9.33333px',
                     }}
-                    src={`http://localhost:5000/images/${getData.imageUrl}`}
+                    src={`${import.meta.env.VITE_APP_API_URL}/images/${
+                      getData.imageUrl
+                    }`}
                   />
                 ) : (
                   <svg

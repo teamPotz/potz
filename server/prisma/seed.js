@@ -147,7 +147,7 @@ const posts = [
   {
     storeName: '디저트36 송도점',
     storeAddress: '인천 연수구 인천타워대로 241',
-    imageUrl: '/images/pot-1.png',
+    imageUrl: '/pot-1.png',
     orderLink: 'https://baemin.me/jDQWwYtpw',
     categoryId: 2,
     recruitment: 10,
@@ -213,7 +213,7 @@ const posts = [
   {
     storeName: '커플 케이크 하버뷰점',
     storeAddress: '인천 연수구 센트럴로 160',
-    imageUrl: '/images/pot-2.png',
+    imageUrl: '/pot-2.png',
     orderLink: 'https://baemin.me/jDQWwYtpw',
     categoryId: 8,
     recruitment: 10,
@@ -242,7 +242,7 @@ const posts = [
   {
     storeName: '연어 박사',
     storeAddress: '인천 연수구 센트럴로 160',
-    imageUrl: '/images/pot-4.png',
+    imageUrl: '/pot-4.png',
     orderLink: 'https://baemin.me/jDQWwYtpw',
     categoryId: 4,
     recruitment: 15,

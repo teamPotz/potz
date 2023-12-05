@@ -6,7 +6,7 @@ import COLOR from '../../utility/Color';
 import PotStatus from '../../components/chat/PotStatus.jsx';
 import NavBar from '../../components/ui/NavBar';
 import { roomSocket } from '../../../socket.js';
-const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
+import logoImg from '../../../public/images/logo.png';
 
 function ChatList() {
   const [deliveryPots, setDeliveryPots] = useState([]);
@@ -15,9 +15,10 @@ function ChatList() {
   useEffect(() => {
     async function getDeliveryPots() {
       try {
-        const res = await fetch('http://localhost:5000/delivery-pots', {
-          credentials: 'include',
-        });
+        const res = await fetch(
+          `${import.meta.env.VITE_APP_API_URL}/delivery-pots`,
+          { credentials: 'include' }
+        );
         if (!res.ok) {
           throw new Error('get delivery pots error');
         }
@@ -155,8 +156,10 @@ function ChatList() {
                   }}
                   src={
                     pot.post.imageUrl
-                      ? `http://localhost:5000/images/${pot.post.imageUrl}`
-                      : `${PF}Logo/Potz_Logo.png`
+                      ? `${import.meta.env.VITE_APP_API_URL}/images/${
+                          pot.post.imageUrl
+                        }`
+                      : logoImg
                   }
                 />
                 <div>

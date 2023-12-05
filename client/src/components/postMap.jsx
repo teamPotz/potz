@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import COLOR from '../utility/Color';
-const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
+import logoImg from '../../public/images/logo.png';
 
 function PostMap({ searchKeyword, sendData, latlon }) {
   const [info, setInfo] = useState();
@@ -54,6 +54,7 @@ function PostMap({ searchKeyword, sendData, latlon }) {
           bounds.extend(new window.kakao.maps.LatLng(data[i].y, data[i].x));
         }
         setMarkers(marker);
+
         if (map) {
           map.setBounds(bounds);
         }
@@ -85,7 +86,7 @@ function PostMap({ searchKeyword, sendData, latlon }) {
             position={marker.position}
             onClick={() => setInfo(marker)}
             image={{
-              src: `${PF}Logo/Potz_Logo.png`,
+              src: logoImg,
               size: {
                 width: 30,
                 height: 30,

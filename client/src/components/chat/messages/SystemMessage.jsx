@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import COLOR from '../../../utility/Color.js';
 import timeAgoFormat from '../../../utility/timeAgo.js';
-const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
+import speakerImg from '../../../../public/images/icons/speaker.svg';
 
 function SystemMessage({ message }) {
   return (
@@ -18,7 +18,7 @@ function SystemMessage({ message }) {
           height: '50px',
         }}
       >
-        <img src={`${PF}icons/speaker.svg`} style={{ width: '29px' }} />
+        <img src={speakerImg} style={{ width: '29px' }} />
       </div>
 
       <Wrapper>

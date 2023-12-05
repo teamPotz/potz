@@ -1,33 +1,7 @@
 import styled from 'styled-components';
 import COLOR from '../../../utility/Color';
 import ButtonBg from '../../ui/ButtonBG';
-
-const FontBig = styled.p`
-  font-style: normal;
-  font-weight: 550;
-  font-size: 16px;
-  color: ${COLOR.BLACK};
-  margin: 0;
-`;
-
-const styles = {
-  title: {
-    height: '28px',
-    display: 'flex',
-    flexDirection: 'row',
-    gap: '11.67px',
-    alignItems: 'center',
-  },
-  imageStyle: {
-    objectFit: 'cover',
-    width: '240.33px',
-    height: '148.17px',
-    boxSizing: 'border-box',
-    border: `1.16667px solid #EDEDED`,
-    borderRadius: '10px',
-    cursor: 'pointer',
-  },
-};
+import moneyImg from '../../../../public/images/icons/money.svg';
 
 const MessageWrapper = styled.div`
   background-color: ${COLOR.WHITE};
@@ -42,12 +16,10 @@ const MessageWrapper = styled.div`
   margin-left: ${(props) => (props.$own ? 'auto' : 'none')};
 `;
 
-const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
-
 const Title = ({ children }) => {
   return (
     <div style={styles.title}>
-      <img src={`${PF}icons/money.svg`} />
+      <img src={moneyImg} />
       <FontBig>{children}</FontBig>
     </div>
   );
@@ -57,9 +29,12 @@ const DepositImage = ({ imageUrl }) => {
   return (
     <img
       style={styles.imageStyle}
-      src={`http://localhost:5000/images/${imageUrl}`}
+      src={`${import.meta.env.VITE_APP_API_URL}/images/${imageUrl}`}
       onClick={() =>
-        window.open(`http://localhost:5000/images/${imageUrl}`, '_blank')
+        window.open(
+          `${import.meta.env.VITE_APP_API_URL}/images/${imageUrl}`,
+          '_blank'
+        )
       }
     />
   );
@@ -102,5 +77,32 @@ function DepositMessage({ message, own, isPotMaster, confirmDeposit }) {
     </MessageWrapper>
   );
 }
+
+const FontBig = styled.p`
+  font-style: normal;
+  font-weight: 550;
+  font-size: 16px;
+  color: ${COLOR.BLACK};
+  margin: 0;
+`;
+
+const styles = {
+  title: {
+    height: '28px',
+    display: 'flex',
+    flexDirection: 'row',
+    gap: '11.67px',
+    alignItems: 'center',
+  },
+  imageStyle: {
+    objectFit: 'cover',
+    width: '240.33px',
+    height: '148.17px',
+    boxSizing: 'border-box',
+    border: `1.16667px solid #EDEDED`,
+    borderRadius: '10px',
+    cursor: 'pointer',
+  },
+};
 
 export default DepositMessage;

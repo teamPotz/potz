@@ -148,7 +148,7 @@ function BigdataStore(props) {
           width={150}
           height={150}
           style={imgStyle}
-          src={`http://localhost:5000/${postData.imageUrl}`}
+          src={`${import.meta.env.VITE_APP_API_URL}/${postData.imageUrl}`}
         ></img>
       </div>
       <div>

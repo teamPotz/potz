@@ -11,7 +11,7 @@ function Detail() {
       const fetchCommunityData = async () => {
         try {
           const response = await fetch(
-            `http://localhost:5000/posts/${postID.id}`,
+            `${import.meta.env.VITE_APP_API_URL}/posts/${postID.id}`,
             {
               method: 'GET',
               credentials: 'include',

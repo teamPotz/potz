@@ -49,7 +49,9 @@ const SearchBar = () => {
   const fetchSearchData = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/posts/search?key=${searchVal}&communityId=${communityId}`,
+        `${
+          import.meta.env.VITE_APP_API_URL
+        }/posts/search?key=${searchVal}&communityId=${communityId}`,
         {
           method: 'GET',
           credentials: 'include',
@@ -65,14 +67,17 @@ const SearchBar = () => {
 
   const postSearchHistory = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/search-history`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ keyword: searchVal }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_APP_API_URL}/search-history`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ keyword: searchVal }),
+        }
+      );
       if (response.ok) {
         const responseData = await response.json();
         console.log('새로운 검색어 저장:', responseData);

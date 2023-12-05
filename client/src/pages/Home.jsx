@@ -64,7 +64,7 @@ function Home() {
     const fetchCommunityData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/communities/${communityId}`,
+          `${import.meta.env.VITE_APP_API_URL}/communities/${communityId}`,
           {
             method: 'GET',
             credentials: 'include',
@@ -88,7 +88,9 @@ function Home() {
     const fetchPostData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/communities/${communityId}/posts`,
+          `${
+            import.meta.env.VITE_APP_API_URL
+          }/communities/${communityId}/posts`,
           {
             method: 'GET',
             credentials: 'include',
@@ -110,9 +112,10 @@ function Home() {
   useEffect(() => {
     async function getNotifications() {
       try {
-        const res = await fetch('http://localhost:5000/users/notification', {
-          credentials: 'include',
-        });
+        const res = await fetch(
+          `${import.meta.env.VITE_APP_API_URL}/users/notification`,
+          { credentials: 'include' }
+        );
         if (!res.ok) {
           throw new Error('get notification error');
         }

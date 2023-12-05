@@ -14,9 +14,10 @@ function SearchPage() {
   useEffect(() => {
     async function fetchCategoryData() {
       try {
-        const response = await fetch('http://localhost:5000/categories', {
-          credentials: 'include',
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_APP_API_URL}/categories`,
+          { credentials: 'include' }
+        );
         const data = await response.json();
         console.log('카테고리 전체 데이터', data);
         setCategoryData(data);
@@ -30,9 +31,10 @@ function SearchPage() {
   useEffect(() => {
     async function fetchSearchHistoryData() {
       try {
-        const response = await fetch('http://localhost:5000/search-history', {
-          credentials: 'include',
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_APP_API_URL}/search-history`,
+          { credentials: 'include' }
+        );
         const data = await response.json();
         console.log('전체 검색어 데이터', data);
         setSearchHistory(data);
@@ -49,10 +51,13 @@ function SearchPage() {
 
   async function deleteSearchHistory() {
     try {
-      const response = await fetch(`http://localhost:5000/search-history/`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_APP_API_URL}/search-history/`,
+        {
+          method: 'DELETE',
+          credentials: 'include',
+        }
+      );
 
       if (response.ok) {
         console.log('검색 기록 삭제 성공');
@@ -264,7 +269,9 @@ function SearchPage() {
                           try {
                             console.log('search.keyword' + search.keyword);
                             const response = await fetch(
-                              `http://localhost:5000/posts/search?key=${
+                              `${
+                                import.meta.env.VITE_APP_API_URL
+                              }/posts/search?key=${
                                 search.keyword
                               }&communityId=${localStorage.getItem(
                                 'communityDataID'

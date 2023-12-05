@@ -103,10 +103,13 @@ const SelectComp = (props) => {
 
   const deletePost = async (postId) => {
     try {
-      const response = await fetch(`http://localhost:5000/posts/${postId}`, {
-        method: 'PATCH',
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_APP_API_URL}/posts/${postId}`,
+        {
+          method: 'PATCH',
+          credentials: 'include',
+        }
+      );
       const data = await response.json();
       console.log('삭제한 포스트', data);
       alert('게시글이 삭제되었습니다.');

@@ -99,14 +99,17 @@ function UserAccountUpdateModal(props) {
       accountOwner,
     };
     try {
-      const res = await fetch(`http://localhost:5000/users/update-account`, {
-        method: 'PATCH',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_APP_API_URL}/users/update-account`,
+        {
+          method: 'PATCH',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(userData),
+        }
+      );
       const data = await res.json();
       console.log(data);
       window.location.reload();

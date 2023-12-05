@@ -8,10 +8,12 @@ import MessageContainer from '../../components/chat/messages/MessageContainer.js
 import OrderModal from '../../components/chat/OrderModal.jsx';
 import DepositModal from '../../components/chat/DepositModal.jsx';
 import UserAccountUpdateModal from '../../components/mypage/userAccountUpdateModal.jsx';
+import logoImg from '../../../public/images/logo.png';
+import crownImg from '../../../public/images/icons/crown.svg';
+import userImg from '../../../public/images/icons/user.svg';
+import moneyImg from '../../../public/images/icons/money.svg';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { socket } from '../../../socket.js';
-
-const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 
 const initialOrderData = {
   file: null,
@@ -52,7 +54,7 @@ function Chat() {
 
     try {
       setisLoadingSendMessage(true);
-      const res = await fetch('http://localhost:5000/messages/', {
+      const res = await fetch(`${import.meta.env.VITE_APP_API_URL}/messages/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -109,7 +111,7 @@ function Chat() {
 
     try {
       setisLoadingSendMessage(true);
-      const res = await fetch('http://localhost:5000/orders/', {
+      const res = await fetch(`${import.meta.env.VITE_APP_API_URL}/orders/`, {
         method: 'POST',
         credentials: 'include',
         body: formData,
@@ -137,7 +139,7 @@ function Chat() {
     try {
       setisLoadingSendMessage(true);
       const res = await fetch(
-        `http://localhost:5000/orders/${orderId}/confirm`,
+        `${import.meta.env.VITE_APP_API_URL}/orders/${orderId}/confirm`,
         {
           method: 'PATCH',
           headers: {
@@ -203,7 +205,7 @@ function Chat() {
 
     try {
       setisLoadingSendMessage(true);
-      const res = await fetch('http://localhost:5000/deposits/', {
+      const res = await fetch(`${import.meta.env.VITE_APP_API_URL}/deposits/`, {
         method: 'POST',
         credentials: 'include',
         body: formData,
@@ -231,7 +233,7 @@ function Chat() {
     try {
       setisLoadingSendMessage(true);
       const res = await fetch(
-        `http://localhost:5000/deposits/${orderId}/confirm`,
+        `${import.meta.env.VITE_APP_API_URL}/deposits/${orderId}/confirm`,
         {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
@@ -281,7 +283,7 @@ function Chat() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/delivery-pots/${potId}/status`,
+        `${import.meta.env.VITE_APP_API_URL}/delivery-pots/${potId}/status`,
         {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
@@ -314,7 +316,7 @@ function Chat() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/delivery-pots/${potId}/close`,
+        `${import.meta.env.VITE_APP_API_URL}/delivery-pots/${potId}/close`,
         {
           method: 'PATCH',
           credentials: 'include',
@@ -356,11 +358,14 @@ function Chat() {
 
     try {
       setisLoadingSendMessage(true);
-      const res = await fetch('http://localhost:5000/orders/pot-master', {
-        method: 'POST',
-        credentials: 'include',
-        body: formData,
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_APP_API_URL}/orders/pot-master`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        }
+      );
 
       if (!res.ok) {
         throw new Error('send order message error');
@@ -383,7 +388,7 @@ function Chat() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/delivery-pots/${potId}/leave`,
+        `${import.meta.env.VITE_APP_API_URL}/delivery-pots/${potId}/leave`,
         {
           method: 'PATCH',
           credentials: 'include',
@@ -462,7 +467,7 @@ function Chat() {
     async function enterPot() {
       try {
         const res = await fetch(
-          `http://localhost:5000/delivery-pots/${potId}/join`,
+          `${import.meta.env.VITE_APP_API_URL}/delivery-pots/${potId}/join`,
           {
             method: 'PATCH',
             credentials: 'include',
@@ -486,7 +491,7 @@ function Chat() {
     async function fetchMessages() {
       try {
         const res = await fetch(
-          `http://localhost:5000/delivery-pots/${potId}/messages`,
+          `${import.meta.env.VITE_APP_API_URL}/delivery-pots/${potId}/messages`,
           { credentials: 'include' }
         );
         const data = await res.json();
@@ -519,8 +524,10 @@ function Chat() {
               }}
               src={
                 deliveryPot?.post?.imageUrl
-                  ? `http://localhost:5000/images/${deliveryPot?.post.imageUrl}`
-                  : `${PF}Logo/Potz_Logo.png`
+                  ? `${import.meta.env.VITE_APP_API_URL}/images/${
+                      deliveryPot?.post.imageUrl
+                    }`
+                  : logoImg
               }
             />
           </div>
@@ -538,7 +545,7 @@ function Chat() {
             >
               <div style={{ maxWidth: '100px' }}>
                 <img
-                  src={PF + 'icons/crown.svg'}
+                  src={crownImg}
                   style={{
                     height: '12px',
                     marginRight: '0.2rem',
@@ -548,7 +555,7 @@ function Chat() {
               </div>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <img
-                  src={PF + 'icons/user.svg'}
+                  src={userImg}
                   style={{
                     height: '12px',
                     marginRight: '0.4rem',
@@ -560,7 +567,7 @@ function Chat() {
               </div>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <img
-                  src={PF + 'icons/money.svg'}
+                  src={moneyImg}
                   style={{
                     height: '12px',
                     marginRight: '0.2rem',

@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import COLOR from '../../utility/Color';
-
-const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
+import closeImg from '../../../public/images/icons/close.svg';
 
 const SendIcon = () => {
   return (
@@ -35,7 +34,7 @@ function ChatInput({
       <Wrapper>
         <SideButton onClick={toggleMenuBar}>
           <img
-            src={`${PF}icons/close.svg`}
+            src={closeImg}
             style={{
               rotate: isMenuBarOpened ? '' : '45deg',
               transition: '0.2s ease-in-out',

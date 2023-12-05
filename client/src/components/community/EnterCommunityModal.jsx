@@ -19,7 +19,7 @@ const EnterCommunityModal = () => {
   const updateUserData = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/communities/${communityId}/join`,
+        `${import.meta.env.VITE_APP_API_URL}/communities/${communityId}/join`,
         {
           method: 'PATCH',
           credentials: 'include',
@@ -82,7 +82,9 @@ const EnterCommunityModal = () => {
             <img
               width={150}
               height={150}
-              src={`http://localhost:5000/${communityData.imageUrl}`}
+              src={`${import.meta.env.VITE_APP_API_URL}/${
+                communityData.imageUrl
+              }`}
             ></img>
           </div>
           <span style={fontStyle2}>

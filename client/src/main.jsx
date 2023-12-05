@@ -1,4 +1,4 @@
-import './App.css';
+import './index.css';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext.jsx';

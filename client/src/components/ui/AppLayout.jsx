@@ -1,6 +1,6 @@
+import '../../index.css';
 import { Outlet } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
-import '../../App.css';
 
 function AppLayout() {
   return (

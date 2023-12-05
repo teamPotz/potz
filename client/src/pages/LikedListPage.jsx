@@ -28,7 +28,9 @@ function LikedList() {
       const fetchCommunityData = async () => {
         try {
           const response = await fetch(
-            `http://localhost:5000/posts/liked?communityId=${communityId}`,
+            `${
+              import.meta.env.VITE_APP_API_URL
+            }/posts/liked?communityId=${communityId}`,
             { credentials: 'include' }
           );
 

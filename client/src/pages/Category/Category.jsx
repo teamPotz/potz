@@ -9,10 +9,10 @@ function CategoryPage() {
   useEffect(() => {
     async function fetchCategoryData() {
       try {
-        const response = await fetch('http://localhost:5000/categories', {
-          method: 'GET',
-          credentials: 'include',
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_APP_API_URL}/categories`,
+          { credentials: 'include' }
+        );
         const data = await response.json();
         console.log('카테고리 전체 데이터', data);
         setCategoryData(data);
