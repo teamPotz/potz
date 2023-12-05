@@ -1,33 +1,28 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import COLOR from '../utility/Color';
 const PF = import.meta.env.VITE_APP_PUBLIC_FOLDER;
 
-function PostMap({ searchKeyword, routeName, sendData, latlon }) {
+function PostMap({ searchKeyword, sendData, latlon }) {
   const [info, setInfo] = useState();
   const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
-  const coordinateRef = useRef({
-    lat: 37.56421,
-    lon: 127.00169,
-  });
 
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         const bounds = new window.kakao.maps.LatLngBounds();
-        coordinateRef.current = {
+        const newCoordinates = {
           lat: position.coords.latitude,
           lon: position.coords.longitude,
         };
-        console.log(coordinateRef.current);
+        console.log(newCoordinates);
         bounds.extend(
-          new window.kakao.maps.LatLng(
-            coordinateRef.current.lat,
-            coordinateRef.current.lon
-          )
+          new window.kakao.maps.LatLng(newCoordinates.lat, newCoordinates.lon)
         );
-        map.setBounds(bounds);
+        if (map) {
+          map.setBounds(bounds);
+        }
       });
     }
   }, [map]);
@@ -52,7 +47,9 @@ function PostMap({ searchKeyword, routeName, sendData, latlon }) {
           bounds.extend(new window.kakao.maps.LatLng(data[i].y, data[i].x));
         }
         setMarkers(marker);
-        map.setBounds(bounds);
+        if (map) {
+          map.setBounds(bounds);
+        }
       }
     });
   }, [searchKeyword]);
