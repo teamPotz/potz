@@ -69,7 +69,13 @@ function ChooseCommunity() {
               : null}
           </div>
 
-          <ButtonNew onClick={() => navigate('/community/types')}>
+          <ButtonNew
+            onClick={() =>
+              navigate('/community/types', {
+                state: { latLon: latLon },
+              })
+            }
+          >
             직접 공동체 만들기
           </ButtonNew>
         </div>
