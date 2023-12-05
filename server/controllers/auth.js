@@ -121,7 +121,7 @@ export function kakaoLoginCallback(req, res, next) {
           console.error(err);
           throw err;
         }
-        res.redirect('http://localhost:5173/');
+        res.redirect('/');
       });
     } catch (error) {
       console.error(error);
@@ -153,7 +153,7 @@ export function googleLogInCallback(req, res, next) {
           console.error(err);
           return next(err);
         }
-        res.redirect('http://localhost:5173/');
+        res.redirect('/');
       });
     } catch (error) {
       console.error(error);

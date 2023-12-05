@@ -3,8 +3,8 @@ WORKDIR /app
 COPY ./package.json ./
 RUN npm i
 COPY . .
-EXPOSE 5000
-RUN npm i -g pm2
 RUN npx prisma generate
+RUN npm i -g pm2
+EXPOSE 5000
 # RUN npx prisma migrate deploy
 CMD ["npm", "run", "start"]
