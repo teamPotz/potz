@@ -20,8 +20,8 @@ function NamingCommunity({ communityType, user1 }) {
     name: '',
     communityTypes: location.state.data,
     members: userDatas,
-    longitude: location.state.latLon.lat,
-    latitude: location.state.latLon.lng,
+    latitude: location.state.latLon.lat,
+    longitude: location.state.latLon.lng,
     posts: 0,
     imageUrl: null,
   });
