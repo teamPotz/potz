@@ -203,10 +203,10 @@ export async function getCommunitiesByLocation(req, res, next) {
     const result = await prisma.$queryRaw`
     SELECT c.*,
         GROUP_CONCAT(ct.name) AS communityTypes,
-        (select count(*) from post where communityId=c.id) as postCount,
-        (select count(*) from communitiesOnUsers where communityId=c.id) as memberCount,
+        (select count(*) from Post where communityId=c.id) as postCount,
+        (select count(*) from CommunitiesOnUsers where communityId=c.id) as memberCount,
         (select ST_DISTANCE_SPHERE(point(longitude, latitude), point(${long}, ${lat}))) as distance
-    FROM community c
+    FROM Community c
       INNER JOIN CommunityTypesOnCommunities ctc ON c.id = ctc.communityId
       INNER JOIN CommunityType ct ON ctc.communityTypeId = ct.id
     WHERE ST_DISTANCE_SPHERE(point(longitude, latitude), point(${long}, ${lat})) <= 1000
