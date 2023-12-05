@@ -97,7 +97,7 @@ function LikedList() {
     display: 'grid',
     gridTemplateColumns: ' repeat( auto-fit, minmax(160px, 1fr))',
     marginBottom: '90px',
-    overflowX: 'hidden',
+    overflow: 'hidden',
   };
 
   const backgroundStyle = {

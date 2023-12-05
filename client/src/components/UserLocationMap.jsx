@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -11,42 +11,33 @@ function UserLocation({ currentLocation, searchKeyword }) {
   const [map, setMap] = useState('');
   const [latLon, setLatLon] = useState();
   const navigate = useNavigate();
-  // const coordinateRef = useRef({
-  //   lat: 37.56421,
-  //   lon: 127.00169,
-  // });
   const [position, setPosition] = useState();
+  const [newCoordinates, setNewCoordinates] = useState({
+    lat: 37.56421,
+    lon: 127.00169,
+  });
 
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        const bounds = new window.kakao.maps.LatLngBounds();
-        // coordinateRef.current = {
-        //   lat: position.coords.latitude,
-        //   lon: position.coords.longitude,
-        // };
-        // console.log('현재 위치', coordinateRef.current);
-        // bounds.extend(
-        //   new window.kakao.maps.LatLng(
-        //     coordinateRef.current.lat,
-        //     coordinateRef.current.lon
-        //   )
-        // );
-        const newCoordinates = {
+        setNewCoordinates({
           lat: position.coords.latitude,
           lon: position.coords.longitude,
-        };
+        });
         console.log('현재 위치', newCoordinates);
-
-        bounds.extend(
-          new window.kakao.maps.LatLng(newCoordinates.lat, newCoordinates.lon)
-        );
-        if (map) {
-          map.setBounds(bounds);
-        }
       });
     }
-  }, [map]);
+  }, []);
+
+  useEffect(() => {
+    const bounds = new window.kakao.maps.LatLngBounds();
+    bounds.extend(
+      new window.kakao.maps.LatLng(newCoordinates.lat, newCoordinates.lon)
+    );
+    if (map) {
+      map.setBounds(bounds);
+    }
+  }, [map, newCoordinates]);
 
   useEffect(() => {
     const ps = new window.kakao.maps.services.Places();
