@@ -3,6 +3,7 @@ import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import COLOR from '../utility/Color';
+import logoImg from '../../public/images/logo.png';
 
 function UserLocation({ currentLocation, searchKeyword }) {
   const [info, setInfo] = useState();
@@ -137,7 +138,7 @@ function UserLocation({ currentLocation, searchKeyword }) {
                 position={position.position}
                 onClick={() => handleMarkerClick(position)}
                 image={{
-                  src: `${PF}Logo/Potz_Logo.png`,
+                  src: logoImg,
                   size: {
                     width: 64,
                     height: 69,
@@ -175,7 +176,7 @@ function UserLocation({ currentLocation, searchKeyword }) {
                 position={marker.position}
                 onClick={() => handleMarkerClick(marker)}
                 image={{
-                  src: `${PF}Logo/Potz_Logo.png`,
+                  src: logoImg,
                   size: {
                     width: 64,
                     height: 69,

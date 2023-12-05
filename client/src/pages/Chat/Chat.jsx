@@ -8,7 +8,7 @@ import MessageContainer from '../../components/chat/messages/MessageContainer.js
 import OrderModal from '../../components/chat/OrderModal.jsx';
 import DepositModal from '../../components/chat/DepositModal.jsx';
 import UserAccountUpdateModal from '../../components/mypage/userAccountUpdateModal.jsx';
-import logoImg from '../../../public/images/Logo/Potz_Logo.png';
+import logoImg from '../../../public/images/logo.png';
 import crownImg from '../../../public/images/icons/crown.svg';
 import userImg from '../../../public/images/icons/user.svg';
 import moneyImg from '../../../public/images/icons/money.svg';

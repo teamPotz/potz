@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import COLOR from '../../utility/Color';
 import ButtonBg from '../ui/ButtonBG';
-import defaultProfile from '../../../public/images/Logo/Potz_Logo.png';
+import defaultProfile from '../../../public/images/logo.png';
 
 function UserProfileEditModal({ setVisible, user }) {
   const [selectImg, setSelectImg] = useState();

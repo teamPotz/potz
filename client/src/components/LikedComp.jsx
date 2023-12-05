@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import COLOR from '../utility/Color';
-import logoImg from '../../public/images/Logo/Potz_Logo.png';
+import logoImg from '../../public/images/logo.png';
 import TagPlaceSM from './TagPlaceSM';
 import { useNavigate } from 'react-router-dom';
 

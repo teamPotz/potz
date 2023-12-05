@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import COLOR from '../../utility/Color';
 import NavBar from '../../components/ui/NavBar';
 import ButtonBg from '../../components/ui/ButtonBG';
-import defaultProfile from '../../../public/images/Logo/Potz_Logo.png';
+import defaultProfile from '../../../public/images/logo.png';
 import UserProfileEditModal from '../../components/mypage/userProfileEditModal';
 import UserAccountUpdateModal from '../../components/mypage/userAccountUpdateModal';
 import TagPlaceSM from '../../components/TagPlaceSM';

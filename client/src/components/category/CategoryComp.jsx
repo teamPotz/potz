@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import COLOR from '../../utility/Color';
 import TagPlaceSM from '../TagPlaceSM';
-import logoImg from '../../../public/images/Logo/Potz_Logo.png';
+import logoImg from '../../../public/images/logo.png';
 import { useNavigate } from 'react-router-dom';
 
 const CategoryListComp = ({ postData }) => {

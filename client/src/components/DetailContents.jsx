@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import COLOR from '../utility/Color.js';
 import CategorySearch from './category/categorySearch.jsx';
-import logoImg from '../../public/images/Logo/Potz_Logo.png';
+import logoImg from '../../public/images/logo.png';
 import SelectCompForEveryone from './SelectCompForEveryone.jsx';
 import SelectComp from './selectComp.jsx';
 import HomeDiscountModal from './homeDiscountModal.jsx';

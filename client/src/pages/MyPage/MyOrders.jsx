@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import GoBack from '../../components/ui/GoBackNavbar';
 import COLOR from '../../utility/Color';
-import logoImg from '../../../public/images/Logo/Potz_Logo.png';
+import logoImg from '../../../public/images/logo.png';
 import { useAuth } from '../../contexts/AuthContext';
 
 function MyOrders() {

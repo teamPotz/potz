@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { MapMarker, Map } from 'react-kakao-maps-sdk';
 import COLOR from '../utility/Color';
-import logoImg from '../../public/images/Logo/Potz_Logo.png';
+import logoImg from '../../public/images/logo.png';
 
 function PostMap({ searchKeyword, routeName, sendData, latlon }) {
   const [info, setInfo] = useState();
