@@ -6,7 +6,6 @@ import COLOR from '../../utility/Color';
 function NamingCommunity({ communityType, user1 }) {
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(location.state.latLon);
   // console.log('state', location.state.data);
 
   const [file, setFile] = useState('');
@@ -20,30 +19,30 @@ function NamingCommunity({ communityType, user1 }) {
     name: '',
     communityTypes: location.state.data,
     members: userDatas,
-    latitude: location.state.latLon.lat,
-    longitude: location.state.latLon.lng,
+    longitude: location.state.latLon.lat,
+    latitude: location.state.latLon.lng,
     posts: 0,
     imageUrl: null,
   });
 
-  // useEffect(() => {
-  //   const getGeolocation = () => {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => {
-  //         const { latitude, longitude } = position.coords;
-  //         setFormDatas((prevFormDatas) => ({
-  //           ...prevFormDatas,
-  //           latitude,
-  //           longitude,
-  //         }));
-  //       },
-  //       (error) => {
-  //         console.error('Error getting geolocation:', error);
-  //       }
-  //     );
-  //   };
-  //   getGeolocation();
-  // }, []);
+  useEffect(() => {
+    const getGeolocation = () => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setFormDatas((prevFormDatas) => ({
+            ...prevFormDatas,
+            latitude,
+            longitude,
+          }));
+        },
+        (error) => {
+          console.error('Error getting geolocation:', error);
+        }
+      );
+    };
+    getGeolocation();
+  }, []);
 
   useEffect(() => {
     async function fetchUserDatas() {
