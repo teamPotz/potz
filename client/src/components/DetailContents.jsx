@@ -182,10 +182,14 @@ function DetailContents({ postDatas }) {
             <img
               width={46}
               height={46}
-              src={`${import.meta.env.VITE_APP_API_URL}/${
-                postDatas.potMasterProfileImg
-              }`}
               style={paddingStyle}
+              src={
+                postDatas.potMasterProfileImg.startsWith('http')
+                  ? postDatas.potMasterProfileImg
+                  : `${import.meta.env.VITE_APP_API_URL}/${
+                      postDatas.potMasterProfileImg
+                    }`
+              }
             />
           ) : (
             <img width={38} height={38} src={logoImg} style={paddingStyle} />
