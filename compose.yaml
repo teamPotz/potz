@@ -20,7 +20,7 @@ services:
 
   certbot:
     image: certbot/certbot
-    container_name: cerbot_service
+    container_name: certbot_service
     restart: unless-stopped
     volumes:
       - ./nginx/data/certbot/conf:/etc/letsencrypt
