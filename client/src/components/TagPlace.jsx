@@ -26,7 +26,7 @@ const TagPlaceStyle = styled.button`
   }
 `;
 
-const TagPlace = ({ children }) => {
+const TagPlace = ({ children, latLon}) => {
   const navigate = useNavigate();
 
   return (
@@ -35,6 +35,7 @@ const TagPlace = ({ children }) => {
         navigate('/community/name', {
           state: {
             data: children,
+            latLon: latLon,
           },
         });
       }}

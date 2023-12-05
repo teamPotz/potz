@@ -177,8 +177,8 @@ function UserLocation({ currentLocation, searchKeyword }) {
                 image={{
                   src: logoImg,
                   size: {
-                    width: 64,
-                    height: 69,
+                    width: 30,
+                    height: 30,
                   },
                   options: {
                     offset: {
