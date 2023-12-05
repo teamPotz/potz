@@ -11,27 +11,35 @@ function UserLocation({ currentLocation, searchKeyword }) {
   const [map, setMap] = useState('');
   const [latLon, setLatLon] = useState();
   const navigate = useNavigate();
-  const coordinateRef = useRef({
-    lat: 37.56421,
-    lon: 127.00169,
-  });
+  // const coordinateRef = useRef({
+  //   lat: 37.56421,
+  //   lon: 127.00169,
+  // });
   const [position, setPosition] = useState();
 
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         const bounds = new window.kakao.maps.LatLngBounds();
-        coordinateRef.current = {
+        // coordinateRef.current = {
+        //   lat: position.coords.latitude,
+        //   lon: position.coords.longitude,
+        // };
+        // console.log('현재 위치', coordinateRef.current);
+        // bounds.extend(
+        //   new window.kakao.maps.LatLng(
+        //     coordinateRef.current.lat,
+        //     coordinateRef.current.lon
+        //   )
+        // );
+        const newCoordinates = {
           lat: position.coords.latitude,
           lon: position.coords.longitude,
         };
-        console.log('현재 위치', coordinateRef.current);
+        console.log('현재 위치', newCoordinates);
 
         bounds.extend(
-          new window.kakao.maps.LatLng(
-            coordinateRef.current.lat,
-            coordinateRef.current.lon
-          )
+          new window.kakao.maps.LatLng(newCoordinates.lat, newCoordinates.lon)
         );
         if (map) {
           map.setBounds(bounds);
@@ -126,7 +134,7 @@ function UserLocation({ currentLocation, searchKeyword }) {
   return (
     <>
       <Map
-        center={{ lat: 33.5563, lng: 126.79581 }}
+        center={{ lat: 37.56421, lng: 127.00169 }}
         style={{ width: '420px', height: '100vh' }}
         level={3}
         onCreate={setMap}
