@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import COLOR from '../../utility/Color';
 import ButtonBg from '../../components/ui/ButtonBG';
 import HeartHandsImg from '../../../public/images/graphicImg/heartHands.png';
@@ -7,11 +7,14 @@ import { useAuth } from '../../contexts/AuthContext';
 function MakeCommunity() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  let location = useLocation();
+  let { latLon } = location.state;
+  console.log(latLon);
 
   return (
-    <div className='potz_container'>
-      <div className='contents_container' style={style1}>
-        <div className='text_container' style={fontStyle}>
+    <div className="potz_container">
+      <div className="contents_container" style={style1}>
+        <div className="text_container" style={fontStyle}>
           <span>앗, {user.name}님 근처에</span>
           <br />
           <span>아직 공동체가 없어요. 😅</span>
@@ -21,17 +24,19 @@ function MakeCommunity() {
           </span>
         </div>
 
-        <div className='img_container' style={styles2}>
+        <div className="img_container" style={styles2}>
           <img style={styles2} width={300} src={HeartHandsImg} />
         </div>
 
-        <div className='btn_container' style={style3}>
+        <div className="btn_container" style={style3}>
           <ButtonBg
             backgroundColor={COLOR.POTZ_PINK_DEFAULT}
             hoverColor={COLOR.POTZ_PINK_600}
             fontColor={COLOR.WHITE}
             onClick={() => {
-              navigate('/community/types');
+              navigate('/community/types', {
+                state: { latLon: latLon },
+              });
             }}
           >
             직접 공동체 만들기
@@ -40,7 +45,8 @@ function MakeCommunity() {
             backgroundColor={COLOR.POTZ_PINK_200}
             hoverColor={COLOR.POTZ_PINK_300}
             fontColor={COLOR.POTZ_PINK_DEFAULT}
-            onClick={() => navigate('/user-location')}
+            onClick={() =>
+              navigate('/user-location')}
           >
             다시 검색해 보기
           </ButtonBg>

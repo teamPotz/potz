@@ -170,8 +170,8 @@ function UserLocation({ currentLocation, searchKeyword }) {
                 image={{
                   src: `${PF}Logo/Potz_Logo.png`,
                   size: {
-                    width: 64,
-                    height: 69,
+                    width: 30,
+                    height: 30,
                   },
                   options: {
                     offset: {

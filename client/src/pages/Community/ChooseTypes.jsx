@@ -2,10 +2,14 @@ import { useState, useEffect } from 'react';
 import COLOR from '../../utility/Color';
 import TagPlace from '../../components/TagPlace';
 import PlacesImg from '../../../public/images/graphicImg/Places.png';
+import { useLocation } from 'react-router-dom';
 
 function ChooseTypes() {
   const [communityTypes, setCommunityTypes] = useState([]);
   const [userDatas, setUserDatas] = useState();
+  let location = useLocation();
+  let { latLon } = location.state;
+  console.log(latLon);
 
   useEffect(() => {
     async function fetchCommunityTypes() {
@@ -37,7 +41,7 @@ function ChooseTypes() {
             {communityTypes.map((communityType) => {
               return (
                 <div key={communityType.id}>
-                  <TagPlace userDatas={userDatas}>{communityType}</TagPlace>
+                  <TagPlace userDatas={userDatas} latLon={latLon}>{communityType}</TagPlace>
                 </div>
               );
             })}

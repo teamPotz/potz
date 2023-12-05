@@ -27,6 +27,7 @@ function ChooseCommunity() {
   let [communityDatas, setCommunityDatas] = useState();
   let latitude = latLon.lat;
   let longitude = latLon.lng;
+  console.log(latLon);
 
   useEffect(() => {
     async function fetchCommunityData() {
@@ -119,7 +120,9 @@ function ChooseCommunity() {
           </div>
           <ButtonNew
             onClick={() => {
-              navigate('/community/types');
+              navigate('/community/types', {
+                state: { latLon: latLon },
+              });
             }}
           >
             직접 공동체 만들기
