@@ -25,7 +25,7 @@ services:
     volumes:
       - ./nginx/data/certbot/conf:/etc/letsencrypt
       - ./nginx/data/certbot/www:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email {email} -d {domain} --agree-tos
+    # command: certonly --webroot -w /var/www/certbot --force-renewal --email {email} -d {domain} --agree-tos
 
   mysql:
     container_name: potz_mysql
