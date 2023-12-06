@@ -21,11 +21,10 @@ services:
   certbot:
     image: certbot/certbot
     container_name: certbot_service
-    restart: unless-stopped
     volumes:
       - ./nginx/data/certbot/conf:/etc/letsencrypt
       - ./nginx/data/certbot/www:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email {email} -d {domain} --agree-tos
+    command: certonly --webroot -w /var/www/certbot --email {email} -d {domain} --agree-tos --no-eff-email
 
   mysql:
     container_name: potz_mysql
