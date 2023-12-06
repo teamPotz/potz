@@ -558,7 +558,7 @@ export async function createPost(req, res, next) {
     // 5. notification
     // 5-1. find members in community
     const communityMembers = await prisma.communitiesOnUsers.findMany({
-      where: { communityId: +communityId },
+      where: { communityId: +communityId, NOT: { userId: req.user.id } },
       select: {
         userId: true,
         community: {
