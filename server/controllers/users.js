@@ -42,7 +42,6 @@ export async function getUserDataById(req, res, next) {
 }
 
 export async function deleteUserCommunity(req, res, next) {
-  console.log('탈퇴할 커뮤니티id:', req.body);
   try {
     const deleteCommunity = await prisma.CommunitiesOnUsers.delete({
       where: {

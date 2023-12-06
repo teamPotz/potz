@@ -284,7 +284,7 @@ export async function getPostByName(req, res, next) {
       },
     });
 
-    console.log(posts);
+    // console.log(posts);
 
     const result = [];
     for (const post of posts) {
@@ -405,7 +405,7 @@ export async function getPostByCategoryId(req, res, next) {
       },
     });
 
-    console.log(posts);
+    // console.log(posts);
 
     const result = [];
     for (const post of posts) {
@@ -695,7 +695,7 @@ export async function updatePost(req, res, next) {
   } = req.body;
 
   try {
-    console.log(req.body);
+    // console.log(req.body);
     const getPost = await prisma.post.findUnique({
       where: {
         id: +id,
@@ -755,7 +755,7 @@ export async function updatePost(req, res, next) {
 
     res.status(201).json(updatePost);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     next(error);
   }
 }

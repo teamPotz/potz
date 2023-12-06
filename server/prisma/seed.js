@@ -391,7 +391,7 @@ async function main() {
           authorId: post.authorId,
         },
       });
-      console.log(createdPost);
+      // console.log(createdPost);
 
       // 2. 등록한 게시글의 배달비 정보 등록
       const postWithDeliveryFee = await prisma.deliveryFee.createMany({
@@ -400,7 +400,7 @@ async function main() {
           postId: createdPost.id,
         })),
       });
-      console.log(postWithDeliveryFee);
+      // console.log(postWithDeliveryFee);
 
       // 3. 등록한 게시글의 할인정보 등록
       const postWithDeliveryDiscount = await prisma.deliveryDiscount.createMany(
@@ -411,7 +411,7 @@ async function main() {
           })),
         }
       );
-      console.log(postWithDeliveryDiscount);
+      // console.log(postWithDeliveryDiscount);
 
       // 4. 등록한 게시글의 배달팟 생성
       const postWithDeliveryPot = await prisma.deliveryPot.create({
@@ -423,7 +423,7 @@ async function main() {
           postId: createdPost.id,
         },
       });
-      console.log(postWithDeliveryPot);
+      // console.log(postWithDeliveryPot);
     }
   }
 

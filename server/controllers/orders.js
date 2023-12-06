@@ -117,8 +117,6 @@ export async function confirmOrder(req, res, next) {
       );
     });
 
-    console.log(orderConfirmMessage.content.user);
-
     // send message to chatroom
     const io = req.app.get('io');
     io.of('/chat').to(potId.toString()).emit('message', orderConfirmMessage);
