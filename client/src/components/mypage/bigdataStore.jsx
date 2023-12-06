@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import COLOR from '../../utility/Color';
 import TagPlaceSM from '../TagPlaceSM';
 import { useNavigate } from 'react-router-dom';
-import logoImg from '../../public/images/logo.png';
+import logoImg from '../../../public/images/logo.png';
 
 function BigdataStore({ postData }) {
   const navigate = useNavigate();
