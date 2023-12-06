@@ -5,6 +5,8 @@ const prisma = new PrismaClient();
 
 export async function createOrder(req, res, next) {
   const { potId, menuName, quantity, price } = req.body;
+  // const imageUrl = req.file?.filename || null;
+  const imageUrl = req.file?.location || null;
 
   try {
     let order, orderMessage;
@@ -13,7 +15,7 @@ export async function createOrder(req, res, next) {
         data: {
           deliveryPotId: +potId,
           userId: req.user.id,
-          imageUrl: req.file?.filename || null,
+          imageUrl,
           menuName: menuName,
           quantity: +quantity,
           price: +price,

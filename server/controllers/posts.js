@@ -475,7 +475,8 @@ export async function getPostByCategoryId(req, res, next) {
 
 //create post
 export async function createPost(req, res, next) {
-  const imageUrl = req.file?.filename || null;
+  // const imageUrl = req.file?.filename || null;
+  const imageUrl = req.file?.location || null;
   const deliveryFees = JSON.parse(req.body.deliveryFees);
   const deliveryDiscounts = JSON.parse(req.body.deliveryDiscounts);
   const {
