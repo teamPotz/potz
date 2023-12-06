@@ -267,7 +267,7 @@ function SearchPage() {
                       onClick={() => {
                         const fetchSearchData = async () => {
                           try {
-                            console.log('search.keyword' + search.keyword);
+                            // console.log('search.keyword' + search.keyword);
                             const response = await fetch(
                               `${
                                 import.meta.env.VITE_APP_API_URL

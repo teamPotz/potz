@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const CategoryBtn = ({ category }) => {
   const navigate = useNavigate();
-  console.log('카테고리 별 데이터', category);
+  // console.log('카테고리 별 데이터', category);
 
   return (
     <FoodWrapper
@@ -22,7 +22,7 @@ const CategoryBtn = ({ category }) => {
               }
             );
             const data = await response.json();
-            console.log('검색 데이터', data);
+            // console.log('검색 데이터', data);
             navigate('/result', {
               state: {
                 result: data,
@@ -36,11 +36,7 @@ const CategoryBtn = ({ category }) => {
         fetchSearchData();
       }}
     >
-      <img
-        width={108}
-        height={108}
-        src={`${import.meta.env.VITE_APP_API_URL}/${category.imageUrl}`}
-      ></img>
+      <img width={108} height={108} src={category.imageUrl} />
       <TagFood>{category.name}</TagFood>
     </FoodWrapper>
   );

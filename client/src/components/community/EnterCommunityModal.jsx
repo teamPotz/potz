@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import COLOR from '../../utility/Color';
 import ButtonSm from '../ui/ButtonSM';
 import TagPlaceSM from '../TagPlaceSM';
+import logoImg from '../../../public/images/logo.png';
 
 const EnterCommunityModal = () => {
   const navigate = useNavigate();
@@ -39,30 +40,6 @@ const EnterCommunityModal = () => {
     }
   };
 
-  const fontStyle = {
-    fontSize: '24px',
-    fontWeight: '700',
-    color: COLOR.GRAY_500,
-  };
-
-  const fontStyle2 = {
-    fontSize: '16px',
-    fontWeight: '300',
-    color: COLOR.GRAY_500,
-    display: 'flex',
-    alignItems: 'center',
-  };
-
-  const fontColored = {
-    color: COLOR.POTZ_PINK_DEFAULT,
-    marginRight: '12px',
-  };
-
-  const tagStyle = {
-    display: 'flex',
-    gap: '12px',
-  };
-
   return (
     <ModalContainer>
       {communityData ? (
@@ -78,14 +55,11 @@ const EnterCommunityModal = () => {
             </div>
           </div>
           <div>
-            {/* 공동체 사진으로 넣기 */}
             <img
               width={150}
               height={150}
-              src={`${import.meta.env.VITE_APP_API_URL}/${
-                communityData.imageUrl
-              }`}
-            ></img>
+              src={communityData.imageUrl || logoImg}
+            />
           </div>
           <span style={fontStyle2}>
             공동체에 가입해서 배달비를 나누어보세요.
@@ -138,5 +112,29 @@ const ModalWrapper = styled.div`
   gap: 14px;
   box-shadow: 0px 3.5px 8.1px 0px rgba(0, 0, 0, 0.07);
 `;
+
+const fontStyle = {
+  fontSize: '24px',
+  fontWeight: '700',
+  color: COLOR.GRAY_500,
+};
+
+const fontStyle2 = {
+  fontSize: '16px',
+  fontWeight: '300',
+  color: COLOR.GRAY_500,
+  display: 'flex',
+  alignItems: 'center',
+};
+
+const fontColored = {
+  color: COLOR.POTZ_PINK_DEFAULT,
+  marginRight: '12px',
+};
+
+const tagStyle = {
+  display: 'flex',
+  gap: '12px',
+};
 
 export default EnterCommunityModal;

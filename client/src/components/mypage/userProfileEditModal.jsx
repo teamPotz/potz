@@ -39,15 +39,7 @@ function UserProfileEditModal({ setVisible, user }) {
           ) : (
             <img
               style={profilfeImgStyle}
-              src={
-                user.profile?.imageUrl?.startsWith('http')
-                  ? user.profile.imageUrl
-                  : user.profile?.imageUrl
-                  ? `${import.meta.env.VITE_APP_API_URL}/${
-                      user.profile.imageUrl
-                    }`
-                  : defaultProfile
-              }
+              src={user.profile?.imageUrl || defaultProfile}
             />
           )}
           <div style={fontStyle}>{user.name}</div>
@@ -62,7 +54,7 @@ function UserProfileEditModal({ setVisible, user }) {
               'input[name="userName"]'
             ).value;
 
-            console.log('file, userName', file, userName);
+            // console.log('file, userName', file, userName);
 
             if (!file || !userName) {
               alert('파일 선택과 입력창을 모두 채워주세요.');
@@ -98,11 +90,7 @@ function UserProfileEditModal({ setVisible, user }) {
           </div>
           <div>
             <label style={lableStyle}>프로필 이름 변경</label>
-            <input
-              name='userName'
-              placeholder={user.name}
-              style={inputStyle}
-            ></input>
+            <input name='userName' placeholder={user.name} style={inputStyle} />
           </div>
           <ButtonBg
             type='submit'

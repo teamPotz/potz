@@ -96,14 +96,6 @@ function DetailContents({ postDatas }) {
     marginLeft: '28px',
   };
 
-  const selectHandler = () => {
-    setVisible(true);
-  };
-
-  const discountInfoHandler = () => {
-    setVisible2(true);
-  };
-
   return (
     <div style={backgroundStyle}>
       {visible2 && (
@@ -128,10 +120,13 @@ function DetailContents({ postDatas }) {
             <BackIcon />
           </ButtonWrap>
           <div style={{ display: 'flex' }}>
-            <ButtonWrap onClick={discountInfoHandler}>
+            <ButtonWrap onClick={() => setVisible2(true)}>
               <SaleIcon />
             </ButtonWrap>
-            <ButtonWrap onClick={selectHandler} style={marginRightStyle}>
+            <ButtonWrap
+              onClick={() => setVisible(true)}
+              style={marginRightStyle}
+            >
               <BurgerIcon />
             </ButtonWrap>
           </div>
@@ -169,22 +164,12 @@ function DetailContents({ postDatas }) {
         </div>
 
         <div style={participants}>
-          {postDatas.potMasterProfileImg ? (
-            <img
-              width={46}
-              height={46}
-              style={paddingStyle}
-              src={
-                postDatas.potMasterProfileImg.startsWith('http')
-                  ? postDatas.potMasterProfileImg
-                  : `${import.meta.env.VITE_APP_API_URL}/${
-                      postDatas.potMasterProfileImg
-                    }`
-              }
-            />
-          ) : (
-            <img width={38} height={38} src={logoImg} style={paddingStyle} />
-          )}
+          <img
+            width={46}
+            height={46}
+            style={paddingStyle}
+            src={postDatas.potMasterProfileImg || logoImg}
+          />
           <div>
             <span style={fontColored}>{postDatas.participantsCount}</span>
             <span style={fontColored}>/</span>

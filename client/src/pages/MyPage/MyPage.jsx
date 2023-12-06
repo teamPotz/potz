@@ -61,10 +61,7 @@ function MyPage() {
       try {
         const response = await fetch(
           `${import.meta.env.VITE_APP_API_URL}/users/user-delivery-histories`,
-          {
-            method: 'GET',
-            credentials: 'include',
-          }
+          { credentials: 'include' }
         );
         const data = await response.json();
         console.log('유저가 배달팟 참여한 내역 데이터', data);
@@ -109,13 +106,7 @@ function MyPage() {
               />
             ) : (
               <img
-                src={
-                  user.profile?.imageUrl?.startsWith('http')
-                    ? user.profile?.imageUrl
-                    : `${import.meta.env.VITE_APP_API_URL}/${
-                        user.profile.imageUrl
-                      }`
-                }
+                src={user.profile?.imageUrl || defaultProfile}
                 style={{
                   width: '70px',
                   height: '70px',
@@ -305,35 +296,33 @@ function MyPage() {
           </div>
         </Box>
 
-        {text.map((text) => {
+        {text.map((text, idx) => {
           return (
-            <>
-              <Box height={'80px'}>
-                <div>
-                  <FontMd weight={400} color={COLOR.BLACK}>
-                    {text[0]}
-                  </FontMd>
-                </div>
-                <div>
-                  <svg
-                    onClick={() => navigate(text[1])}
-                    width='29'
-                    height='29'
-                    viewBox='0 0 29 29'
-                    fill='none'
-                    xmlns='http://www.w3.org/2000/svg'
-                  >
-                    <path
-                      d='M10.249 6.08463L18.4157 14.2513L10.249 22.418'
-                      stroke='#A8A8A8'
-                      strokeWidth='1.75'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                  </svg>
-                </div>
-              </Box>
-            </>
+            <Box height={'80px'} key={idx}>
+              <div>
+                <FontMd weight={400} color={COLOR.BLACK}>
+                  {text[0]}
+                </FontMd>
+              </div>
+              <div>
+                <svg
+                  onClick={() => navigate(text[1])}
+                  width='29'
+                  height='29'
+                  viewBox='0 0 29 29'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='M10.249 6.08463L18.4157 14.2513L10.249 22.418'
+                    stroke='#A8A8A8'
+                    strokeWidth='1.75'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  />
+                </svg>
+              </div>
+            </Box>
           );
         })}
       </div>

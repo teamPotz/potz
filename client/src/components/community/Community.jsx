@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import COLOR from '../../utility/Color';
 import TagPlaceSM from '../TagPlaceSM';
+import logoImg from '../../../public/images/logo.png';
 
 const CommunityComp = ({ communityData }) => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const CommunityComp = ({ communityData }) => {
           style={imgStyle}
           width={92}
           height={92}
-          src={`${import.meta.env.VITE_APP_API_URL}/${communityData.imageUrl}`}
+          src={communityData.imageUrl || logoImg}
         />
       </div>
       <div style={style1}>

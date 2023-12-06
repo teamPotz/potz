@@ -35,11 +35,7 @@ const CategoryBtnSM = ({ category }) => {
         fetchSearchData();
       }}
     >
-      <img
-        width={80}
-        height={80}
-        src={`${import.meta.env.VITE_APP_API_URL}/${category.imageUrl}`}
-      />
+      <img width={80} height={80} src={category.imageUrl} />
     </Wrapper>
   );
 };

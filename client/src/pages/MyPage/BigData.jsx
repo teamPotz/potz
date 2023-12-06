@@ -211,7 +211,7 @@ function MyBigData() {
               <img
                 style={styles.bigImg}
                 src={`${import.meta.env.VITE_APP_API_URL}/${categoryName[1]}`}
-              ></img>
+              />
             </PaddingTop>
 
             <PaddingTop padding='23.33px'>
