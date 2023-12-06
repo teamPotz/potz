@@ -299,8 +299,8 @@ export async function createCommunity(req, res, next) {
             },
           },
         },
-        longitude,
-        latitude,
+        longitude: parseFloat(longitude),
+        latitude: parseFloat(latitude),
         imageUrl: communityPhoto,
         name,
       },
@@ -334,10 +334,10 @@ export async function joinCommunity(req, res, next) {
         },
       });
 
-      console.log('가입 완료.');
+      // console.log('가입 완료.');
       res.status(201).send(updateUserData);
     } else {
-      console.log('이미 가입된 상태.');
+      // console.log('이미 가입된 상태.');
       res.status(201).send({ existingConnection: existingConnection });
     }
   } catch (error) {
