@@ -1,55 +1,18 @@
 import styled from 'styled-components';
-import Font from '../utility/Font';
 import COLOR from '../utility/Color';
 import TagPlaceSM from './TagPlaceSM';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import logoImg from '../../public/images/logo.png';
 
-const HomeContentsWrapper = styled.div`
-  height: 150px;
-  border: 1px solid ${COLOR.GRAY_100};
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: grab;
-  background: ${COLOR.WHITE};
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: scale(1.04);
-    border-color: ${COLOR.POTZ_PINK_100};
-  }
-`;
-
-const ButtonContainer = styled.button`
-  display: flex;
-  width: 36px;
-  height: 36px;
-  justify-content: center;
-  align-items: center;
-  border: none;
-  background-color: ${COLOR.WHITE};
-  cursor: grab;
-  &:hover {
-    background: ${COLOR.POTZ_PINK_100};
-  }
-`;
-
-const SearchResultComp = (props) => {
-  let navigate = useNavigate();
-
-  let { result } = props;
-
-  console.log('홈 컨텐츠 데이터', result);
+const SearchResultComp = ({ result }) => {
+  const navigate = useNavigate();
+  // console.log('홈 컨텐츠 데이터', result);
 
   //postDatas 배열에서 좋아요 데이터와 id 데이터만 따로 추출해서 배열로 관리
   const [likeStates, setLikeStates] = useState(
     result.map((res) => ({ liked: res.liked, id: res.id }))
   );
-
-  useEffect(() => {
-    console.log('Like States:', likeStates);
-  }, [likeStates]);
 
   //postId와 일치하는 likeState 찾기
   const findLikeStateByPostId = (postId) => {
@@ -57,7 +20,7 @@ const SearchResultComp = (props) => {
   };
 
   const handleLikeToggle = async (postId) => {
-    console.log(postId);
+    // console.log(postId);
     try {
       //서버로 좋아요 데이터 업데이트
       try {
@@ -259,9 +222,7 @@ const SearchResultComp = (props) => {
                 width={112}
                 height={112}
                 style={imgStyle}
-                src={`${import.meta.env.VITE_APP_API_URL}/images/${
-                  res.imageUrl
-                }`}
+                src={res.imageUrl || logoImg}
               />
             </div>
             <div style={fontWrapper}>
@@ -324,5 +285,35 @@ const SearchResultComp = (props) => {
     </div>
   );
 };
+
+const HomeContentsWrapper = styled.div`
+  height: 150px;
+  border: 1px solid ${COLOR.GRAY_100};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: grab;
+  background: ${COLOR.WHITE};
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.04);
+    border-color: ${COLOR.POTZ_PINK_100};
+  }
+`;
+
+const ButtonContainer = styled.button`
+  display: flex;
+  width: 36px;
+  height: 36px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: ${COLOR.WHITE};
+  cursor: grab;
+  &:hover {
+    background: ${COLOR.POTZ_PINK_100};
+  }
+`;
 
 export default SearchResultComp;

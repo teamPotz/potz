@@ -522,13 +522,7 @@ function Chat() {
                 borderRadius: '0.8rem',
                 objectFit: 'cover',
               }}
-              src={
-                deliveryPot?.post?.imageUrl
-                  ? `${import.meta.env.VITE_APP_API_URL}/images/${
-                      deliveryPot?.post.imageUrl
-                    }`
-                  : logoImg
-              }
+              src={deliveryPot?.post?.imageUrl || logoImg}
             />
           </div>
           <div>

@@ -154,13 +154,7 @@ function ChatList() {
                     height: '100%',
                     borderRadius: '0.8rem',
                   }}
-                  src={
-                    pot.post.imageUrl
-                      ? `${import.meta.env.VITE_APP_API_URL}/images/${
-                          pot.post.imageUrl
-                        }`
-                      : logoImg
-                  }
+                  src={pot.post.imageUrl || logoImg}
                 />
                 <div>
                   <div style={styles.space}>

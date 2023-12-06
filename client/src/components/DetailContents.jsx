@@ -122,16 +122,7 @@ function DetailContents({ postDatas }) {
         <SelectCompForEveryone postId={postDatas.id} setVisible={setVisible} />
       ) : null}
       <div style={imgContainer}>
-        <img
-          style={imgStyle}
-          src={
-            postDatas.imageUrl
-              ? `${import.meta.env.VITE_APP_API_URL}/images/${
-                  postDatas.imageUrl
-                }`
-              : logoImg
-          }
-        />
+        <img style={imgStyle} src={postDatas.imageUrl || logoImg} />
         <div style={TopStyle}>
           <ButtonWrap onClick={() => navigate(-1)} style={marginLeftStyle}>
             <BackIcon />

@@ -60,13 +60,7 @@ function MyOrders() {
             return (
               <BoxComp key={index}>
                 <img
-                  src={
-                    myOrder.imageUrl
-                      ? `${import.meta.env.VITE_APP_API_URL}/images/${
-                          myOrder.imageUrl
-                        }`
-                      : logoImg
-                  }
+                  src={myOrder.imageUrl || logoImg}
                   style={styles.image}
                 ></img>
                 <AlignColumn>

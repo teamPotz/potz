@@ -29,13 +29,8 @@ const DepositImage = ({ imageUrl }) => {
   return (
     <img
       style={styles.imageStyle}
-      src={`${import.meta.env.VITE_APP_API_URL}/images/${imageUrl}`}
-      onClick={() =>
-        window.open(
-          `${import.meta.env.VITE_APP_API_URL}/images/${imageUrl}`,
-          '_blank'
-        )
-      }
+      src={imageUrl}
+      onClick={() => window.open(imageUrl, '_blank')}
     />
   );
 };

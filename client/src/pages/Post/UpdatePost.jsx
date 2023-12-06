@@ -328,9 +328,7 @@ function UpdatePost() {
                       objectFit: 'cover',
                       borderRadius: '9.33333px',
                     }}
-                    src={`${import.meta.env.VITE_APP_API_URL}/images/${
-                      getData.imageUrl
-                    }`}
+                    src={getData.imageUrl}
                   />
                 ) : (
                   <svg

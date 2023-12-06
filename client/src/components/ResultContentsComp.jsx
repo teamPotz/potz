@@ -1,9 +1,118 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import Font from '../utility/Font';
 import COLOR from '../utility/Color';
 import TagPlaceSM from './TagPlaceSM';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import logoImg from '../../public/images/logo.png';
+
+const ResultContentsComp = ({ postDatas }) => {
+  // console.log('포스트 데이터 받아옴', postDatas);
+
+  const [like, setLike] = useState(null);
+  const navigate = useNavigate();
+
+  return (
+    <div style={homeContentesContainer}>
+      {postDatas.map((post) => {
+        return (
+          <HomeContentsWrapper
+            key={post.id}
+            onClick={() => navigate(`/posts/${post.id}`)}
+          >
+            <div>
+              <div style={tagStyle}>
+                <TagPlaceSM>{post.category}</TagPlaceSM>
+              </div>
+              <img
+                width={112}
+                height={112}
+                style={imgStyle}
+                src={post.imageUrl || logoImg}
+              />
+            </div>
+            <div style={fontWrapper}>
+              <div style={fontContainer}>
+                <div style={textOverflow}>
+                  <span style={fontStyle1}>{post.storeName}</span>
+                </div>
+                <div style={fontStyle2}>
+                  <span style={coloredfont}>
+                    {post.deliveryFeePerPerson ? (
+                      <span>{post.deliveryFeePerPerson}</span>
+                    ) : (
+                      <span>무료</span>
+                    )}
+                  </span>
+                  {post.deliveryFeePerPerson ? (
+                    <span>원씩 배달</span>
+                  ) : (
+                    <span>배달</span>
+                  )}
+                </div>
+                <div style={fontStyle3}>
+                  {post.orderLink ? (
+                    <a style={linkStyle} href={post.orderLink}>
+                      <span>배달 앱 링크 바로가기</span>
+                    </a>
+                  ) : null}
+                </div>
+              </div>
+              <div style={fontstyle4}>
+                <div>
+                  <span>{post.participantsCount}</span>
+                  <span>/</span>
+                  <span>{post.recruitment}</span>
+                  <span>명</span>
+                </div>
+                <div>
+                  <span>{post.meetingLocation}</span>
+                </div>
+              </div>
+            </div>
+            <div style={buttonContainer}>
+              <ButtonContainer
+                onClick={(event) => {
+                  event.stopPropagation();
+                  //true -> false / false -> true
+                  if (post.liked == true) {
+                    setLike(false);
+                  } else {
+                    setLike(true);
+                  }
+                }}
+              >
+                {post.liked == true ? (
+                  <HeartIconClicked></HeartIconClicked>
+                ) : (
+                  <HeartIcon></HeartIcon>
+                )}
+              </ButtonContainer>
+              {post.hasDiscount ? (
+                <ButtonContainer
+                  onClick={(event) => {
+                    event.stopPropagation();
+                  }}
+                >
+                  <SaleIcon></SaleIcon>
+                </ButtonContainer>
+              ) : null}
+              {/* 우선은 2회 이상 만든 사람에게 왕관 붙여줌 */}
+              <ButtonContainer
+                onClick={(event) => {
+                  event.stopPropagation();
+                }}
+              >
+                {post.potMasterHistoryCount >= 2 ? (
+                  <CrownIcon></CrownIcon>
+                ) : null}
+              </ButtonContainer>
+            </div>
+          </HomeContentsWrapper>
+        );
+      })}
+    </div>
+  );
+};
 
 const HomeContentsWrapper = styled.div`
   height: 150px;
@@ -149,13 +258,11 @@ const fontstyle4 = {
   display: 'flex',
   fontSize: '14px',
   fontWeight: '400',
-  fontFamily: Font.FontKor,
   gap: '8px',
 };
 
 const fontContainer = {
   color: COLOR.GRAY_500,
-  fontFamily: Font.FontKor,
   display: 'flex',
   flexDirection: 'column',
   gap: '4px',
@@ -186,117 +293,6 @@ const homeContentesContainer = {
 
 const linkStyle = {
   color: COLOR.GRAY_300,
-};
-
-const ResultContentsComp = ({ postDatas }) => {
-  console.log('포스트 데이터 받아옴', postDatas);
-
-  const [like, setLike] = useState(null);
-  const navigate = useNavigate();
-
-  return (
-    <div style={homeContentesContainer}>
-      {postDatas.map((post) => {
-        return (
-          <HomeContentsWrapper
-            key={post.id}
-            onClick={() => navigate(`/posts/${post.id}`)}
-          >
-            <div>
-              <div style={tagStyle}>
-                <TagPlaceSM>{post.category}</TagPlaceSM>
-              </div>
-              <img
-                width={112}
-                height={112}
-                style={imgStyle}
-                src={`${import.meta.env.VITE_APP_API_URL}/images/${
-                  post.imageUrl
-                }`}
-              />
-            </div>
-            <div style={fontWrapper}>
-              <div style={fontContainer}>
-                <div style={textOverflow}>
-                  <span style={fontStyle1}>{post.storeName}</span>
-                </div>
-                <div style={fontStyle2}>
-                  <span style={coloredfont}>
-                    {post.deliveryFeePerPerson ? (
-                      <span>{post.deliveryFeePerPerson}</span>
-                    ) : (
-                      <span>무료</span>
-                    )}
-                  </span>
-                  {post.deliveryFeePerPerson ? (
-                    <span>원씩 배달</span>
-                  ) : (
-                    <span>배달</span>
-                  )}
-                </div>
-                <div style={fontStyle3}>
-                  {post.orderLink ? (
-                    <a style={linkStyle} href={post.orderLink}>
-                      <span>배달 앱 링크 바로가기</span>
-                    </a>
-                  ) : null}
-                </div>
-              </div>
-              <div style={fontstyle4}>
-                <div>
-                  <span>{post.participantsCount}</span>
-                  <span>/</span>
-                  <span>{post.recruitment}</span>
-                  <span>명</span>
-                </div>
-                <div>
-                  <span>{post.meetingLocation}</span>
-                </div>
-              </div>
-            </div>
-            <div style={buttonContainer}>
-              <ButtonContainer
-                onClick={(event) => {
-                  event.stopPropagation();
-                  //true -> false / false -> true
-                  if (post.liked == true) {
-                    setLike(false);
-                  } else {
-                    setLike(true);
-                  }
-                }}
-              >
-                {post.liked == true ? (
-                  <HeartIconClicked></HeartIconClicked>
-                ) : (
-                  <HeartIcon></HeartIcon>
-                )}
-              </ButtonContainer>
-              {post.hasDiscount ? (
-                <ButtonContainer
-                  onClick={(event) => {
-                    event.stopPropagation();
-                  }}
-                >
-                  <SaleIcon></SaleIcon>
-                </ButtonContainer>
-              ) : null}
-              {/* 우선은 2회 이상 만든 사람에게 왕관 붙여줌 */}
-              <ButtonContainer
-                onClick={(event) => {
-                  event.stopPropagation();
-                }}
-              >
-                {post.potMasterHistoryCount >= 2 ? (
-                  <CrownIcon></CrownIcon>
-                ) : null}
-              </ButtonContainer>
-            </div>
-          </HomeContentsWrapper>
-        );
-      })}
-    </div>
-  );
 };
 
 export default ResultContentsComp;

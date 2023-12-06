@@ -56,13 +56,7 @@ const LikedComp = ({ postData, getDeletedData }) => {
           width={150}
           height={150}
           style={imgStyle}
-          src={
-            postData.imageUrl
-              ? `${import.meta.env.VITE_APP_API_URL}/images/${
-                  postData.imageUrl
-                }`
-              : logoImg
-          }
+          src={postData.imageUrl || logoImg}
         />
       </div>
       <div>

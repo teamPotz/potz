@@ -61,13 +61,7 @@ const HomeContents = ({ postDatas, setPostDatas }) => {
                 width={112}
                 height={112}
                 style={imgStyle}
-                src={
-                  post.imageUrl
-                    ? `${import.meta.env.VITE_APP_API_URL}/images/${
-                        post.imageUrl
-                      }`
-                    : logoImg
-                }
+                src={post.imageUrl || logoImg}
               />
             </div>
             <div style={fontWrapper}>
