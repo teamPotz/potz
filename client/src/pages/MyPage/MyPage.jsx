@@ -26,12 +26,9 @@ function MyPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const profileEditHandler = () => {
-    setVisible(true);
-  };
-
-  const userAcocuntModalHandler = () => {
-    setVisible2(true);
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
   };
 
   useEffect(() => {
@@ -135,7 +132,7 @@ function MyPage() {
                 </FontSm>
               </span>
               <svg
-                onClick={profileEditHandler}
+                onClick={() => setVisible(true)}
                 width='28'
                 height='28'
                 viewBox='0 0 24 24'
@@ -221,7 +218,7 @@ function MyPage() {
           <div style={accountStyle}>
             <div style={containerStyle}>
               <span>간편 입력 계좌 번호</span>
-              <div style={{ margin: '0px' }} onClick={userAcocuntModalHandler}>
+              <div style={{ margin: '0px' }} onClick={() => setVisible2(true)}>
                 <TagPlaceSM>등록</TagPlaceSM>
               </div>
             </div>
@@ -345,10 +342,7 @@ function MyPage() {
           backgroundColor={COLOR.POTZ_PINK_DEFAULT}
           hoverColor={COLOR.POTZ_PINK_600}
           fontColor={COLOR.WHITE}
-          onClick={() => {
-            logout();
-            navigate('/');
-          }}
+          onClick={handleLogout}
         >
           로그아웃
         </ButtonBg>
