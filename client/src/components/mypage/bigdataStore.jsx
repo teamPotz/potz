@@ -16,7 +16,7 @@ function BigdataStore({ postData }) {
         </a>
         <div style={likedStyle}>
           <ButtonContainer>
-            <HeartIconClicked></HeartIconClicked>
+            <HeartIconClicked />
           </ButtonContainer>
         </div>
         <div style={tagStyle}>
