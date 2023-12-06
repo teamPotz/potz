@@ -59,18 +59,20 @@ function OrderModal({
             />
           </Item>
         </div>
+        <Footer>
+          <ButtonBg
+            backgroundColor={COLOR.POTZ_PINK_DEFAULT}
+            hoverColor={COLOR.POTZ_PINK_600}
+            fontColor={COLOR.WHITE}
+            onClick={sendOrderMessage}
+          >
+            전송하기
+          </ButtonBg>
+        </Footer>
       </ModalContainer>
 
-      <Footer>
-        <ButtonBg
-          backgroundColor={COLOR.POTZ_PINK_DEFAULT}
-          hoverColor={COLOR.POTZ_PINK_600}
-          fontColor={COLOR.WHITE}
-          onClick={sendOrderMessage}
-        >
-          전송하기
-        </ButtonBg>
-      </Footer>
+      {/* <Footer> */}
+      {/* </Footer> */}
     </ModalBackground>
   );
 }
@@ -141,9 +143,8 @@ const Input = styled.input`
 `;
 
 const Footer = styled.div`
-  align-items: flex-end;
   width: 361px;
-  margin-bottom: 28px;
+  margin-top: 38px;
 `;
 
 export default OrderModal;
