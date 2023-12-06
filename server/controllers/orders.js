@@ -143,6 +143,8 @@ export async function confirmOrder(req, res, next) {
 // 방장용 메뉴선택(주문, 주문확인, 입금, 입금확인 까지 처리)
 export async function createOrderAndDeposit(req, res, next) {
   const { potId, menuName, quantity, price } = req.body;
+  // const imageUrl = req.file?.filename || null;
+  const imageUrl = req.file?.location || null;
 
   try {
     let order, orderMessage, depositMessage;
@@ -152,7 +154,7 @@ export async function createOrderAndDeposit(req, res, next) {
         data: {
           deliveryPotId: +potId,
           userId: req.user.id,
-          imageUrl: req.file?.filename || null,
+          imageUrl,
           menuName: menuName,
           quantity: +quantity,
           price: +price,
@@ -176,7 +178,7 @@ export async function createOrderAndDeposit(req, res, next) {
           userId: req.user.id,
           amount: +price * +quantity,
           depositor: `${req.user.name}(방장)`,
-          imageUrl: req.file?.filename || null,
+          imageUrl,
           depositConfirmed: true,
         },
       });

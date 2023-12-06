@@ -27,8 +27,6 @@ function UserProfileEditModal({ setVisible, user }) {
     }
   }
 
-  // console.log(user);
-
   return (
     <div style={backgroundStyle}>
       <div onClick={() => setVisible(false)}>

@@ -275,8 +275,9 @@ export async function getCommunityById(req, res, next) {
 let communityPhoto = '';
 export async function saveCommunityImg(req, res, next) {
   // console.log(req.file.path);
-  let editPath = '/' + req.file.path.replace(/\\/g, '/');
-  communityPhoto = editPath.replace('/uploads', '');
+  // let editPath = '/' + req.file.path.replace(/\\/g, '/');
+  // communityPhoto = editPath.replace('/uploads', '');
+  communityPhoto = req.file?.location || null;
 }
 
 export async function createCommunity(req, res, next) {

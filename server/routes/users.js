@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { verifyAuth } from '../middlewares/auth.js';
-import fileUpload from '../middlewares/multer.js';
+// import fileUpload from '../middlewares/multer.js';
+import fileUpload from '../middlewares/multer-s3.js';
 import {
   getUserData,
   getUserDataById,

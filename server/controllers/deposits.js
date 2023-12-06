@@ -5,6 +5,8 @@ const prisma = new PrismaClient();
 
 export async function createDeposit(req, res, next) {
   const { potId, depositor, amount } = req.body;
+  // const imageUrl = req.file?.filename || null;
+  const imageUrl = req.file?.location || null;
 
   try {
     let deposit, depositMessage;
@@ -15,7 +17,7 @@ export async function createDeposit(req, res, next) {
           userId: req.user.id,
           amount: +amount,
           depositor: depositor,
-          imageUrl: req.file?.filename || null,
+          imageUrl,
         },
       });
 

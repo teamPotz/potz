@@ -154,28 +154,26 @@ export async function updateUserAccountById(req, res, next) {
 }
 
 export async function updateUserById(req, res, next) {
-  const imgUrl = req.file.path.replace('uploads', '');
+  // console.log('file', req.file);
+  // const imgUrl = req.file.path.replace('uploads', '');
+  const imageUrl = req.file?.location || null;
 
   try {
     const userData = await prisma.user.update({
-      where: {
-        id: req.user.id,
-      },
+      where: { id: req.user.id },
       data: {
         name: req.body.userName,
       },
     });
 
     const userProfile = await prisma.userProfile.upsert({
-      where: {
-        userId: req.user.id,
-      },
+      where: { userId: req.user.id },
       update: {
-        imageUrl: imgUrl,
+        imageUrl,
       },
       create: {
         userId: req.user.id,
-        imageUrl: imgUrl,
+        imageUrl,
       },
     });
 

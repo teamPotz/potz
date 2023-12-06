@@ -9,7 +9,8 @@ import {
   createOrderAndDeposit,
 } from '../controllers/orders.js';
 import { verifyAuth } from '../middlewares/auth.js';
-import fileUpload from '../middlewares/multer.js';
+// import fileUpload from '../middlewares/multer.js';
+import fileUpload from '../middlewares/multer-s3.js';
 
 const router = Router();
 router.get('/', getOrdersByPotId);

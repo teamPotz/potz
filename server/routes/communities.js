@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import fileUpload from '../middlewares/multer.js';
+// import fileUpload from '../middlewares/multer.js';
+import fileUpload from '../middlewares/multer-s3.js';
 import { verifyAuth } from '../middlewares/auth.js';
 import {
   joinCommunity,
