@@ -1,10 +1,10 @@
 # POTZ
 
 위치기반 소규모 공동체 배달비 더치페이 서비스
-
-<img src='./docs/3.png' height='220px'/> <img src='./docs/1.png' height='220px'/>
-<img src='./docs/2.png' height='220px'/>
-
+<p>
+    <img src='./docs/3.png' height='220px'/> <img src='./docs/1.png' height='220px'/>
+    <img src='./docs/2.png' height='220px'/>
+</p>
 ## 프로젝트 기간
 
 2023-11-01 ~
