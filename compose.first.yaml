@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  nginx:
+    container_name: potz_nginx
+    depends_on:
+      - api
+      - client
+    restart: unless-stopped
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/data/certbot/conf:/etc/letsencrypt
+      - ./nginx/data/certbot/www:/var/www/certbot
+    ports:
+      - 80:80
+      - 443:443
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot_service
+    restart: unless-stopped
+    volumes:
+      - ./nginx/data/certbot/conf:/etc/letsencrypt
+      - ./nginx/data/certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email {email} -d {domain} --agree-tos
+
+  mysql:
+    container_name: potz_mysql
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    restart: always
+    environment:
+      MYSQL_DATABASE: potzdb
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root1234
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user1234
+      TZ: Asia/Seoul
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./server/volumes/db_data:/var/lib/mysql
+
+  api:
+    container_name: potz_api
+    build:
+      dockerfile: Dockerfile
+      context: ./server
+    environment:
+      DATABASE_URL: 'mysql://root:root1234@mysql:3306/potzdb'
+    depends_on:
+      - mysql
+
+  client:
+    container_name: potz_client
+    build:
+      dockerfile: Dockerfile
+      context: ./client
