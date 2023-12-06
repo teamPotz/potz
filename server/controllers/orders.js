@@ -100,6 +100,7 @@ export async function confirmOrder(req, res, next) {
           orderConfirmed: true,
           price: true,
           quantity: true,
+          user: { select: { name: true } },
         },
       });
 
@@ -115,6 +116,8 @@ export async function confirmOrder(req, res, next) {
         order
       );
     });
+
+    console.log(orderConfirmMessage.content.user);
 
     // send message to chatroom
     const io = req.app.get('io');

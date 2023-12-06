@@ -84,6 +84,7 @@ export async function confirmDeposit(req, res, next) {
         select: {
           id: true,
           depositConfirmed: true,
+          user: { select: { name: true } },
         },
       });
 

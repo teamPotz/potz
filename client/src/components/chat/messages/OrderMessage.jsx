@@ -4,6 +4,45 @@ import COLOR from '../../../utility/Color';
 import CartIcon from '../assets/CartIcon';
 import ButtonBg from '../../ui/ButtonBG';
 
+function OrderMessage({ message, own, isPotMaster, confirmOrder }) {
+  const scrollRef = useRef();
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behaviour: 'smooth' });
+  }, [message]);
+
+  const {
+    id: orderId,
+    price,
+    imageUrl,
+    menuName,
+    quantity,
+    orderConfirmed,
+  } = message.content;
+
+  return (
+    <MessageWrapper $own={own} ref={scrollRef}>
+      <Title>{message.sender.name}님의 메뉴 선정</Title>
+      {imageUrl && <MenuImage imageUrl={imageUrl} />}
+      <div>{menuName}</div>
+      <div>
+        총 금액 {new Intl.NumberFormat('ko-kr').format(+price * +quantity)}원
+      </div>
+      {isPotMaster && (
+        <ButtonBg
+          backgroundColor={COLOR.POTZ_PINK_DEFAULT}
+          hoverColor={COLOR.POTZ_PINK_600}
+          fontColor={COLOR.WHITE}
+          onClick={() => confirmOrder(orderId, message.id)}
+          isDisabled={orderConfirmed}
+        >
+          {orderConfirmed ? '확인 완료' : '메뉴 확인'}
+        </ButtonBg>
+      )}
+    </MessageWrapper>
+  );
+}
+
 const FontBig = styled.p`
   font-style: normal;
   font-weight: 550;
@@ -67,44 +106,5 @@ const MenuImage = ({ imageUrl }) => {
     />
   );
 };
-
-function OrderMessage({ message, own, isPotMaster, confirmOrder }) {
-  const scrollRef = useRef();
-
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behaviour: 'smooth' });
-  }, [message]);
-
-  const {
-    id: orderId,
-    price,
-    imageUrl,
-    menuName,
-    quantity,
-    orderConfirmed,
-  } = message.content;
-
-  return (
-    <MessageWrapper $own={own} ref={scrollRef}>
-      <Title>{message.sender.name}님의 메뉴 선정</Title>
-      {imageUrl && <MenuImage imageUrl={imageUrl} />}
-      <div>{menuName}</div>
-      <div>
-        총 금액 {new Intl.NumberFormat('ko-kr').format(+price * +quantity)}원
-      </div>
-      {isPotMaster && (
-        <ButtonBg
-          backgroundColor={COLOR.POTZ_PINK_DEFAULT}
-          hoverColor={COLOR.POTZ_PINK_600}
-          fontColor={COLOR.WHITE}
-          onClick={() => confirmOrder(orderId, message.id)}
-          isDisabled={orderConfirmed}
-        >
-          {orderConfirmed ? '확인 완료' : '메뉴 확인'}
-        </ButtonBg>
-      )}
-    </MessageWrapper>
-  );
-}
 
 export default OrderMessage;

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import COLOR from '../../../utility/Color';
 import moneyImg from '../../../../public/images/icons/money.svg';
 
-function DepositConfirmMessage({ sender, own }) {
+function DepositConfirmMessage({ message, own }) {
   return (
     <MessageWrapper $own={own}>
       <div style={styles.box}>
@@ -21,7 +21,9 @@ function DepositConfirmMessage({ sender, own }) {
           <img src={moneyImg} />
         </div>
         <div>
-          <span style={{ color: COLOR.POTZ_PINK_DEFAULT }}>{sender.name}</span>
+          <span style={{ color: COLOR.POTZ_PINK_DEFAULT }}>
+            {message.content.user?.name}
+          </span>
           님의 입금 확인 완료!
         </div>
       </div>

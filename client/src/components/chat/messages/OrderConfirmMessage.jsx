@@ -13,7 +13,7 @@ const categoryIcons = {
   8: '/images/graphicImg/CategorySalad.png',
 };
 
-function OrderConfirmMessage({ sender, categoryId, own }) {
+function OrderConfirmMessage({ message, categoryId, own }) {
   return (
     <MessageWrapper $own={own}>
       <div style={styles.box}>
@@ -32,7 +32,9 @@ function OrderConfirmMessage({ sender, categoryId, own }) {
           />
         </div>
         <div>
-          <span style={{ color: COLOR.POTZ_PINK_DEFAULT }}>{sender.name}</span>
+          <span style={{ color: COLOR.POTZ_PINK_DEFAULT }}>
+            {message.content.user?.name}
+          </span>
           님의 배달 메뉴 확인 완료!
         </div>
       </div>

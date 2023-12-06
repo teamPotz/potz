@@ -69,7 +69,7 @@ function MessageContainer({
             return (
               <div key={message.id} ref={scrollRef}>
                 <OrderConfirmMessage
-                  sender={message.sender}
+                  message={message}
                   categoryId={categoryId}
                   own={message.sender.id === user.id}
                 />
@@ -90,7 +90,8 @@ function MessageContainer({
             return (
               <div key={message.id} ref={scrollRef}>
                 <DepositConfirmMessage
-                  sender={message.sender}
+                  // sender={message.sender}
+                  message={message}
                   own={message.sender.id === user.id}
                 />
               </div>
