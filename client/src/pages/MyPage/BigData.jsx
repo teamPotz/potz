@@ -4,6 +4,7 @@ import GoBack from '../../components/ui/GoBackNavbar';
 import COLOR from '../../utility/Color';
 import { useAuth } from '../../contexts/AuthContext';
 import BigdataStore from '../../components/mypage/bigdataStore';
+import logoImg from '../../../public/images/logo.png';
 
 //지금까지 주문한 카테고리 이력의 배열을 구하고 최빈 카테고리 구하기
 const ModeCategory = (datas) => {
@@ -96,10 +97,7 @@ function MyBigData() {
       try {
         const response = await fetch(
           `${import.meta.env.VITE_APP_API_URL}/categories`,
-          {
-            method: 'GET',
-            credentials: 'include',
-          }
+          { credentials: 'include' }
         );
         const categories = await response.json();
         setCategoryName([
@@ -208,10 +206,7 @@ function MyBigData() {
             </PaddingTop>
 
             <PaddingTop padding='24.5px'>
-              <img
-                style={styles.bigImg}
-                src={`${import.meta.env.VITE_APP_API_URL}/${categoryName[1]}`}
-              />
+              <img style={styles.bigImg} src={categoryName[1] || logoImg} />
             </PaddingTop>
 
             <PaddingTop padding='23.33px'>
