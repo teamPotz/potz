@@ -58,7 +58,7 @@ const categories = [
   {
     name: '치킨',
     displayOrder: 7,
-    imageUrl: '/api/category/category-pizza.png',
+    imageUrl: '/api/category/category-chiken.png',
   },
   {
     name: '샐러드',
