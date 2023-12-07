@@ -94,27 +94,15 @@ function MyPage() {
       <div style={styles.content}>
         <Box2 height={'227px'} align={'column'}>
           <Profile1>
-            {!user.profile?.imageUrl ? (
-              <img
-                src={defaultProfile}
-                style={{
-                  width: '70px',
-                  height: '70px',
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                }}
-              />
-            ) : (
-              <img
-                src={user.profile?.imageUrl || defaultProfile}
-                style={{
-                  width: '70px',
-                  height: '70px',
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                }}
-              />
-            )}
+            <img
+              src={user.profile?.imageUrl || defaultProfile}
+              style={{
+                width: '70px',
+                height: '70px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+              }}
+            />
             <div style={{ width: '272px' }}>
               <span>
                 <FontBig>{user.name}</FontBig>
