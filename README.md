@@ -17,6 +17,9 @@
 - BE : Express, MySQL, Prisma
 - 배포 : AWS EC2, Nginx, Docker
 
+## Architecture
+<img src='./docs/architecture.png' width='729px'/>
+
 ## How to Run
 
 ### 프로젝트 처음 세팅하는 경우
