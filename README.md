@@ -9,12 +9,13 @@
 
 ## 프로젝트 기간
 
-2023-11-01 ~
+2023-11-01 ~ 2023-12-01
 
 ## Tech Stack
 
 - FE : React
 - BE : Express, MySQL, Prisma
+- 배포 : AWS EC2, Nginx, Docker
 
 ## How to Run
 
