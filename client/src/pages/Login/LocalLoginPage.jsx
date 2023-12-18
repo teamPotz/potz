@@ -5,22 +5,9 @@ import ButtonBg from '../../components/ui/ButtonBG';
 import { useAuth } from '../../contexts/AuthContext';
 import Logo from '../../components/ui/Logo';
 
-const style1 = {
-  display: 'inline-flex',
-  flexDirection: 'column',
-  justifyContent: 'space-around',
-  height: '100%',
-};
-
-const style3 = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '13px',
-};
-
 function LocalLoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('user');
+  const [password, setPassword] = useState('1234');
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
   const [signUpName, setSignUpName] = useState('');
@@ -109,5 +96,18 @@ function LocalLoginPage() {
     </div>
   );
 }
+
+const style1 = {
+  display: 'inline-flex',
+  flexDirection: 'column',
+  justifyContent: 'space-around',
+  height: '100%',
+};
+
+const style3 = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '13px',
+};
 
 export default LocalLoginPage;
