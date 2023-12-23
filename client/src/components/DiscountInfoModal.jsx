@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import COLOR from '../utility/Color';
 
-function HomeDiscountModal({
+function DiscountInfoModal({
   setVisible,
   discountInfo,
   totalOrderPrice,
@@ -165,4 +165,4 @@ const backgroundStyle = {
   zIndex: 1000,
 };
 
-export default HomeDiscountModal;
+export default DiscountInfoModal;

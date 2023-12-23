@@ -4,12 +4,12 @@ import styled from 'styled-components';
 import COLOR from '../../utility/Color';
 import TagPlaceSM from '../TagPlaceSM';
 import PotMasterCountModal from './PotMasterCountModal';
-import HomeDiscountModal from '../DiscountInfoModal';
+import DiscountInfoModal from '../DiscountInfoModal';
 import logoImg from '../../../public/images/logo.png';
 
 const HomeContents = ({ postDatas, setPostDatas }) => {
-  const [visible, setVisible] = useState(false);
-  const [visible2, setVisible2] = useState(false);
+  const [showPotMasterModal, setShowPotMasterModal] = useState(false);
+  const [showDiscountInfoModal, setShowDiscountInfoModal] = useState(false);
   const [contentPostId, setContentPostId] = useState();
   const [discountPostId, setDiscountPostId] = useState();
 
@@ -120,7 +120,7 @@ const HomeContents = ({ postDatas, setPostDatas }) => {
               <ButtonContainer
                 onClick={(event) => {
                   event.stopPropagation();
-                  setVisible2(!visible2);
+                  setShowDiscountInfoModal((prev) => !prev);
                   setDiscountPostId(post.id);
                 }}
               >
@@ -131,10 +131,10 @@ const HomeContents = ({ postDatas, setPostDatas }) => {
               <ButtonContainer
                 onClick={(event) => {
                   event.stopPropagation();
-                  // console.log('ButtonContainer clicked', !visible);
+                  // console.log('ButtonContainer clicked', !showPotMasterModal);
                   // console.log('방장 경력');
                   setContentPostId(post.id);
-                  setVisible(!visible);
+                  setShowPotMasterModal((prev) => !prev);
                 }}
               >
                 {post.potMasterHistoryCount >= 1 ? <CrownIcon /> : null}
@@ -144,9 +144,9 @@ const HomeContents = ({ postDatas, setPostDatas }) => {
         );
       })}
 
-      {visible ? (
+      {showPotMasterModal ? (
         <PotMasterCountModal
-          setVisible={setVisible}
+          setVisible={setShowPotMasterModal}
           potMasterHistoryCount={
             postDatas.find((post) => post.id === contentPostId)
               ?.potMasterHistoryCount
@@ -154,9 +154,9 @@ const HomeContents = ({ postDatas, setPostDatas }) => {
         />
       ) : null}
 
-      {visible2 ? (
-        <HomeDiscountModal
-          setVisible2={setVisible2}
+      {showDiscountInfoModal ? (
+        <DiscountInfoModal
+          setVisible={setShowDiscountInfoModal}
           discountInfo={
             postDatas.find((post) => post.id === discountPostId)
               ?.nextDiscountInfos
