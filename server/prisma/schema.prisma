@@ -11,9 +11,10 @@ datasource db {
 }
 
 // generator erd {
-//   provider = "prisma-erd-generator"
-//   theme    = "default"
-//   output   = "./ERD.svg"
+//   provider                  = "prisma-erd-generator"
+//   theme                     = "default"
+//   includeRelationFromFields = true
+//   output                    = "./ERD.svg"
 // }
 
 // 사용자
