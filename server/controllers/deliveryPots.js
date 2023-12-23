@@ -150,10 +150,10 @@ export async function leaveDeliveryPot(req, res, next) {
     await prisma.$transaction(async (tx) => {
       // 1. leave pot
       pot = await tx.deliveryPot.update({
-        where: { id: +potId },
+        where: { id: Number(potId) },
         data: {
           participants: {
-            disconnect: { id: userId },
+            disconnect: { id: req.user.id },
           },
         },
         include: {
@@ -212,7 +212,7 @@ export async function setPotStatus(req, res, next) {
 
   try {
     const existingPot = await prisma.deliveryPot.findUnique({
-      where: { id: +potId },
+      where: { id: Number(potId) },
       select: { potMasterId: true, status: true },
     });
 
@@ -234,7 +234,7 @@ export async function setPotStatus(req, res, next) {
     await prisma.$transaction(async (tx) => {
       // 2. update status
       pot = await tx.deliveryPot.update({
-        where: { id: +potId },
+        where: { id: Number(potId) },
         data: {
           status: {
             create: {
@@ -279,7 +279,7 @@ export async function setPotStatus(req, res, next) {
         case 'MENU_REQUEST':
           message = '각자 메뉴를 선택해주세요.';
           break;
-        case 'DEPOSIT_REQUEST':
+        case 'DEPOSIT_REQUEST': {
           if (!pot.potMaster.profile) {
             throw new Error('계좌정보가 입력되지 않았습니다.');
           }
@@ -305,6 +305,7 @@ export async function setPotStatus(req, res, next) {
 
           message = `각자 메뉴가격+배달비(${deliveryFeePerPerson}원) 씩 보내주세요.\n💸${bankName} ${accountNumber} ${accountHolderName}💸`;
           break;
+        }
         case 'PICKUP_REQUEST':
           message = `배달이 완료되었습니다.\n${pot.post.meetingLocation}으로 나와주세요.`;
           break;
@@ -328,7 +329,7 @@ export async function setPotStatus(req, res, next) {
             type: 'NEW_REQUEST',
             userId: member.id,
             content: {
-              potId: +potId,
+              potId: Number(potId),
               storeName: pot.post.storeName,
               status,
             },
@@ -343,13 +344,13 @@ export async function setPotStatus(req, res, next) {
 
     // send message to chatlist
     io.of('/room').emit('updateLastMessage', {
-      potId: +potId,
+      potId: Number(potId),
       message: requestMessage,
     });
 
     // send pot status
     io.of('/room').emit('updateStatus', {
-      potId: +potId,
+      potId: Number(potId),
       status: { id: pot.status.id, status },
     });
 
@@ -368,7 +369,7 @@ export async function cancelPotStatus(req, res, next) {
   try {
     const pot = await prisma.deliveryPotStatus.deleteMany({
       // where: { potId: +potId, status },
-      where: { potId: +potId },
+      where: { potId: Number(potId) },
     });
     res.status(200).json(pot);
   } catch (error) {
@@ -383,7 +384,7 @@ export async function closeDeliveryPot(req, res, next) {
   try {
     // 1. 존재 여부, 방장 여부, 이미 마감됐는지 확인
     const existingPot = await prisma.deliveryPot.findUnique({
-      where: { id: +potId },
+      where: { id: Number(potId) },
     });
     if (!existingPot) {
       throw new Error(`cant find delivery pot #${potId}`);
@@ -400,7 +401,7 @@ export async function closeDeliveryPot(req, res, next) {
     await prisma.$transaction(async (tx) => {
       // 2-1. close pot
       pot = await tx.deliveryPot.update({
-        where: { id: +potId },
+        where: { id: Number(potId) },
         data: { closed: true },
         include: {
           deposits: {

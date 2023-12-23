@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 export async function getMessagesByPotId(potId) {
   const messages = await prisma.message.findMany({
-    where: { deliveryPotId: +potId },
+    where: { deliveryPotId: Number(potId) },
     include: {
       sender: {
         select: {
@@ -47,13 +47,13 @@ export async function createMessage(
       type,
       content,
       sender: {
-        connect: { id: +userId },
+        connect: { id: Number(userId) },
       },
       deliveryPot: {
-        connect: { id: +potId },
+        connect: { id: Number(potId) },
       },
       readBy: {
-        connect: { id: +userId },
+        connect: { id: Number(userId) },
       },
     },
     include: {
@@ -82,7 +82,7 @@ export async function createMessage(
 
 export async function updateOrderMessage(prisma, messageId, orderConfirmed) {
   const existingMessage = await prisma.message.findUnique({
-    where: { id: +messageId },
+    where: { id: Number(messageId) },
   });
 
   if (!existingMessage) {
@@ -94,7 +94,7 @@ export async function updateOrderMessage(prisma, messageId, orderConfirmed) {
   };
 
   const message = await prisma.message.update({
-    where: { id: +messageId },
+    where: { id: Number(messageId) },
     data: {
       content: newContent,
     },
@@ -109,7 +109,7 @@ export async function updateDepositMessage(
   depositConfirmed
 ) {
   const existingMessage = await prisma.message.findUnique({
-    where: { id: +messageId },
+    where: { id: Number(messageId) },
   });
 
   if (!existingMessage) {
@@ -121,7 +121,7 @@ export async function updateDepositMessage(
   };
 
   const message = await prisma.message.update({
-    where: { id: +messageId },
+    where: { id: Number(messageId) },
     data: {
       content: newContent,
     },
@@ -132,9 +132,9 @@ export async function updateDepositMessage(
 
 export async function readMessage(messageId, userId) {
   const readMessage = await prisma.message.update({
-    where: { id: +messageId },
+    where: { id: Number(messageId) },
     data: {
-      readBy: { connect: { id: +userId } },
+      readBy: { connect: { id: Number(userId) } },
     },
     include: {
       readBy: {
@@ -155,10 +155,10 @@ export async function readAllMessages(prisma, potId, userId) {
   // 1. 해당 방의 안읽은 메시지 구하기
   const unreadMessages = await prisma.message.findMany({
     where: {
-      deliveryPotId: +potId,
+      deliveryPotId: Number(potId),
       NOT: {
         readBy: {
-          some: { id: +userId },
+          some: { id: Number(userId) },
         },
       },
     },
@@ -172,7 +172,7 @@ export async function readAllMessages(prisma, potId, userId) {
 
   // 3. 읽은 메시지에 추가
   const user = await prisma.user.update({
-    where: { id: +userId },
+    where: { id: Number(userId) },
     data: {
       readMessages: {
         connect: unreadMessageIds,

@@ -13,12 +13,12 @@ export async function createOrder(req, res, next) {
     await prisma.$transaction(async (tx) => {
       order = await tx.deliveryOrder.create({
         data: {
-          deliveryPotId: +potId,
+          deliveryPotId: Number(potId),
           userId: req.user.id,
           imageUrl,
           menuName: menuName,
-          quantity: +quantity,
-          price: +price,
+          quantity: Number(quantity),
+          price: Number(price),
         },
       });
 
@@ -68,7 +68,7 @@ export async function confirmOrder(req, res, next) {
   try {
     // 1. check if order exists
     const existingOrder = await prisma.deliveryOrder.findUnique({
-      where: { id: +orderId },
+      where: { id: Number(orderId) },
     });
     if (!existingOrder) {
       throw new Error(`cant find order #${orderId}`);
@@ -95,7 +95,7 @@ export async function confirmOrder(req, res, next) {
     await prisma.$transaction(async (tx) => {
       // 3-1. update order
       order = await tx.deliveryOrder.update({
-        where: { id: +orderId },
+        where: { id: Number(orderId) },
         data: { orderConfirmed: true },
         select: {
           id: true,
@@ -154,12 +154,12 @@ export async function createOrderAndDeposit(req, res, next) {
       // 1-1. create order and confirm
       order = await tx.deliveryOrder.create({
         data: {
-          deliveryPotId: +potId,
+          deliveryPotId: Number(potId),
           userId: req.user.id,
           imageUrl,
           menuName: menuName,
-          quantity: +quantity,
-          price: +price,
+          quantity: Number(quantity),
+          price: Number(price),
           orderConfirmed: true,
         },
       });
@@ -176,9 +176,9 @@ export async function createOrderAndDeposit(req, res, next) {
       // 2. create deposit and confirm
       const deposit = await tx.deposit.create({
         data: {
-          deliveryPotId: +potId,
+          deliveryPotId: Number(potId),
           userId: req.user.id,
-          amount: +price * +quantity,
+          amount: Number(price) * Number(quantity),
           depositor: `${req.user.name}(방장)`,
           imageUrl,
           depositConfirmed: true,

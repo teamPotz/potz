@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 export async function checkPotExists(potId) {
   const potExists = await prisma.deliveryPot.findUnique({
     where: {
-      id: +potId,
+      id: Number(potId),
     },
   });
   return potExists ? true : false;
@@ -14,9 +14,9 @@ export async function enterPot(tx, potId, userId) {
   // 1. 이미 join된 pot인지 확인
   const pot = await tx.deliveryPot.findUnique({
     where: {
-      id: +potId,
+      id: Number(potId),
       participants: {
-        some: { id: +userId },
+        some: { id: Number(userId) },
       },
     },
     include: {
@@ -53,10 +53,10 @@ export async function enterPot(tx, potId, userId) {
 
   // 2. join 안된 pot인 경우 등록
   const joinedPot = await tx.deliveryPot.update({
-    where: { id: +potId },
+    where: { id: Number(potId) },
     data: {
       participants: {
-        connect: { id: +userId },
+        connect: { id: Number(userId) },
       },
     },
     include: {

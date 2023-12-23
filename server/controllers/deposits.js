@@ -13,9 +13,9 @@ export async function createDeposit(req, res, next) {
     await prisma.$transaction(async (tx) => {
       deposit = await tx.deposit.create({
         data: {
-          deliveryPotId: +potId,
+          deliveryPotId: Number(potId),
           userId: req.user.id,
-          amount: +amount,
+          amount: Number(amount),
           depositor: depositor,
           imageUrl,
         },
@@ -38,7 +38,7 @@ export async function createDeposit(req, res, next) {
       message: depositMessage,
     });
 
-    console.log('deposit message sent');
+    // console.log('deposit message sent');
     res.status(201).json(deposit);
   } catch (error) {
     console.error(error);
@@ -54,7 +54,7 @@ export async function confirmDeposit(req, res, next) {
   try {
     // 1. check if deposit exists
     const existingDeposit = await prisma.deposit.findUnique({
-      where: { id: +depositId },
+      where: { id: Number(depositId) },
     });
     if (!existingDeposit) {
       throw new Error(`cant find deposit #${depositId}`);
@@ -81,7 +81,7 @@ export async function confirmDeposit(req, res, next) {
     await prisma.$transaction(async (tx) => {
       // 3-1. update deposit
       const deposit = await tx.deposit.update({
-        where: { id: +depositId },
+        where: { id: Number(depositId) },
         data: { depositConfirmed: true },
         select: {
           id: true,

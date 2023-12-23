@@ -17,7 +17,7 @@ export async function getPostById(req, res, next) {
     const post = await prisma.post.findUnique({
       where: {
         isDeleted: false,
-        id: +id,
+        id: Number(id),
       },
       select: {
         id: true,
@@ -498,10 +498,10 @@ export async function createPost(req, res, next) {
         storeAddress,
         imageUrl: imageUrl,
         orderLink,
-        categoryId: +categoryId,
-        recruitment: +recruitment,
+        categoryId: Number(categoryId),
+        recruitment: Number(recruitment),
         meetingLocation,
-        communityId: +communityId,
+        communityId: Number(communityId),
         authorId: req.user.id,
       },
       include: {
@@ -558,7 +558,7 @@ export async function createPost(req, res, next) {
     // 5. notification
     // 5-1. find members in community
     const communityMembers = await prisma.communitiesOnUsers.findMany({
-      where: { communityId: +communityId, NOT: { userId: req.user.id } },
+      where: { communityId: Number(communityId), NOT: { userId: req.user.id } },
       select: {
         userId: true,
         community: {
@@ -576,7 +576,7 @@ export async function createPost(req, res, next) {
           content: {
             postId: post.id,
             storeName: post.storeName,
-            categoryId: +categoryId,
+            categoryId: Number(categoryId),
             communityName: member.community.name,
           },
         })),
@@ -657,7 +657,7 @@ export async function updateGetPost(req, res, next) {
   try {
     const updateGetPost = await prisma.post.findUnique({
       where: {
-        id: +id,
+        id: Number(id),
         authorId: req.user.id,
       },
       select: {
@@ -700,7 +700,7 @@ export async function updatePost(req, res, next) {
     // console.log(req.body);
     const getPost = await prisma.post.findUnique({
       where: {
-        id: +id,
+        id: Number(id),
         authorId: req.user.id,
       },
     });
@@ -712,14 +712,14 @@ export async function updatePost(req, res, next) {
         storeAddress,
         imageUrl,
         orderLink,
-        categoryId: +categoryId,
-        recruitment: +recruitment,
+        categoryId: Number(categoryId),
+        recruitment: Number(recruitment),
         meetingLocation,
       };
     }
     const updatePost = await prisma.post.update({
       where: {
-        id: +id,
+        id: Number(id),
       },
       data: updatedPostData,
     });
@@ -728,14 +728,14 @@ export async function updatePost(req, res, next) {
     const updatePostWithDeleteDeliveryFee = await prisma.deliveryFee.deleteMany(
       {
         where: {
-          postId: +id,
+          postId: Number(id),
         },
       }
     );
     const updatePostWithDeleteDeliveryDiscount =
       await prisma.deliveryDiscount.deleteMany({
         where: {
-          postId: +id,
+          postId: Number(id),
         },
       });
     //업데이트한 게시글의 배달비 할인정보 등록
@@ -744,14 +744,14 @@ export async function updatePost(req, res, next) {
         minAmount: parseInt(item[0]),
         maxAmount: item[2] ? parseInt(item[2]) : null,
         fee: parseInt(item[1]),
-        postId: +id,
+        postId: Number(id),
       })),
     });
     const postWithDeliveryDiscounts = await prisma.deliveryDiscount.createMany({
       data: deliveryDiscounts.map((item) => ({
         minAmount: parseInt(item[0]),
         discount: parseInt(item[1]),
-        postId: +id,
+        postId: Number(id),
       })),
     });
 

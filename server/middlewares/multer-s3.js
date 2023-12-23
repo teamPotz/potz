@@ -42,7 +42,7 @@ const upload = multer({
     },
   }),
   fileFilter: (req, file, cb) => {
-    const isValid = !!MIME_TYPE_MAP[file.mimetype];
+    const isValid = Boolean(MIME_TYPE_MAP[file.mimetype]);
     const error = isValid ? null : new Error('mime 유형이 잘못됨💥');
     cb(error, isValid);
   },

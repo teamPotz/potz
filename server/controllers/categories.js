@@ -60,7 +60,7 @@ export async function getCategoryById(req, res, next) {
           },
         },
       },
-      where: { id: +id },
+      where: { id: Number(id) },
     });
 
     res.status(200).send(categories);
