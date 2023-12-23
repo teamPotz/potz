@@ -80,7 +80,11 @@ const SearchResultItem = ({ result }) => {
                 <div style={fontStyle2}>
                   <span style={coloredfont}>
                     {res.deliveryFeePerPerson ? (
-                      <span>{res.deliveryFeePerPerson}</span>
+                      <span>
+                        {new Intl.NumberFormat('ko-kr').format(
+                          res.deliveryFeePerPerson
+                        )}
+                      </span>
                     ) : (
                       <span>무료</span>
                     )}

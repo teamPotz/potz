@@ -80,7 +80,7 @@ const HomeContents = ({ postDatas, setPostDatas }) => {
                       <span>무료</span>
                     )}
                   </span>
-                  {post.deliveryFeePerPerson ? (
+                  {post.participantsCount ? (
                     <span>원씩 배달</span>
                   ) : (
                     <span>배달</span>

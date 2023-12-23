@@ -174,7 +174,7 @@ function PostDetail({ postDatas }) {
           />
           <div>
             <span style={fontColored}>
-              {`${postDatas.participants}/${postDatas.recruitment}`}
+              {`${postDatas.participantsCount}/${postDatas.recruitment}`}
             </span>
             <span>명 참여중</span>
           </div>
