@@ -36,7 +36,7 @@ function SystemMessage({ message }) {
             color: COLOR.BLACK_OPACITY_300,
           }}
         >
-          {timeAgoFormat(message.createdAt, 'ko')} | read{' '}
+          {timeAgoFormat(message.createdAt, 'ko')} | 읽음{' '}
           {message.readBy?.length}
         </div>
       </Wrapper>

@@ -91,7 +91,7 @@ export async function joinDeliveryPot(req, res, next) {
         req.user.id
       ));
 
-      // 3-1. 방의 모든 메시지 읽음 처리
+      // 3-1. 입장시 방의 모든 메시지 읽음 처리
       await readAllMessages(tx, potId, req.user.id);
 
       // 3-2. 읽음처리 이벤트 전송
