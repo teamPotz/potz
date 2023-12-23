@@ -46,6 +46,14 @@ export function getApplicableDeliveryFeeInfo(
   return sortedDeliveryFeeInfos.at(0);
 }
 
+// 1인당 배달비
+export function getDeliveryFeePerPerson(
+  appliedDeliveryFeeInfo,
+  orderedUserCount
+) {
+  return Math.ceil(appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0);
+}
+
 // 현재 적용된 배달비 정보의 다음 단계 배달비 정보구하기
 export function getNextDeliveryFeeInfos(
   deliveryFeeInfos,

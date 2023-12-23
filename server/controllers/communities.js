@@ -8,6 +8,7 @@ import {
   getNextDeliveryFeeInfos,
   getAppliedDiscountInfo,
   getNextDiscountInfos,
+  getDeliveryFeePerPerson,
 } from '../utils/deliveryCalculator.js';
 
 export async function getPostsByCommunityId(req, res, next) {
@@ -100,8 +101,10 @@ export async function getPostsByCommunityId(req, res, next) {
       );
 
       // 1인당 배달비
-      const deliveryFeePerPerson =
-        appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
+      const deliveryFeePerPerson = getDeliveryFeePerPerson(
+        appliedDeliveryFeeInfo,
+        orderedUserCount
+      );
 
       return {
         id: post.id,

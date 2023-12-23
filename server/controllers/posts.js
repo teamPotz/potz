@@ -6,6 +6,7 @@ import {
   getNextDeliveryFeeInfos,
   getAppliedDiscountInfo,
   getNextDiscountInfos,
+  getDeliveryFeePerPerson,
 } from '../utils/deliveryCalculator.js';
 
 const prisma = new PrismaClient();
@@ -75,8 +76,10 @@ export async function getPostById(req, res, next) {
 
     const orderedUserCount = getOrderedUserCount(post.deliveryPot.orders);
 
-    const deliveryFeePerPerson =
-      appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
+    const deliveryFeePerPerson = getDeliveryFeePerPerson(
+      appliedDeliveryFeeInfo,
+      orderedUserCount
+    );
 
     const transformedPost = {
       id: post.id,
@@ -195,8 +198,10 @@ export async function getPostByLiked(req, res, next) {
         post.post.deliveryPot.orders
       );
 
-      const deliveryFeePerPerson =
-        appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
+      const deliveryFeePerPerson = getDeliveryFeePerPerson(
+        appliedDeliveryFeeInfo,
+        orderedUserCount
+      );
 
       const transformedpost = {
         id: post.post.id,
@@ -314,8 +319,10 @@ export async function getPostByName(req, res, next) {
 
       const orderedUserCount = getOrderedUserCount(post.deliveryPot.orders);
 
-      const deliveryFeePerPerson =
-        appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
+      const deliveryFeePerPerson = getDeliveryFeePerPerson(
+        appliedDeliveryFeeInfo,
+        orderedUserCount
+      );
 
       const transformedPost = {
         id: post.id,
@@ -435,8 +442,10 @@ export async function getPostByCategoryId(req, res, next) {
       const orderedUserCount = getOrderedUserCount(post.deliveryPot.orders);
       // console.log('post.deliveryPot.orders', post.deliveryPot.orders);
 
-      const deliveryFeePerPerson =
-        appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
+      const deliveryFeePerPerson = getDeliveryFeePerPerson(
+        appliedDeliveryFeeInfo,
+        orderedUserCount
+      );
 
       const transformedPost = {
         id: post.id,
@@ -615,8 +624,10 @@ export async function createPost(req, res, next) {
     );
 
     // 1인당 배달비
-    const deliveryFeePerPerson =
-      appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
+    const deliveryFeePerPerson = getDeliveryFeePerPerson(
+      appliedDeliveryFeeInfo,
+      orderedUserCount
+    );
 
     const result = {
       id: post.id,

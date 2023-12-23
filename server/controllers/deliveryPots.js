@@ -9,6 +9,7 @@ import {
   getTotalOrderPrice,
   getOrderedUserCount,
   getApplicableDeliveryFeeInfo,
+  getDeliveryFeePerPerson,
 } from '../utils/deliveryCalculator.js';
 
 const prisma = new PrismaClient();
@@ -300,8 +301,10 @@ export async function setPotStatus(req, res, next) {
           );
 
           // 1인당 배달비
-          const deliveryFeePerPerson =
-            appliedDeliveryFeeInfo?.fee / (orderedUserCount || 1) || 0;
+          const deliveryFeePerPerson = getDeliveryFeePerPerson(
+            appliedDeliveryFeeInfo,
+            orderedUserCount
+          );
 
           message = `각자 메뉴가격+배달비(${deliveryFeePerPerson}원) 씩 보내주세요.\n💸${bankName} ${accountNumber} ${accountHolderName}💸`;
           break;
