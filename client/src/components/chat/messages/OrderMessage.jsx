@@ -26,7 +26,11 @@ function OrderMessage({ message, own, isPotMaster, confirmOrder }) {
       {imageUrl && <MenuImage imageUrl={imageUrl} />}
       <div>{menuName}</div>
       <div>
-        총 금액 {new Intl.NumberFormat('ko-kr').format(+price * +quantity)}원
+        총 금액{' '}
+        {new Intl.NumberFormat('ko-kr').format(
+          Number(price) * Number(quantity)
+        )}
+        원
       </div>
       {isPotMaster && (
         <ButtonBg

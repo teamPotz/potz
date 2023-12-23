@@ -7,23 +7,23 @@ import Login from './pages/Login/LoginPage.jsx';
 import LocalLoginPage from './pages/Login/LocalLoginPage.jsx';
 import ProtectedRoute from './pages/ProtectedRoute.jsx';
 import AuthorizeUser from './pages/authorize.jsx';
-import Home from './pages/Home.jsx';
-import MakeCommunity from './pages/Community/MakeCommunity.jsx';
-import ChooseFeature from './pages/Community/ChooseTypes.jsx';
+import Home from './pages/Home/Home.jsx';
+import CreateCommunity from './pages/Community/CreateCommunity.jsx';
+import CommunityTypes from './pages/Community/CommunityTypes.jsx';
+import CommunityLoaction from './pages/Community/CommunityLocation.jsx';
 import NamingCommunity from './pages/Community/NamingCommunity.jsx';
-import Entercommunity from './pages/Community/EnterCommunity.jsx';
+import JoinCommunity from './pages/Community/JoinCommunity.jsx';
 import ChooseInterest from './pages/ChooseInterest.jsx';
-import ChooseCommunity from './pages/Community/ChooseCommunity.jsx';
-import FindLocation from './pages/Community/FindLocation.jsx';
-import CategoryPage from './pages/Category/Category.jsx';
-import LikedList from './pages/LikedListPage.jsx';
-import SearchPage from './pages/Search.jsx';
-import SearchResult from './pages/SearchResult.jsx';
-import LandingMap from './pages/LandingMap';
+import CommunityList from './pages/Community/CommunityList.jsx';
+import FindCommuinty from './pages/Community/FindCommunity.jsx';
+import CategoryPage from './pages/Home/Category.jsx';
+import Likes from './pages/Likes.jsx';
+import Search from './pages/Search/Search.jsx';
+import SearchResult from './pages/Search/SearchResult.jsx';
 import Detail from './pages/Post/Detail.jsx';
 import CreatePost from './pages/Post/CreatePost.jsx';
+import PostLocation from './pages/Post/PostLocation.jsx';
 import UpdatePost from './pages/Post/UpdatePost.jsx';
-import UserLoactionLanding from './pages/UserLocationLanding.jsx';
 import MyPage from './pages/MyPage/MyPage.jsx';
 import MyBigData from './pages/MyPage/BigData.jsx';
 import MyCommunities from './pages/MyPage/MyCommunities.jsx';
@@ -68,39 +68,35 @@ const router = createBrowserRouter([
       },
       {
         path: '/community/find',
-        element: <FindLocation />,
+        element: <FindCommuinty />,
+      },
+      {
+        path: '/community/location',
+        element: <CommunityLoaction />,
       },
       {
         path: '/community/create',
-        element: <MakeCommunity />,
+        element: <CreateCommunity />,
       },
       {
         path: '/community/types',
-        element: <ChooseFeature />,
+        element: <CommunityTypes />,
       },
       {
         path: '/community/name',
         element: <NamingCommunity />,
       },
       {
-        path: '/community/lists',
-        element: <ChooseCommunity />,
+        path: '/community/list',
+        element: <CommunityList />,
       },
       {
-        path: '/community/enter',
-        element: <Entercommunity />,
+        path: '/community/join',
+        element: <JoinCommunity />,
       },
       {
         path: '/community/:id',
         element: <Home />,
-      },
-      {
-        path: '/getaddress',
-        element: <LandingMap />,
-      },
-      {
-        path: '/user-location',
-        element: <UserLoactionLanding />,
       },
       {
         path: '/user-interests',
@@ -108,10 +104,10 @@ const router = createBrowserRouter([
       },
       {
         path: '/search',
-        element: <SearchPage />,
+        element: <Search />,
       },
       {
-        path: '/result',
+        path: '/search/result',
         element: <SearchResult />,
       },
       {
@@ -123,6 +119,10 @@ const router = createBrowserRouter([
         element: <CreatePost />,
       },
       {
+        path: '/posts/location',
+        element: <PostLocation />,
+      },
+      {
         path: '/posts/:id/update',
         element: <UpdatePost />,
       },
@@ -131,8 +131,8 @@ const router = createBrowserRouter([
         element: <Detail />,
       },
       {
-        path: '/liked-list',
-        element: <LikedList />,
+        path: '/likes',
+        element: <Likes />,
       },
       {
         path: '/my-page',

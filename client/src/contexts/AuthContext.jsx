@@ -59,7 +59,7 @@ function AuthProvider({ children }) {
         }
       );
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       if (res.ok) {
         dispatch({ type: 'SIGNUP', payload: data });
       }
@@ -86,7 +86,7 @@ function AuthProvider({ children }) {
         throw new Error('failed to login');
       }
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       dispatch({ type: 'LOGIN_SUCCESS', payload: data });
     } catch (error) {
       console.error(error);
@@ -107,7 +107,7 @@ function AuthProvider({ children }) {
         throw new Error('failed to logout');
       }
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       dispatch({ type: 'LOGOUT' });
       localStorage.clear();
     } catch (error) {

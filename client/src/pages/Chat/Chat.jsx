@@ -7,7 +7,7 @@ import ChatInput from '../../components/chat/ChatInput.jsx';
 import MessageContainer from '../../components/chat/messages/MessageContainer.jsx';
 import OrderModal from '../../components/chat/OrderModal.jsx';
 import DepositModal from '../../components/chat/DepositModal.jsx';
-import UserAccountUpdateModal from '../../components/mypage/userAccountUpdateModal.jsx';
+import UpdateAccountModal from '../../components/mypage/UpdateAccountModal.jsx';
 import logoImg from '../../../public/images/logo.png';
 import crownImg from '../../../public/images/icons/crown.svg';
 import userImg from '../../../public/images/icons/user.svg';
@@ -59,7 +59,7 @@ function Chat() {
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          potId: +potId,
+          potId: Number(potId),
           type: 'TEXT',
           content: { message: newMessage },
         }),
@@ -97,7 +97,10 @@ function Chat() {
       alert('이미지 외 모든 필드를 작성해주세요.');
       return;
     }
-    if (!Number.isInteger(+quantity) || !Number.isInteger(+price)) {
+    if (
+      !Number.isInteger(Number(quantity)) ||
+      !Number.isInteger(Number(price))
+    ) {
       alert('금액과 숫자는 정수로 적어주세요');
       return;
     }
@@ -192,7 +195,7 @@ function Chat() {
       alert('이미지 외 모든 필드를 작성해주세요.');
       return;
     }
-    if (!Number.isInteger(+amount)) {
+    if (!Number.isInteger(Number(amount))) {
       alert('입금액은 정수로 적어주세요');
       return;
     }
@@ -297,7 +300,7 @@ function Chat() {
       }
       const data = await res.json();
       setDeliveryPot((prevPot) => ({ ...prevPot, status: data.status }));
-      console.log('status', data);
+      // console.log('status', data);
     } catch (error) {
       console.error(error);
       alert(error);
@@ -328,7 +331,7 @@ function Chat() {
       }
       const data = await res.json();
       setDeliveryPot((prev) => ({ ...prev, closed: data.closed }));
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       console.error(error);
       alert(error);
@@ -344,7 +347,10 @@ function Chat() {
       alert('이미지 외 모든 필드를 작성해주세요.');
       return;
     }
-    if (!Number.isInteger(+quantity) || !Number.isInteger(+price)) {
+    if (
+      !Number.isInteger(Number(quantity)) ||
+      !Number.isInteger(Number(price))
+    ) {
       alert('금액과 숫자는 정수로 적어주세요');
       return;
     }
@@ -413,7 +419,7 @@ function Chat() {
 
     // 메시지 수신
     socket.on('message', (data) => {
-      console.log('message', data);
+      // console.log('message', data);
       setMessages((prevMessages) => [...prevMessages, data]);
 
       // 읽음 처리 emit
@@ -426,7 +432,7 @@ function Chat() {
 
     // 메시지 읽음
     socket.on('updateCount', ({ messageId, readBy }) => {
-      console.log({ messageId, readBy });
+      // console.log({ messageId, readBy });
       setMessages((prevMessages) =>
         prevMessages.map((m) => (m.id === messageId ? { ...m, readBy } : m))
       );
@@ -434,7 +440,7 @@ function Chat() {
 
     // 메시지 전부 읽음(방 진입 시)
     socket.on('updateCountAll', (userId) => {
-      console.log(userId);
+      // console.log(userId);
       setMessages((prevMessages) =>
         prevMessages.map((m) => ({
           ...m,
@@ -445,13 +451,13 @@ function Chat() {
 
     // 방 정보 업데이트
     socket.on('updatePot', (data) => {
-      console.log('updatePot', data);
+      // console.log('updatePot', data);
       setDeliveryPot((prev) => ({ ...prev, ...data }));
     });
 
     // 방 정보 업데이트
     socket.on('updateOrder', (data) => {
-      console.log('updateOrder', data);
+      // console.log('updateOrder', data);
       setDeliveryPot((prev) => ({ ...prev, orders: [...prev.orders, data] }));
     });
 
@@ -477,7 +483,7 @@ function Chat() {
           throw new Error('enter chat room error');
         }
         const data = await res.json();
-        console.log(data);
+        // console.log(data);
         setDeliveryPot(data);
         socket.emit('join', { potId, user });
       } catch (error) {
@@ -660,10 +666,7 @@ function Chat() {
           />
         )}
         {openAccountModal && (
-          <UserAccountUpdateModal
-            setVisible={setOpenAccountModal}
-            user={user}
-          />
+          <UpdateAccountModal setVisible={setOpenAccountModal} user={user} />
         )}
       </div>
     </>

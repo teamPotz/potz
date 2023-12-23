@@ -234,7 +234,7 @@ function NavBar() {
       <ButtonHome to={`/community/${localStorage.getItem('communityDataID')}`}>
         {({ isActive }) => (isActive ? <ClickedHomeIcon /> : <HomeIcon />)}
       </ButtonHome>
-      <ButtonHeart to='/liked-list'>
+      <ButtonHeart to='/likes'>
         {({ isActive }) => (isActive ? <ClickedHeartIcon /> : <HeartIcon />)}
       </ButtonHeart>
       <ButtonChat to='/chats'>

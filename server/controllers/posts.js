@@ -353,7 +353,6 @@ export async function getPostByName(req, res, next) {
 
 export async function getPostByCategoryId(req, res, next) {
   const { categoryId, communityId } = req.query;
-  console.log(categoryId, communityId);
 
   try {
     const posts = await prisma.post.findMany({
@@ -675,7 +674,7 @@ export async function updateGetPost(req, res, next) {
     });
     res.status(201).json(updateGetPost);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     next(error);
   }
 }
@@ -764,7 +763,6 @@ export async function updatePost(req, res, next) {
 
 export async function deletePost(req, res, next) {
   const { id } = req.params;
-  console.log(id);
 
   try {
     const deletedPost = await prisma.post.update({
@@ -777,7 +775,6 @@ export async function deletePost(req, res, next) {
       },
     });
     res.status(201).send(deletedPost);
-    console.log('데이터 삭제 완료');
   } catch (error) {
     console.error(error);
     next(error);

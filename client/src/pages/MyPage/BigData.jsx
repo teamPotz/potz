@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import GoBack from '../../components/ui/GoBackNavbar';
 import COLOR from '../../utility/Color';
-import { useAuth } from '../../contexts/AuthContext';
-import BigdataStore from '../../components/mypage/bigdataStore';
 import logoImg from '../../../public/images/logo.png';
+import BigDataItem from '../../components/mypage/BigDataItem';
+import { useAuth } from '../../contexts/AuthContext';
 
 //지금까지 주문한 카테고리 이력의 배열을 구하고 최빈 카테고리 구하기
 const ModeCategory = (datas) => {
@@ -59,10 +59,10 @@ function MyBigData() {
         const data = await response.json();
         const average = CalculateAvg(data[0].deliveryPotHistoryAsMember);
         const mode = ModeCategory(data[0].deliveryPotHistoryAsMember);
-        console.log(
-          '지금까지 주문한 데이터: ',
-          data[0].deliveryPotHistoryAsMember
-        );
+        // console.log(
+        //   '지금까지 주문한 데이터: ',
+        //   data[0].deliveryPotHistoryAsMember
+        // );
         setAverage(average);
         setSelectCategory(mode);
       } catch (error) {
@@ -125,7 +125,7 @@ function MyBigData() {
           }
         );
         const data = await response.json();
-        console.log('내 주변 공동체', data);
+        // console.log('내 주변 공동체', data);
         setMyRegionCommunity(data);
       } catch (error) {
         console.error(error);
@@ -151,7 +151,7 @@ function MyBigData() {
               posts.push(...data.posts);
             }
           });
-          console.log('내 주변 가게: ', posts);
+          // console.log('내 주변 가게: ', posts);
           setMyLocalPosts(posts);
         } catch (error) {
           console.error(error);
@@ -174,7 +174,7 @@ function MyBigData() {
           const selectStore = getRandomArray(data.posts);
           setPostDatas(selectStore);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       };
       getCategoriesData();
@@ -236,11 +236,9 @@ function MyBigData() {
               ) : null}
 
               {results &&
-                results.map((result, index) => {
-                  return (
-                    <BigdataStore key={index} postData={result}></BigdataStore>
-                  );
-                })}
+                results.map((result, index) => (
+                  <BigDataItem key={index} postData={result} />
+                ))}
             </div>
           </div>
         ) : (
@@ -274,6 +272,7 @@ const FontSm = styled.span`
   font-weight: 500;
   color: ${COLOR.GRAY_300};
 `;
+
 const styles = {
   background: {
     marginTop: '70px',

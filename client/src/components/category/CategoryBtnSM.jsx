@@ -15,14 +15,10 @@ const CategoryBtnSM = ({ category }) => {
               `${import.meta.env.VITE_APP_API_URL}/posts/category?categoryId=${
                 category.id
               }&communityId=${localStorage.getItem('communityDataID')}`,
-              {
-                method: 'GET',
-                credentials: 'include',
-              }
+              { credentials: 'include' }
             );
             const data = await response.json();
-            console.log('검색 데이터', data);
-            navigate('/result', {
+            navigate('/search/result', {
               state: {
                 result: data,
                 searchVal: category.name,

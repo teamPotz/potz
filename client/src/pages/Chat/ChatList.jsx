@@ -37,11 +37,11 @@ function ChatList() {
 
     // 마지막 메시지
     roomSocket.on('updateLastMessage', ({ potId, message }) => {
-      console.log('lastMessage', { potId, message });
+      // console.log('lastMessage', { potId, message });
 
       setDeliveryPots((prevPots) => [
         ...prevPots.map((p) =>
-          p.id === +potId
+          p.id === Number(potId)
             ? {
                 ...p,
                 messages: [message],
@@ -57,10 +57,10 @@ function ChatList() {
 
     // 참여자 수
     roomSocket.on('updateUserList', ({ potId, participants, message }) => {
-      console.log('updateList', { potId, participants, message });
+      // console.log('updateList', { potId, participants, message });
       setDeliveryPots((prevPots) => [
         ...prevPots.map((p) =>
-          p.id === +potId
+          p.id === Number(potId)
             ? {
                 ...p,
                 messages: [message],
@@ -76,10 +76,10 @@ function ChatList() {
 
     // 방장 요청사항
     roomSocket.on('updateStatus', ({ potId, status }) => {
-      console.log('status', { potId, status });
+      // console.log('status', { potId, status });
       setDeliveryPots((prevPots) => [
         ...prevPots.map((p) =>
-          p.id === +potId
+          p.id === Number(potId)
             ? {
                 ...p,
                 status: [...p.status, status],

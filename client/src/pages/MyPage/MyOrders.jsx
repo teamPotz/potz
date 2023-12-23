@@ -17,7 +17,7 @@ function MyOrders() {
           { credentials: 'include' }
         );
         const data = await response.json();
-        console.log('내가 가입한 배달팟', data[0].deliveryPotHistoryAsMember);
+        // console.log('내가 가입한 배달팟', data[0].deliveryPotHistoryAsMember);
         const result = lastestFunc(
           myOrderdata(data[0].deliveryPotHistoryAsMember)
         );
@@ -35,7 +35,7 @@ function MyOrders() {
     datas.map((data) => {
       data.deliveryPot.orders.map((order) => {
         if (order.orderConfirmed && order.userId === user.id) {
-          console.log('내가 한 주문', order);
+          // console.log('내가 한 주문', order);
           arr.push(order);
         }
       });

@@ -23,7 +23,7 @@ const CategoryBtn = ({ category }) => {
             );
             const data = await response.json();
             // console.log('검색 데이터', data);
-            navigate('/result', {
+            navigate('/search/result', {
               state: {
                 result: data,
                 searchVal: category.name,

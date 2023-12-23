@@ -11,12 +11,12 @@ function UpdatePost() {
   const BASE_URL = `${import.meta.env.VITE_APP_API_URL}`;
   const screenHeight = window.innerHeight - 98;
   const [selectImg, setSelectImg] = useState(undefined);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { id } = useParams();
   const myInputRef = useRef(null);
   const [sendImg, setSendImg] = useState();
   const [sendImgFile, setSendImgFile] = useState();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   //데이터 받아와서 바인딩
   const [getData, setGetData] = useState({
@@ -43,7 +43,7 @@ function UpdatePost() {
         const data = await res.json();
         setGetData(data);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
     getData();
@@ -93,9 +93,9 @@ function UpdatePost() {
       const data = await res.json();
       alert('수정이 완료되었습니다.');
       navigate(`/posts/${id}`);
-      console.log(data);
+      // console.log(data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -372,7 +372,7 @@ function UpdatePost() {
                   </svg>
                   <FontSm
                     onClick={() =>
-                      navigate('/getaddress', {
+                      navigate('/posts/location', {
                         state: {
                           routeName: `/posts/${id}/update`,
                           imageUrl: sendImg

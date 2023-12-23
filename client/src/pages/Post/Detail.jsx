@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import DetailContents from '../../components/DetailContents';
+import PostDetail from '../../components/post/PostDetail';
 
 function Detail() {
   const [postDatas, setPostDatas] = useState();
@@ -12,13 +12,10 @@ function Detail() {
         try {
           const response = await fetch(
             `${import.meta.env.VITE_APP_API_URL}/posts/${postID.id}`,
-            {
-              method: 'GET',
-              credentials: 'include',
-            }
+            { credentials: 'include' }
           );
           const data = await response.json();
-          console.log('포스트 데이터', data);
+          // console.log('포스트 데이터', data);
           setPostDatas(data);
         } catch (error) {
           console.error(error);
@@ -31,7 +28,7 @@ function Detail() {
 
   return (
     <div className='potz_container'>
-      {postDatas && <DetailContents postDatas={postDatas} />}
+      {postDatas && <PostDetail postDatas={postDatas} />}
     </div>
   );
 }

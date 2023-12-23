@@ -37,7 +37,7 @@ export default function () {
           });
           done(null, newUser);
         } catch (error) {
-          console.log(error);
+          console.error(error);
           done(error);
         }
       }

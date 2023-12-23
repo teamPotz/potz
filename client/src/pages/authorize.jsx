@@ -13,17 +13,17 @@ function AuthorizeUser() {
         );
         const data = await response.json();
         if (data[0].communities.length > 0) {
-          console.log('검색 데이터', data[0].communities);
+          // console.log('검색 데이터', data[0].communities);
           let communities = data[0].communities;
           const sortedCommunities = communities.sort(
             (a, b) => new Date(b.joinedAt) - new Date(a.joinedAt)
           );
 
-          console.log('정렬 데이터', sortedCommunities);
-          console.log(
-            '가장 최신에 가입한 커뮤니티',
-            sortedCommunities[0].communityId
-          );
+          // console.log('정렬 데이터', sortedCommunities);
+          // console.log(
+          //   '가장 최신에 가입한 커뮤니티',
+          //   sortedCommunities[0].communityId
+          // );
           localStorage.setItem(
             'communityDataID',
             sortedCommunities[0].communityId

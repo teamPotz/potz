@@ -5,8 +5,8 @@ import COLOR from '../../utility/Color';
 import NavBar from '../../components/ui/NavBar';
 import ButtonBg from '../../components/ui/ButtonBG';
 import defaultProfile from '../../../public/images/logo.png';
-import UserProfileEditModal from '../../components/mypage/userProfileEditModal';
-import UserAccountUpdateModal from '../../components/mypage/userAccountUpdateModal';
+import UserProfileEditModal from '../../components/mypage/UpdateProfileModal';
+import UpdateAccountModal from '../../components/mypage/UpdateAccountModal';
 import TagPlaceSM from '../../components/TagPlaceSM';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -64,7 +64,7 @@ function MyPage() {
           { credentials: 'include' }
         );
         const data = await response.json();
-        console.log('유저가 배달팟 참여한 내역 데이터', data);
+        // console.log('유저가 배달팟 참여한 내역 데이터', data);
         setPotNum(data);
       } catch (error) {
         console.error(error);
@@ -77,7 +77,7 @@ function MyPage() {
   return (
     <div className='potz_container' style={styles.background}>
       {visible2 ? (
-        <UserAccountUpdateModal user={user} setVisible={setVisible2} />
+        <UpdateAccountModal user={user} setVisible={setVisible2} />
       ) : null}
       {visible ? (
         <UserProfileEditModal user={user} setVisible={setVisible} />

@@ -57,7 +57,9 @@ function DepositMessage({ message, own, isPotMaster, confirmDeposit }) {
       <Title>{message.sender.name}님의 입금 인증</Title>
       {imageUrl && <DepositImage imageUrl={imageUrl} />}
       <div>입금자 {maskName(depositor)}</div>
-      <div>입금액 {new Intl.NumberFormat('ko-kr').format(+amount)}원</div>
+      <div>
+        입금액 {new Intl.NumberFormat('ko-kr').format(Number(amount))}원
+      </div>
       {isPotMaster && (
         <ButtonBg
           backgroundColor={COLOR.POTZ_PINK_DEFAULT}

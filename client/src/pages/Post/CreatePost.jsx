@@ -72,9 +72,9 @@ function CreatePost() {
       const data = await res.json();
       alert('등록이 완료되었습니다.');
       navigate(`/community/${communityId}`);
-      console.log(data);
+      // console.log(data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -348,7 +348,7 @@ function CreatePost() {
                   </svg>
                   <FontSm
                     onClick={() =>
-                      navigate('/getaddress', {
+                      navigate('/posts/location', {
                         state: {
                           routeName: '/posts/create',
                           communityId: location.state.communityId,

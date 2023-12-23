@@ -51,12 +51,12 @@ function NamingCommunity({ communityType, user1 }) {
           `${import.meta.env.VITE_APP_API_URL}/user`
         );
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setFormDatas({
           ...formDatas,
           members: data,
         });
-        console.log('폼데이터', formDatas);
+        // console.log('폼데이터', formDatas);
       } catch (error) {
         console.error(error);
       }
@@ -64,7 +64,7 @@ function NamingCommunity({ communityType, user1 }) {
     fetchUserDatas();
   }, []);
 
-  console.log(communityTypes);
+  // console.log(communityTypes);
 
   const inputChangeHandler = (e) => {
     setFormDatas((formData) => ({
@@ -96,10 +96,10 @@ function NamingCommunity({ communityType, user1 }) {
           if (response.ok) {
             //새로 생성된 커뮤니티 데이터 받아서 넘겨주기
             const responseData = await response.json();
-            console.log('새로 생성된 커뮤니티', responseData);
+            // console.log('새로 생성된 커뮤니티', responseData);
             localStorage.setItem('communityDataID', responseData.id);
             navigate(`/community/${responseData.id}`);
-            console.log('폼 데이터 및 파일 전송 완료🚀');
+            // console.log('폼 데이터 및 파일 전송 완료🚀');
           }
         } catch (error) {
           console.error('에러:', error);
@@ -171,7 +171,7 @@ function NamingCommunity({ communityType, user1 }) {
             console.log('서버 응답 오류:', response.statusText);
           }
         } catch (err) {
-          console.log(err);
+          console.error(err);
         }
       }
     };
