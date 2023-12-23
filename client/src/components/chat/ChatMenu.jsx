@@ -56,7 +56,7 @@ function PotMasterMenu({ status, setStatus, setOpenOrderModal, leavePot }) {
         isCompleted={status.some((s) => s.status === 'PICKUP_REQUEST')}
       />
       <ChatButton
-        title='메뉴 선택하기'
+        title='메뉴 선택하기(방장)'
         icon={<CartIcon fill={COLOR.GRAY_500} />}
         onClick={() => setOpenOrderModal(true)}
       />

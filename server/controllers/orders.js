@@ -180,7 +180,7 @@ export async function createOrderAndDeposit(req, res, next) {
           userId: req.user.id,
           amount: Number(price) * Number(quantity),
           depositor: `${req.user.name}(방장)`,
-          imageUrl,
+          imageUrl: null,
           depositConfirmed: true,
         },
       });
