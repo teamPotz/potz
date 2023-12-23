@@ -115,10 +115,6 @@ const SelectWrapper = styled.div`
   position: absolute;
   box-shadow: 0px 3.5px 8.16667px 0px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-  &:hover {
-    transform: scale(1.02);
-    transition: 0.2s ease-in-out;
-  }
 `;
 
 const CloseIcon = () => {
