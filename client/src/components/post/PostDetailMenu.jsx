@@ -100,6 +100,26 @@ const ButtonWrap = styled.button`
     border-radius: 4px;
   }
 `;
+const SelectWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: space-between;
+  padding-top: 16px;
+  padding-bottom: 32px;
+  max-width: 420px;
+  gap: 0.4rem;
+  width: 100%;
+  border-radius: 0px 0px 28px 28px;
+  background-color: ${COLOR.WHITE};
+  position: absolute;
+  box-shadow: 0px 3.5px 8.16667px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  &:hover {
+    transform: scale(1.02);
+    transition: 0.2s ease-in-out;
+  }
+`;
 
 const CloseIcon = () => {
   return (
@@ -120,23 +140,6 @@ const CloseIcon = () => {
     </svg>
   );
 };
-
-const SelectWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: space-between;
-  padding-top: 16px;
-  padding-bottom: 32px;
-  max-width: 420px;
-  width: 100%;
-  height: 128px;
-  border-radius: 0px 0px 28px 28px;
-  background-color: ${COLOR.WHITE};
-  position: absolute;
-  box-shadow: 0px 3.5px 8.16667px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-`;
 
 const btnStyle = {
   width: '94%',
