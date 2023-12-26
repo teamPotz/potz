@@ -19,10 +19,10 @@ function PostLocationMap({ searchKeyword, sendData, latlon }) {
           lat: position.coords.latitude,
           lon: position.coords.longitude,
         });
-        console.log('현재위치', newCoordinates);
+        console.log('현재 위치', newCoordinates);
       });
     }
-  }, [newCoordinates]);
+  }, []);
 
   useEffect(() => {
     const bounds = new window.kakao.maps.LatLngBounds();
