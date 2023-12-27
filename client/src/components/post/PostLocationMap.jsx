@@ -15,11 +15,12 @@ function PostLocationMap({ searchKeyword, sendData, latlon }) {
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        setNewCoordinates({
+        const newCoords = {
           lat: position.coords.latitude,
           lon: position.coords.longitude,
-        });
-        console.log('현재 위치', newCoordinates);
+        };
+        setNewCoordinates(newCoords);
+        console.log('현재 위치', newCoords);
       });
     }
   }, []);
